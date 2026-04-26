@@ -1,0 +1,40 @@
+Previously this was quadra edms project but now I am using this as a template and createing roshal-organic project - So you have to do these:
+1. Use inline wsl with turso db to crate a new project called roshal-organic and put those env in our env files
+2. In the auth we have to introduce admin and user role nothing more and previoulsy it was only a dashboard but now for marketting I have added some page and compoents so please by default on the / page please use that and the marketting has the about and other pages so from the dashboard remove those pages or else pages will clash with each other
+
+The whole point of using this templete was for its good dashboard - and this is a cms like ecoumernce project - like all the marketing pages should controllable by the dashboard and also dashboard will also do its job of managing the products, orders, and users. So please make sure to set up the roles properly and ensure that the admin has access to all the functionalities while the user role has limited access based on their needs.
+
+And these are more details on our current roshal-organic project:
+It will have 2 bangla and english language support
+
+🌿 Roshal Organic – পরিচিতি
+Roshal Organic একটি প্রাকৃতিক ও স্বাস্থ্যসম্মত খাদ্য ব্র্যান্ড, যেখানে আমরা চেষ্টা করি মানুষের কাছে পৌঁছে দিতে সম্পূর্ণ খাঁটি ও অর্গানিক খাবার। আমাদের লক্ষ্য হলো রাসায়নিকমুক্ত, ভেজালহীন এবং স্বাস্থ্যকর খাবার সরবরাহ করা, যা মানুষের দৈনন্দিন জীবনে সুস্থতা ও শক্তি যোগায়।
+
+আমরা বিশ্বাস করি—প্রকৃতির কাছ থেকে পাওয়া খাবারই সবচেয়ে নিরাপদ ও পুষ্টিকর। তাই Roshal Organic এ আমরা দেশি কৃষক ও প্রাকৃতিক উৎস থেকে সংগ্রহ করা পণ্য নিয়ে কাজ করি, যেমন অর্গানিক ফল, মধু, ঘি, গুড়, তেল ও অন্যান্য প্রাকৃতিক খাদ্য।
+
+🌱 আমাদের লক্ষ্য
+মানুষকে স্বাস্থ্যকর জীবনযাপনে উৎসাহিত করা এবং অর্গানিক খাদ্যের প্রতি আস্থা তৈরি করা।
+🌾 আমাদের প্রতিশ্রুতি
+
+* ১০০% খাঁটি ও প্রাকৃতিক পণ্য
+* কোনো প্রিজারভেটিভ বা কেমিক্যাল নেই
+* সরাসরি কৃষক ও প্রাকৃতিক উৎস থেকে সংগ্রহ
+* গ্রাহকের…
+[10:52 pm, 23/04/2026] +880 1719-403627: 🌿 Roshal Organic – খাঁটি স্বাদের আসল ঠিকানা! 🍯🥭
+
+আপনি কি নিশ্চিত আপনার খাওয়া মধু, আম বা গুড় সত্যিই খাঁটি? 🤔
+আজকাল বাজারে ভেজালের ভিড়ে আসল জিনিস খুঁজে পাওয়া কঠিন!
+তাই আমরা নিয়ে এসেছি—
+✅ ১০০% প্রাকৃতিক
+✅ কোনো কেমিক্যাল নেই
+✅ সরাসরি গ্রাম থেকে সংগ্রহ
+✅ টেস্টে আসল, বিশ্বাসে অটুট
+🍯 খাঁটি মধু
+🥭 মৌসুমী আম
+🍯 দেশি গুড়
+🥛 ফ্রেশ দই
+👉 আপনার পরিবারের জন্য সেরা পছন্দ Roshal Organic
+🔥 আজই অর্ডার করুন – সীমিত স্টক!
+#RoshalOrganic #OrganicFood #HealthyLife #PureFood #Bangladesh
+
+Always use shadcn-ui components and please make the whole website responsive and update routes to be like the ecommerce like product listing page, product details page, cart page, checkout page, order history page and user profile page. Also make sure to implement the admin dashboard with functionalities to manage products, orders and users effectively. Like make the marketting pages (about, contact, etc.) manageable from the dashboard as well so that we can easily update the content without needing to change the code. Also put ability to change ui of marketting pages from the dashboard as well so that we can easily update the look and feel of those pages without needing to change the code. I mean the content like text, imagees, and also the layout of the marketting pages should be manageable from the dashboard. This way we can keep our marketing content fresh and engaging without needing to involve developers for every update. And for now only run format - lint and tsx commands no need to run build or dev or dx flow 
