@@ -34,7 +34,7 @@ export default async function RoshalDashboardLayout({
       organization={{
         name: "Roshal Organic",
         email: "info@roshalorganic.com",
-        avatar: "/logo.png",
+        avatar: undefined,
       }}
     >
       {children}

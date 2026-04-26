@@ -16,12 +16,12 @@ export default async function DashboardThemePage() {
   ]);
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
-      <div className="space-y-2">
+    <div className="min-w-0 space-y-6 p-4 md:p-6">
+      <div className="min-w-0 space-y-2">
         <p className="text-xs uppercase tracking-[0.24em] text-primary">
           {locale === "bn" ? "স্টোরফ্রন্ট সেটিংস" : "Storefront settings"}
         </p>
-        <h1 className="text-4xl font-semibold tracking-tight">
+        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
           {locale === "bn" ? "ব্র্যান্ড ও UI" : "Brand and UI"}
         </h1>
       </div>
@@ -30,10 +30,10 @@ export default async function DashboardThemePage() {
         <CardHeader>
           <CardTitle>{locale === "bn" ? "সাইট থিম" : "Site theme"}</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="min-w-0">
           <form
             action={saveRoshalSiteSettings}
-            className="grid gap-5 md:grid-cols-2"
+            className="grid min-w-0 gap-5 md:grid-cols-2"
           >
             <input type="hidden" name="id" value={siteSettings.id} />
             <Field

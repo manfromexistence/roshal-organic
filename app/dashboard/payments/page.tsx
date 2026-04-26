@@ -49,17 +49,17 @@ export default async function DashboardPaymentsPage() {
     };
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
-      <div className="space-y-2">
+    <div className="min-w-0 space-y-6 p-4 md:p-6">
+      <div className="min-w-0 space-y-2">
         <p className="text-xs uppercase tracking-[0.24em] text-primary">
           {locale === "bn" ? "পেমেন্ট সেটিংস" : "Payment settings"}
         </p>
-        <h1 className="text-4xl font-semibold tracking-tight">
+        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
           {locale === "bn" ? "পেমেন্ট অপশন ও গাইড" : "Payment options and guides"}
         </h1>
       </div>
 
-      <form action={saveRoshalPaymentSettings} className="space-y-6">
+      <form action={saveRoshalPaymentSettings} className="min-w-0 space-y-6">
         <input type="hidden" name="id" value={paymentSettings.id} />
         <Alert>
           <AlertTitle>
@@ -77,22 +77,22 @@ export default async function DashboardPaymentsPage() {
                   ? "গেটওয়ে এখনো সম্পূর্ণ কনফিগার হয়নি। নিচের env গুলো সেট করুন।"
                   : "The gateway is not fully configured yet. Set the env values below."}
             </p>
-            <p className="font-mono text-xs">
+            <p className="break-all font-mono text-xs">
               ROSHAL_PAYMENT_GATEWAY_PROVIDER, AAMARPAY_STORE_ID,
               AAMARPAY_SIGNATURE_KEY, AAMARPAY_BASE_URL, AAMARPAY_SANDBOX,
               ROSHAL_PAYMENT_GATEWAY_METHODS
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="break-words text-xs text-muted-foreground">
               {`Missing env keys: ${
                 gatewaySummary.missingEnvKeys.length
                   ? gatewaySummary.missingEnvKeys.join(", ")
                   : "none"
               }`}
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="break-words text-xs text-muted-foreground">
               {`Supported gateway methods: ${gatewaySummary.supportedMethods.join(", ")}`}
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="break-all text-xs text-muted-foreground">
               {locale === "bn"
                 ? `কলে-ব্যাক URL: ${gatewaySummary.callbackUrls.success}, ${gatewaySummary.callbackUrls.fail}, ${gatewaySummary.callbackUrls.cancel}, ${gatewaySummary.callbackUrls.ipn}`
                 : `Callback URLs: ${gatewaySummary.callbackUrls.success}, ${gatewaySummary.callbackUrls.fail}, ${gatewaySummary.callbackUrls.cancel}, ${gatewaySummary.callbackUrls.ipn}`}

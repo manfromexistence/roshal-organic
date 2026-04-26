@@ -31,12 +31,12 @@ interface AppSidebarProps
   user?: {
     name: string;
     email: string;
-    avatar: string;
+    avatar?: string;
   };
   organization?: {
     name: string;
     email: string;
-    avatar: string;
+    avatar?: string;
   };
 }
 
@@ -134,7 +134,7 @@ export function AppSidebar({
             organization || {
               name: "Roshal Organic",
               email: "info@roshalorganic.com",
-              avatar: "/logo.png",
+              avatar: undefined,
             }
           }
         />

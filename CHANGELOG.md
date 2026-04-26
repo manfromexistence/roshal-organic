@@ -68,6 +68,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added dynamic title fetching to PageBreadcrumb component - now detects ID segments and fetches entity names from database
 
 ### Changed
+- Changed the storefront sub-header from a horizontal `ScrollArea` rail into a plain non-scrolling quick-category navigation strip, expanded it with more curated ecommerce filter links, and kept the row free of both custom and native scrollbars
+- Changed the storefront shell to scroll through the shared shadcn `ScrollArea`, including the main marketing layout plus the horizontal category rail and trusted-partner footer rail, so the public site now uses the same scrollbar treatment as the dashboard
+- Changed reusable table rendering to use the shared `ScrollArea` horizontal scrollbar instead of a raw native overflow container, reducing dashboard page spill on narrower widths
+- Changed dashboard user and organization avatars to render as letter-based fallbacks instead of the old template image placeholders
+- Changed the active storefront and dashboard page shells to tighten `min-w-0` containment, smaller mobile-first heading scales, and stickier cart/checkout summaries for better narrow-width behavior
 - Changed the app from the former Quadra template into the Roshal Organic storefront-first experience, with the public site mounted at `/` and the admin workspace moved under `/dashboard`
 - Changed the live storefront `/` route plus the active marketing header/footer shell to use the copied `marketting` landing experience directly inside the root Roshal app
 - Changed the marketing layout to scope the copied green storefront accent variables to the storefront shell instead of overriding the dashboard theme globally
@@ -181,6 +186,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All linting errors and warnings resolved across the codebase
 
 ### Fixed
+- Fixed Roshal product-media normalization so CMS-entered relative image paths are corrected, guide images and section images use valid public-root URLs, and the generated vegetable catalog no longer references the missing `/vegetables/vegetable-76.jpg` file
+- Fixed broken landing, category, product-card, and product-detail image previews caused by invalid public asset paths by routing live product media through a shared Roshal storefront media resolver
+- Fixed the marketing shell so the public storefront now uses the shared `ScrollArea` as the actual viewport-height scroller instead of leaving the browser window to show a native vertical scrollbar beside decorative custom rails
+- Fixed the dashboard payments screen overflow caused by long env/callback strings by adding responsive wrapping instead of letting the page widen
+- Fixed horizontal overflow risk across active dashboard listing pages by moving table scrolling into the shared scrollbar component instead of letting pages expand
 - Fixed copied marketing showcase hydration mismatches by replacing `Math.random()`-driven client-visible values with deterministic data in the transplanted sections
 - Fixed Roshal sign-in/sign-out handoff so successful customer/admin authentication now lands on the intended callback or role-aware destination consistently, and confirmed the protected-route matrix locally for anonymous, `user`, and `admin` sessions across `/dashboard`, `/checkout`, `/login`, `/account`, `/profile`, `/orders`, and `/favorites`
 - Fixed copied marketing showcase links so the transplanted landing page no longer routes users into fake `/products/1`-style detail pages inside the active storefront

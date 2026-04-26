@@ -23,13 +23,13 @@ export default async function DashboardProductsPage() {
   ).length;
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
-      <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-        <div className="space-y-2">
+    <div className="min-w-0 space-y-6 p-4 md:p-6">
+      <div className="flex min-w-0 flex-col gap-3 md:flex-row md:items-end md:justify-between">
+        <div className="min-w-0 space-y-2">
           <p className="text-xs uppercase tracking-[0.24em] text-primary">
             {locale === "bn" ? "পণ্য" : "Products"}
           </p>
-          <h1 className="text-4xl font-semibold tracking-tight">
+          <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
             {locale === "bn" ? "ক্যাটালগ ম্যানেজমেন্ট" : "Catalog management"}
           </h1>
         </div>

@@ -23,12 +23,12 @@ export default async function DashboardOrdersPage() {
   ).length;
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
-      <div className="space-y-2">
+    <div className="min-w-0 space-y-6 p-4 md:p-6">
+      <div className="min-w-0 space-y-2">
         <p className="text-xs uppercase tracking-[0.24em] text-primary">
           {locale === "bn" ? "অর্ডার" : "Orders"}
         </p>
-        <h1 className="text-4xl font-semibold tracking-tight">
+        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
           {locale === "bn" ? "অর্ডার ম্যানেজমেন্ট" : "Order management"}
         </h1>
       </div>

@@ -78,14 +78,14 @@ export function FavoritesPageClient({
   });
 
   return (
-    <div className="container mx-auto space-y-8 px-4 py-10">
+    <div className="container mx-auto min-w-0 space-y-8 px-4 py-10">
       <Card className="overflow-hidden border-border/70 bg-gradient-to-br from-background via-background to-muted/50">
         <CardContent className="space-y-5 p-8">
           <div className="space-y-3">
             <p className="text-xs uppercase tracking-[0.24em] text-primary">
               {locale === "bn" ? "পছন্দের তালিকা" : "Favorites"}
             </p>
-            <h1 className="text-4xl font-semibold tracking-tight">
+            <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
               {locale === "bn" ? "আমার পছন্দের পণ্য" : "Saved products"}
             </h1>
             <p className="max-w-3xl text-base leading-7 text-muted-foreground">

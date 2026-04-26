@@ -18,6 +18,7 @@ Roshal Organic is a bilingual Bangla/English ecommerce CMS built on Next.js 16, 
 - Inventory movement: confirmed order creation reserves stock in the database, and cancelled orders restore stock through the admin order workflow
 - Cart and checkout now reconcile persisted cart items against the live published catalog, reducing stale-quantity checkout failures for returning users
 - Storefront product discovery: URL-synced search, sticky category/price sidebar filters, mobile filter sheet, and sort controls on `/products`
+- Shared scroll chrome: the storefront shell, horizontal category/footer rails, and reusable data tables now use the project `ScrollArea` scrollbar treatment instead of raw native overflow
 - Customer order history now includes search, status filtering, and summary metrics on `/orders`
 - Account UX: `/profile` now includes order metrics, recent orders, quick links back to cart/order history/admin, and a working storefront logout control
 - Customer order pages now show itemized line items, delivery details, proof screenshots, payment verification timestamps, and admin/tracking notes instead of only top-level status badges
@@ -125,6 +126,7 @@ bun run scripts/seed-users.ts
 - Generic marketing pages now resolve their product sections from the live catalog using dashboard section settings, so custom/about/contact pages can reuse the same CMS product-block model instead of a hardcoded featured-only fallback.
 - The public catalog now merges dashboard-managed product overrides with the built-in Roshal defaults instead of treating the database as an all-or-nothing source, so the full fallback catalog remains visible until explicitly overridden or unpublished from the dashboard.
 - The default runtime theme now boots into a Roshal-organic dark preset with the storefront green as the primary accent across both the public shop and the dashboard, instead of falling back to the older neutral template colors.
+- The storefront shell and reusable data tables now route their scrolling through the shared `ScrollArea` component, and the dashboard user/organization avatars now render as letter fallbacks instead of template image placeholders.
 - The theme mode and theme-state storage keys are now Roshal-specific, so older template-era blue theme preferences no longer win by default in returning browsers.
 - Public storefront routes now bypass the auth proxy entirely, which removes unnecessary session lookups from `/`, `/about`, `/products`, and other public pages.
 - Public metadata is now aligned to Roshal Organic instead of the old Quadra identity, including sitemap and robots output for live marketing/product routes.

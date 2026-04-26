@@ -37,12 +37,12 @@ export default async function DashboardPagesPage({
   );
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
-      <div className="space-y-2">
+    <div className="min-w-0 space-y-6 p-4 md:p-6">
+      <div className="min-w-0 space-y-2">
         <p className="text-xs uppercase tracking-[0.24em] text-primary">
           {locale === "bn" ? "মার্কেটিং পেজ" : "Marketing pages"}
         </p>
-        <h1 className="text-4xl font-semibold tracking-tight">
+        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
           {locale === "bn" ? "কনটেন্ট ও লেআউট" : "Content and layout"}
         </h1>
       </div>
@@ -61,8 +61,11 @@ export default async function DashboardPagesPage({
             {locale === "bn" ? "নতুন মার্কেটিং পেজ" : "Create marketing page"}
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <form action={saveRoshalPage} className="grid gap-5 md:grid-cols-2">
+        <CardContent className="min-w-0">
+          <form
+            action={saveRoshalPage}
+            className="grid min-w-0 gap-5 md:grid-cols-2"
+          >
             <Field
               name="slug"
               label="Slug"

@@ -17,6 +17,10 @@ import {
   defaultRoshalSiteSettings,
 } from "@/lib/store-defaults";
 import { safeJsonParse } from "@/lib/store-format";
+import {
+  normalizeRoshalAssetPath,
+  normalizeRoshalProductMedia,
+} from "@/lib/store-media";
 import type {
   RoshalDashboardSnapshot,
   RoshalMarketingPage,
@@ -61,7 +65,7 @@ function mapPage(row: typeof roshalPages.$inferSelect): RoshalMarketingPage {
       bn: row.descriptionBn || "",
       en: row.descriptionEn || "",
     },
-    heroImage: row.heroImage || "",
+    heroImage: normalizeRoshalAssetPath(row.heroImage, ""),
     status: row.status,
     showInNavigation: Boolean(row.showInNavigation),
   };
@@ -114,8 +118,16 @@ function mapSection(
       en: row.ctaLabelEn || "",
     },
     ctaHref: row.ctaHref || "",
-    imageUrl: row.imageUrl || "",
-    items: safeJsonParse(row.itemsJson, []),
+    imageUrl: normalizeRoshalAssetPath(row.imageUrl, ""),
+    items: safeJsonParse(row.itemsJson, []).map(
+      (item: Record<string, unknown>) => ({
+        ...item,
+        imageUrl: normalizeRoshalAssetPath(
+          typeof item.imageUrl === "string" ? item.imageUrl : "",
+          "",
+        ),
+      }),
+    ),
     styles: safeJsonParse(row.stylesJson, {}),
   };
 }
@@ -142,7 +154,7 @@ function mergeRoshalSections(
 }
 
 function mapProduct(row: typeof roshalProducts.$inferSelect): RoshalProduct {
-  return {
+  return normalizeRoshalProductMedia({
     id: row.id,
     slug: row.slug,
     sku: row.sku,
@@ -178,7 +190,7 @@ function mapProduct(row: typeof roshalProducts.$inferSelect): RoshalProduct {
     isFeatured: Boolean(row.isFeatured),
     isPublished: Boolean(row.isPublished),
     sortOrder: row.sortOrder,
-  };
+  });
 }
 
 function mergeRoshalProducts(products: RoshalProduct[]) {
@@ -303,7 +315,12 @@ function mapPaymentSettings(
       bn: row.supportMessageBn,
       en: row.supportMessageEn,
     },
-    options: options.map(sanitizePaymentOption),
+    options: options
+      .map((option) => ({
+        ...option,
+        guideImageUrl: normalizeRoshalAssetPath(option.guideImageUrl, ""),
+      }))
+      .map(sanitizePaymentOption),
   };
 }
 

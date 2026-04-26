@@ -15,13 +15,13 @@ export default async function DashboardHomePage() {
   ]);
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
-      <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-        <div className="space-y-2">
+    <div className="min-w-0 space-y-6 p-4 md:p-6">
+      <div className="flex min-w-0 flex-col gap-3 md:flex-row md:items-end md:justify-between">
+        <div className="min-w-0 space-y-2">
           <p className="text-xs uppercase tracking-[0.24em] text-primary">
             {locale === "bn" ? "অ্যাডমিন ড্যাশবোর্ড" : "Admin dashboard"}
           </p>
-          <h1 className="text-4xl font-semibold tracking-tight">
+          <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
             {locale === "bn"
               ? "Roshal Organic পরিচালনা"
               : "Manage Roshal Organic"}
@@ -70,7 +70,7 @@ export default async function DashboardHomePage() {
 
       <div className="grid gap-6 xl:grid-cols-[1.1fr,0.9fr]">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
+          <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <CardTitle>
               {locale === "bn" ? "সাম্প্রতিক অর্ডার" : "Recent orders"}
             </CardTitle>
@@ -109,7 +109,7 @@ export default async function DashboardHomePage() {
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
+          <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <CardTitle>
               {locale === "bn" ? "ফিচারড পণ্য" : "Featured products"}
             </CardTitle>

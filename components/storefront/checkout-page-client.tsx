@@ -281,8 +281,8 @@ export function CheckoutPageClient({
   };
 
   return (
-    <div className="container mx-auto grid gap-8 px-4 py-10 lg:grid-cols-[1fr,24rem]">
-      <div className="space-y-8">
+    <div className="container mx-auto grid min-w-0 gap-8 px-4 py-10 lg:grid-cols-[1fr,24rem]">
+      <div className="min-w-0 space-y-8">
         {!isHydrated ? (
           <Alert>
             <AlertDescription>
@@ -509,7 +509,7 @@ export function CheckoutPageClient({
         </Card>
       </div>
 
-      <Card className="h-fit">
+      <Card className="h-fit lg:sticky lg:top-6">
         <CardHeader>
           <CardTitle>
             {locale === "bn" ? "অর্ডার সারাংশ" : "Order summary"}

@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { SearchCommand } from "@/components/dashboard/search-command";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -29,7 +29,6 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
 import { getRouteName } from "@/lib/route-mapping";
-import { resolveImageUrl } from "@/lib/storage-utils";
 
 interface BreadcrumbItemData {
   title: string;
@@ -102,11 +101,9 @@ function AvatarDropdown({
           className="h-8 w-8 rounded-full p-0"
         >
           <Avatar className="h-8 w-8 cursor-pointer transition-opacity hover:opacity-80">
-            <AvatarImage
-              src={resolveImageUrl(user.avatar || "/shadcn.png")}
-              alt={user.name}
-            />
-            <AvatarFallback>{fallback}</AvatarFallback>
+            <AvatarFallback className="bg-primary/10 font-medium text-primary">
+              {fallback}
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -118,11 +115,9 @@ function AvatarDropdown({
         <DropdownMenuLabel className="p-0 font-normal">
           <div className="flex items-center gap-2 px-1 py-1.5">
             <Avatar className="h-8 w-8">
-              <AvatarImage
-                src={resolveImageUrl(user.avatar || "/shadcn.png")}
-                alt={user.name}
-              />
-              <AvatarFallback>{fallback}</AvatarFallback>
+              <AvatarFallback className="bg-primary/10 font-medium text-primary">
+                {fallback}
+              </AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-medium">{user.name}</span>
@@ -353,7 +348,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
                 user={{
                   name: "Guest",
                   email: "guest@example.com",
-                  avatar: "/shadcn.png",
+                  avatar: undefined,
                 }}
               />
             )}

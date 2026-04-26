@@ -1,4 +1,5 @@
 import { localizedValue } from "@/lib/store-locale";
+import { getVegetableImagePath } from "@/lib/store-media";
 import type { RoshalProduct } from "@/lib/store-types";
 
 const vegetableNames: { bn: string; en: string }[] = [
@@ -106,8 +107,8 @@ export const vegetableProducts: RoshalProduct[] = vegetableNames.map(
       compareAtPrice: compareAtPrice,
       inventory: inventory,
       badge: index < 12 ? "fresh" : index % 9 === 0 ? "seasonal" : null,
-      heroImage: `/vegetables/vegetable-${id}.jpg`,
-      gallery: [`/vegetables/vegetable-${id}.jpg`],
+      heroImage: getVegetableImagePath(id),
+      gallery: [getVegetableImagePath(id)],
       features: [
         localizedValue("১০০% জৈব", "100% organic"),
         localizedValue("কীটনাশকমুক্ত", "Pesticide-free"),

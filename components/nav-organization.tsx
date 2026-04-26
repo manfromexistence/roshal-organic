@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,7 +14,6 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { resolveImageUrl } from "@/lib/storage-utils";
 
 export function NavOrganization({
   organization,
@@ -22,7 +21,7 @@ export function NavOrganization({
   organization: {
     name: string;
     email: string;
-    avatar: string;
+    avatar?: string;
   };
 }) {
   const { isMobile } = useSidebar();
@@ -38,11 +37,7 @@ export function NavOrganization({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage
-                  src={resolveImageUrl(organization.avatar)}
-                  alt={organization.name}
-                />
-                <AvatarFallback className="rounded-lg">
+                <AvatarFallback className="rounded-lg bg-primary/10 font-medium text-primary">
                   {fallback}
                 </AvatarFallback>
               </Avatar>
@@ -65,11 +60,7 @@ export function NavOrganization({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-3 px-2 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage
-                    src={resolveImageUrl(organization.avatar)}
-                    alt={organization.name}
-                  />
-                  <AvatarFallback className="rounded-lg">
+                  <AvatarFallback className="rounded-lg bg-primary/10 font-medium text-primary">
                     {fallback}
                   </AvatarFallback>
                 </Avatar>

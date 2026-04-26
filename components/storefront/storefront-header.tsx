@@ -398,18 +398,21 @@ export function StorefrontHeader({
       </div>
 
       <div className="min-w-full border-b">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center gap-6 overflow-x-auto py-3">
+        <div className="container mx-auto overflow-hidden px-4">
+          <nav
+            aria-label={locale === "bn" ? "দ্রুত ক্যাটাগরি" : "Quick categories"}
+            className="flex flex-wrap items-center gap-x-5 gap-y-2 py-3 md:flex-nowrap md:gap-x-6 md:overflow-hidden"
+          >
             {categories.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="whitespace-nowrap text-sm text-muted-foreground transition-colors hover:text-primary"
+                className="shrink-0 whitespace-nowrap text-sm text-muted-foreground transition-colors hover:text-primary"
               >
                 {link.label}
               </Link>
             ))}
-          </div>
+          </nav>
         </div>
       </div>
     </header>

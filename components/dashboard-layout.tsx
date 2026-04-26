@@ -20,7 +20,7 @@ interface DashboardLayoutProps {
   organization?: {
     name: string;
     email: string;
-    avatar: string;
+    avatar?: string;
   };
 }
 
@@ -76,19 +76,19 @@ export function DashboardLayout({
             ? {
                 name: user.name,
                 email: user.email,
-                avatar: user.avatar || "/shadcn.png",
+                avatar: user.avatar,
               }
             : {
                 name: "Guest",
                 email: "guest@example.com",
-                avatar: "/shadcn.png",
+                avatar: undefined,
               }
         }
         organization={
           organization || {
             name: "Roshal Organic",
             email: "info@roshalorganic.com",
-            avatar: "/logo.png",
+            avatar: undefined,
           }
         }
       />

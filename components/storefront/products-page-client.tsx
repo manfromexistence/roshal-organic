@@ -505,7 +505,7 @@ export function ProductsPageClient({
   ].filter(Boolean) as string[];
 
   return (
-    <div className="container mx-auto px-4 py-10">
+    <div className="container mx-auto min-w-0 px-4 py-10">
       <div className="grid gap-8 md:grid-cols-[17rem,minmax(0,1fr)] xl:grid-cols-[18rem,minmax(0,1fr)]">
         <aside className="hidden self-start md:block">
           <div className="sticky top-24 space-y-6 rounded-3xl border border-border/70 bg-background/80 p-5 backdrop-blur supports-[backdrop-filter]:bg-background/65">
@@ -537,14 +537,14 @@ export function ProductsPageClient({
           </div>
         </aside>
 
-        <div className="space-y-6">
+        <div className="min-w-0 space-y-6">
           <div className="space-y-4">
             <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
               <div className="space-y-3">
                 <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
                   {locale === "bn" ? "রোশাল অর্গানিক" : "Roshal Organic"}
                 </p>
-                <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
+                <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
                   {locale === "bn"
                     ? "সম্পূর্ণ পণ্য তালিকা"
                     : "Complete product catalog"}

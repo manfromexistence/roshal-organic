@@ -60,13 +60,13 @@ export function CartPageClient({
   );
 
   return (
-    <div className="container mx-auto grid gap-8 px-4 py-10 lg:grid-cols-[1fr,22rem]">
-      <div className="space-y-4">
-        <div className="space-y-2">
+    <div className="container mx-auto grid min-w-0 gap-8 px-4 py-10 lg:grid-cols-[1fr,22rem]">
+      <div className="min-w-0 space-y-4">
+        <div className="min-w-0 space-y-2">
           <p className="text-xs uppercase tracking-[0.24em] text-primary">
             {locale === "bn" ? "কার্ট" : "Cart"}
           </p>
-          <h1 className="text-4xl font-semibold tracking-tight">
+          <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
             {locale === "bn" ? "আপনার নির্বাচিত পণ্য" : "Your selected products"}
           </h1>
         </div>
@@ -162,7 +162,7 @@ export function CartPageClient({
         )}
       </div>
 
-      <Card className="h-fit">
+      <Card className="h-fit lg:sticky lg:top-6">
         <CardHeader className="pb-0">
           <CardTitle>
             {locale === "bn" ? "অর্ডার সারাংশ" : "Order summary"}

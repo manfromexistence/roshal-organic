@@ -9,3 +9,19 @@ Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
 Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
 ⨯ The requested resource isn't a valid image for /vegetables/vegetable-76.jpg received null
 ⨯ The requested resource isn't a valid image for /vegetables/vegetable-76.jpg received null
+⨯ The requested resource isn't a valid image for /vegetables/vegetable-76.jpg received null
+⨯ The requested resource isn't a valid image for /vegetables/vegetable-76.jpg received null
+[browser] Image with src "/vegetables/vegetable-75.jpg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading (file://F:/hexed/roshal-organic/.next/dev/static/chunks/node_modules_0buqc87._.js:4782:48)
+[browser] Image with src "/vegetables/vegetable-73.jpg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading (file://F:/hexed/roshal-organic/.next/dev/static/chunks/node_modules_0buqc87._.js:4782:48)
+⨯ The requested resource isn't a valid image for /vegetables/vegetable-76.jpg received null
+[browser] Image with src "/vegetables/vegetable-75.jpg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/vegetables/vegetable-73.jpg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+⨯ The requested resource isn't a valid image for /vegetables/vegetable-76.jpg received null
+⨯ The requested resource isn't a valid image for /vegetables/vegetable-76.jpg received null
+⨯ The requested resource isn't a valid image for /vegetables/vegetable-76.jpg received null
+⨯ The requested resource isn't a valid image for /vegetables/vegetable-76.jpg received null
+⨯ The requested resource isn't a valid image for /vegetables/vegetable-76.jpg received null
