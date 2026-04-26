@@ -218,6 +218,38 @@ function mapOrder(row: typeof roshalOrders.$inferSelect): RoshalOrder {
   };
 }
 
+function sanitizePaymentOption(
+  option: RoshalPaymentSettings["options"][number],
+): RoshalPaymentSettings["options"][number] {
+  const key = normalizePaymentMethod(option.key);
+
+  if (key !== "upay") {
+    return {
+      ...option,
+      key,
+    };
+  }
+
+  return {
+    ...option,
+    key,
+    label: {
+      bn: "উপায়",
+      en: option.label.en || "Upay",
+    },
+    merchantLabel: {
+      bn: "উপায় গেটওয়ে",
+      en: option.merchantLabel.en || "Upay gateway",
+    },
+    instructions: {
+      bn: "উপায় গেটওয়ে চালু থাকলে চেকআউটে aamarPay রিডাইরেক্ট হবে। প্রয়োজন হলে অ্যাডমিন ড্যাশবোর্ড থেকে এটিকে ম্যানুয়াল মোডে পরিবর্তন করতে পারবেন।",
+      en:
+        option.instructions.en ||
+        "When Upay gateway checkout is enabled, customers will be redirected through aamarPay. Admins can switch this option to manual mode from the dashboard if needed.",
+    },
+  };
+}
+
 function mapPaymentSettings(
   row: typeof roshalPaymentSettings.$inferSelect,
 ): RoshalPaymentSettings {
@@ -236,10 +268,7 @@ function mapPaymentSettings(
       bn: row.supportMessageBn,
       en: row.supportMessageEn,
     },
-    options: options.map((option) => ({
-      ...option,
-      key: normalizePaymentMethod(option.key),
-    })),
+    options: options.map(sanitizePaymentOption),
   };
 }
 
@@ -285,9 +314,17 @@ export async function getRoshalPaymentSettings() {
     const [settings] = await db.select().from(roshalPaymentSettings).limit(1);
     return settings
       ? mapPaymentSettings(settings)
-      : defaultRoshalPaymentSettings;
+      : {
+          ...defaultRoshalPaymentSettings,
+          options: defaultRoshalPaymentSettings.options.map(
+            sanitizePaymentOption,
+          ),
+        };
   } catch {
-    return defaultRoshalPaymentSettings;
+    return {
+      ...defaultRoshalPaymentSettings,
+      options: defaultRoshalPaymentSettings.options.map(sanitizePaymentOption),
+    };
   }
 }
 

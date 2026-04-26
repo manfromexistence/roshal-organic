@@ -4,6 +4,7 @@ import { getLocalizedValue } from "@/lib/roshal/locale";
 import type {
   RoshalLocale,
   RoshalMarketingPage,
+  RoshalPaymentOption,
   RoshalSiteSettings,
 } from "@/lib/roshal/types";
 
@@ -34,12 +35,19 @@ const partnerLogos = [
 export function StorefrontFooter({
   locale,
   pages,
+  paymentOptions: _paymentOptions,
   siteSettings,
 }: {
   locale: RoshalLocale;
   pages: RoshalMarketingPage[];
+  paymentOptions: RoshalPaymentOption[];
   siteSettings: RoshalSiteSettings;
 }) {
+  const whatsappDigits = siteSettings.whatsappPhone.replace(/\D/g, "");
+  const whatsappHref = whatsappDigits
+    ? `https://wa.me/${whatsappDigits}`
+    : `tel:${siteSettings.contactPhone}`;
+
   return (
     <footer className="border-t bg-muted/50">
       <div className="container mx-auto px-4 py-8">
@@ -114,18 +122,48 @@ export function StorefrontFooter({
 
           <div>
             <h3 className="mb-4 font-semibold text-foreground">
-              {locale === "bn" ? "পেমেন্ট অপশন" : "Payment Options"}
+              {locale === "bn" ? "কাস্টমার কেয়ার" : "Customer Care"}
             </h3>
-            <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
-              {["Card", "bKash", "Nagad", "Rocket", "Upay"].map((option) => (
-                <span
-                  key={option}
-                  className="rounded-full border border-border bg-background px-3 py-1"
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li>
+                <Link
+                  href={`tel:${siteSettings.contactPhone}`}
+                  className="transition-colors hover:text-primary"
                 >
-                  {option}
-                </span>
-              ))}
-            </div>
+                  {locale === "bn"
+                    ? `অর্ডার সহায়তা: ${siteSettings.contactPhone}`
+                    : `Order support: ${siteSettings.contactPhone}`}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={`mailto:${siteSettings.contactEmail}`}
+                  className="transition-colors hover:text-primary"
+                >
+                  {locale === "bn"
+                    ? "ইমেইলে যোগাযোগ করুন"
+                    : "Email customer support"}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={whatsappHref}
+                  className="transition-colors hover:text-primary"
+                >
+                  {locale === "bn"
+                    ? "হোয়াটসঅ্যাপে অর্ডার আপডেট নিন"
+                    : "Get order updates on WhatsApp"}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={siteSettings.primaryCtaHref}
+                  className="transition-colors hover:text-primary"
+                >
+                  {getLocalizedValue(locale, siteSettings.primaryCtaLabel)}
+                </Link>
+              </li>
+            </ul>
           </div>
         </div>
 
@@ -152,7 +190,7 @@ export function StorefrontFooter({
         <div className="mt-8 border-t pt-8 text-center text-sm text-muted-foreground">
           <p>
             © 2026 {siteSettings.brandName}.{" "}
-            {locale === "bn" ? "সর্বস্বত্ব সংরক্ষিত।" : "All rights reserved."}
+            {locale === "bn" ? "সর্বস্ব সংরক্ষিত।" : "All rights reserved."}
           </p>
         </div>
       </div>

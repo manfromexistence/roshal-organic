@@ -11,6 +11,7 @@ import { StorefrontHeader } from "@/components/roshal/storefront/storefront-head
 import { getRoshalSessionUser } from "@/lib/roshal/auth";
 import {
   getRoshalNavigationPages,
+  getRoshalPaymentSettings,
   getRoshalProducts,
   getRoshalSiteSettings,
 } from "@/lib/roshal/content";
@@ -52,13 +53,14 @@ export default async function MarketingLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [locale, pages, siteSettings, sessionUser, products] =
+  const [locale, pages, siteSettings, sessionUser, products, paymentSettings] =
     await Promise.all([
       getRoshalLocale(),
       getRoshalNavigationPages(),
       getRoshalSiteSettings(),
       getRoshalSessionUser(),
       getRoshalProducts(),
+      getRoshalPaymentSettings(),
     ]);
 
   const categories = Array.from(
@@ -86,6 +88,7 @@ export default async function MarketingLayout({
         sessionUser={
           sessionUser
             ? {
+                id: sessionUser.id,
                 name: sessionUser.name,
                 email: sessionUser.email,
                 role: sessionUser.role,
@@ -99,6 +102,7 @@ export default async function MarketingLayout({
       <StorefrontFooter
         locale={locale}
         pages={pages}
+        paymentOptions={paymentSettings.options}
         siteSettings={siteSettings}
       />
       <StorefrontBottomNavigation locale={locale} />

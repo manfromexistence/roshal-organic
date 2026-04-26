@@ -1,11 +1,18 @@
 "use client";
 
 import { Search } from "lucide-react";
-import { useDeferredValue, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  startTransition,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { RoshalProductCard } from "@/components/roshal/storefront/product-card";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -22,32 +29,132 @@ function normalizeSearchValue(value: string) {
   return value.trim().toLocaleLowerCase();
 }
 
+function normalizeSortKey(value: string | null | undefined): ProductSortKey {
+  return value === "price-low" || value === "price-high" || value === "name"
+    ? value
+    : "featured";
+}
+
+function resolveCategoryKey(value: string, availableKeys: Set<string>) {
+  return value !== "all" && availableKeys.has(value) ? value : "all";
+}
+
 export function ProductsPageClient({
   locale,
   products,
+  initialSearchQuery,
+  initialCategory,
+  initialSortKey,
 }: {
   locale: RoshalLocale;
   products: RoshalProduct[];
+  initialSearchQuery: string;
+  initialCategory: string;
+  initialSortKey: ProductSortKey;
 }) {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState("all");
-  const [sortKey, setSortKey] = useState<ProductSortKey>("featured");
-  const deferredSearchQuery = useDeferredValue(searchQuery);
-  const normalizedQuery = normalizeSearchValue(deferredSearchQuery);
-  const categoryOptions = [
-    {
-      key: "all",
-      label: locale === "bn" ? "সব ক্যাটাগরি" : "All categories",
-    },
-    ...Array.from(
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const searchParamsString = searchParams.toString();
+  const parsedSearchParams = useMemo(
+    () => new URLSearchParams(searchParamsString),
+    [searchParamsString],
+  );
+  const categoryMap = useMemo(
+    () =>
       new Map(
         products.map((product) => [
           product.categoryKey,
           getLocalizedValue(locale, product.categoryLabel),
         ]),
       ),
-    ).map(([key, label]) => ({ key, label })),
+    [locale, products],
+  );
+  const availableCategoryKeys = useMemo(
+    () => new Set(categoryMap.keys()),
+    [categoryMap],
+  );
+  const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
+  const [activeCategory, setActiveCategory] = useState(
+    resolveCategoryKey(initialCategory, availableCategoryKeys),
+  );
+  const [sortKey, setSortKey] = useState<ProductSortKey>(initialSortKey);
+  const deferredSearchQuery = useDeferredValue(searchQuery);
+  const normalizedQuery = normalizeSearchValue(deferredSearchQuery);
+  const trimmedSearchQuery = deferredSearchQuery.trim();
+  const categoryOptions = [
+    {
+      key: "all",
+      label: locale === "bn" ? "সব ক্যাটাগরি" : "All categories",
+    },
+    ...Array.from(categoryMap.entries()).map(([key, label]) => ({
+      key,
+      label,
+    })),
   ];
+
+  useEffect(() => {
+    const nextQuery = parsedSearchParams.get("q") || "";
+    const nextCategory = resolveCategoryKey(
+      parsedSearchParams.get("category") || "all",
+      availableCategoryKeys,
+    );
+    const nextSortKey = normalizeSortKey(parsedSearchParams.get("sort"));
+
+    setSearchQuery((current) => (current === nextQuery ? current : nextQuery));
+    setActiveCategory((current) =>
+      current === nextCategory ? current : nextCategory,
+    );
+    setSortKey((current) => (current === nextSortKey ? current : nextSortKey));
+  }, [availableCategoryKeys, parsedSearchParams]);
+
+  useEffect(() => {
+    const nextParams = new URLSearchParams(searchParamsString);
+
+    if (trimmedSearchQuery) {
+      nextParams.set("q", trimmedSearchQuery);
+    } else {
+      nextParams.delete("q");
+    }
+
+    if (activeCategory !== "all") {
+      nextParams.set("category", activeCategory);
+    } else {
+      nextParams.delete("category");
+    }
+
+    if (sortKey !== "featured") {
+      nextParams.set("sort", sortKey);
+    } else {
+      nextParams.delete("sort");
+    }
+
+    const nextQueryString = nextParams.toString();
+
+    if (searchParamsString === nextQueryString) {
+      return;
+    }
+
+    startTransition(() => {
+      router.replace(
+        nextQueryString ? `${pathname}?${nextQueryString}` : pathname,
+        {
+          scroll: false,
+        },
+      );
+    });
+  }, [
+    activeCategory,
+    pathname,
+    router,
+    searchParamsString,
+    sortKey,
+    trimmedSearchQuery,
+  ]);
+
+  const activeCategoryLabel =
+    categoryOptions.find((category) => category.key === activeCategory)
+      ?.label || categoryOptions[0].label;
 
   const filteredProducts = products
     .filter((product) => {
@@ -132,7 +239,7 @@ export function ProductsPageClient({
             </div>
             <Select
               value={sortKey}
-              onValueChange={(value) => setSortKey(value as ProductSortKey)}
+              onValueChange={(value) => setSortKey(normalizeSortKey(value))}
             >
               <SelectTrigger>
                 <SelectValue />
@@ -175,17 +282,13 @@ export function ProductsPageClient({
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-muted-foreground">
           {locale === "bn"
-            ? `${filteredProducts.length}টি পণ্য পাওয়া গেছে`
+            ? `${filteredProducts.length}টি পণ্য পাওয়া গেছে`
             : `${filteredProducts.length} products found`}
         </p>
         <p className="text-sm text-muted-foreground">
           {locale === "bn"
-            ? activeCategory === "all"
-              ? "সব ক্যাটাগরি"
-              : "নির্বাচিত ক্যাটাগরি"
-            : activeCategory === "all"
-              ? "Showing all categories"
-              : "Filtered by category"}
+            ? `ক্যাটাগরি: ${activeCategoryLabel}`
+            : `Category: ${activeCategoryLabel}`}
         </p>
       </div>
 
@@ -193,7 +296,9 @@ export function ProductsPageClient({
         <Card className="border-dashed border-border/70">
           <CardContent className="space-y-3 p-8 text-center">
             <h2 className="text-2xl font-semibold tracking-tight">
-              {locale === "bn" ? "মিল পাওয়া যায়নি" : "No matching products found"}
+              {locale === "bn"
+                ? "মিলে এমন কোনো পণ্য পাওয়া যায়নি"
+                : "No matching products found"}
             </h2>
             <p className="text-sm leading-6 text-muted-foreground">
               {locale === "bn"
@@ -214,7 +319,7 @@ export function ProductsPageClient({
           </CardContent>
         </Card>
       ) : (
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {filteredProducts.map((product) => (
             <RoshalProductCard
               key={product.id}

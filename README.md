@@ -24,6 +24,7 @@ Roshal Organic is a bilingual Bangla/English ecommerce CMS built on Next.js 16, 
 - Shared app feedback is now mounted globally with the Roshal toaster, and checkout/login flows now show in-page errors instead of relying on raw browser alerts
 - Dashboard marketing control center: `/dashboard/pages` now includes a React Query + Zustand workspace for the live homepage, with DB-backed section visibility toggles and direct links into the full page editor
 - Login UX: `/login` now behaves like a storefront customer-account entry point with checkout/order-tracking messaging instead of a generic admin-style auth form
+- Dashboard command search now searches the active Roshal admin workspace for products, orders, users, and marketing pages instead of the legacy EDMS entities
 - SEO surface: dynamic metadata for home, products, and CMS pages plus Roshal-branded sitemap, robots, manifest, and OG image output
 
 ## What The Dashboard Controls
@@ -127,4 +128,5 @@ bun run scripts/seed-users.ts
 - The Roshal dashboard now blocks reserved storefront slugs (`collections`, `payment-return`, etc.), duplicate marketing-page slugs, duplicate section keys, duplicate product slugs/SKUs, and negative inventory/pricing with clear inline errors instead of raw database failures.
 - A new `.env.example` now documents the required Roshal auth, Turso, upload, and AamarPay gateway keys so the app can be configured for local or production deployment without guessing hidden env names.
 - The login page now frames auth as a customer ecommerce account flow, with responsive trust/checkout messaging and clearer separation between customer sign-up and admin-assigned access.
+- Admin login now uses the Better Auth client flow with a full redirect after success, so `/dashboard` and other protected admin routes see the fresh session cookie immediately after sign-in.
 - Real production gateway credentials and the final production domain still need to be provisioned per environment before go-live.

@@ -1,10 +1,12 @@
 "use client";
 
-import { Home, Search, ShoppingBag, User } from "lucide-react";
+import { Heart, Home, Search, ShoppingBag, User } from "lucide-react";
 import Link from "next/link";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { authClient } from "@/lib/auth-client";
 import type { RoshalLocale } from "@/lib/roshal/types";
 import { useCartStore } from "@/store/cart-store";
+import { useWishlistStore } from "@/store/wishlist-store";
 
 export function StorefrontBottomNavigation({
   locale,
@@ -12,10 +14,28 @@ export function StorefrontBottomNavigation({
   locale: RoshalLocale;
 }) {
   const items = useCartStore((state) => state.items);
+  const { data: session } = authClient.useSession();
+  const ownerKey = session?.user?.id || "guest";
+  const [isHydrated, setIsHydrated] = useState(false);
+  const syncOwner = useWishlistStore((state) => state.syncOwner);
+  const favoriteIds = useWishlistStore(
+    (state) => state.favoritesByOwner[ownerKey],
+  );
+  const favoriteCount = isHydrated ? (favoriteIds?.length ?? 0) : 0;
   const cartCount = useMemo(
     () => items.reduce((sum, item) => sum + item.quantity, 0),
     [items],
   );
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (session?.user?.id) {
+      syncOwner(session.user.id);
+    }
+  }, [session?.user?.id, syncOwner]);
 
   const links = [
     {
@@ -27,6 +47,12 @@ export function StorefrontBottomNavigation({
       href: "/products",
       label: locale === "bn" ? "খুঁজুন" : "Search",
       icon: Search,
+    },
+    {
+      href: "/favorites",
+      label: locale === "bn" ? "পছন্দ" : "Favorites",
+      icon: Heart,
+      badge: favoriteCount,
     },
     {
       href: "/cart",

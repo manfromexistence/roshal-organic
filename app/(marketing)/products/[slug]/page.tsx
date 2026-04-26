@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { AddToCartButton } from "@/components/roshal/storefront/add-to-cart-button";
+import { FavoriteToggleButton } from "@/components/roshal/storefront/favorite-toggle-button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { getRoshalProductBySlug } from "@/lib/roshal/content";
@@ -96,11 +97,19 @@ export default async function ProductDetailsPage({
               </p>
               <p className="text-lg font-semibold">{product.inventory}</p>
             </div>
-            <AddToCartButton
-              product={product}
-              locale={locale}
-              className="w-full sm:w-auto"
-            />
+            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+              <FavoriteToggleButton
+                productId={product.id}
+                locale={locale}
+                showLabel
+                className="w-full sm:w-auto"
+              />
+              <AddToCartButton
+                product={product}
+                locale={locale}
+                className="w-full sm:w-auto"
+              />
+            </div>
           </CardContent>
         </Card>
       </div>

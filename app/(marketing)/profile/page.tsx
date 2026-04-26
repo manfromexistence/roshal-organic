@@ -86,6 +86,11 @@ export default async function ProfilePage() {
             <Button asChild variant="outline">
               <Link href="/cart">{locale === "bn" ? "কার্ট" : "Cart"}</Link>
             </Button>
+            <Button asChild variant="outline">
+              <Link href="/favorites">
+                {locale === "bn" ? "পছন্দের তালিকা" : "Favorites"}
+              </Link>
+            </Button>
             {sessionUser.role === "admin" ? (
               <Button asChild>
                 <Link href="/dashboard">

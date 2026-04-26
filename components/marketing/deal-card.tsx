@@ -34,7 +34,7 @@ export function DealCard({
   language,
 }: DealCardProps) {
   return (
-    <Card className="overflow-hidden pb-2 transition-shadow hover:shadow-lg">
+    <Card className="overflow-hidden transition-shadow hover:shadow-lg">
       <div className="relative h-48 md:h-64">
         <Image
           src={image}
@@ -51,7 +51,9 @@ export function DealCard({
         </Badge>
       </div>
       <CardHeader className="px-4 pt-3 pb-2">
-        <CardTitle className="text-xl md:text-2xl">{title[language]}</CardTitle>
+        <CardTitle className="text-xl md:text-2xl">
+          {title[language]}
+        </CardTitle>
         <CardDescription className="text-base">
           {description[language]}
         </CardDescription>

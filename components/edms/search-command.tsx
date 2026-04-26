@@ -1,13 +1,12 @@
 "use client";
 
 import {
-  BellRing,
   FileStack,
-  FolderKanban,
   LayoutGrid,
   Loader2,
-  Send,
-  Workflow,
+  Package,
+  ShoppingCart,
+  Users,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -28,33 +27,25 @@ interface SearchResult {
   id: string;
   title: string;
   subtitle: string;
-  category:
-    | "page"
-    | "project"
-    | "document"
-    | "workflow"
-    | "transmittal"
-    | "notification";
+  category: "page" | "product" | "order" | "user" | "marketing-page";
   href: string;
   meta: string;
 }
 
 const CATEGORY_ICONS = {
   page: LayoutGrid,
-  project: FolderKanban,
-  document: FileStack,
-  workflow: Workflow,
-  transmittal: Send,
-  notification: BellRing,
+  product: Package,
+  order: ShoppingCart,
+  user: Users,
+  "marketing-page": FileStack,
 } as const;
 
 const CATEGORY_LABELS = {
   page: "Pages",
-  project: "Projects",
-  document: "Documents",
-  workflow: "Workflows",
-  transmittal: "Transmittals",
-  notification: "Notifications",
+  product: "Products",
+  order: "Orders",
+  user: "Users",
+  "marketing-page": "Marketing pages",
 } as const;
 
 export function SearchCommand({
@@ -179,12 +170,12 @@ export function SearchCommand({
     <CommandDialog
       open={open}
       onOpenChange={onOpenChange}
-      title="Search Quadra EDMS"
-      description="Search pages, registers, and live project records."
+      title="Search Roshal admin"
+      description="Search dashboard pages, products, orders, users, and marketing content."
       className="sm:max-w-2xl"
     >
       <CommandInput
-        placeholder="Search pages, documents, workflows, transmittals..."
+        placeholder="Search products, orders, users, and pages..."
         value={query}
         onValueChange={setQuery}
       />
@@ -195,7 +186,7 @@ export function SearchCommand({
         <CommandList className="max-h-none overflow-visible">
           {query.trim().length === 0 ? (
             <CommandEmpty>
-              Start typing to search across pages and live EDMS records.
+              Start typing to search across the Roshal admin workspace.
             </CommandEmpty>
           ) : isLoading && results.length === 0 ? (
             <div className="flex items-center justify-center py-6">

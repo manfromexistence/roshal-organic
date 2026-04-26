@@ -1,10 +1,12 @@
 import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { AddToCartButton } from "@/components/roshal/storefront/add-to-cart-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { ImageCard, ImageCardContent } from "@/components/ui/image-card";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
+import type { RoshalProduct } from "@/lib/roshal/types";
 
 interface FreshVegetablesProps {
   language: "en" | "bn";
@@ -28,6 +30,7 @@ interface GridProduct {
   originalPrice?: number | string;
   rating?: string | number;
   reviews?: number;
+  cartProduct?: RoshalProduct;
 }
 
 const vegetableImages: GridProduct[] = Array.from({ length: 75 }, (_, i) => ({
@@ -81,8 +84,8 @@ export function FreshVegetables({
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {displayProducts.map((product, index) => (
             <ScrollReveal key={product.id} delay={index * 0.02}>
-              <Card className="group overflow-hidden transition-shadow duration-300 hover:shadow-lg">
-                <CardContent className="p-0">
+              <ImageCard className="group overflow-hidden transition-shadow duration-300 hover:shadow-lg">
+                <ImageCardContent>
                   <div className="relative aspect-square overflow-hidden">
                     <Image
                       src={product.image}
@@ -128,15 +131,27 @@ export function FreshVegetables({
                         ) : null}
                       </div>
                     </div>
-                    <Link href={product.href || "/products"}>
-                      <Button size="sm" className="w-full" variant="secondary">
-                        <ShoppingCart className="mr-2 h-4 w-4" />
-                        {language === "bn" ? "কার্টে যোগ করুন" : "Add to Cart"}
-                      </Button>
-                    </Link>
+                    {product.cartProduct ? (
+                      <AddToCartButton
+                        product={product.cartProduct}
+                        locale={language}
+                        className="w-full"
+                      />
+                    ) : (
+                      <Link href={product.href || "/products"}>
+                        <Button
+                          size="sm"
+                          className="w-full"
+                          variant="secondary"
+                        >
+                          <ShoppingCart className="mr-2 h-4 w-4" />
+                          {language === "bn" ? "কার্টে যোগ করুন" : "Add to Cart"}
+                        </Button>
+                      </Link>
+                    )}
                   </div>
-                </CardContent>
-              </Card>
+                </ImageCardContent>
+              </ImageCard>
             </ScrollReveal>
           ))}
         </div>

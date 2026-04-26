@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Heart,
   LayoutDashboard,
   Menu,
   Package,
@@ -10,7 +11,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { LocaleSwitcher } from "@/components/roshal/storefront/locale-switcher";
 import { StorefrontThemeToggle } from "@/components/roshal/storefront/theme-toggle";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -33,6 +34,7 @@ import type {
   RoshalSiteSettings,
 } from "@/lib/roshal/types";
 import { useCartStore } from "@/store/cart-store";
+import { useWishlistStore } from "@/store/wishlist-store";
 
 interface StorefrontCategoryLink {
   href: string;
@@ -50,6 +52,7 @@ export function StorefrontHeader({
   pages?: RoshalMarketingPage[];
   siteSettings: RoshalSiteSettings;
   sessionUser: {
+    id: string;
     name: string;
     email: string;
     role: RoshalRole;
@@ -59,7 +62,16 @@ export function StorefrontHeader({
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
   const items = useCartStore((state) => state.items);
+  const favoriteIds = useWishlistStore(
+    (state) => state.favoritesByOwner[sessionUser?.id || "guest"],
+  );
+  const favoriteCount = isHydrated ? (favoriteIds?.length ?? 0) : 0;
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   const cartCount = useMemo(
     () => items.reduce((sum, item) => sum + item.quantity, 0),
@@ -133,9 +145,6 @@ export function StorefrontHeader({
               <span className="block truncate text-base font-bold text-foreground md:text-lg">
                 {siteSettings.brandName}
               </span>
-              <span className="hidden text-xs text-muted-foreground md:block">
-                {getLocalizedValue(locale, siteSettings.tagline)}
-              </span>
             </div>
           </Link>
 
@@ -156,6 +165,28 @@ export function StorefrontHeader({
               <StorefrontThemeToggle />
             </div>
             <LocaleSwitcher locale={locale} />
+
+            <Button
+              asChild
+              variant="ghost"
+              size="icon"
+              className="relative hidden sm:inline-flex"
+            >
+              <Link
+                href="/favorites"
+                aria-label={locale === "bn" ? "পছন্দের তালিকা" : "Favorites"}
+              >
+                <Heart className="size-5" />
+                <span className="sr-only">
+                  {locale === "bn" ? "পছন্দের তালিকা" : "Favorites"}
+                </span>
+                {favoriteCount > 0 ? (
+                  <span className="absolute -top-1 -right-1 inline-flex min-w-5 items-center justify-center rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-semibold text-primary-foreground">
+                    {favoriteCount}
+                  </span>
+                ) : null}
+              </Link>
+            </Button>
 
             <Button
               asChild
@@ -212,6 +243,12 @@ export function StorefrontHeader({
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
+                    <Link href="/favorites" className="cursor-pointer">
+                      <Heart className="mr-2 h-4 w-4" />
+                      {locale === "bn" ? "পছন্দের তালিকা" : "Favorites"}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
                     <Link href="/orders" className="cursor-pointer">
                       <Package className="mr-2 h-4 w-4" />
                       {locale === "bn" ? "অর্ডার" : "Orders"}
@@ -240,7 +277,7 @@ export function StorefrontHeader({
                     {locale === "bn" ? "লগইন" : "Login"}
                   </Button>
                 </Link>
-                <Link href="/login">
+                <Link href="/login?mode=signup">
                   <Button size="sm">
                     {locale === "bn" ? "সাইন আপ" : "Sign Up"}
                   </Button>
@@ -278,6 +315,17 @@ export function StorefrontHeader({
 
                   {sessionUser ? (
                     <div className="flex flex-col gap-2">
+                      <Link
+                        href="/favorites"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start"
+                        >
+                          {locale === "bn" ? "পছন্দের তালিকা" : "Favorites"}
+                        </Button>
+                      </Link>
                       <Link
                         href="/orders"
                         onClick={() => setMobileMenuOpen(false)}
@@ -336,7 +384,7 @@ export function StorefrontHeader({
                         </Button>
                       </Link>
                       <Link
-                        href="/login"
+                        href="/login?mode=signup"
                         onClick={() => setMobileMenuOpen(false)}
                       >
                         <Button className="w-full">

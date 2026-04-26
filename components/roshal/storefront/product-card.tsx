@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AddToCartButton } from "@/components/roshal/storefront/add-to-cart-button";
+import { FavoriteToggleButton } from "@/components/roshal/storefront/favorite-toggle-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -42,9 +43,16 @@ export function RoshalProductCard({
             </p>
             <h3 className="text-lg font-semibold">{name}</h3>
           </div>
-          {product.badge ? (
-            <Badge variant="secondary">{product.badge}</Badge>
-          ) : null}
+          <div className="flex items-center gap-2">
+            {product.badge ? (
+              <Badge variant="secondary">{product.badge}</Badge>
+            ) : null}
+            <FavoriteToggleButton
+              productId={product.id}
+              locale={locale}
+              className="h-9 w-9 rounded-full"
+            />
+          </div>
         </div>
       </CardHeader>
       <CardContent className="flex-1 space-y-4">

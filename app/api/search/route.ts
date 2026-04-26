@@ -1,34 +1,26 @@
-import { and, desc, eq, like, or } from "drizzle-orm";
+import { desc, like, or } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { getSessionUser } from "@/lib/edms/session";
-import {
-  documents,
-  documentWorkflows,
-  notifications,
-  projects,
-  transmittals,
-} from "@/lib/schema";
+import { getRoshalSessionUser } from "@/lib/roshal/auth";
+import { roshalOrders, roshalPages, roshalProducts, users } from "@/lib/schema";
 
 type SearchResult = {
   id: string;
   title: string;
   subtitle: string;
-  category:
-    | "project"
-    | "document"
-    | "workflow"
-    | "transmittal"
-    | "notification";
+  category: "product" | "order" | "user" | "marketing-page";
   href: string;
   meta: string;
 };
 
 export async function GET(request: Request) {
-  const sessionUser = await getSessionUser();
+  const sessionUser = await getRoshalSessionUser();
 
-  if (!sessionUser?.id) {
-    return NextResponse.json({ results: [] }, { status: 401 });
+  if (!sessionUser?.id || sessionUser.role !== "admin") {
+    return NextResponse.json(
+      { results: [] satisfies SearchResult[] },
+      { status: 401 },
+    );
   }
 
   const query = new URL(request.url).searchParams.get("q")?.trim();
@@ -40,163 +32,144 @@ export async function GET(request: Request) {
   const wildcardQuery = `%${query}%`;
 
   try {
-    const [
-      projectRows,
-      documentRows,
-      workflowRows,
-      transmittalRows,
-      notificationRows,
-    ] = await Promise.all([
+    const [productRows, orderRows, userRows, pageRows] = await Promise.all([
       db
         .select({
-          id: projects.id,
-          name: projects.name,
-          projectNumber: projects.projectNumber,
-          location: projects.location,
-          status: projects.status,
+          id: roshalProducts.id,
+          nameEn: roshalProducts.nameEn,
+          sku: roshalProducts.sku,
+          categoryLabelEn: roshalProducts.categoryLabelEn,
+          inventory: roshalProducts.inventory,
+          isPublished: roshalProducts.isPublished,
         })
-        .from(projects)
+        .from(roshalProducts)
         .where(
           or(
-            like(projects.name, wildcardQuery),
-            like(projects.projectNumber, wildcardQuery),
-            like(projects.location, wildcardQuery),
+            like(roshalProducts.nameEn, wildcardQuery),
+            like(roshalProducts.nameBn, wildcardQuery),
+            like(roshalProducts.sku, wildcardQuery),
+            like(roshalProducts.slug, wildcardQuery),
+            like(roshalProducts.categoryLabelEn, wildcardQuery),
+            like(roshalProducts.categoryLabelBn, wildcardQuery),
           ),
         )
-        .orderBy(desc(projects.updatedAt))
-        .limit(6),
-      db
-        .select({
-          id: documents.id,
-          title: documents.title,
-          documentNumber: documents.documentNumber,
-          discipline: documents.discipline,
-          status: documents.status,
-        })
-        .from(documents)
-        .where(
-          or(
-            like(documents.title, wildcardQuery),
-            like(documents.documentNumber, wildcardQuery),
-            like(documents.discipline, wildcardQuery),
-          ),
-        )
-        .orderBy(desc(documents.updatedAt))
+        .orderBy(desc(roshalProducts.updatedAt))
         .limit(8),
       db
         .select({
-          id: documentWorkflows.id,
-          workflowName: documentWorkflows.workflowName,
-          status: documentWorkflows.status,
-          documentTitle: documents.title,
-          documentNumber: documents.documentNumber,
+          id: roshalOrders.id,
+          orderNumber: roshalOrders.orderNumber,
+          customerName: roshalOrders.customerName,
+          paymentMethod: roshalOrders.paymentMethod,
+          status: roshalOrders.status,
+          total: roshalOrders.total,
         })
-        .from(documentWorkflows)
-        .innerJoin(documents, eq(documentWorkflows.documentId, documents.id))
+        .from(roshalOrders)
         .where(
           or(
-            like(documentWorkflows.workflowName, wildcardQuery),
-            like(documents.title, wildcardQuery),
-            like(documents.documentNumber, wildcardQuery),
+            like(roshalOrders.orderNumber, wildcardQuery),
+            like(roshalOrders.customerName, wildcardQuery),
+            like(roshalOrders.phone, wildcardQuery),
+            like(roshalOrders.email, wildcardQuery),
+            like(roshalOrders.status, wildcardQuery),
           ),
         )
-        .orderBy(desc(documentWorkflows.startedAt))
-        .limit(6),
+        .orderBy(desc(roshalOrders.updatedAt))
+        .limit(8),
       db
         .select({
-          id: transmittals.id,
-          transmittalNumber: transmittals.transmittalNumber,
-          subject: transmittals.subject,
-          purpose: transmittals.purpose,
-          status: transmittals.status,
+          id: users.id,
+          name: users.name,
+          email: users.email,
+          role: users.role,
+          phone: users.phone,
+          isActive: users.isActive,
         })
-        .from(transmittals)
+        .from(users)
         .where(
           or(
-            like(transmittals.transmittalNumber, wildcardQuery),
-            like(transmittals.subject, wildcardQuery),
-            like(transmittals.purpose, wildcardQuery),
+            like(users.name, wildcardQuery),
+            like(users.email, wildcardQuery),
+            like(users.role, wildcardQuery),
+            like(users.phone, wildcardQuery),
           ),
         )
-        .orderBy(desc(transmittals.createdAt))
-        .limit(6),
+        .orderBy(desc(users.updatedAt))
+        .limit(8),
       db
         .select({
-          id: notifications.id,
-          title: notifications.title,
-          message: notifications.message,
-          type: notifications.type,
-          actionUrl: notifications.actionUrl,
-          isRead: notifications.isRead,
+          id: roshalPages.id,
+          slug: roshalPages.slug,
+          titleEn: roshalPages.titleEn,
+          navigationLabelEn: roshalPages.navigationLabelEn,
+          status: roshalPages.status,
         })
-        .from(notifications)
+        .from(roshalPages)
         .where(
-          and(
-            eq(notifications.userId, sessionUser.id),
-            or(
-              like(notifications.title, wildcardQuery),
-              like(notifications.message, wildcardQuery),
-              like(notifications.type, wildcardQuery),
-            ),
+          or(
+            like(roshalPages.slug, wildcardQuery),
+            like(roshalPages.titleEn, wildcardQuery),
+            like(roshalPages.titleBn, wildcardQuery),
+            like(roshalPages.navigationLabelEn, wildcardQuery),
+            like(roshalPages.navigationLabelBn, wildcardQuery),
           ),
         )
-        .orderBy(desc(notifications.createdAt))
-        .limit(6),
+        .orderBy(desc(roshalPages.updatedAt))
+        .limit(8),
     ]);
 
     const results: SearchResult[] = [
-      ...projectRows.map((project) => ({
-        id: project.id,
-        title: project.name,
-        subtitle: project.projectNumber || "Project",
-        category: "project" as const,
-        href: `/projects/${project.id}`,
-        meta: [project.status, project.location].filter(Boolean).join(" | "),
-      })),
-      ...documentRows.map((document) => ({
-        id: document.id,
-        title: document.title,
-        subtitle: document.documentNumber,
-        category: "document" as const,
-        href: `/documents/${document.id}`,
-        meta: [document.discipline, document.status]
+      ...productRows.map((product) => ({
+        id: product.id,
+        title: product.nameEn,
+        subtitle: product.sku,
+        category: "product" as const,
+        href: `/dashboard/products/${product.id}`,
+        meta: [
+          product.categoryLabelEn,
+          product.isPublished ? "Published" : "Draft",
+          `Stock ${product.inventory}`,
+        ]
           .filter(Boolean)
           .join(" | "),
       })),
-      ...workflowRows.map((workflow) => ({
-        id: workflow.id,
-        title: workflow.workflowName || workflow.documentTitle || "Workflow",
-        subtitle:
-          workflow.documentTitle || workflow.documentNumber || "Workflow item",
-        category: "workflow" as const,
-        href: `/workflows/${workflow.id}`,
-        meta: [workflow.documentNumber, workflow.status]
+      ...orderRows.map((order) => ({
+        id: order.id,
+        title: order.orderNumber,
+        subtitle: order.customerName,
+        category: "order" as const,
+        href: `/dashboard/orders/${order.id}`,
+        meta: [order.status, order.paymentMethod, `BDT ${order.total}`]
           .filter(Boolean)
           .join(" | "),
       })),
-      ...transmittalRows.map((transmittal) => ({
-        id: transmittal.id,
-        title: transmittal.subject,
-        subtitle: transmittal.transmittalNumber,
-        category: "transmittal" as const,
-        href: `/transmittals/${transmittal.id}`,
-        meta: [transmittal.purpose, transmittal.status]
+      ...userRows.map((user) => ({
+        id: user.id,
+        title: user.name,
+        subtitle: user.email,
+        category: "user" as const,
+        href: `/dashboard/users/${user.id}`,
+        meta: [
+          user.role === "admin" ? "Admin" : "User",
+          user.isActive ? "Active" : "Inactive",
+          user.phone || "",
+        ]
           .filter(Boolean)
           .join(" | "),
       })),
-      ...notificationRows.map((notification) => ({
-        id: notification.id,
-        title: notification.title,
-        subtitle: notification.type,
-        category: "notification" as const,
-        href: notification.actionUrl || "/notifications",
-        meta: notification.isRead ? "Read notification" : "Unread notification",
+      ...pageRows.map((page) => ({
+        id: page.id,
+        title: page.titleEn,
+        subtitle: `/${page.slug}`,
+        category: "marketing-page" as const,
+        href: `/dashboard/pages/${page.id}`,
+        meta: [page.navigationLabelEn, page.status].filter(Boolean).join(" | "),
       })),
     ];
 
     return NextResponse.json({ results });
   } catch (error) {
-    console.error("Error searching EDMS workspace:", error);
+    console.error("Error searching Roshal admin workspace:", error);
     return NextResponse.json({ results: [] satisfies SearchResult[] });
   }
 }

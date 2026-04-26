@@ -16,6 +16,8 @@ interface Product {
   originalPrice?: string;
   rating?: number;
   reviews?: number;
+  badge?: string;
+  badgeVariant?: "default" | "secondary" | "destructive" | "outline";
 }
 
 interface TopSellersProps {
@@ -64,8 +66,8 @@ export function TopSellers({
                 originalPrice={product.originalPrice}
                 rating={product.rating}
                 reviews={product.reviews}
-                badge="HOT"
-                badgeVariant="default"
+                badge={product.badge || "HOT"}
+                badgeVariant={product.badgeVariant || "default"}
                 language={language}
               />
             </ScrollReveal>

@@ -16,6 +16,8 @@ interface Product {
   originalPrice?: string;
   rating?: number;
   reviews?: number;
+  badge?: string;
+  badgeVariant?: "default" | "secondary" | "destructive" | "outline";
 }
 
 interface NewArrivalsProps {
@@ -64,8 +66,8 @@ export function NewArrivals({
                 originalPrice={product.originalPrice}
                 rating={product.rating}
                 reviews={product.reviews}
-                badge="NEW"
-                badgeVariant="secondary"
+                badge={product.badge || "NEW"}
+                badgeVariant={product.badgeVariant || "secondary"}
                 language={language}
               />
             </ScrollReveal>

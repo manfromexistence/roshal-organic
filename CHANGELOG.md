@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added richer dashboard media controls for marketing pages, sections, and products using the shared image-upload field with live previews
 - Added a richer storefront catalog experience with client-side product search, category filtering, and sorting on `/products`
 - Added dynamic Roshal SEO helpers so the home page, marketing pages, and product detail pages now emit page-specific metadata
+- Added Roshal-specific admin command search results for products, orders, users, and marketing pages through the shared `/api/search` endpoint
 - Added a shared dashboard navigation config and restored the missing `/api/search` route so the global command palette can return instant live results for projects, documents, workflows, transmittals, and the current user's notifications
 - Added database-backed create actions, forms, and `/new` routes for daily reports, extension-of-time requests, inspections, safety observations, warranty records, meetings, memos, RFIs, and site technical queries
 - Added a real technical query creation flow at `/technical-queries/new`, including validated form submission and live register data loading from the database
@@ -72,6 +73,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed the package identity and active branding from Quadra to `roshal-organic` across the live app shell, login flow, navigation, metadata, and seeded storefront content
 - Changed Roshal login, checkout, and shared image-upload flows to use inline/toast feedback instead of raw browser alerts, and fixed the remaining Quadra title leak on the login route
 - Changed the login page into a storefront-first ecommerce account entry surface, with clearer checkout/order-tracking positioning for customers and explicit admin-assignment messaging
+- Changed the login submit flow to use the Better Auth React client and a full post-auth redirect, so protected Roshal dashboard routes see the fresh session cookie immediately after sign-in
+- Changed the shared dashboard command dialog copy, placeholders, and result categories to match the Roshal admin workspace instead of the legacy EDMS search model
 - Changed the env configuration to use the real `roshal-organic` Turso database in `.env` and `.env.local`, and replaced the stale production `app-quadra` auth URL with explicit Roshal production-domain placeholders
 - Changed the Roshal gateway env guidance and checkout copy to reflect the current AamarPay-backed payment surface, including `upay`
 - Changed the root `proxy.ts` matcher so auth session checks only run on login and protected account/dashboard routes instead of slowing every public storefront request

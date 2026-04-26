@@ -54,9 +54,11 @@ export function CheckoutPageClient({
   };
 }) {
   const router = useRouter();
+  const [isHydrated, setIsHydrated] = useState(false);
   const items = useCartStore((state) => state.items);
   const clearCart = useCartStore((state) => state.clearCart);
   const syncCatalog = useCartStore((state) => state.syncCatalog);
+  const visibleItems = isHydrated ? items : [];
   const paymentOptions = useMemo(
     () =>
       paymentSettings.options
@@ -86,6 +88,10 @@ export function CheckoutPageClient({
   });
 
   useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  useEffect(() => {
     if (
       paymentOptions.length > 0 &&
       !paymentOptions.some((option) => option.key === paymentMethod)
@@ -95,6 +101,10 @@ export function CheckoutPageClient({
   }, [paymentMethod, paymentOptions]);
 
   useEffect(() => {
+    if (!isHydrated) {
+      return;
+    }
+
     const result = syncCatalog(products);
 
     if (result.adjustedCount > 0 || result.removedCount > 0) {
@@ -109,7 +119,7 @@ export function CheckoutPageClient({
     }
 
     setSyncMessage(null);
-  }, [locale, products, syncCatalog]);
+  }, [isHydrated, locale, products, syncCatalog]);
 
   const selectedOption =
     paymentOptions.find((option) => option.key === paymentMethod) ||
@@ -126,10 +136,12 @@ export function CheckoutPageClient({
         (!gatewayActiveForSelectedOption && selectedOption.requiresProof)),
   );
   const subtotal = useMemo(
-    () => items.reduce((sum, item) => sum + item.price * item.quantity, 0),
-    [items],
+    () =>
+      visibleItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
+    [visibleItems],
   );
-  const shippingFee = items.length > 0 ? ROSHAL_STANDARD_SHIPPING_FEE : 0;
+  const shippingFee =
+    visibleItems.length > 0 ? ROSHAL_STANDARD_SHIPPING_FEE : 0;
   const total = subtotal + shippingFee;
 
   const gatewayModeMessage =
@@ -195,7 +207,7 @@ export function CheckoutPageClient({
   };
 
   const submitOrder = async () => {
-    if (items.length === 0 || !selectedOption) {
+    if (visibleItems.length === 0 || !selectedOption) {
       return;
     }
 
@@ -239,7 +251,7 @@ export function CheckoutPageClient({
         body: JSON.stringify({
           ...formState,
           paymentMethod,
-          items,
+          items: visibleItems,
         }),
       });
       const payload = await response.json().catch(() => null);
@@ -271,6 +283,16 @@ export function CheckoutPageClient({
   return (
     <div className="container mx-auto grid gap-8 px-4 py-10 lg:grid-cols-[1fr,24rem]">
       <div className="space-y-8">
+        {!isHydrated ? (
+          <Alert>
+            <AlertDescription>
+              {locale === "bn"
+                ? "আপনার সংরক্ষিত কার্ট লোড হচ্ছে..."
+                : "Loading your saved cart..."}
+            </AlertDescription>
+          </Alert>
+        ) : null}
+
         {syncMessage ? (
           <Alert>
             <AlertDescription>{syncMessage}</AlertDescription>
@@ -494,7 +516,7 @@ export function CheckoutPageClient({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          {items.map((item) => (
+          {visibleItems.map((item) => (
             <div
               key={item.productId}
               className="flex items-center justify-between gap-3 text-sm"
@@ -540,7 +562,12 @@ export function CheckoutPageClient({
           <Button
             className="w-full"
             onClick={submitOrder}
-            disabled={isSubmitting || items.length === 0 || !selectedOption}
+            disabled={
+              !isHydrated ||
+              isSubmitting ||
+              visibleItems.length === 0 ||
+              !selectedOption
+            }
           >
             {selectedOption?.mode === "gateway"
               ? gatewayActiveForSelectedOption

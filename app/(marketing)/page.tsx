@@ -38,6 +38,9 @@ interface MarketingProductCard {
   originalPrice?: string;
   rating?: number;
   reviews?: number;
+  badge?: string;
+  badgeVariant?: "default" | "secondary" | "destructive" | "outline";
+  cartProduct?: RoshalProduct;
 }
 
 interface LandingCategory {
@@ -324,6 +327,16 @@ function toMarketingProduct(
   locale: Language,
   seed: number,
 ): MarketingProductCard {
+  const discountPercentage = product.compareAtPrice
+    ? Math.max(
+        0,
+        Math.round(
+          ((product.compareAtPrice - product.price) / product.compareAtPrice) *
+            100,
+        ),
+      )
+    : 0;
+
   return {
     id: product.id,
     href: `/products/${product.slug}`,
@@ -335,6 +348,11 @@ function toMarketingProduct(
       : undefined,
     rating: Number((4.4 + (seed % 5) * 0.1).toFixed(1)),
     reviews: 40 + seed * 17,
+    badge:
+      product.badge ||
+      (discountPercentage > 0 ? `${discountPercentage}% OFF` : undefined),
+    badgeVariant: product.badge ? "secondary" : "destructive",
+    cartProduct: product,
   };
 }
 

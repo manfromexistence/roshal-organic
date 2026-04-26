@@ -25,13 +25,23 @@ export function CartPageClient({
   locale: RoshalLocale;
   products: RoshalProduct[];
 }) {
+  const [isHydrated, setIsHydrated] = useState(false);
   const items = useCartStore((state) => state.items);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
   const syncCatalog = useCartStore((state) => state.syncCatalog);
   const [syncMessage, setSyncMessage] = useState<string | null>(null);
+  const visibleItems = isHydrated ? items : [];
 
   useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isHydrated) {
+      return;
+    }
+
     const result = syncCatalog(products);
 
     if (result.adjustedCount > 0 || result.removedCount > 0) {
@@ -42,9 +52,9 @@ export function CartPageClient({
     }
 
     setSyncMessage(null);
-  }, [locale, products, syncCatalog]);
+  }, [isHydrated, locale, products, syncCatalog]);
 
-  const subtotal = items.reduce(
+  const subtotal = visibleItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0,
   );
@@ -57,7 +67,9 @@ export function CartPageClient({
             {locale === "bn" ? "কার্ট" : "Cart"}
           </p>
           <h1 className="text-4xl font-semibold tracking-tight">
-            {locale === "bn" ? "আপনার নির্বাচিত পণ্য" : "Your selected products"}
+            {locale === "bn"
+              ? "আপনার নির্বাচিত পণ্য"
+              : "Your selected products"}
           </h1>
         </div>
 
@@ -67,11 +79,23 @@ export function CartPageClient({
           </Alert>
         ) : null}
 
-        {items.length === 0 ? (
+        {!isHydrated ? (
           <Card>
             <CardContent className="space-y-4 p-8 text-center">
               <p className="text-muted-foreground">
-                {locale === "bn" ? "কার্ট এখন খালি।" : "Your cart is empty."}
+                {locale === "bn"
+                  ? "আপনার সংরক্ষিত কার্ট লোড হচ্ছে..."
+                  : "Loading your saved cart..."}
+              </p>
+            </CardContent>
+          </Card>
+        ) : visibleItems.length === 0 ? (
+          <Card>
+            <CardContent className="space-y-4 p-8 text-center">
+              <p className="text-muted-foreground">
+                {locale === "bn"
+                  ? "কার্ট এখন খালি।"
+                  : "Your cart is empty."}
               </p>
               <Button asChild>
                 <Link href="/products">
@@ -81,7 +105,7 @@ export function CartPageClient({
             </CardContent>
           </Card>
         ) : (
-          items.map((item) => (
+          visibleItems.map((item) => (
             <Card key={item.productId}>
               <CardContent className="flex flex-col gap-4 p-5 sm:flex-row">
                 <div className="relative h-32 overflow-hidden rounded-xl border bg-muted sm:w-40">
@@ -143,12 +167,12 @@ export function CartPageClient({
       </div>
 
       <Card className="h-fit">
-        <CardHeader>
+        <CardHeader className="pb-0">
           <CardTitle>
             {locale === "bn" ? "অর্ডার সারাংশ" : "Order summary"}
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3 text-sm">
+        <CardContent className="space-y-3 py-2 text-sm">
           <div className="flex items-center justify-between">
             <span className="text-muted-foreground">
               {locale === "bn" ? "পণ্য মূল্য" : "Subtotal"}
@@ -161,24 +185,28 @@ export function CartPageClient({
             </span>
             <span>
               {formatBdt(
-                items.length > 0 ? ROSHAL_STANDARD_SHIPPING_FEE : 0,
+                visibleItems.length > 0 ? ROSHAL_STANDARD_SHIPPING_FEE : 0,
                 locale,
               )}
             </span>
           </div>
         </CardContent>
-        <CardFooter className="flex flex-col gap-3">
+        <CardFooter className="flex flex-col gap-3 pt-2">
           <div className="flex w-full items-center justify-between text-lg font-semibold">
             <span>{locale === "bn" ? "মোট" : "Total"}</span>
             <span className="text-primary">
               {formatBdt(
                 subtotal +
-                  (items.length > 0 ? ROSHAL_STANDARD_SHIPPING_FEE : 0),
+                  (visibleItems.length > 0 ? ROSHAL_STANDARD_SHIPPING_FEE : 0),
                 locale,
               )}
             </span>
           </div>
-          <Button asChild className="w-full" disabled={items.length === 0}>
+          <Button
+            asChild
+            className="w-full"
+            disabled={!isHydrated || visibleItems.length === 0}
+          >
             <Link href="/checkout">
               {locale === "bn" ? "চেকআউট" : "Checkout"}
             </Link>

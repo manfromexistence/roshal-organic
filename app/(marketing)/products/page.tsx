@@ -11,11 +11,34 @@ export const metadata: Metadata = buildRoshalMetadata({
   path: "/products",
 });
 
-export default async function ProductsPage() {
+function resolveSortValue(value: string | undefined) {
+  return value === "price-low" || value === "price-high" || value === "name"
+    ? value
+    : "featured";
+}
+
+export default async function ProductsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{
+    q?: string;
+    category?: string;
+    sort?: string;
+  }>;
+}) {
+  const resolvedSearchParams = searchParams ? await searchParams : {};
   const [locale, products] = await Promise.all([
     getRoshalLocale(),
     getRoshalProducts(),
   ]);
 
-  return <ProductsPageClient locale={locale} products={products} />;
+  return (
+    <ProductsPageClient
+      locale={locale}
+      products={products}
+      initialCategory={resolvedSearchParams.category || "all"}
+      initialSearchQuery={resolvedSearchParams.q || ""}
+      initialSortKey={resolveSortValue(resolvedSearchParams.sort)}
+    />
+  );
 }

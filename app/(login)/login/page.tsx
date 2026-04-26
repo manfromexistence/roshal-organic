@@ -11,7 +11,7 @@ import {
   Truck,
 } from "lucide-react";
 import Image from "next/image";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -28,15 +28,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/hooks/use-toast";
+import { authClient } from "@/lib/auth-client";
 
 type AuthMode = "signin" | "signup";
 
 export default function LoginPage() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const { resolvedTheme, setTheme } = useTheme();
+  const requestedMode =
+    searchParams.get("mode") === "signup" ? "signup" : "signin";
   const [mounted, setMounted] = useState(false);
-  const [authMode, setAuthMode] = useState<AuthMode>("signin");
+  const [authMode, setAuthMode] = useState<AuthMode>(requestedMode);
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,6 +48,10 @@ export default function LoginPage() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    setAuthMode(requestedMode);
+  }, [requestedMode]);
 
   const theme = mounted && resolvedTheme === "dark" ? "dark" : "light";
   const isSignIn = authMode === "signin";
@@ -57,45 +63,33 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const endpoint = isSignIn
-        ? "/api/auth/sign-in/email"
-        : "/api/auth/sign-up/email";
-      const payload = isSignIn
-        ? {
+      const response = isSignIn
+        ? await authClient.signIn.email({
             email,
             password,
+            rememberMe: true,
             callbackURL,
-          }
-        : {
+          })
+        : await authClient.signUp.email({
             name,
             email,
             password,
             callbackURL,
-          };
+          });
 
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(payload),
-      });
-      const responseBody = await response.json().catch(() => null);
-
-      if (!response.ok) {
+      if (response.error) {
         throw new Error(
-          typeof responseBody?.message === "string"
-            ? responseBody.message
-            : isSignIn
+          response.error.message ||
+            (isSignIn
               ? "Could not sign in. Please check your credentials."
-              : "Could not create the account. Please try again.",
+              : "Could not create the account. Please try again."),
         );
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      router.push(callbackURL);
-      router.refresh();
+      // Force a fresh request so the new session cookie is reflected across
+      // the auth proxy and server components immediately after sign-in.
+      window.location.replace(callbackURL);
+      return;
     } catch (error) {
       console.error("Authentication error:", error);
       const nextErrorMessage =
@@ -312,6 +306,7 @@ export default function LoginPage() {
                     <Input
                       id="name"
                       value={name}
+                      autoComplete="name"
                       onChange={(event) => {
                         setErrorMessage(null);
                         setName(event.target.value);
@@ -328,6 +323,7 @@ export default function LoginPage() {
                     id="email"
                     type="email"
                     value={email}
+                    autoComplete="email"
                     onChange={(event) => {
                       setErrorMessage(null);
                       setEmail(event.target.value);
@@ -343,6 +339,9 @@ export default function LoginPage() {
                     id="password"
                     type="password"
                     value={password}
+                    autoComplete={
+                      isSignIn ? "current-password" : "new-password"
+                    }
                     onChange={(event) => {
                       setErrorMessage(null);
                       setPassword(event.target.value);
