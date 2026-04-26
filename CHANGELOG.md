@@ -1,0 +1,238 @@
+# Changelog
+
+All notable changes to Quadra EDMS will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Added
+- Added a shared dashboard navigation config and restored the missing `/api/search` route so the global command palette can return instant live results for projects, documents, workflows, transmittals, and the current user's notifications
+- Added database-backed create actions, forms, and `/new` routes for daily reports, extension-of-time requests, inspections, safety observations, warranty records, meetings, memos, RFIs, and site technical queries
+- Added a real technical query creation flow at `/technical-queries/new`, including validated form submission and live register data loading from the database
+- Added client-side databook compilation outputs so the compile dialog can now generate a printable package and downloadable compiled file
+- Added automatic schedule baseline seeding for projects that have no activities yet, so document linking can start immediately from the schedule page
+- Migrated from ESLint to Biome for linting and formatting
+- Added documentation for smart auto-fill and auto-selection features in README.md
+- Created TASKS.md file to track outstanding auto-fill feature rollout, specific bugs, and bulk operations verification
+- Added complete dashboard page list to TASKS.md (12 main navigation pages + Transmittals, Queries & RFIs, Correspondence, Meetings, and Management sections)
+- Added bulk operations verification requirements to TASKS.md for Excel import functionality (bulk upload and bulk project creation)
+- Added dynamic route support to breadcrumb component (route-mapping.ts) to show "Details" instead of raw slugs for [id] pages
+- Added "change-orders" and "memos" to DETAIL_ROUTE_NAMES mapping for better breadcrumb titles
+- Added customTitle prop to PageBreadcrumb component for custom breadcrumb titles on detail pages
+- Added ProjectsDataTable component using TanStack Table with data from dashboard-data.json, featuring sortable columns, Type and Status filters, pagination, and status badges
+- Added Project Data Table section at bottom of projects page with DataTableToolbar for Type and Status filtering
+- Added 50 additional projects to dashboard-data.json (total 55 projects)
+- Added row selection checkboxes to ProjectsDataTable with select all functionality
+- Added DocumentsDataTable component using TanStack Table for documents page with advanced filtering, sorting, and pagination
+- Added WorkflowsDataTable component using TanStack Table for workflows page with advanced filtering, sorting, and pagination
+- Added TransmittalsDataTable component using TanStack Table for transmittals page with advanced filtering, sorting, and pagination
+- Added MeetingsDataTable component using TanStack Table for meetings page with advanced filtering, sorting, and pagination
+- Added DailyReportsDataTable component using TanStack Table for daily-reports page with advanced filtering, sorting, and pagination
+- Added LettersDataTable component using TanStack Table for letters page with advanced filtering, sorting, and pagination
+- Added UsersDataTable component using TanStack Table for admin/users page with advanced filtering, sorting, and pagination
+- Added OrganizationsDataTable component using TanStack Table for admin/organizations page with advanced filtering, sorting, and pagination
+- Added breadcrumb-mapping.ts with route-to-field mapping for dynamic breadcrumb titles on detail pages
+- Added API route /api/breadcrumb/[route]/[id] to fetch entity titles for breadcrumb display
+- Added dynamic title fetching to PageBreadcrumb component - now detects ID segments and fetches entity names from database
+
+### Changed
+- Changed the shared `/config` navigation label and route display name to `Project Configuration`, so the sidebar, command search, and breadcrumb copy now match the project-setup workspace more clearly
+- Changed the global command palette to render its result list inside the shared shadcn `ScrollArea`, so the header search popover now uses the same styled scroll container as the rest of the dashboard shell
+- Changed the dashboard search UX by moving search out of the sidebar and into the fixed header as a shadcn command search entry point backed by shared navigation data and keyboard shortcut support
+- Changed the header to collapse to a compact search button and single-page title on smaller screens while keeping the full breadcrumb and wide search field for larger viewports
+- Changed the matrix summary and stakeholder sections to use auto-fitting grid card layouts that respond to the actual content rail width instead of rigid breakpoint-only column counts
+- Changed the visible shell branding, shared logo component, login chrome, and root app title from `Quadra EDMS` to `Quadra EDMS Demo`
+- Changed the reports workspace to mirror the root EDMS reference more closely with schedule/custom shortcuts, eight report types, richer workflow-aware report data, and denser register/transmittal/audit outputs
+- Changed the live report modal to use a much wider viewport and oversized report paper so long report layouts can scroll both vertically and horizontally inside the dialog
+- Changed the project setup tab strip to wrap with mobile-first flex behavior and shadcn `Label`, so the tab triggers no longer force horizontal overflow on smaller screens
+- Changed the `/reports` workspace to add reporting signal cards, a recent report activity grid sourced from live register data, and a larger printable preview dialog so report outputs more closely match the density of the root EDMS reference
+- Changed the workflow queue page to add a stage-by-stage route strip with live pending/completed/actionable counts so the dashboard now mirrors the workflow progression cues in the root `index.html`
+- Changed the `/reports` modal payload and printable preview so MDR, transmittal, progress, overdue, submission, and activity reports now render EDMS-style summary metrics, narrative observations, and secondary detail sections instead of the previous thin single-table preview
+- Changed the listed operational register pages to use the shared data-table presentation consistently without the extra card-shell wrappers around the main listing area
+- Changed the default shell avatars so the header profile fallback uses the shadcn logo and the organization fallback uses the evil-rabbit logo
+- Changed the bulk document Excel import flow to generate project-scoped document numbers and map spreadsheet status codes onto the live EDMS document status values
+- Replaced the hardcoded databook sample project with a live databook workspace built from the active project's document register and commissioning checklist data
+- Converted the dashboard settings area from placeholder shells into working workspace, connections, members, notifications, and developer status pages backed by live reads or persistent local preferences
+- Simplified ProjectsDataTable to only show Select, Project Name, Project Type, Project Status, and Actions columns (removed Target Date, Budget Limit, and Reviewer columns)
+- Replaced DocumentsTable with DocumentsDataTable in documents page for advanced filtering and sorting
+- Replaced WorkflowsTable with WorkflowsDataTable in workflows page for advanced filtering and sorting
+- Replaced TransmittalsTable with TransmittalsDataTable in transmittals page for advanced filtering and sorting
+- Replaced MeetingsTable with MeetingsDataTable in meetings page for advanced filtering and sorting
+- Replaced DailyReportsTable with DailyReportsDataTable in daily-reports page for advanced filtering and sorting
+- Replaced div-based list with LettersDataTable in letters page for advanced filtering and sorting
+- Replaced shadcn Table with UsersDataTable in admin/users page for advanced filtering and sorting
+- Replaced shadcn Table with OrganizationsDataTable in admin/organizations page for advanced filtering and sorting
+- Removed old filter forms from documents page (query, discipline, status filters) - filtering now handled by DataTableToolbar
+- Removed MeetingsFilters component from meetings page - filtering now handled by DataTableToolbar
+- Removed search inputs from admin/users and admin/organizations pages - filtering now handled by DataTableToolbar
+- Authentication system with better-auth
+- Email/password authentication with Drizzle ORM and Turso database
+- Role-based access control (RBAC) with 6 roles: user, admin, client, pmc, vendor, subcontractor
+- Login page with video background and testimonial carousel
+- User management data table with CRUD operations
+- Theme switcher with dark mode as default
+- Accounts table for better-auth compatibility
+- Mobile responsive login page
+- Database seeding with demo users for all roles
+- Comprehensive documentation (CHANGELOG.md, TODO.md, AI_AGENT_RULES.md in AGENTS.md)
+- File upload functionality with ImgBB (images) and Catbox (files)
+- API routes for file uploads (/api/upload/imgbb, /api/upload/catbox)
+- Files table to store unique file IDs (not full URLs)
+- File upload UI with two inputs on home page
+- File rendering with thumbnail preview for images
+- Database schema test script (test-schema.ts)
+- Authentication test script (test-auth.ts)
+- @better-auth/utils package for proper password hashing
+- Data grid utility functions (lib/data-grid.ts) for cell key management, popover detection, TSV parsing
+- Data grid TypeScript types (types/data-grid.ts) for CellPosition, CellUpdate, NavigationDirection, etc.
+- Comprehensive admin dashboard with 30+ pages covering all EDMS modules
+- Project management pages (projects, schedule, databook, matrix)
+- Document control pages (documents, submittals, transmittals, technical-queries)
+- Quality management pages (inspections, safety-observations, commissioning, warranty)
+- Communication pages (meetings, letters, daily-reports, notifications)
+- Contract management pages (change-orders, extension-of-time)
+- Reporting and audit pages (reports, audit, bulk-upload)
+- Settings pages (accounts, members, notifications, developer, theme)
+- Biome.json linting overrides for third-party components and specific directories
+- Enhanced biome.json configuration for app/config/tabs, app/reports, app/schedule, scripts, components/edms, and app/databook
+
+### Changed
+- Documents register now opens the new document upload sheet directly on the page instead of sending users away to the separate `/documents/new` route first
+- EDMS document, workflow, revision, bulk upload/import, member assignment, and template sheets now prefill more values automatically, including generated identifiers, suggested names, next revisions, and single-option project/user defaults
+- Schedule, letters, transmittals, reports, databook, and theme flows now use real stateful behavior instead of placeholder actions where those TASKS.md items were still incomplete
+- Breadcrumb labels now resolve dynamic detail routes to readable names, and dashboard scrolling now respects the fixed header offset instead of letting content slide underneath it
+- Project creation form now auto-generates random project ID (format: PRJ-YYYY-XXXX) on open
+- Project creation form now auto-populates start date with current date
+- Project creation form now attempts to auto-populate user location using browser geolocation
+- Sidebar accordion now uses uncontrolled state with defaultOpen to prevent collapse on reload
+- Sidebar accordion icons now rotate properly when expanded/collapsed
+- ScrollArea component now has visible scrollbar track with high z-index (z-[9999])
+- Renamed Error component to ErrorPage to avoid shadowing global Error
+- All linting errors and warnings resolved across the codebase
+
+### Fixed
+- Fixed both transmittal creation entry points so the issue/send action no longer stays disabled behind a blank required subject: the forms now auto-fill a valid subject from purpose/project/document selection, and the sheet flow validates live with `react-hook-form` instead of waiting for a blocked submit attempt
+- Fixed the remaining matrix responsiveness by switching the summary/stakeholder strips to safer breakpoint grids and tightening matrix table column widths so wide routing data stays inside local scroll containers instead of widening the page
+- Fixed the remaining matrix overflow at the dashboard-shell level by removing the shared `SidebarInset` full-width flex bug, adding `min-w-0` containment through the main scroll viewport, and letting the matrix summary and stakeholder grids shrink safely on narrower desktop rails
+- Fixed custom theme flash on reload by bootstrapping the resolved dark/light mode and persisted theme-store CSS variables in the root layout before hydration, then synchronizing the client theme store in a layout effect
+- Fixed the shared shadcn scroll-area wrapper so horizontal scrollbars are opt-in instead of leaking onto every dashboard page; the reports modal now enables the horizontal bar explicitly while the main dashboard shell remains vertical-only
+- Fixed the matrix page again for sidebar-constrained desktop widths by collapsing the summary/rules grids later and containing the live matrix table overflow inside local scroll containers instead of the page shell
+- Fixed the reports dialog so the report canvas is no longer trapped in a narrow non-scrollable popover; wide report previews now have room to render and can be panned horizontally when the paper exceeds the viewport
+- Fixed the documents, schedule, matrix, and outgoing transmittals page shells so cards, data tables, and side panels stay inside the viewport on smaller screens instead of widening the dashboard
+- Fixed the schedule Gantt card and matrix tables to keep their wide content inside local overflow containers, with smaller mobile column widths and shadcn table primitives replacing the remaining raw matrix coverage table
+- Fixed EDMS server actions so document creation/update/version flows, project creation/member assignment, workflow decisions, and project setup mutations now enforce role checks on the server instead of relying only on hidden UI controls
+- Fixed delete permissions so only admin users can delete project setup entries, documents, and projects, while non-admin roles remain limited to their allowed create/update paths
+- Fixed the matrix page to stop exposing fake client-side role toggles and render a read-only live routing matrix that reflects actual distribution coverage without misleading local-only edits
+- Fixed the `/config` tab shell on narrow screens so bordered triggers wrap cleanly inside the card without forcing horizontal overflow
+- Fixed the submittals register to use the shared `/components/data-table` implementation instead of the previous hand-written HTML table
+- Fixed the notifications page to use the shared `/components/data-table` implementation instead of the previous stacked card list
+- Fixed `/config` so the general, numbering, disciplines, document types, stakeholders, and workflow tabs are no longer dummy placeholders and now persist against real project-config tables in the active database
+- Fixed the matrix page layout to keep the distribution matrix cards and table inside the dashboard viewport instead of widening the whole shell
+- Fixed the `/transmittals/new` live preview footer to include the richer bottom signature section from the root reference transmittal layout instead of only the minimal generated footer
+- Fixed the `/documents` upload sheet file picker wiring by switching the direct upload control to a stable input ref instead of a brittle DOM id lookup
+- Fixed the extension-of-time creation form resolver typing so the Zod-coerced `requestedDays` field now passes `bun tsc --noEmit`
+- Re-ran repository-wide Biome formatting and lint checks with clean results before rebuilding the production bundle
+- Verified the local Next.js 16 production build and deployed the linked Vercel project successfully to `app-quadra.vercel.app`
+- Fixed the bulk upload page hydration mismatch by replacing the unstable Radix sheet trigger wrapping on the import/upload launch buttons with the existing controlled open state
+- Fixed the bulk document import sheet to carry imported discipline/type metadata into created document records and corrected the template download button copy
+- Fixed the hidden demo scaffold by removing the unused projects mock table and `dashboard-data.json` fixture from the dashboard codebase
+- Fixed generic browser-tab titles on databook, reports, technical queries, and the main record detail pages so route navigation no longer falls back to the root app title
+- Fixed meetings, memos, RFIs, site technical queries, documents, transmittals, workflows, and admin data tables to use real view navigation instead of dead action menus
+- Fixed meeting, RFI, and site technical query detail pages to resolve user names from the database instead of showing raw assignee identifiers
+- Fixed the remaining live demo branding in root metadata, login, sidebar chrome, and document registration metadata
+- Restored the missing change order, commissioning, inspection, safety observation, warranty, schedule, and extension-of-time register tables with working data-table implementations instead of deleted files or placeholder stubs
+- Fixed the remaining placeholder EDMS loaders to return real project-scoped data where tables exist and honest empty states where they do not, removing the fallback warning banners from those dashboard pages
+- Fixed the remaining user-facing copy regressions across the dashboard, including broken separators in documents/transmittals/reports and hardcoded sample databook content
+- Fixed the shared scroll-area chrome to render above the fixed dashboard header, so the main shell scrollbar remains draggable at the top edge of the viewport
+- Fixed the login route layout so it no longer nests a second `<html>/<body>` tree inside the root App Router layout, eliminating the logout-to-login hydration errors
+- Fixed the login page to use the shared theme provider instead of manually mutating the root document, removed success debug logging, and replaced the auth mode toggles with shadcn buttons
+- Fixed the projects dashboard metrics and activity feed to use live document/workflow counts and joined user/project names instead of placeholder zeros and generic labels
+- Fixed the dashboard shell to keep the viewport inside the shared shadcn/Radix `ScrollArea`, render persistent custom scroll tracks for the main content and sidebar, and save/restore scroll state from the actual viewport element
+- Fixed logout in both user menus by switching from manual cookie clearing to the Better Auth client sign-out flow before redirecting back to `/login`
+- Fixed the Quadra branding copy in metadata and sidebar chrome to use "Electronic Document Management System"
+- Fixed the document register and bulk upload sheets so long project selections no longer overlap adjacent inputs, and restored explicit single-file versus multi-file upload behavior
+- Fixed new transmittal creation by removing the client hydration mismatch, returning users to the register after issue, and hiding dashboard chrome during print output
+- Fixed technical queries by restoring page spacing, wiring live register reads, and adding the missing registration route instead of the previous 404
+- Fixed letters so new correspondence writes to recent activity and supports attaching the uploaded PDF through the existing document tables
+- Fixed the distribution matrix page by deriving rows, stakeholders, and link counts from live project documents and transmittals instead of a placeholder empty state
+- Fixed the databook compile dialog so both compile actions now perform real client-side output flows instead of doing nothing
+- Fixed the schedule page by using the user's accessible project, persisting schedule sync records, and making the link-documents dialog update `schedule_activities.linked_documents` in the database
+- Fixed correspondence letter creation by replacing the stub page with a validated create form and real `letters` table inserts
+- Fixed transmittal management data so new transmittals load real projects, members, and documents, persist linked transmittal documents, and drive the reports page with real data instead of dummy mappings
+- Fixed bulk document upload so multi-file uploads now create document records in the database, and corrected the Excel import template copy to match the real import flow
+- Fixed databook section entry so the Add Section dialog auto-generates the next section code and updates the databook structure in-page instead of failing for missing project context
+- Fixed theme persistence by unifying the site header toggle with `next-themes` and reapplying persisted theme-store CSS variables globally after navigation and hydration
+- Restored icon sidebar on collapse: `AppSidebar` in `dashboard-layout.tsx` was missing `collapsible="icon"`, causing the sidebar to default to `collapsible="offcanvas"` (fully slides off-screen) instead of collapsing to an icon-only rail
+- Fixed "Collapsible is changing from controlled to uncontrolled" warning by switching to uncontrolled components
+- Fixed accordion state persistence across page reloads using localStorage with suppressHydrationWarning
+- Fixed accordion flashing/collapsing on reload by reading localStorage synchronously in state initializer
+- Fixed chevron icon rotation in nav-main and nav-secondary components
+- Fixed sidebar accordion hydration mismatch by using server-rendered props seeded from cookies instead of Zustand store
+- Removed Zustand-based nav store and NavStoreInitializer component in favor of cookie-based state initialization
+- Fixed accessibility issues in breadcrumb and input-otp components (added tabIndex and aria attributes)
+- Fixed unused imports and variables across multiple components
+- Fixed Node.js import protocol usage in migration scripts
+- Fixed unreachable code in test-error-page component
+- Fixed missing lang attribute in global-error.tsx
+- Fixed hydration mismatch by using suppressHydrationWarning on SidebarMenuItem, CollapsibleContent, and SidebarMenuSub
+- Fixed script tag error by using native script tag in head instead of Next.js Script component (required for blocking theme script)
+- Fixed hydration mismatch in sidebar accordion by using useEffect to hydrate state from localStorage after mount
+- Removed server-side cookie reading for sidebar state to prevent hydration errors
+- Updated project structure (removed src folder)
+- Updated biome.json configuration for linting overrides
+- Fixed bulk-upload button rendering by removing suppressHydrationWarning from SheetTrigger in document-bulk-upload-sheet and document-bulk-import-sheet
+- Fixed duplicate component files by removing components/edms/edms/ subdirectory
+- Fixed React key prop warning in site-header.tsx by using Fragment with key prop instead of shorthand fragment syntax
+- Fixed document creation sheet by creating /api/edms/uploads route using Catbox API with proper FormData format (reqtype=fileupload, fileToUpload), removing FormField wrapper from DocumentFileUpload, and using hidden input for fileUrl validation
+- Fixed document file upload button click handler by using onClick to trigger file input instead of asChild with label
+- Fixed document file upload UI to show uploaded file details with clickable link to open file and remove button to clear upload
+- Fixed document file upload to require project selection with clear error message and auto-select first project when available
+- Fixed document details page to show download button for documents with fileUrl
+- Fixed document control data loading so the documents page now has real project options and discipline filters available for in-page sheet actions
+- Fixed workflow creation data loading to fetch real documents and users/project members, show reviewer options correctly, and persist due dates onto created workflow steps
+- Fixed upload endpoint errors by changing `/api/upload/avatar` to `/api/upload/imgbb` in image-card-upload and document-upload-form components
+- Fixed manifest.webmanifest 500 error by removing conflicting public/manifest.webmanifest file (app/manifest.ts is the correct location)
+- Fixed server action error by updating createProject action signature to match form fields (added projectNumber, status, images)
+- Fixed location auto-population by using form.setValue instead of form.reset in project creation form
+- Fixed hydration mismatch in activity entry popover on projects page by removing asChild from PopoverTrigger
+- Fixed status dropdown padding/margin issue in project creation form by removing mt-0 class
+- Fixed workflow sheet padding by adding px-6 to SheetContent
+- Fixed disabled items in workflow sheet by removing disabled conditions from reviewer and approver selects
+- Fixed bulk upload Excel import by implementing createDocument action with actual database insertion using Drizzle ORM
+- Fixed location to show actual user location by implementing reverse geocoding using OpenStreetMap Nominatim API
+- Fixed status dropdown UI issue by removing conflicting mt-0 class from FormItem
+- Fixed project creation to actually insert into database using Drizzle ORM instead of returning temp-id
+- Fixed native HTML file input in project-template-upload-sheet by replacing with Button-triggered file input
+- Fixed inconsistent padding in document-version-sheet, workflow-action-sheet, and project-template-upload-sheet by adding px-6 to SheetContent
+- Fixed all server actions to use actual database operations instead of dummy TODO implementations:
+  - createProject: now inserts into projects table
+  - createDocument: now inserts into documents table
+  - createDocumentVersion: now inserts into documentVersions table
+  - createDocumentWorkflow: now inserts into documentWorkflows and workflowSteps tables
+  - recordWorkflowDecision: now updates workflowSteps table
+  - createTransmittal: now inserts into transmittals table
+  - updateUserDetails: now updates users table
+  - updateUserRole: now updates users table
+  - deleteUser: now deletes from users table
+  - toggleUserStatus: now updates users table
+- Fixed better-auth schema mapping for account model
+- Fixed authentication errors with proper accounts table
+- Fixed mobile responsiveness on login page
+- Fixed "Credential account not found" error by adding password field to accounts table
+- Fixed sessions table missing token column
+- Fixed accounts table field names to match better-auth requirements
+- Fixed password hashing to use scrypt algorithm
+- Fixed users table to include emailVerified field
+- Fixed sessions table to include ipAddress and userAgent fields
+
+## [0.1.0] - 2026-04-22
+
+### Added
+- Initial project setup with Next.js 16.2.4
+- Tailwind CSS 4.2.4 for styling
+- shadcn-ui v4 components
+- Drizzle ORM with Turso database
+- Diceui data table components
+- JetBrains Mono font

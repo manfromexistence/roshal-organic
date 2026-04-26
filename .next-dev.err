@@ -1,0 +1,306 @@
+$ next dev
+[browser] In HTML, <li> cannot be a descendant of <li>.
+This will cause a hydration error.
+
+  ...
+    <TooltipProvider data-slot="tooltip-pr..." delayDuration={0}>
+      <TooltipProviderProvider scope={undefined} isOpenDelayedRef={{current:true}} delayDuration={0} ...>
+        <div data-slot="sidebar-wr..." style={{...}} className="group/side...">
+          <AppSidebar>
+          <SidebarInset className="overflow-h...">
+            <main data-slot="sidebar-inset" className="relative f...">
+              <SiteHeader user={{name:"Demo...", ...}}>
+                <header className="absolute m...">
+                  <div className="flex w-ful...">
+                    <SidebarTrigger>
+                    <Separator>
+                    <Breadcrumb>
+                      <nav aria-label="breadcrumb" data-slot="breadcrumb">
+                        <BreadcrumbList>
+                          <ol data-slot="breadcrumb..." className="flex flex-...">
+                            <BreadcrumbItem>
+                            <BreadcrumbItem>
+>                             <li data-slot="breadcrumb-item" className="inline-flex items-center gap-1.5">
+                                <BreadcrumbSeparator>
+>                                 <li
+>                                   data-slot="breadcrumb-separator"
+>                                   role="presentation"
+>                                   aria-hidden="true"
+>                                   className={"[&>svg]:size-3.5"}
+>                                 >
+                                ...
+                    ...
+              ...
+ 
+[browser] <li> cannot contain a nested <li>.
+See this log for the ancestor stack trace. 
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+[browser] Uncaught Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+    at <unknown> (https://react.dev/link/hydration-mismatch)
+    at li (<anonymous>)
+    at BreadcrumbSeparator (components/ui/breadcrumb.tsx:72:5)
+    at <unknown> (components/site-header.tsx:200:17)
+    at Array.map (<anonymous>)
+    at SiteHeader (components/site-header.tsx:198:30)
+    at DashboardLayout (components/dashboard-layout.tsx:97:9)
+    at DashboardLayoutWrapper (app\(dashboard)\layout.tsx:34:5)
+  70 | }: React.ComponentProps<"li">) {
+  71 |   return (
+> 72 |     <li
+     |     ^
+  73 |       data-slot="breadcrumb-separator"
+  74 |       role="presentation"
+  75 |       aria-hidden="true"
+⨯ Error: Unauthorized
+    at getRequiredDashboardSessionUser (lib\edms\session.ts:22:11)
+    at async ProjectSetupPage (app\(dashboard)\config\page.tsx:28:23)
+  20 |   const user = await getSessionUser();
+  21 |   if (!user) {
+> 22 |     throw new Error("Unauthorized");
+     |           ^
+  23 |   }
+  24 |   return user;
+  25 | } {
+  digest: '3773428014'
+}
+⨯ Error: Unauthorized
+    at getRequiredDashboardSessionUser (lib\edms\session.ts:22:11)
+    at async ProjectSetupPage (app\(dashboard)\config\page.tsx:28:23)
+  20 |   const user = await getSessionUser();
+  21 |   if (!user) {
+> 22 |     throw new Error("Unauthorized");
+     |           ^
+  23 |   }
+  24 |   return user;
+  25 | } {
+  digest: '3773428014'
+}
+⨯ Error: Failed to find Server Action. This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+⨯ Error: Failed to find Server Action. This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+⨯ Error: Failed to find Server Action. This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+⨯ Error: Failed to find Server Action. This request might be from an older or newer deployment.
+Read more: https://nextjs.org/docs/messages/failed-to-find-server-action
+    at ignore-listed frames
+⨯ Error: Unauthorized
+    at getRequiredDashboardSessionUser (lib\edms\session.ts:22:11)
+    at async ReportsPage (app\(dashboard)\reports\page.tsx:8:23)
+  20 |   const user = await getSessionUser();
+  21 |   if (!user) {
+> 22 |     throw new Error("Unauthorized");
+     |           ^
+  23 |   }
+  24 |   return user;
+  25 | } {
+  digest: '3915167408'
+}
+⨯ Error: Unauthorized
+    at getRequiredDashboardSessionUser (lib\edms\session.ts:22:11)
+    at async ExtensionOfTimePage (app\(dashboard)\extension-of-time\page.tsx:16:23)
+  20 |   const user = await getSessionUser();
+  21 |   if (!user) {
+> 22 |     throw new Error("Unauthorized");
+     |           ^
+  23 |   }
+  24 |   return user;
+  25 | } {
+  digest: '4094657780'
+}
+⨯ Error: Unauthorized
+    at getRequiredDashboardSessionUser (lib\edms\session.ts:22:11)
+    at async ExtensionOfTimePage (app\(dashboard)\extension-of-time\page.tsx:16:23)
+  20 |   const user = await getSessionUser();
+  21 |   if (!user) {
+> 22 |     throw new Error("Unauthorized");
+     |           ^
+  23 |   }
+  24 |   return user;
+  25 | } {
+  digest: '4094657780'
+}
+⨯ Error: Unauthorized
+    at getRequiredDashboardSessionUser (lib\edms\session.ts:22:11)
+    at async ReportsPage (app\(dashboard)\reports\page.tsx:8:23)
+  20 |   const user = await getSessionUser();
+  21 |   if (!user) {
+> 22 |     throw new Error("Unauthorized");
+     |           ^
+  23 |   }
+  24 |   return user;
+  25 | } {
+  digest: '3915167408'
+}
+[browser] In HTML, <li> cannot be a descendant of <li>.
+This will cause a hydration error.
+
+  ...
+    <TooltipProvider data-slot="tooltip-pr..." delayDuration={0}>
+      <TooltipProviderProvider scope={undefined} isOpenDelayedRef={{current:true}} delayDuration={0} ...>
+        <div data-slot="sidebar-wr..." style={{...}} className="group/side...">
+          <AppSidebar>
+          <SidebarInset className="overflow-h...">
+            <main data-slot="sidebar-inset" className="relative f...">
+              <SiteHeader user={{name:"Demo...", ...}}>
+                <header className="absolute m...">
+                  <div className="flex w-ful...">
+                    <SidebarTrigger>
+                    <Separator>
+                    <Breadcrumb>
+                      <nav aria-label="breadcrumb" data-slot="breadcrumb">
+                        <BreadcrumbList>
+                          <ol data-slot="breadcrumb..." className="flex flex-...">
+                            <BreadcrumbItem>
+                            <BreadcrumbItem>
+>                             <li data-slot="breadcrumb-item" className="inline-flex items-center gap-1.5">
+                                <BreadcrumbSeparator>
+>                                 <li
+>                                   data-slot="breadcrumb-separator"
+>                                   role="presentation"
+>                                   aria-hidden="true"
+>                                   className={"[&>svg]:size-3.5"}
+>                                 >
+                                ...
+                    ...
+              ...
+ 
+[browser] <li> cannot contain a nested <li>.
+See this log for the ancestor stack trace. 
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+[browser] Uncaught Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+    at <unknown> (https://react.dev/link/hydration-mismatch)
+    at li (<anonymous>)
+    at BreadcrumbSeparator (components/ui/breadcrumb.tsx:72:5)
+    at <unknown> (components/site-header.tsx:200:17)
+    at Array.map (<anonymous>)
+    at SiteHeader (components/site-header.tsx:198:30)
+    at DashboardLayout (components/dashboard-layout.tsx:97:9)
+    at DashboardLayoutWrapper (app\(dashboard)\layout.tsx:34:5)
+  70 | }: React.ComponentProps<"li">) {
+  71 |   return (
+> 72 |     <li
+     |     ^
+  73 |       data-slot="breadcrumb-separator"
+  74 |       role="presentation"
+  75 |       aria-hidden="true"
+⨯ Error: Unauthorized
+    at getRequiredDashboardSessionUser (lib\edms\session.ts:22:11)
+    at async NotificationsPage (app\(dashboard)\notifications\page.tsx:24:23)
+  20 |   const user = await getSessionUser();
+  21 |   if (!user) {
+> 22 |     throw new Error("Unauthorized");
+     |           ^
+  23 |   }
+  24 |   return user;
+  25 | } {
+  digest: '3444254536'
+}
+⨯ Error: Unauthorized
+    at getRequiredDashboardSessionUser (lib\edms\session.ts:22:11)
+    at async BulkUploadPage (app\(dashboard)\bulk-upload\page.tsx:18:23)
+  20 |   const user = await getSessionUser();
+  21 |   if (!user) {
+> 22 |     throw new Error("Unauthorized");
+     |           ^
+  23 |   }
+  24 |   return user;
+  25 | } {
+  digest: '2168439824'
+}
+⨯ Error: Unauthorized
+    at getRequiredDashboardSessionUser (lib\edms\session.ts:22:11)
+    at async MatrixPage (app\(dashboard)\matrix\page.tsx:32:23)
+  20 |   const user = await getSessionUser();
+  21 |   if (!user) {
+> 22 |     throw new Error("Unauthorized");
+     |           ^
+  23 |   }
+  24 |   return user;
+  25 | } {
+  digest: '1643938986'
+}
+⨯ Error: Unauthorized
+    at getRequiredDashboardSessionUser (lib\edms\session.ts:22:11)
+    at async AuditPage (app\(dashboard)\audit\page.tsx:47:23)
+  20 |   const user = await getSessionUser();
+  21 |   if (!user) {
+> 22 |     throw new Error("Unauthorized");
+     |           ^
+  23 |   }
+  24 |   return user;
+  25 | } {
+  digest: '1111209020'
+}
+⨯ Error: Unauthorized
+    at getRequiredDashboardSessionUser (lib\edms\session.ts:22:11)
+    at async ProjectSetupPage (app\(dashboard)\config\page.tsx:28:23)
+  20 |   const user = await getSessionUser();
+  21 |   if (!user) {
+> 22 |     throw new Error("Unauthorized");
+     |           ^
+  23 |   }
+  24 |   return user;
+  25 | } {
+  digest: '3773428014'
+}
+⨯ Error: Unauthorized
+    at getRequiredDashboardSessionUser (lib\edms\session.ts:22:11)
+    at async ReportsPage (app\(dashboard)\reports\page.tsx:8:23)
+  20 |   const user = await getSessionUser();
+  21 |   if (!user) {
+> 22 |     throw new Error("Unauthorized");
+     |           ^
+  23 |   }
+  24 |   return user;
+  25 | } {
+  digest: '3915167408'
+}
+⨯ Error: Unauthorized
+    at getRequiredDashboardSessionUser (lib\edms\session.ts:22:11)
+    at async ExtensionOfTimePage (app\(dashboard)\extension-of-time\page.tsx:16:23)
+  20 |   const user = await getSessionUser();
+  21 |   if (!user) {
+> 22 |     throw new Error("Unauthorized");
+     |           ^
+  23 |   }
+  24 |   return user;
+  25 | } {
+  digest: '4094657780'
+}
+⨯ Error: Unauthorized
+    at getRequiredDashboardSessionUser (lib\edms\session.ts:22:11)
+    at async SettingsPage (app\(dashboard)\settings\page.tsx:12:24)
+  20 |   const user = await getSessionUser();
+  21 |   if (!user) {
+> 22 |     throw new Error("Unauthorized");
+     |           ^
+  23 |   }
+  24 |   return user;
+  25 | } {
+  digest: '3601784105'
+}
+error: script "dev" exited with code 58

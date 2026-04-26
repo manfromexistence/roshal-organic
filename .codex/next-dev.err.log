@@ -1,0 +1,2794 @@
+$ next dev
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+[browser] Uncaught Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <BulkUploadPage>
+      <ScrollableContent>
+        <div className="transition..." style={{...}}>
+          ...
+            <CardContent>
+              <div data-slot="card-content" className="px-6">
+                <p>
+                ...
+                  <Dialog data-slot="sheet" open={false} onOpenChange={function bound dispatchSetState}>
+                    <DialogProvider scope={undefined} triggerRef={{current:null}} contentRef={{current:null}} ...>
+                      <SheetTrigger asChild={true}>
+                        <DialogTrigger data-slot="sheet-trigger" asChild={true}>
+                          <Primitive.button type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                            <Primitive.button.Slot type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                              <Primitive.button.SlotClone type="button" aria-haspopup="dialog" aria-expanded={false} ...>
++                               <button
++                                 data-slot="button"
++                                 data-variant="default"
++                                 data-size="default"
++                                 className={"inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-..."}
++                                 type="button"
++                                 aria-haspopup="dialog"
++                                 aria-expanded={false}
++                                 aria-controls="radix-_R_ad5esnedabnalb_"
++                                 data-state="closed"
++                                 onClick={function handleEvent}
++                                 ref={function}
++                               >
+                      ...
+
+    at <unknown> (https://react.dev/link/hydration-mismatch)
+    at button (<anonymous>)
+    at Button (components\ui\button.tsx:54:5)
+    at SheetTrigger (components/ui/sheet.tsx:16:10)
+    at DocumentBulkUploadSheet (components/edms/document-bulk-upload-sheet.tsx:158:7)
+    at BulkUploadPage (app\(dashboard)\bulk-upload\page.tsx:64:15)
+  52 |
+  53 |   return (
+> 54 |     <Comp
+     |     ^
+  55 |       data-slot="button"
+  56 |       data-variant={variant}
+  57 |       data-size={size}
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+[browser] Uncaught Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <BulkUploadPage>
+      <ScrollableContent>
+        <div className="transition..." style={{...}}>
+          ...
+            <CardContent>
+              <div data-slot="card-content" className="px-6">
+                <p>
+                ...
+                  <Dialog data-slot="sheet" open={false} onOpenChange={function bound dispatchSetState}>
+                    <DialogProvider scope={undefined} triggerRef={{current:null}} contentRef={{current:null}} ...>
+                      <SheetTrigger asChild={true}>
+                        <DialogTrigger data-slot="sheet-trigger" asChild={true}>
+                          <Primitive.button type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                            <Primitive.button.Slot type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                              <Primitive.button.SlotClone type="button" aria-haspopup="dialog" aria-expanded={false} ...>
++                               <button
++                                 data-slot="button"
++                                 data-variant="default"
++                                 data-size="default"
++                                 className={"inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-..."}
++                                 type="button"
++                                 aria-haspopup="dialog"
++                                 aria-expanded={false}
++                                 aria-controls="radix-_R_ad5esnedabnalb_"
++                                 data-state="closed"
++                                 onClick={function handleEvent}
++                                 ref={function}
++                               >
+                      ...
+
+    at <unknown> (https://react.dev/link/hydration-mismatch)
+    at button (<anonymous>)
+    at Button (components\ui\button.tsx:54:5)
+    at SheetTrigger (components/ui/sheet.tsx:16:10)
+    at DocumentBulkUploadSheet (components/edms/document-bulk-upload-sheet.tsx:158:7)
+    at BulkUploadPage (app\(dashboard)\bulk-upload\page.tsx:64:15)
+  52 |
+  53 |   return (
+> 54 |     <Comp
+     |     ^
+  55 |       data-slot="button"
+  56 |       data-variant={variant}
+  57 |       data-size={size}
+[browser] Image with src "https://i.ibb.co/Ndk7T9g7/11c73cf6593c.jpg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+[browser] Uncaught Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <BulkUploadPage>
+      <ScrollableContent>
+        <div className="transition..." style={{...}}>
+          ...
+            <CardContent>
+              <div data-slot="card-content" className="px-6">
+                <p>
+                ...
+                  <Dialog data-slot="sheet" open={false} onOpenChange={function bound dispatchSetState}>
+                    <DialogProvider scope={undefined} triggerRef={{current:null}} contentRef={{current:null}} ...>
+                      <SheetTrigger asChild={true}>
+                        <DialogTrigger data-slot="sheet-trigger" asChild={true}>
+                          <Primitive.button type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                            <Primitive.button.Slot type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                              <Primitive.button.SlotClone type="button" aria-haspopup="dialog" aria-expanded={false} ...>
++                               <button
++                                 data-slot="button"
++                                 data-variant="default"
++                                 data-size="default"
++                                 className={"inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-..."}
++                                 type="button"
++                                 aria-haspopup="dialog"
++                                 aria-expanded={false}
++                                 aria-controls="radix-_R_ad5esnedabnalb_"
++                                 data-state="closed"
++                                 onClick={function handleEvent}
++                                 ref={function}
++                               >
+                      ...
+
+    at <unknown> (https://react.dev/link/hydration-mismatch)
+    at button (<anonymous>)
+    at Button (components\ui\button.tsx:54:5)
+    at SheetTrigger (components/ui/sheet.tsx:16:10)
+    at DocumentBulkUploadSheet (components/edms/document-bulk-upload-sheet.tsx:158:7)
+    at BulkUploadPage (app\(dashboard)\bulk-upload\page.tsx:64:15)
+  52 |
+  53 |   return (
+> 54 |     <Comp
+     |     ^
+  55 |       data-slot="button"
+  56 |       data-variant={variant}
+  57 |       data-size={size}
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+[browser] Uncaught Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <BulkUploadPage>
+      <ScrollableContent>
+        <div className="transition..." style={{...}}>
+          ...
+            <CardContent>
+              <div data-slot="card-content" className="px-6">
+                <p>
+                ...
+                  <Dialog data-slot="sheet" open={false} onOpenChange={function bound dispatchSetState}>
+                    <DialogProvider scope={undefined} triggerRef={{current:null}} contentRef={{current:null}} ...>
+                      <SheetTrigger asChild={true}>
+                        <DialogTrigger data-slot="sheet-trigger" asChild={true}>
+                          <Primitive.button type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                            <Primitive.button.Slot type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                              <Primitive.button.SlotClone type="button" aria-haspopup="dialog" aria-expanded={false} ...>
++                               <button
++                                 data-slot="button"
++                                 data-variant="default"
++                                 data-size="default"
++                                 className={"inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-..."}
++                                 type="button"
++                                 aria-haspopup="dialog"
++                                 aria-expanded={false}
++                                 aria-controls="radix-_R_ad5esnedabnalb_"
++                                 data-state="closed"
++                                 onClick={function handleEvent}
++                                 ref={function}
++                               >
+                      ...
+
+    at <unknown> (https://react.dev/link/hydration-mismatch)
+    at button (<anonymous>)
+    at Button (components\ui\button.tsx:54:5)
+    at SheetTrigger (components/ui/sheet.tsx:16:10)
+    at DocumentBulkUploadSheet (components/edms/document-bulk-upload-sheet.tsx:158:7)
+    at BulkUploadPage (app\(dashboard)\bulk-upload\page.tsx:64:15)
+  52 |
+  53 |   return (
+> 54 |     <Comp
+     |     ^
+  55 |       data-slot="button"
+  56 |       data-variant={variant}
+  57 |       data-size={size}
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+[browser] Uncaught Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <BulkUploadPage>
+      <ScrollableContent>
+        <div className="transition..." style={{...}}>
+          ...
+            <CardContent>
+              <div data-slot="card-content" className="px-6">
+                <p>
+                ...
+                  <Dialog data-slot="sheet" open={false} onOpenChange={function bound dispatchSetState}>
+                    <DialogProvider scope={undefined} triggerRef={{current:null}} contentRef={{current:null}} ...>
+                      <SheetTrigger asChild={true}>
+                        <DialogTrigger data-slot="sheet-trigger" asChild={true}>
+                          <Primitive.button type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                            <Primitive.button.Slot type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                              <Primitive.button.SlotClone type="button" aria-haspopup="dialog" aria-expanded={false} ...>
++                               <button
++                                 data-slot="button"
++                                 data-variant="default"
++                                 data-size="default"
++                                 className={"inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-..."}
++                                 type="button"
++                                 aria-haspopup="dialog"
++                                 aria-expanded={false}
++                                 aria-controls="radix-_R_ad5esnedabnalb_"
++                                 data-state="closed"
++                                 onClick={function handleEvent}
++                                 ref={function}
++                               >
+                      ...
+
+    at <unknown> (https://react.dev/link/hydration-mismatch)
+    at button (<anonymous>)
+    at Button (components\ui\button.tsx:54:5)
+    at SheetTrigger (components/ui/sheet.tsx:16:10)
+    at DocumentBulkUploadSheet (components/edms/document-bulk-upload-sheet.tsx:158:7)
+    at BulkUploadPage (app\(dashboard)\bulk-upload\page.tsx:64:15)
+  52 |
+  53 |   return (
+> 54 |     <Comp
+     |     ^
+  55 |       data-slot="button"
+  56 |       data-variant={variant}
+  57 |       data-size={size}
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+[browser] Uncaught Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <BulkUploadPage>
+      <ScrollableContent>
+        <div className="transition..." style={{...}}>
+          ...
+            <CardContent>
+              <div data-slot="card-content" className="px-6">
+                <p>
+                ...
+                  <Dialog data-slot="sheet" open={false} onOpenChange={function bound dispatchSetState}>
+                    <DialogProvider scope={undefined} triggerRef={{current:null}} contentRef={{current:null}} ...>
+                      <SheetTrigger asChild={true}>
+                        <DialogTrigger data-slot="sheet-trigger" asChild={true}>
+                          <Primitive.button type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                            <Primitive.button.Slot type="button" aria-haspopup="dialog" aria-expanded={false} ...>
+                              <Primitive.button.SlotClone type="button" aria-haspopup="dialog" aria-expanded={false} ...>
++                               <button
++                                 data-slot="button"
++                                 data-variant="default"
++                                 data-size="default"
++                                 className={"inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-..."}
++                                 type="button"
++                                 aria-haspopup="dialog"
++                                 aria-expanded={false}
++                                 aria-controls="radix-_R_ad5esnedabnalb_"
++                                 data-state="closed"
++                                 onClick={function handleEvent}
++                                 ref={function}
++                               >
+                      ...
+
+    at <unknown> (https://react.dev/link/hydration-mismatch)
+    at button (<anonymous>)
+    at Button (components\ui\button.tsx:54:5)
+    at SheetTrigger (components/ui/sheet.tsx:16:10)
+    at DocumentBulkUploadSheet (components/edms/document-bulk-upload-sheet.tsx:158:7)
+    at BulkUploadPage (app\(dashboard)\bulk-upload\page.tsx:64:15)
+  52 |
+  53 |   return (
+> 54 |     <Comp
+     |     ^
+  55 |       data-slot="button"
+  56 |       data-variant={variant}
+  57 |       data-size={size}
+⨯ ./app/(dashboard)/config/page.tsx:10:1
+Module not found: Can't resolve '@/lib/edms/project-config'
+  [90m 8 |[0m [36mimport[0m { [33mTabs[0m, [33mTabsContent[0m, [33mTabsList[0m, [33mTabsTrigger[0m } [36mfrom[0m [32m"@/components/ui/tabs"[0m;
+  [90m 9 |[0m [36mimport[0m { getEdmsDashboardData } [36mfrom[0m [32m"@/lib/edms/dashboard"[0m;
+[31m[1m>[0m [90m10 |[0m [36mimport[0m { getProjectConfigData } [36mfrom[0m [32m"@/lib/edms/project-config"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m11 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+  [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+
+Import map: aliased to relative './lib/edms/project-config' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:10:1
+Module not found: Can't resolve '@/lib/edms/project-config'
+  [90m 8 |[0m [36mimport[0m { [33mTabs[0m, [33mTabsContent[0m, [33mTabsList[0m, [33mTabsTrigger[0m } [36mfrom[0m [32m"@/components/ui/tabs"[0m;
+  [90m 9 |[0m [36mimport[0m { getEdmsDashboardData } [36mfrom[0m [32m"@/lib/edms/dashboard"[0m;
+[31m[1m>[0m [90m10 |[0m [36mimport[0m { getProjectConfigData } [36mfrom[0m [32m"@/lib/edms/project-config"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m11 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+  [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+
+Import map: aliased to relative './lib/edms/project-config' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:10:1
+Module not found: Can't resolve '@/lib/edms/project-config'
+  [90m 8 |[0m [36mimport[0m { [33mTabs[0m, [33mTabsContent[0m, [33mTabsList[0m, [33mTabsTrigger[0m } [36mfrom[0m [32m"@/components/ui/tabs"[0m;
+  [90m 9 |[0m [36mimport[0m { getEdmsDashboardData } [36mfrom[0m [32m"@/lib/edms/dashboard"[0m;
+[31m[1m>[0m [90m10 |[0m [36mimport[0m { getProjectConfigData } [36mfrom[0m [32m"@/lib/edms/project-config"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m11 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+  [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+
+Import map: aliased to relative './lib/edms/project-config' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:10:1
+Module not found: Can't resolve '@/lib/edms/project-config'
+  [90m 8 |[0m [36mimport[0m { [33mTabs[0m, [33mTabsContent[0m, [33mTabsList[0m, [33mTabsTrigger[0m } [36mfrom[0m [32m"@/components/ui/tabs"[0m;
+  [90m 9 |[0m [36mimport[0m { getEdmsDashboardData } [36mfrom[0m [32m"@/lib/edms/dashboard"[0m;
+[31m[1m>[0m [90m10 |[0m [36mimport[0m { getProjectConfigData } [36mfrom[0m [32m"@/lib/edms/project-config"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m11 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+  [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+
+Import map: aliased to relative './lib/edms/project-config' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:10:1
+Module not found: Can't resolve '@/lib/edms/project-config'
+  [90m 8 |[0m [36mimport[0m { [33mTabs[0m, [33mTabsContent[0m, [33mTabsList[0m, [33mTabsTrigger[0m } [36mfrom[0m [32m"@/components/ui/tabs"[0m;
+  [90m 9 |[0m [36mimport[0m { getEdmsDashboardData } [36mfrom[0m [32m"@/lib/edms/dashboard"[0m;
+[31m[1m>[0m [90m10 |[0m [36mimport[0m { getProjectConfigData } [36mfrom[0m [32m"@/lib/edms/project-config"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m11 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+  [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+
+Import map: aliased to relative './lib/edms/project-config' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[browser] ./app/(dashboard)/config/page.tsx:10:1
+Module not found: Can't resolve '@/lib/edms/project-config'
+   8 | import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+   9 | import { getEdmsDashboardData } from "@/lib/edms/dashboard";
+> 10 | import { getProjectConfigData } from "@/lib/edms/project-config";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+
+Import map: aliased to relative './lib/edms/project-config' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:10:1
+Module not found: Can't resolve '@/lib/edms/project-config'
+   8 | import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+   9 | import { getEdmsDashboardData } from "@/lib/edms/dashboard";
+> 10 | import { getProjectConfigData } from "@/lib/edms/project-config";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+
+Import map: aliased to relative './lib/edms/project-config' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:10:1
+Module not found: Can't resolve '@/lib/edms/project-config'
+   8 | import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+   9 | import { getEdmsDashboardData } from "@/lib/edms/dashboard";
+> 10 | import { getProjectConfigData } from "@/lib/edms/project-config";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+
+Import map: aliased to relative './lib/edms/project-config' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:10:1
+Module not found: Can't resolve '@/lib/edms/project-config'
+   8 | import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+   9 | import { getEdmsDashboardData } from "@/lib/edms/dashboard";
+> 10 | import { getProjectConfigData } from "@/lib/edms/project-config";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+
+Import map: aliased to relative './lib/edms/project-config' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found 
+⨯ ./app/(dashboard)/config/page.tsx:10:1
+Module not found: Can't resolve '@/lib/edms/project-config'
+  [90m 8 |[0m [36mimport[0m { [33mTabs[0m, [33mTabsContent[0m, [33mTabsList[0m, [33mTabsTrigger[0m } [36mfrom[0m [32m"@/components/ui/tabs"[0m;
+  [90m 9 |[0m [36mimport[0m { getEdmsDashboardData } [36mfrom[0m [32m"@/lib/edms/dashboard"[0m;
+[31m[1m>[0m [90m10 |[0m [36mimport[0m { getProjectConfigData } [36mfrom[0m [32m"@/lib/edms/project-config"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m11 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+  [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+
+Import map: aliased to relative './lib/edms/project-config' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:10:1
+Module not found: Can't resolve '@/lib/edms/project-config'
+  [90m 8 |[0m [36mimport[0m { [33mTabs[0m, [33mTabsContent[0m, [33mTabsList[0m, [33mTabsTrigger[0m } [36mfrom[0m [32m"@/components/ui/tabs"[0m;
+  [90m 9 |[0m [36mimport[0m { getEdmsDashboardData } [36mfrom[0m [32m"@/lib/edms/dashboard"[0m;
+[31m[1m>[0m [90m10 |[0m [36mimport[0m { getProjectConfigData } [36mfrom[0m [32m"@/lib/edms/project-config"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m11 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+  [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+
+Import map: aliased to relative './lib/edms/project-config' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[browser] Uncaught Error: ./app/(dashboard)/config/page.tsx:10:1
+Module not found: Can't resolve '@/lib/edms/project-config'
+   8 | import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+   9 | import { getEdmsDashboardData } from "@/lib/edms/dashboard";
+> 10 | import { getProjectConfigData } from "@/lib/edms/project-config";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+
+Import map: aliased to relative './lib/edms/project-config' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (Error: ./app/(dashboard)/config/page.tsx:10:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (Error: (./app/(dashboard)/config/page.tsx:10:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+[browser] ./app/(dashboard)/config/page.tsx:10:1
+Module not found: Can't resolve '@/lib/edms/project-config'
+   8 | import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+   9 | import { getEdmsDashboardData } from "@/lib/edms/dashboard";
+> 10 | import { getProjectConfigData } from "@/lib/edms/project-config";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+
+Import map: aliased to relative './lib/edms/project-config' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:10:1
+Module not found: Can't resolve '@/lib/edms/project-config'
+   8 | import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+   9 | import { getEdmsDashboardData } from "@/lib/edms/dashboard";
+> 10 | import { getProjectConfigData } from "@/lib/edms/project-config";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+
+Import map: aliased to relative './lib/edms/project-config' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] Uncaught Error: ./app/(dashboard)/config/page.tsx:10:1
+Module not found: Can't resolve '@/lib/edms/project-config'
+   8 | import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+   9 | import { getEdmsDashboardData } from "@/lib/edms/dashboard";
+> 10 | import { getProjectConfigData } from "@/lib/edms/project-config";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+
+Import map: aliased to relative './lib/edms/project-config' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (Error: ./app/(dashboard)/config/page.tsx:10:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (Error: (./app/(dashboard)/config/page.tsx:10:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+[browser] ./app/(dashboard)/config/page.tsx:10:1
+Module not found: Can't resolve '@/lib/edms/project-config'
+   8 | import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+   9 | import { getEdmsDashboardData } from "@/lib/edms/dashboard";
+> 10 | import { getProjectConfigData } from "@/lib/edms/project-config";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+
+Import map: aliased to relative './lib/edms/project-config' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:10:1
+Module not found: Can't resolve '@/lib/edms/project-config'
+   8 | import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+   9 | import { getEdmsDashboardData } from "@/lib/edms/dashboard";
+> 10 | import { getProjectConfigData } from "@/lib/edms/project-config";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+
+Import map: aliased to relative './lib/edms/project-config' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:10:1
+Module not found: Can't resolve '@/lib/edms/project-config'
+   8 | import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+   9 | import { getEdmsDashboardData } from "@/lib/edms/dashboard";
+> 10 | import { getProjectConfigData } from "@/lib/edms/project-config";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+
+Import map: aliased to relative './lib/edms/project-config' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found 
+⨯ ./app/(dashboard)/config/page.tsx:12:1
+Module not found: Can't resolve './tabs/disciplines'
+  [90m10 |[0m [36mimport[0m { getProjectConfigData } [36mfrom[0m [32m"@/lib/edms/project-config"[0m;
+  [90m11 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+[31m[1m>[0m [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:12:1
+Module not found: Can't resolve './tabs/disciplines'
+  [90m10 |[0m [36mimport[0m { getProjectConfigData } [36mfrom[0m [32m"@/lib/edms/project-config"[0m;
+  [90m11 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+[31m[1m>[0m [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:13:1
+Module not found: Can't resolve './tabs/doc-types'
+  [90m11 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+  [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+[31m[1m>[0m [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:13:1
+Module not found: Can't resolve './tabs/doc-types'
+  [90m11 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+  [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+[31m[1m>[0m [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:14:1
+Module not found: Can't resolve './tabs/general'
+  [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+[31m[1m>[0m [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:14:1
+Module not found: Can't resolve './tabs/general'
+  [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+[31m[1m>[0m [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:15:1
+Module not found: Can't resolve './tabs/numbering'
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+[31m[1m>[0m [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m18 |[0m
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:15:1
+Module not found: Can't resolve './tabs/numbering'
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+[31m[1m>[0m [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m18 |[0m
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:16:1
+Module not found: Can't resolve './tabs/stakeholders'
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+[31m[1m>[0m [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m18 |[0m
+  [90m19 |[0m [36mexport[0m [36mconst[0m metadata: [33mMetadata[0m = {
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:16:1
+Module not found: Can't resolve './tabs/stakeholders'
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+[31m[1m>[0m [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m18 |[0m
+  [90m19 |[0m [36mexport[0m [36mconst[0m metadata: [33mMetadata[0m = {
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:17:1
+Module not found: Can't resolve './tabs/workflow'
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+[31m[1m>[0m [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m18 |[0m
+  [90m19 |[0m [36mexport[0m [36mconst[0m metadata: [33mMetadata[0m = {
+  [90m20 |[0m   title: [32m"Project Setup | Quadra EDMS"[0m,
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:17:1
+Module not found: Can't resolve './tabs/workflow'
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+[31m[1m>[0m [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m18 |[0m
+  [90m19 |[0m [36mexport[0m [36mconst[0m metadata: [33mMetadata[0m = {
+  [90m20 |[0m   title: [32m"Project Setup | Quadra EDMS"[0m,
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:12:1
+Module not found: Can't resolve './tabs/disciplines'
+  [90m10 |[0m [36mimport[0m { getProjectConfigData } [36mfrom[0m [32m"@/lib/edms/project-config"[0m;
+  [90m11 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+[31m[1m>[0m [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:12:1
+Module not found: Can't resolve './tabs/disciplines'
+  [90m10 |[0m [36mimport[0m { getProjectConfigData } [36mfrom[0m [32m"@/lib/edms/project-config"[0m;
+  [90m11 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+[31m[1m>[0m [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:13:1
+Module not found: Can't resolve './tabs/doc-types'
+  [90m11 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+  [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+[31m[1m>[0m [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:13:1
+Module not found: Can't resolve './tabs/doc-types'
+  [90m11 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+  [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+[31m[1m>[0m [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:14:1
+Module not found: Can't resolve './tabs/general'
+  [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+[31m[1m>[0m [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:14:1
+Module not found: Can't resolve './tabs/general'
+  [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+[31m[1m>[0m [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:15:1
+Module not found: Can't resolve './tabs/numbering'
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+[31m[1m>[0m [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m18 |[0m
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:15:1
+Module not found: Can't resolve './tabs/numbering'
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+[31m[1m>[0m [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m18 |[0m
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:16:1
+Module not found: Can't resolve './tabs/stakeholders'
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+[31m[1m>[0m [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m18 |[0m
+  [90m19 |[0m [36mexport[0m [36mconst[0m metadata: [33mMetadata[0m = {
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:16:1
+Module not found: Can't resolve './tabs/stakeholders'
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+[31m[1m>[0m [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m18 |[0m
+  [90m19 |[0m [36mexport[0m [36mconst[0m metadata: [33mMetadata[0m = {
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:17:1
+Module not found: Can't resolve './tabs/workflow'
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+[31m[1m>[0m [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m18 |[0m
+  [90m19 |[0m [36mexport[0m [36mconst[0m metadata: [33mMetadata[0m = {
+  [90m20 |[0m   title: [32m"Project Setup | Quadra EDMS"[0m,
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:17:1
+Module not found: Can't resolve './tabs/workflow'
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+[31m[1m>[0m [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m18 |[0m
+  [90m19 |[0m [36mexport[0m [36mconst[0m metadata: [33mMetadata[0m = {
+  [90m20 |[0m   title: [32m"Project Setup | Quadra EDMS"[0m,
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:12:1
+Module not found: Can't resolve './tabs/disciplines'
+  [90m10 |[0m [36mimport[0m { getProjectConfigData } [36mfrom[0m [32m"@/lib/edms/project-config"[0m;
+  [90m11 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+[31m[1m>[0m [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:12:1
+Module not found: Can't resolve './tabs/disciplines'
+  [90m10 |[0m [36mimport[0m { getProjectConfigData } [36mfrom[0m [32m"@/lib/edms/project-config"[0m;
+  [90m11 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+[31m[1m>[0m [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:13:1
+Module not found: Can't resolve './tabs/doc-types'
+  [90m11 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+  [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+[31m[1m>[0m [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:13:1
+Module not found: Can't resolve './tabs/doc-types'
+  [90m11 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+  [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+[31m[1m>[0m [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:14:1
+Module not found: Can't resolve './tabs/general'
+  [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+[31m[1m>[0m [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:14:1
+Module not found: Can't resolve './tabs/general'
+  [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+[31m[1m>[0m [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:15:1
+Module not found: Can't resolve './tabs/numbering'
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+[31m[1m>[0m [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m18 |[0m
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:15:1
+Module not found: Can't resolve './tabs/numbering'
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+[31m[1m>[0m [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m18 |[0m
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:16:1
+Module not found: Can't resolve './tabs/stakeholders'
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+[31m[1m>[0m [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m18 |[0m
+  [90m19 |[0m [36mexport[0m [36mconst[0m metadata: [33mMetadata[0m = {
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:16:1
+Module not found: Can't resolve './tabs/stakeholders'
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+[31m[1m>[0m [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m18 |[0m
+  [90m19 |[0m [36mexport[0m [36mconst[0m metadata: [33mMetadata[0m = {
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:17:1
+Module not found: Can't resolve './tabs/workflow'
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+[31m[1m>[0m [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m18 |[0m
+  [90m19 |[0m [36mexport[0m [36mconst[0m metadata: [33mMetadata[0m = {
+  [90m20 |[0m   title: [32m"Project Setup | Quadra EDMS"[0m,
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/config/page.tsx:17:1
+Module not found: Can't resolve './tabs/workflow'
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+[31m[1m>[0m [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m18 |[0m
+  [90m19 |[0m [36mexport[0m [36mconst[0m metadata: [33mMetadata[0m = {
+  [90m20 |[0m   title: [32m"Project Setup | Quadra EDMS"[0m,
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[browser] ./app/(dashboard)/config/page.tsx:12:1
+Module not found: Can't resolve './tabs/disciplines'
+  10 | import { getProjectConfigData } from "@/lib/edms/project-config";
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+> 12 | import { ConfigDisciplines } from "./tabs/disciplines";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:13:1
+Module not found: Can't resolve './tabs/doc-types'
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+> 13 | import { ConfigDocTypes } from "./tabs/doc-types";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:14:1
+Module not found: Can't resolve './tabs/general'
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+> 14 | import { ConfigGeneral } from "./tabs/general";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:15:1
+Module not found: Can't resolve './tabs/numbering'
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+  14 | import { ConfigGeneral } from "./tabs/general";
+> 15 | import { ConfigNumbering } from "./tabs/numbering";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+  18 |
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:16:1
+Module not found: Can't resolve './tabs/stakeholders'
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+> 16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+  18 |
+  19 | export const metadata: Metadata = {
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:17:1
+Module not found: Can't resolve './tabs/workflow'
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+> 17 | import { ConfigWorkflow } from "./tabs/workflow";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  18 |
+  19 | export const metadata: Metadata = {
+  20 |   title: "Project Setup | Quadra EDMS",
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:12:1
+Module not found: Can't resolve './tabs/disciplines'
+  10 | import { getProjectConfigData } from "@/lib/edms/project-config";
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+> 12 | import { ConfigDisciplines } from "./tabs/disciplines";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:13:1
+Module not found: Can't resolve './tabs/doc-types'
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+> 13 | import { ConfigDocTypes } from "./tabs/doc-types";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:14:1
+Module not found: Can't resolve './tabs/general'
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+> 14 | import { ConfigGeneral } from "./tabs/general";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:15:1
+Module not found: Can't resolve './tabs/numbering'
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+  14 | import { ConfigGeneral } from "./tabs/general";
+> 15 | import { ConfigNumbering } from "./tabs/numbering";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+  18 |
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:16:1
+Module not found: Can't resolve './tabs/stakeholders'
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+> 16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+  18 |
+  19 | export const metadata: Metadata = {
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:17:1
+Module not found: Can't resolve './tabs/workflow'
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+> 17 | import { ConfigWorkflow } from "./tabs/workflow";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  18 |
+  19 | export const metadata: Metadata = {
+  20 |   title: "Project Setup | Quadra EDMS",
+
+https://nextjs.org/docs/messages/module-not-found 
+⨯ ./app/(dashboard)/config/page.tsx:12:1
+Module not found: Can't resolve './tabs/disciplines'
+  [90m10 |[0m [36mimport[0m { getProjectConfigData } [36mfrom[0m [32m"@/lib/edms/project-config"[0m;
+  [90m11 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+[31m[1m>[0m [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/(dashboard)/config/page.tsx:13:1
+Module not found: Can't resolve './tabs/doc-types'
+  [90m11 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+  [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+[31m[1m>[0m [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/(dashboard)/config/page.tsx:14:1
+Module not found: Can't resolve './tabs/general'
+  [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+[31m[1m>[0m [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/(dashboard)/config/page.tsx:15:1
+Module not found: Can't resolve './tabs/numbering'
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+[31m[1m>[0m [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m18 |[0m
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/(dashboard)/config/page.tsx:16:1
+Module not found: Can't resolve './tabs/stakeholders'
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+[31m[1m>[0m [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m18 |[0m
+  [90m19 |[0m [36mexport[0m [36mconst[0m metadata: [33mMetadata[0m = {
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/(dashboard)/config/page.tsx:17:1
+Module not found: Can't resolve './tabs/workflow'
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+[31m[1m>[0m [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m18 |[0m
+  [90m19 |[0m [36mexport[0m [36mconst[0m metadata: [33mMetadata[0m = {
+  [90m20 |[0m   title: [32m"Project Setup | Quadra EDMS"[0m,
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[browser] ./app/(dashboard)/config/page.tsx:12:1
+Module not found: Can't resolve './tabs/disciplines'
+  10 | import { getProjectConfigData } from "@/lib/edms/project-config";
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+> 12 | import { ConfigDisciplines } from "./tabs/disciplines";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:13:1
+Module not found: Can't resolve './tabs/doc-types'
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+> 13 | import { ConfigDocTypes } from "./tabs/doc-types";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:14:1
+Module not found: Can't resolve './tabs/general'
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+> 14 | import { ConfigGeneral } from "./tabs/general";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:15:1
+Module not found: Can't resolve './tabs/numbering'
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+  14 | import { ConfigGeneral } from "./tabs/general";
+> 15 | import { ConfigNumbering } from "./tabs/numbering";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+  18 |
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:16:1
+Module not found: Can't resolve './tabs/stakeholders'
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+> 16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+  18 |
+  19 | export const metadata: Metadata = {
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:17:1
+Module not found: Can't resolve './tabs/workflow'
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+> 17 | import { ConfigWorkflow } from "./tabs/workflow";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  18 |
+  19 | export const metadata: Metadata = {
+  20 |   title: "Project Setup | Quadra EDMS",
+
+https://nextjs.org/docs/messages/module-not-found 
+⨯ ./app/(dashboard)/config/page.tsx:12:1
+Module not found: Can't resolve './tabs/disciplines'
+  [90m10 |[0m [36mimport[0m { getProjectConfigData } [36mfrom[0m [32m"@/lib/edms/project-config"[0m;
+  [90m11 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+[31m[1m>[0m [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/(dashboard)/config/page.tsx:13:1
+Module not found: Can't resolve './tabs/doc-types'
+  [90m11 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+  [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+[31m[1m>[0m [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/(dashboard)/config/page.tsx:14:1
+Module not found: Can't resolve './tabs/general'
+  [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+[31m[1m>[0m [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/(dashboard)/config/page.tsx:15:1
+Module not found: Can't resolve './tabs/numbering'
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+[31m[1m>[0m [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m18 |[0m
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/(dashboard)/config/page.tsx:16:1
+Module not found: Can't resolve './tabs/stakeholders'
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+[31m[1m>[0m [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m18 |[0m
+  [90m19 |[0m [36mexport[0m [36mconst[0m metadata: [33mMetadata[0m = {
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/(dashboard)/config/page.tsx:17:1
+Module not found: Can't resolve './tabs/workflow'
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+[31m[1m>[0m [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m18 |[0m
+  [90m19 |[0m [36mexport[0m [36mconst[0m metadata: [33mMetadata[0m = {
+  [90m20 |[0m   title: [32m"Project Setup | Quadra EDMS"[0m,
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[browser] ./app/(dashboard)/config/page.tsx:12:1
+Module not found: Can't resolve './tabs/disciplines'
+  10 | import { getProjectConfigData } from "@/lib/edms/project-config";
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+> 12 | import { ConfigDisciplines } from "./tabs/disciplines";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:13:1
+Module not found: Can't resolve './tabs/doc-types'
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+> 13 | import { ConfigDocTypes } from "./tabs/doc-types";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:14:1
+Module not found: Can't resolve './tabs/general'
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+> 14 | import { ConfigGeneral } from "./tabs/general";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:15:1
+Module not found: Can't resolve './tabs/numbering'
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+  14 | import { ConfigGeneral } from "./tabs/general";
+> 15 | import { ConfigNumbering } from "./tabs/numbering";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+  18 |
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:16:1
+Module not found: Can't resolve './tabs/stakeholders'
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+> 16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+  18 |
+  19 | export const metadata: Metadata = {
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:17:1
+Module not found: Can't resolve './tabs/workflow'
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+> 17 | import { ConfigWorkflow } from "./tabs/workflow";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  18 |
+  19 | export const metadata: Metadata = {
+  20 |   title: "Project Setup | Quadra EDMS",
+
+https://nextjs.org/docs/messages/module-not-found 
+⨯ ./app/(dashboard)/config/page.tsx:12:1
+Module not found: Can't resolve './tabs/disciplines'
+  [90m10 |[0m [36mimport[0m { getProjectConfigData } [36mfrom[0m [32m"@/lib/edms/project-config"[0m;
+  [90m11 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+[31m[1m>[0m [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/(dashboard)/config/page.tsx:13:1
+Module not found: Can't resolve './tabs/doc-types'
+  [90m11 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+  [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+[31m[1m>[0m [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/(dashboard)/config/page.tsx:14:1
+Module not found: Can't resolve './tabs/general'
+  [90m12 |[0m [36mimport[0m { [33mConfigDisciplines[0m } [36mfrom[0m [32m"./tabs/disciplines"[0m;
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+[31m[1m>[0m [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/(dashboard)/config/page.tsx:15:1
+Module not found: Can't resolve './tabs/numbering'
+  [90m13 |[0m [36mimport[0m { [33mConfigDocTypes[0m } [36mfrom[0m [32m"./tabs/doc-types"[0m;
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+[31m[1m>[0m [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m18 |[0m
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/(dashboard)/config/page.tsx:16:1
+Module not found: Can't resolve './tabs/stakeholders'
+  [90m14 |[0m [36mimport[0m { [33mConfigGeneral[0m } [36mfrom[0m [32m"./tabs/general"[0m;
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+[31m[1m>[0m [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m18 |[0m
+  [90m19 |[0m [36mexport[0m [36mconst[0m metadata: [33mMetadata[0m = {
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+
+./app/(dashboard)/config/page.tsx:17:1
+Module not found: Can't resolve './tabs/workflow'
+  [90m15 |[0m [36mimport[0m { [33mConfigNumbering[0m } [36mfrom[0m [32m"./tabs/numbering"[0m;
+  [90m16 |[0m [36mimport[0m { [33mConfigStakeholders[0m } [36mfrom[0m [32m"./tabs/stakeholders"[0m;
+[31m[1m>[0m [90m17 |[0m [36mimport[0m { [33mConfigWorkflow[0m } [36mfrom[0m [32m"./tabs/workflow"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m18 |[0m
+  [90m19 |[0m [36mexport[0m [36mconst[0m metadata: [33mMetadata[0m = {
+  [90m20 |[0m   title: [32m"Project Setup | Quadra EDMS"[0m,
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[browser] ./app/(dashboard)/config/page.tsx:12:1
+Module not found: Can't resolve './tabs/disciplines'
+  10 | import { getProjectConfigData } from "@/lib/edms/project-config";
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+> 12 | import { ConfigDisciplines } from "./tabs/disciplines";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:13:1
+Module not found: Can't resolve './tabs/doc-types'
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+> 13 | import { ConfigDocTypes } from "./tabs/doc-types";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:14:1
+Module not found: Can't resolve './tabs/general'
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+> 14 | import { ConfigGeneral } from "./tabs/general";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:15:1
+Module not found: Can't resolve './tabs/numbering'
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+  14 | import { ConfigGeneral } from "./tabs/general";
+> 15 | import { ConfigNumbering } from "./tabs/numbering";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+  18 |
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:16:1
+Module not found: Can't resolve './tabs/stakeholders'
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+> 16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+  18 |
+  19 | export const metadata: Metadata = {
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:17:1
+Module not found: Can't resolve './tabs/workflow'
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+> 17 | import { ConfigWorkflow } from "./tabs/workflow";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  18 |
+  19 | export const metadata: Metadata = {
+  20 |   title: "Project Setup | Quadra EDMS",
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] Uncaught Error: ./app/(dashboard)/config/page.tsx:12:1
+Module not found: Can't resolve './tabs/disciplines'
+  10 | import { getProjectConfigData } from "@/lib/edms/project-config";
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+> 12 | import { ConfigDisciplines } from "./tabs/disciplines";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (Error: ./app/(dashboard)/config/page.tsx:12:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (Error: (./app/(dashboard)/config/page.tsx:12:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+[browser] ./app/(dashboard)/config/page.tsx:12:1
+Module not found: Can't resolve './tabs/disciplines'
+  10 | import { getProjectConfigData } from "@/lib/edms/project-config";
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+> 12 | import { ConfigDisciplines } from "./tabs/disciplines";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:13:1
+Module not found: Can't resolve './tabs/doc-types'
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+> 13 | import { ConfigDocTypes } from "./tabs/doc-types";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:14:1
+Module not found: Can't resolve './tabs/general'
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+> 14 | import { ConfigGeneral } from "./tabs/general";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:15:1
+Module not found: Can't resolve './tabs/numbering'
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+  14 | import { ConfigGeneral } from "./tabs/general";
+> 15 | import { ConfigNumbering } from "./tabs/numbering";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+  18 |
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:16:1
+Module not found: Can't resolve './tabs/stakeholders'
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+> 16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+  18 |
+  19 | export const metadata: Metadata = {
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:17:1
+Module not found: Can't resolve './tabs/workflow'
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+> 17 | import { ConfigWorkflow } from "./tabs/workflow";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  18 |
+  19 | export const metadata: Metadata = {
+  20 |   title: "Project Setup | Quadra EDMS",
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] Uncaught Error: ./app/(dashboard)/config/page.tsx:12:1
+Module not found: Can't resolve './tabs/disciplines'
+  10 | import { getProjectConfigData } from "@/lib/edms/project-config";
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+> 12 | import { ConfigDisciplines } from "./tabs/disciplines";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (Error: ./app/(dashboard)/config/page.tsx:12:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (Error: (./app/(dashboard)/config/page.tsx:12:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+[browser] ./app/(dashboard)/config/page.tsx:12:1
+Module not found: Can't resolve './tabs/disciplines'
+  10 | import { getProjectConfigData } from "@/lib/edms/project-config";
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+> 12 | import { ConfigDisciplines } from "./tabs/disciplines";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:13:1
+Module not found: Can't resolve './tabs/doc-types'
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+> 13 | import { ConfigDocTypes } from "./tabs/doc-types";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:14:1
+Module not found: Can't resolve './tabs/general'
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+> 14 | import { ConfigGeneral } from "./tabs/general";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:15:1
+Module not found: Can't resolve './tabs/numbering'
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+  14 | import { ConfigGeneral } from "./tabs/general";
+> 15 | import { ConfigNumbering } from "./tabs/numbering";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+  18 |
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:16:1
+Module not found: Can't resolve './tabs/stakeholders'
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+> 16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+  18 |
+  19 | export const metadata: Metadata = {
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:17:1
+Module not found: Can't resolve './tabs/workflow'
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+> 17 | import { ConfigWorkflow } from "./tabs/workflow";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  18 |
+  19 | export const metadata: Metadata = {
+  20 |   title: "Project Setup | Quadra EDMS",
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:12:1
+Module not found: Can't resolve './tabs/disciplines'
+  10 | import { getProjectConfigData } from "@/lib/edms/project-config";
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+> 12 | import { ConfigDisciplines } from "./tabs/disciplines";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:13:1
+Module not found: Can't resolve './tabs/doc-types'
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+> 13 | import { ConfigDocTypes } from "./tabs/doc-types";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:14:1
+Module not found: Can't resolve './tabs/general'
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+> 14 | import { ConfigGeneral } from "./tabs/general";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:15:1
+Module not found: Can't resolve './tabs/numbering'
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+  14 | import { ConfigGeneral } from "./tabs/general";
+> 15 | import { ConfigNumbering } from "./tabs/numbering";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+  18 |
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:16:1
+Module not found: Can't resolve './tabs/stakeholders'
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+> 16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+  18 |
+  19 | export const metadata: Metadata = {
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:17:1
+Module not found: Can't resolve './tabs/workflow'
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+> 17 | import { ConfigWorkflow } from "./tabs/workflow";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  18 |
+  19 | export const metadata: Metadata = {
+  20 |   title: "Project Setup | Quadra EDMS",
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:12:1
+Module not found: Can't resolve './tabs/disciplines'
+  10 | import { getProjectConfigData } from "@/lib/edms/project-config";
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+> 12 | import { ConfigDisciplines } from "./tabs/disciplines";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:13:1
+Module not found: Can't resolve './tabs/doc-types'
+  11 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+> 13 | import { ConfigDocTypes } from "./tabs/doc-types";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:14:1
+Module not found: Can't resolve './tabs/general'
+  12 | import { ConfigDisciplines } from "./tabs/disciplines";
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+> 14 | import { ConfigGeneral } from "./tabs/general";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:15:1
+Module not found: Can't resolve './tabs/numbering'
+  13 | import { ConfigDocTypes } from "./tabs/doc-types";
+  14 | import { ConfigGeneral } from "./tabs/general";
+> 15 | import { ConfigNumbering } from "./tabs/numbering";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+  18 |
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:16:1
+Module not found: Can't resolve './tabs/stakeholders'
+  14 | import { ConfigGeneral } from "./tabs/general";
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+> 16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { ConfigWorkflow } from "./tabs/workflow";
+  18 |
+  19 | export const metadata: Metadata = {
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/config/page.tsx:17:1
+Module not found: Can't resolve './tabs/workflow'
+  15 | import { ConfigNumbering } from "./tabs/numbering";
+  16 | import { ConfigStakeholders } from "./tabs/stakeholders";
+> 17 | import { ConfigWorkflow } from "./tabs/workflow";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  18 |
+  19 | export const metadata: Metadata = {
+  20 |   title: "Project Setup | Quadra EDMS",
+
+https://nextjs.org/docs/messages/module-not-found 
+⨯ ./app/(dashboard)/reports/page.tsx:6:1
+Module not found: Can't resolve './report-modal-client'
+  [90m4 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+  [90m5 |[0m [36mimport[0m { getTransmittals } [36mfrom[0m [32m"@/lib/edms/transmittals"[0m;
+[31m[1m>[0m [90m6 |[0m [36mimport[0m { [33mReportModalClient[0m } [36mfrom[0m [32m"./report-modal-client"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m7 |[0m
+  [90m8 |[0m [36mexport[0m [36mconst[0m metadata: [33mMetadata[0m = {
+  [90m9 |[0m   title: [32m"Reports | Quadra EDMS"[0m,
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/reports/page.tsx:6:1
+Module not found: Can't resolve './report-modal-client'
+  [90m4 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+  [90m5 |[0m [36mimport[0m { getTransmittals } [36mfrom[0m [32m"@/lib/edms/transmittals"[0m;
+[31m[1m>[0m [90m6 |[0m [36mimport[0m { [33mReportModalClient[0m } [36mfrom[0m [32m"./report-modal-client"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m7 |[0m
+  [90m8 |[0m [36mexport[0m [36mconst[0m metadata: [33mMetadata[0m = {
+  [90m9 |[0m   title: [32m"Reports | Quadra EDMS"[0m,
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[browser] ./app/(dashboard)/reports/page.tsx:6:1
+Module not found: Can't resolve './report-modal-client'
+  4 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  5 | import { getTransmittals } from "@/lib/edms/transmittals";
+> 6 | import { ReportModalClient } from "./report-modal-client";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 |
+  8 | export const metadata: Metadata = {
+  9 |   title: "Reports | Quadra EDMS",
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/reports/page.tsx:6:1
+Module not found: Can't resolve './report-modal-client'
+  4 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  5 | import { getTransmittals } from "@/lib/edms/transmittals";
+> 6 | import { ReportModalClient } from "./report-modal-client";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 |
+  8 | export const metadata: Metadata = {
+  9 |   title: "Reports | Quadra EDMS",
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/reports/page.tsx:6:1
+Module not found: Can't resolve './report-modal-client'
+  4 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  5 | import { getTransmittals } from "@/lib/edms/transmittals";
+> 6 | import { ReportModalClient } from "./report-modal-client";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 |
+  8 | export const metadata: Metadata = {
+  9 |   title: "Reports | Quadra EDMS",
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/reports/page.tsx:6:1
+Module not found: Can't resolve './report-modal-client'
+  4 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  5 | import { getTransmittals } from "@/lib/edms/transmittals";
+> 6 | import { ReportModalClient } from "./report-modal-client";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 |
+  8 | export const metadata: Metadata = {
+  9 |   title: "Reports | Quadra EDMS",
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/reports/page.tsx:6:1
+Module not found: Can't resolve './report-modal-client'
+  4 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  5 | import { getTransmittals } from "@/lib/edms/transmittals";
+> 6 | import { ReportModalClient } from "./report-modal-client";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 |
+  8 | export const metadata: Metadata = {
+  9 |   title: "Reports | Quadra EDMS",
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/reports/page.tsx:6:1
+Module not found: Can't resolve './report-modal-client'
+  4 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  5 | import { getTransmittals } from "@/lib/edms/transmittals";
+> 6 | import { ReportModalClient } from "./report-modal-client";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 |
+  8 | export const metadata: Metadata = {
+  9 |   title: "Reports | Quadra EDMS",
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/reports/page.tsx:6:1
+Module not found: Can't resolve './report-modal-client'
+  4 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  5 | import { getTransmittals } from "@/lib/edms/transmittals";
+> 6 | import { ReportModalClient } from "./report-modal-client";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 |
+  8 | export const metadata: Metadata = {
+  9 |   title: "Reports | Quadra EDMS",
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] Uncaught Error: ./app/(dashboard)/reports/page.tsx:6:1
+Module not found: Can't resolve './report-modal-client'
+  4 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  5 | import { getTransmittals } from "@/lib/edms/transmittals";
+> 6 | import { ReportModalClient } from "./report-modal-client";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 |
+  8 | export const metadata: Metadata = {
+  9 |   title: "Reports | Quadra EDMS",
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (Error: ./app/(dashboard)/reports/page.tsx:6:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (Error: (./app/(dashboard)/reports/page.tsx:6:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+[browser] ./app/(dashboard)/reports/page.tsx:6:1
+Module not found: Can't resolve './report-modal-client'
+  4 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  5 | import { getTransmittals } from "@/lib/edms/transmittals";
+> 6 | import { ReportModalClient } from "./report-modal-client";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 |
+  8 | export const metadata: Metadata = {
+  9 |   title: "Reports | Quadra EDMS",
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/reports/page.tsx:6:1
+Module not found: Can't resolve './report-modal-client'
+  4 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  5 | import { getTransmittals } from "@/lib/edms/transmittals";
+> 6 | import { ReportModalClient } from "./report-modal-client";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 |
+  8 | export const metadata: Metadata = {
+  9 |   title: "Reports | Quadra EDMS",
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] Uncaught Error: ./app/(dashboard)/reports/page.tsx:6:1
+Module not found: Can't resolve './report-modal-client'
+  4 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  5 | import { getTransmittals } from "@/lib/edms/transmittals";
+> 6 | import { ReportModalClient } from "./report-modal-client";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 |
+  8 | export const metadata: Metadata = {
+  9 |   title: "Reports | Quadra EDMS",
+
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (Error: ./app/(dashboard)/reports/page.tsx:6:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (Error: (./app/(dashboard)/reports/page.tsx:6:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+[browser] ./app/(dashboard)/reports/page.tsx:6:1
+Module not found: Can't resolve './report-modal-client'
+  4 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  5 | import { getTransmittals } from "@/lib/edms/transmittals";
+> 6 | import { ReportModalClient } from "./report-modal-client";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 |
+  8 | export const metadata: Metadata = {
+  9 |   title: "Reports | Quadra EDMS",
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/reports/page.tsx:6:1
+Module not found: Can't resolve './report-modal-client'
+  4 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  5 | import { getTransmittals } from "@/lib/edms/transmittals";
+> 6 | import { ReportModalClient } from "./report-modal-client";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 |
+  8 | export const metadata: Metadata = {
+  9 |   title: "Reports | Quadra EDMS",
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/reports/page.tsx:6:1
+Module not found: Can't resolve './report-modal-client'
+  4 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  5 | import { getTransmittals } from "@/lib/edms/transmittals";
+> 6 | import { ReportModalClient } from "./report-modal-client";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 |
+  8 | export const metadata: Metadata = {
+  9 |   title: "Reports | Quadra EDMS",
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/reports/page.tsx:6:1
+Module not found: Can't resolve './report-modal-client'
+  4 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  5 | import { getTransmittals } from "@/lib/edms/transmittals";
+> 6 | import { ReportModalClient } from "./report-modal-client";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 |
+  8 | export const metadata: Metadata = {
+  9 |   title: "Reports | Quadra EDMS",
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/reports/page.tsx:6:1
+Module not found: Can't resolve './report-modal-client'
+  4 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  5 | import { getTransmittals } from "@/lib/edms/transmittals";
+> 6 | import { ReportModalClient } from "./report-modal-client";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 |
+  8 | export const metadata: Metadata = {
+  9 |   title: "Reports | Quadra EDMS",
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/reports/page.tsx:6:1
+Module not found: Can't resolve './report-modal-client'
+  4 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+  5 | import { getTransmittals } from "@/lib/edms/transmittals";
+> 6 | import { ReportModalClient } from "./report-modal-client";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 |
+  8 | export const metadata: Metadata = {
+  9 |   title: "Reports | Quadra EDMS",
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+⨯ ./app/(dashboard)/reports/report-modal-client.tsx:16:1
+Module not found: Can't resolve '@/components/edms/report-modal'
+  [90m14 |[0m [36mimport[0m { useMemo, useState } [36mfrom[0m [32m"react"[0m;
+  [90m15 |[0m [36mimport[0m { formatEdmsLabel } [36mfrom[0m [32m"@/components/edms/status-badge"[0m;
+[31m[1m>[0m [90m16 |[0m [36mimport[0m { [33mReportModal[0m } [36mfrom[0m [32m"@/components/edms/report-modal"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m17 |[0m [36mimport[0m { [33mErrorFallback[0m } [36mfrom[0m [32m"@/components/error-fallback"[0m;
+  [90m18 |[0m [36mimport[0m { [33mScrollableContent[0m } [36mfrom[0m [32m"@/components/scrollable-content"[0m;
+  [90m19 |[0m [36mimport[0m { [33mBadge[0m } [36mfrom[0m [32m"@/components/ui/badge"[0m;
+
+Import map: aliased to relative './components/edms/report-modal' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./app/(dashboard)/reports/report-modal-client.tsx
+    ./app/(dashboard)/reports/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/reports/report-modal-client.tsx:16:1
+Module not found: Can't resolve '@/components/edms/report-modal'
+  [90m14 |[0m [36mimport[0m { useMemo, useState } [36mfrom[0m [32m"react"[0m;
+  [90m15 |[0m [36mimport[0m { formatEdmsLabel } [36mfrom[0m [32m"@/components/edms/status-badge"[0m;
+[31m[1m>[0m [90m16 |[0m [36mimport[0m { [33mReportModal[0m } [36mfrom[0m [32m"@/components/edms/report-modal"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m17 |[0m [36mimport[0m { [33mErrorFallback[0m } [36mfrom[0m [32m"@/components/error-fallback"[0m;
+  [90m18 |[0m [36mimport[0m { [33mScrollableContent[0m } [36mfrom[0m [32m"@/components/scrollable-content"[0m;
+  [90m19 |[0m [36mimport[0m { [33mBadge[0m } [36mfrom[0m [32m"@/components/ui/badge"[0m;
+
+Import map: aliased to relative './components/edms/report-modal' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./app/(dashboard)/reports/report-modal-client.tsx
+    ./app/(dashboard)/reports/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/reports/report-modal-client.tsx:16:1
+Module not found: Can't resolve '@/components/edms/report-modal'
+  [90m14 |[0m [36mimport[0m { useMemo, useState } [36mfrom[0m [32m"react"[0m;
+  [90m15 |[0m [36mimport[0m { formatEdmsLabel } [36mfrom[0m [32m"@/components/edms/status-badge"[0m;
+[31m[1m>[0m [90m16 |[0m [36mimport[0m { [33mReportModal[0m } [36mfrom[0m [32m"@/components/edms/report-modal"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m17 |[0m [36mimport[0m { [33mErrorFallback[0m } [36mfrom[0m [32m"@/components/error-fallback"[0m;
+  [90m18 |[0m [36mimport[0m { [33mScrollableContent[0m } [36mfrom[0m [32m"@/components/scrollable-content"[0m;
+  [90m19 |[0m [36mimport[0m { [33mBadge[0m } [36mfrom[0m [32m"@/components/ui/badge"[0m;
+
+Import map: aliased to relative './components/edms/report-modal' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./app/(dashboard)/reports/report-modal-client.tsx
+    ./app/(dashboard)/reports/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/reports/report-modal-client.tsx:16:1
+Module not found: Can't resolve '@/components/edms/report-modal'
+  [90m14 |[0m [36mimport[0m { useMemo, useState } [36mfrom[0m [32m"react"[0m;
+  [90m15 |[0m [36mimport[0m { formatEdmsLabel } [36mfrom[0m [32m"@/components/edms/status-badge"[0m;
+[31m[1m>[0m [90m16 |[0m [36mimport[0m { [33mReportModal[0m } [36mfrom[0m [32m"@/components/edms/report-modal"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m17 |[0m [36mimport[0m { [33mErrorFallback[0m } [36mfrom[0m [32m"@/components/error-fallback"[0m;
+  [90m18 |[0m [36mimport[0m { [33mScrollableContent[0m } [36mfrom[0m [32m"@/components/scrollable-content"[0m;
+  [90m19 |[0m [36mimport[0m { [33mBadge[0m } [36mfrom[0m [32m"@/components/ui/badge"[0m;
+
+Import map: aliased to relative './components/edms/report-modal' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./app/(dashboard)/reports/report-modal-client.tsx
+    ./app/(dashboard)/reports/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] ./app/(dashboard)/reports/report-modal-client.tsx:16:1
+Module not found: Can't resolve '@/components/edms/report-modal'
+  14 | import { useMemo, useState } from "react";
+  15 | import { formatEdmsLabel } from "@/components/edms/status-badge";
+> 16 | import { ReportModal } from "@/components/edms/report-modal";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { ErrorFallback } from "@/components/error-fallback";
+  18 | import { ScrollableContent } from "@/components/scrollable-content";
+  19 | import { Badge } from "@/components/ui/badge";
+
+Import map: aliased to relative './components/edms/report-modal' inside of [project]/
+
+Import trace:
+  Server Component:
+    ./app/(dashboard)/reports/report-modal-client.tsx
+    ./app/(dashboard)/reports/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] ./app/(dashboard)/reports/report-modal-client.tsx:16:1
+Module not found: Can't resolve '@/components/edms/report-modal'
+  14 | import { useMemo, useState } from "react";
+  15 | import { formatEdmsLabel } from "@/components/edms/status-badge";
+> 16 | import { ReportModal } from "@/components/edms/report-modal";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { ErrorFallback } from "@/components/error-fallback";
+  18 | import { ScrollableContent } from "@/components/scrollable-content";
+  19 | import { Badge } from "@/components/ui/badge";
+
+Import map: aliased to relative './components/edms/report-modal' inside of [project]/
+
+Import trace:
+  Server Component:
+    ./app/(dashboard)/reports/report-modal-client.tsx
+    ./app/(dashboard)/reports/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/reports/report-modal-client.tsx:16:1
+Module not found: Can't resolve '@/components/edms/report-modal'
+  14 | import { useMemo, useState } from "react";
+  15 | import { formatEdmsLabel } from "@/components/edms/status-badge";
+> 16 | import { ReportModal } from "@/components/edms/report-modal";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { ErrorFallback } from "@/components/error-fallback";
+  18 | import { ScrollableContent } from "@/components/scrollable-content";
+  19 | import { Badge } from "@/components/ui/badge";
+
+Import map: aliased to relative './components/edms/report-modal' inside of [project]/
+
+Import trace:
+  Server Component:
+    ./app/(dashboard)/reports/report-modal-client.tsx
+    ./app/(dashboard)/reports/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] Uncaught Error: ./app/(dashboard)/reports/report-modal-client.tsx:16:1
+Module not found: Can't resolve '@/components/edms/report-modal'
+  14 | import { useMemo, useState } from "react";
+  15 | import { formatEdmsLabel } from "@/components/edms/status-badge";
+> 16 | import { ReportModal } from "@/components/edms/report-modal";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { ErrorFallback } from "@/components/error-fallback";
+  18 | import { ScrollableContent } from "@/components/scrollable-content";
+  19 | import { Badge } from "@/components/ui/badge";
+
+Import map: aliased to relative './components/edms/report-modal' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./app/(dashboard)/reports/report-modal-client.tsx
+    ./app/(dashboard)/reports/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (Error: ./app/(dashboard)/reports/report-modal-client.tsx:16:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (Error: (./app/(dashboard)/reports/report-modal-client.tsx:16:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+[browser] ./app/(dashboard)/reports/report-modal-client.tsx:16:1
+Module not found: Can't resolve '@/components/edms/report-modal'
+  14 | import { useMemo, useState } from "react";
+  15 | import { formatEdmsLabel } from "@/components/edms/status-badge";
+> 16 | import { ReportModal } from "@/components/edms/report-modal";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { ErrorFallback } from "@/components/error-fallback";
+  18 | import { ScrollableContent } from "@/components/scrollable-content";
+  19 | import { Badge } from "@/components/ui/badge";
+
+Import map: aliased to relative './components/edms/report-modal' inside of [project]/
+
+Import trace:
+  Server Component:
+    ./app/(dashboard)/reports/report-modal-client.tsx
+    ./app/(dashboard)/reports/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/reports/report-modal-client.tsx:16:1
+Module not found: Can't resolve '@/components/edms/report-modal'
+  14 | import { useMemo, useState } from "react";
+  15 | import { formatEdmsLabel } from "@/components/edms/status-badge";
+> 16 | import { ReportModal } from "@/components/edms/report-modal";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { ErrorFallback } from "@/components/error-fallback";
+  18 | import { ScrollableContent } from "@/components/scrollable-content";
+  19 | import { Badge } from "@/components/ui/badge";
+
+Import map: aliased to relative './components/edms/report-modal' inside of [project]/
+
+Import trace:
+  Server Component:
+    ./app/(dashboard)/reports/report-modal-client.tsx
+    ./app/(dashboard)/reports/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/reports/report-modal-client.tsx:16:1
+Module not found: Can't resolve '@/components/edms/report-modal'
+  14 | import { useMemo, useState } from "react";
+  15 | import { formatEdmsLabel } from "@/components/edms/status-badge";
+> 16 | import { ReportModal } from "@/components/edms/report-modal";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { ErrorFallback } from "@/components/error-fallback";
+  18 | import { ScrollableContent } from "@/components/scrollable-content";
+  19 | import { Badge } from "@/components/ui/badge";
+
+Import map: aliased to relative './components/edms/report-modal' inside of [project]/
+
+Import trace:
+  Server Component:
+    ./app/(dashboard)/reports/report-modal-client.tsx
+    ./app/(dashboard)/reports/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+⨯ ./app/(dashboard)/submittals/page.tsx:3:1
+Module not found: Can't resolve '@/components/submittals-table'
+  [90m1 |[0m [36mimport[0m [36mtype[0m { [33mMetadata[0m } [36mfrom[0m [32m"next"[0m;
+  [90m2 |[0m [36mimport[0m { [33mScrollableContent[0m } [36mfrom[0m [32m"@/components/scrollable-content"[0m;
+[31m[1m>[0m [90m3 |[0m [36mimport[0m { [33mSubmittalsTable[0m } [36mfrom[0m [32m"@/components/submittals-table"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m4 |[0m [36mimport[0m { [33mCard[0m, [33mCardContent[0m, [33mCardHeader[0m, [33mCardTitle[0m } [36mfrom[0m [32m"@/components/ui/card"[0m;
+  [90m5 |[0m [36mimport[0m { getFirstAccessibleProjectId } [36mfrom[0m [32m"@/lib/edms/access"[0m;
+  [90m6 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+
+Import map: aliased to relative './components/submittals-table' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/(dashboard)/submittals/page.tsx:3:1
+Module not found: Can't resolve '@/components/submittals-table'
+  [90m1 |[0m [36mimport[0m [36mtype[0m { [33mMetadata[0m } [36mfrom[0m [32m"next"[0m;
+  [90m2 |[0m [36mimport[0m { [33mScrollableContent[0m } [36mfrom[0m [32m"@/components/scrollable-content"[0m;
+[31m[1m>[0m [90m3 |[0m [36mimport[0m { [33mSubmittalsTable[0m } [36mfrom[0m [32m"@/components/submittals-table"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m4 |[0m [36mimport[0m { [33mCard[0m, [33mCardContent[0m, [33mCardHeader[0m, [33mCardTitle[0m } [36mfrom[0m [32m"@/components/ui/card"[0m;
+  [90m5 |[0m [36mimport[0m { getFirstAccessibleProjectId } [36mfrom[0m [32m"@/lib/edms/access"[0m;
+  [90m6 |[0m [36mimport[0m { getRequiredDashboardSessionUser } [36mfrom[0m [32m"@/lib/edms/session"[0m;
+
+Import map: aliased to relative './components/submittals-table' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] ./app/(dashboard)/submittals/page.tsx:3:1
+Module not found: Can't resolve '@/components/submittals-table'
+  1 | import type { Metadata } from "next";
+  2 | import { ScrollableContent } from "@/components/scrollable-content";
+> 3 | import { SubmittalsTable } from "@/components/submittals-table";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  4 | import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+  5 | import { getFirstAccessibleProjectId } from "@/lib/edms/access";
+  6 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+
+Import map: aliased to relative './components/submittals-table' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] ./app/(dashboard)/submittals/page.tsx:3:1
+Module not found: Can't resolve '@/components/submittals-table'
+  1 | import type { Metadata } from "next";
+  2 | import { ScrollableContent } from "@/components/scrollable-content";
+> 3 | import { SubmittalsTable } from "@/components/submittals-table";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  4 | import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+  5 | import { getFirstAccessibleProjectId } from "@/lib/edms/access";
+  6 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+
+Import map: aliased to relative './components/submittals-table' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/submittals/page.tsx:3:1
+Module not found: Can't resolve '@/components/submittals-table'
+  1 | import type { Metadata } from "next";
+  2 | import { ScrollableContent } from "@/components/scrollable-content";
+> 3 | import { SubmittalsTable } from "@/components/submittals-table";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  4 | import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+  5 | import { getFirstAccessibleProjectId } from "@/lib/edms/access";
+  6 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+
+Import map: aliased to relative './components/submittals-table' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/submittals/page.tsx:3:1
+Module not found: Can't resolve '@/components/submittals-table'
+  1 | import type { Metadata } from "next";
+  2 | import { ScrollableContent } from "@/components/scrollable-content";
+> 3 | import { SubmittalsTable } from "@/components/submittals-table";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  4 | import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+  5 | import { getFirstAccessibleProjectId } from "@/lib/edms/access";
+  6 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+
+Import map: aliased to relative './components/submittals-table' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/submittals/page.tsx:3:1
+Module not found: Can't resolve '@/components/submittals-table'
+  1 | import type { Metadata } from "next";
+  2 | import { ScrollableContent } from "@/components/scrollable-content";
+> 3 | import { SubmittalsTable } from "@/components/submittals-table";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  4 | import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+  5 | import { getFirstAccessibleProjectId } from "@/lib/edms/access";
+  6 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+
+Import map: aliased to relative './components/submittals-table' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] Uncaught Error: ./app/(dashboard)/submittals/page.tsx:3:1
+Module not found: Can't resolve '@/components/submittals-table'
+  1 | import type { Metadata } from "next";
+  2 | import { ScrollableContent } from "@/components/scrollable-content";
+> 3 | import { SubmittalsTable } from "@/components/submittals-table";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  4 | import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+  5 | import { getFirstAccessibleProjectId } from "@/lib/edms/access";
+  6 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+
+Import map: aliased to relative './components/submittals-table' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (Error: ./app/(dashboard)/submittals/page.tsx:3:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (Error: (./app/(dashboard)/submittals/page.tsx:3:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+[browser] ./app/(dashboard)/submittals/page.tsx:3:1
+Module not found: Can't resolve '@/components/submittals-table'
+  1 | import type { Metadata } from "next";
+  2 | import { ScrollableContent } from "@/components/scrollable-content";
+> 3 | import { SubmittalsTable } from "@/components/submittals-table";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  4 | import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+  5 | import { getFirstAccessibleProjectId } from "@/lib/edms/access";
+  6 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+
+Import map: aliased to relative './components/submittals-table' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/submittals/page.tsx:3:1
+Module not found: Can't resolve '@/components/submittals-table'
+  1 | import type { Metadata } from "next";
+  2 | import { ScrollableContent } from "@/components/scrollable-content";
+> 3 | import { SubmittalsTable } from "@/components/submittals-table";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  4 | import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+  5 | import { getFirstAccessibleProjectId } from "@/lib/edms/access";
+  6 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+
+Import map: aliased to relative './components/submittals-table' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/(dashboard)/submittals/page.tsx:3:1
+Module not found: Can't resolve '@/components/submittals-table'
+  1 | import type { Metadata } from "next";
+  2 | import { ScrollableContent } from "@/components/scrollable-content";
+> 3 | import { SubmittalsTable } from "@/components/submittals-table";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  4 | import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+  5 | import { getFirstAccessibleProjectId } from "@/lib/edms/access";
+  6 | import { getRequiredDashboardSessionUser } from "@/lib/edms/session";
+
+Import map: aliased to relative './components/submittals-table' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+⨯ Error: Unauthorized
+    at getRequiredDashboardSessionUser (lib\edms\session.ts:22:11)
+    at async ReportsPage (app\(dashboard)\reports\page.tsx:13:23)
+  20 |   const user = await getSessionUser();
+  21 |   if (!user) {
+> 22 |     throw new Error("Unauthorized");
+     |           ^
+  23 |   }
+  24 |   return user;
+  25 | } {
+  digest: '53469363'
+}
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+[browser] Error: Unauthorized
+    at getRequiredDashboardSessionUser (lib\edms\session.ts:22:11)
+    at  ReportsPage (app\(dashboard)\reports\page.tsx:13:23)
+  20 |   const user = await getSessionUser();
+  21 |   if (!user) {
+> 22 |     throw new Error("Unauthorized");
+     |           ^
+  23 |   }
+  24 |   return user;
+  25 | } (app/error.tsx:34:13)
+⨯ Error: Unauthorized
+    at getRequiredDashboardSessionUser (lib\edms\session.ts:22:11)
+    at async ReportsPage (app\(dashboard)\reports\page.tsx:13:23)
+  20 |   const user = await getSessionUser();
+  21 |   if (!user) {
+> 22 |     throw new Error("Unauthorized");
+     |           ^
+  23 |   }
+  24 |   return user;
+  25 | } {
+  digest: '53469363'
+}
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+[browser] Error: Unauthorized
+    at getRequiredDashboardSessionUser (lib\edms\session.ts:22:11)
+    at  ReportsPage (app\(dashboard)\reports\page.tsx:13:23)
+  20 |   const user = await getSessionUser();
+  21 |   if (!user) {
+> 22 |     throw new Error("Unauthorized");
+     |           ^
+  23 |   }
+  24 |   return user;
+  25 | } (app/error.tsx:34:13)
+⨯ Error: Unauthorized
+    at getRequiredDashboardSessionUser (lib\edms\session.ts:22:11)
+    at async ReportsPage (app\(dashboard)\reports\page.tsx:13:23)
+  20 |   const user = await getSessionUser();
+  21 |   if (!user) {
+> 22 |     throw new Error("Unauthorized");
+     |           ^
+  23 |   }
+  24 |   return user;
+  25 | } {
+  digest: '53469363'
+}
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+[browser] Error: Unauthorized
+    at getRequiredDashboardSessionUser (lib\edms\session.ts:22:11)
+    at  ReportsPage (app\(dashboard)\reports\page.tsx:13:23)
+  20 |   const user = await getSessionUser();
+  21 |   if (!user) {
+> 22 |     throw new Error("Unauthorized");
+     |           ^
+  23 |   }
+  24 |   return user;
+  25 | } (app/error.tsx:34:13)
