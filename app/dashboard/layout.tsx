@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { DashboardLayout } from "@/components/dashboard-layout";
-import { requireRoshalAdmin } from "@/lib/roshal/auth";
+import { requireRoshalAdmin } from "@/lib/store-auth";
 
 export default async function RoshalDashboardLayout({
   children,

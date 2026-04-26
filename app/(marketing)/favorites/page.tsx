@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { FavoritesPageClient } from "@/components/roshal/storefront/favorites-page-client";
-import { getRoshalProducts } from "@/lib/roshal/content";
-import { getRoshalLocale } from "@/lib/roshal/i18n";
-import { buildRoshalMetadata } from "@/lib/roshal/seo";
+import { FavoritesPageClient } from "@/components/storefront/favorites-page-client";
+import { getRoshalProducts } from "@/lib/store-content";
+import { getRoshalLocale } from "@/lib/store-i18n";
+import { buildRoshalMetadata } from "@/lib/store-seo";
 
 export const metadata: Metadata = buildRoshalMetadata({
   title: "Favorites",

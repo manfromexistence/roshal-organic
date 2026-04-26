@@ -1,12 +1,12 @@
 import { notFound } from "next/navigation";
-import { RoshalMarketingPageView } from "@/components/roshal/storefront/marketing-page-view";
+import { RoshalMarketingPageView } from "@/components/storefront/marketing-page-view";
 import {
   getRoshalPageBundle,
   getRoshalProducts,
   getRoshalSiteSettings,
-} from "@/lib/roshal/content";
-import { getRoshalLocale } from "@/lib/roshal/i18n";
-import { buildRoshalMarketingMetadata } from "@/lib/roshal/seo";
+} from "@/lib/store-content";
+import { getRoshalLocale } from "@/lib/store-i18n";
+import { buildRoshalMarketingMetadata } from "@/lib/store-seo";
 
 export async function generateMetadata() {
   const [locale, pageBundle] = await Promise.all([

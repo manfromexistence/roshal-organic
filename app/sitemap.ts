@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
-import { getRoshalPages, getRoshalProducts } from "@/lib/roshal/content";
-import { getRoshalAbsoluteUrl } from "@/lib/roshal/site";
+import { getRoshalPages, getRoshalProducts } from "@/lib/store-content";
+import { getRoshalAbsoluteUrl } from "@/lib/store-site";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [pages, products] = await Promise.all([

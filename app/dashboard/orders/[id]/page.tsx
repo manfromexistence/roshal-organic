@@ -1,26 +1,26 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { saveRoshalOrderStatus } from "@/actions/roshal-admin";
-import { DashboardFormSelect } from "@/components/roshal/dashboard/form-select";
-import { OrderTrackingTimeline } from "@/components/roshal/storefront/order-tracking-timeline";
+import { saveRoshalOrderStatus } from "@/actions/admin";
+import { DashboardFormSelect } from "@/components/dashboard/form-select";
+import { OrderTrackingTimeline } from "@/components/storefront/order-tracking-timeline";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { requireRoshalAdmin } from "@/lib/roshal/auth";
-import { getRoshalOrderById } from "@/lib/roshal/content";
-import { formatBdt, formatOrderDate } from "@/lib/roshal/format";
-import { getRoshalLocale } from "@/lib/roshal/i18n";
+import { resolveImageUrl } from "@/lib/storage-utils";
+import { requireRoshalAdmin } from "@/lib/store-auth";
+import { getRoshalOrderById } from "@/lib/store-content";
+import { formatBdt, formatOrderDate } from "@/lib/store-format";
+import { getRoshalLocale } from "@/lib/store-i18n";
 import {
   getRoshalOrderStatusBadgeVariant,
   getRoshalOrderStatusLabel,
   getRoshalPaymentMethodLabel,
   getRoshalPaymentStatusBadgeVariant,
   getRoshalPaymentStatusLabel,
-} from "@/lib/roshal/orders";
-import { resolveImageUrl } from "@/lib/storage-utils";
+} from "@/lib/store-orders";
 
 export default async function DashboardOrderDetailsPage({
   params,

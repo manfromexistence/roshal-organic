@@ -1,7 +1,7 @@
-import { RoshalUsersTable } from "@/components/roshal/dashboard/users-table";
-import { requireRoshalAdmin } from "@/lib/roshal/auth";
-import { getRoshalUsers } from "@/lib/roshal/content";
-import { getRoshalLocale } from "@/lib/roshal/i18n";
+import { RoshalUsersTable } from "@/components/dashboard/users-table";
+import { requireRoshalAdmin } from "@/lib/store-auth";
+import { getRoshalUsers } from "@/lib/store-content";
+import { getRoshalLocale } from "@/lib/store-i18n";
 
 export default async function DashboardUsersPage() {
   const [locale, users] = await Promise.all([

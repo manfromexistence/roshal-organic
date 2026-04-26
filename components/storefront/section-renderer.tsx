@@ -1,0 +1,326 @@
+import Image from "next/image";
+import Link from "next/link";
+import { RoshalProductCard } from "@/components/storefront/product-card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { getLocalizedValue } from "@/lib/store-locale";
+import type {
+  LocalizedValue,
+  RoshalLocale,
+  RoshalMarketingSection,
+  RoshalProduct,
+  RoshalSiteSettings,
+} from "@/lib/store-types";
+
+const spacingMap: Record<string, string> = {
+  compact: "py-10",
+  comfortable: "py-16",
+  spacious: "py-24",
+};
+
+function parseLimit(value: string | undefined, fallback: number) {
+  const parsed = Number.parseInt(value || "", 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+function getSectionProducts(
+  section: RoshalMarketingSection,
+  products: RoshalProduct[],
+) {
+  const source = section.styles.source || "featured";
+  const limit = parseLimit(section.styles.limit, 4);
+  const offset = parseLimit(section.styles.offset, 0);
+  const featuredProducts = products.filter((product) => product.isFeatured);
+
+  const baseProducts =
+    source === "all"
+      ? products
+      : source === "reverse"
+        ? [...products].reverse()
+        : featuredProducts.length
+          ? featuredProducts
+          : products;
+
+  return baseProducts.slice(offset, offset + limit);
+}
+
+function resolveLocalizedItemValue(
+  locale: RoshalLocale,
+  value?: LocalizedValue | null,
+) {
+  return value ? getLocalizedValue(locale, value) : "";
+}
+
+export function RoshalSectionRenderer({
+  sections,
+  locale,
+  products,
+  siteSettings,
+}: {
+  sections: RoshalMarketingSection[];
+  locale: RoshalLocale;
+  products: RoshalProduct[];
+  siteSettings: RoshalSiteSettings;
+}) {
+  return (
+    <>
+      {sections
+        .sort((left, right) => left.sortOrder - right.sortOrder)
+        .map((section) => (
+          <section
+            key={section.id}
+            className={`${spacingMap[siteSettings.sectionSpacing] || spacingMap.comfortable} ${
+              section.variant === "muted" ? "bg-muted/35" : "bg-transparent"
+            }`}
+          >
+            <div className="container mx-auto px-4">
+              <SectionContent
+                section={section}
+                locale={locale}
+                products={products}
+                siteSettings={siteSettings}
+              />
+            </div>
+          </section>
+        ))}
+    </>
+  );
+}
+
+function SectionContent({
+  section,
+  locale,
+  products,
+  siteSettings,
+}: {
+  section: RoshalMarketingSection;
+  locale: RoshalLocale;
+  products: RoshalProduct[];
+  siteSettings: RoshalSiteSettings;
+}) {
+  const eyebrow = getLocalizedValue(locale, section.eyebrow);
+  const title = getLocalizedValue(locale, section.title);
+  const body = getLocalizedValue(locale, section.body);
+  const ctaLabel = getLocalizedValue(locale, section.ctaLabel);
+
+  if (section.type === "hero" || section.type === "story") {
+    return (
+      <div
+        className={`grid items-center gap-8 rounded-[2rem] border border-border/60 bg-gradient-to-br from-background via-background to-muted/60 p-6 shadow-sm lg:p-10 ${
+          siteSettings.heroLayout === "split"
+            ? "lg:grid-cols-[1.1fr,0.9fr]"
+            : "mx-auto max-w-4xl"
+        }`}
+      >
+        <div className="space-y-5">
+          {eyebrow ? (
+            <p className="text-xs uppercase tracking-[0.24em] text-primary">
+              {eyebrow}
+            </p>
+          ) : null}
+          <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-foreground md:text-5xl">
+            {title}
+          </h1>
+          <p className="max-w-2xl text-base leading-7 text-muted-foreground md:text-lg">
+            {body}
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <Button asChild size="lg">
+              <Link href={section.ctaHref || siteSettings.primaryCtaHref}>
+                {ctaLabel ||
+                  getLocalizedValue(locale, siteSettings.primaryCtaLabel)}
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="lg">
+              <Link href="/contact">
+                {locale === "bn" ? "যোগাযোগ করুন" : "Contact us"}
+              </Link>
+            </Button>
+          </div>
+        </div>
+        {section.imageUrl ? (
+          <div className="relative min-h-80 overflow-hidden rounded-[1.5rem] border bg-muted">
+            <Image
+              src={section.imageUrl}
+              alt={title}
+              fill
+              className="object-cover"
+              sizes="(max-width: 1024px) 100vw, 45vw"
+            />
+          </div>
+        ) : null}
+      </div>
+    );
+  }
+
+  if (section.type === "feature-grid") {
+    return (
+      <div className="space-y-8">
+        <SectionHeading eyebrow={eyebrow} title={title} body={body} />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {section.items.map((item, index) => {
+            const itemTitle = resolveLocalizedItemValue(locale, item.title);
+            const itemBody = resolveLocalizedItemValue(locale, item.body);
+            const itemLabel = resolveLocalizedItemValue(locale, item.label);
+
+            return (
+              <Card
+                key={`${section.id}-${index}`}
+                className="overflow-hidden border-border/60 bg-card/90"
+              >
+                {item.imageUrl ? (
+                  <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+                    <Image
+                      src={item.imageUrl}
+                      alt={itemTitle || itemLabel || title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 25vw"
+                    />
+                  </div>
+                ) : null}
+                <CardContent className="space-y-3 p-6">
+                  {itemLabel ? (
+                    <Badge variant="secondary">{itemLabel}</Badge>
+                  ) : null}
+                  {itemTitle ? (
+                    <h3 className="text-lg font-semibold">{itemTitle}</h3>
+                  ) : null}
+                  {itemBody ? (
+                    <p className="text-sm leading-6 text-muted-foreground">
+                      {itemBody}
+                    </p>
+                  ) : null}
+                  {item.value ? (
+                    <p className="text-lg font-semibold text-primary">
+                      {item.value}
+                    </p>
+                  ) : null}
+                  {item.href ? (
+                    <Button asChild variant="outline" size="sm">
+                      <Link href={item.href}>
+                        {itemLabel ||
+                          (locale === "bn" ? "বিস্তারিত" : "Learn more")}
+                      </Link>
+                    </Button>
+                  ) : null}
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+        {ctaLabel ? (
+          <Button asChild variant="outline">
+            <Link href={section.ctaHref}>{ctaLabel}</Link>
+          </Button>
+        ) : null}
+      </div>
+    );
+  }
+
+  if (section.type === "featured-products") {
+    const sectionProducts = getSectionProducts(section, products);
+
+    return (
+      <div className="space-y-8">
+        <SectionHeading eyebrow={eyebrow} title={title} body={body} />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {sectionProducts.map((product) => (
+            <RoshalProductCard
+              key={product.id}
+              product={product}
+              locale={locale}
+            />
+          ))}
+        </div>
+        {ctaLabel ? (
+          <Button asChild variant="outline">
+            <Link href={section.ctaHref || "/products"}>{ctaLabel}</Link>
+          </Button>
+        ) : null}
+      </div>
+    );
+  }
+
+  if (section.type === "contact-cards") {
+    return (
+      <div className="space-y-8">
+        <SectionHeading eyebrow={eyebrow} title={title} body={body} />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {section.items.map((item, index) => {
+            const itemLabel = resolveLocalizedItemValue(locale, item.label);
+            const itemTitle = resolveLocalizedItemValue(locale, item.title);
+            const itemBody = resolveLocalizedItemValue(locale, item.body);
+
+            return (
+              <Card
+                key={`${section.id}-${index}`}
+                className="border-border/60 bg-card/90"
+              >
+                <CardContent className="space-y-3 p-6">
+                  {itemLabel ? (
+                    <p className="text-sm font-medium text-muted-foreground">
+                      {itemLabel}
+                    </p>
+                  ) : null}
+                  {itemTitle ? (
+                    <p className="text-lg font-semibold">{itemTitle}</p>
+                  ) : null}
+                  {item.value ? (
+                    <p className="text-lg font-semibold">{item.value}</p>
+                  ) : null}
+                  {itemBody ? (
+                    <p className="text-sm leading-6 text-muted-foreground">
+                      {itemBody}
+                    </p>
+                  ) : null}
+                  {item.href ? (
+                    <Button asChild variant="outline" size="sm">
+                      <Link href={item.href}>
+                        {itemLabel || (locale === "bn" ? "খুলুন" : "Open")}
+                      </Link>
+                    </Button>
+                  ) : null}
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+        {ctaLabel ? (
+          <Button asChild size="lg">
+            <Link href={section.ctaHref}>{ctaLabel}</Link>
+          </Button>
+        ) : null}
+      </div>
+    );
+  }
+
+  return null;
+}
+
+function SectionHeading({
+  eyebrow,
+  title,
+  body,
+}: {
+  eyebrow: string;
+  title: string;
+  body: string;
+}) {
+  return (
+    <div className="max-w-3xl space-y-3">
+      {eyebrow ? (
+        <p className="text-xs uppercase tracking-[0.24em] text-primary">
+          {eyebrow}
+        </p>
+      ) : null}
+      <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
+        {title}
+      </h2>
+      {body ? (
+        <p className="text-base leading-7 text-muted-foreground">{body}</p>
+      ) : null}
+    </div>
+  );
+}

@@ -1,19 +1,16 @@
 import { notFound } from "next/navigation";
-import {
-  saveRoshalUserProfile,
-  saveRoshalUserRole,
-} from "@/actions/roshal-admin";
-import { DashboardFormCheckbox } from "@/components/roshal/dashboard/form-checkbox";
-import { DashboardFormSelect } from "@/components/roshal/dashboard/form-select";
+import { saveRoshalUserProfile, saveRoshalUserRole } from "@/actions/admin";
+import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
+import { DashboardFormSelect } from "@/components/dashboard/form-select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { requireRoshalAdmin } from "@/lib/roshal/auth";
-import { getRoshalUsers } from "@/lib/roshal/content";
-import { getRoshalLocale } from "@/lib/roshal/i18n";
+import { requireRoshalAdmin } from "@/lib/store-auth";
+import { getRoshalUsers } from "@/lib/store-content";
+import { getRoshalLocale } from "@/lib/store-i18n";
 
 export default async function DashboardUserDetailsPage({
   params,

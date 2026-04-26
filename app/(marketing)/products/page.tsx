@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { ProductsPageClient } from "@/components/roshal/storefront/products-page-client";
-import { getRoshalProducts } from "@/lib/roshal/content";
-import { getRoshalLocale } from "@/lib/roshal/i18n";
-import { buildRoshalMetadata } from "@/lib/roshal/seo";
+import { ProductsPageClient } from "@/components/storefront/products-page-client";
+import { getRoshalProducts } from "@/lib/store-content";
+import { getRoshalLocale } from "@/lib/store-i18n";
+import { buildRoshalMetadata } from "@/lib/store-seo";
 
 export const metadata: Metadata = buildRoshalMetadata({
   title: "Products",
@@ -17,6 +17,15 @@ function resolveSortValue(value: string | undefined) {
     : "featured";
 }
 
+function resolvePriceValue(value: string | undefined) {
+  if (!value) {
+    return null;
+  }
+
+  const parsedValue = Number.parseInt(value, 10);
+  return Number.isFinite(parsedValue) ? parsedValue : null;
+}
+
 export default async function ProductsPage({
   searchParams,
 }: {
@@ -24,6 +33,8 @@ export default async function ProductsPage({
     q?: string;
     category?: string;
     sort?: string;
+    minPrice?: string;
+    maxPrice?: string;
   }>;
 }) {
   const resolvedSearchParams = searchParams ? await searchParams : {};
@@ -37,6 +48,8 @@ export default async function ProductsPage({
       locale={locale}
       products={products}
       initialCategory={resolvedSearchParams.category || "all"}
+      initialMaxPrice={resolvePriceValue(resolvedSearchParams.maxPrice)}
+      initialMinPrice={resolvePriceValue(resolvedSearchParams.minPrice)}
       initialSearchQuery={resolvedSearchParams.q || ""}
       initialSortKey={resolveSortValue(resolvedSearchParams.sort)}
     />

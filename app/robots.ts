@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getRoshalAbsoluteUrl } from "@/lib/roshal/site";
+import { getRoshalAbsoluteUrl } from "@/lib/store-site";
 
 export default function robots(): MetadataRoute.Robots {
   return {

@@ -107,7 +107,7 @@ export function getDashboardSearchPages(): DashboardSearchPage[] {
       id: "/dashboard",
       title: "Dashboard",
       href: "/dashboard",
-      subtitle: "Roshal admin overview",
+      subtitle: "Admin overview",
       keywords: ["home", "summary", "overview"],
     },
   ];

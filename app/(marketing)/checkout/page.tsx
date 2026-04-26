@@ -1,11 +1,11 @@
-import { CheckoutPageClient } from "@/components/roshal/storefront/checkout-page-client";
-import { requireRoshalUser } from "@/lib/roshal/auth";
+import { CheckoutPageClient } from "@/components/storefront/checkout-page-client";
+import { requireRoshalUser } from "@/lib/store-auth";
 import {
   getRoshalPaymentSettings,
   getRoshalProducts,
-} from "@/lib/roshal/content";
-import { getRoshalLocale } from "@/lib/roshal/i18n";
-import { getRoshalPaymentGatewaySummary } from "@/lib/roshal/payments";
+} from "@/lib/store-content";
+import { getRoshalLocale } from "@/lib/store-i18n";
+import { getRoshalPaymentGatewaySummary } from "@/lib/store-payments";
 
 export default async function CheckoutPage() {
   const [locale, sessionUser, paymentSettings, products, gatewaySummary] =

@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { RoshalProductsTable } from "@/components/roshal/dashboard/products-table";
+import { RoshalProductsTable } from "@/components/dashboard/products-table";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { requireRoshalAdmin } from "@/lib/roshal/auth";
-import { getAllRoshalProducts } from "@/lib/roshal/content";
-import { getRoshalLocale } from "@/lib/roshal/i18n";
+import { requireRoshalAdmin } from "@/lib/store-auth";
+import { getAllRoshalProducts } from "@/lib/store-content";
+import { getRoshalLocale } from "@/lib/store-i18n";
 
 export default async function DashboardProductsPage() {
   const [locale, products] = await Promise.all([

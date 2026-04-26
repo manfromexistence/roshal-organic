@@ -8,8 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getRoshalSessionUser } from "@/lib/roshal/auth";
-import { getRoshalLocale } from "@/lib/roshal/i18n";
+import { getRoshalSessionUser } from "@/lib/store-auth";
+import { getRoshalLocale } from "@/lib/store-i18n";
 
 function normalizePaymentState(
   value: string | undefined,

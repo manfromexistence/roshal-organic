@@ -17,15 +17,15 @@ import {
   getRoshalPageBundle,
   getRoshalProducts,
   getRoshalSiteSettings,
-} from "@/lib/roshal/content";
-import { formatBdt } from "@/lib/roshal/format";
-import { getRoshalLocale } from "@/lib/roshal/i18n";
-import { getLocalizedValue, localizedValue } from "@/lib/roshal/locale";
+} from "@/lib/store-content";
+import { formatBdt } from "@/lib/store-format";
+import { getRoshalLocale } from "@/lib/store-i18n";
+import { getLocalizedValue, localizedValue } from "@/lib/store-locale";
 import type {
   LocalizedValue,
   RoshalMarketingSection,
   RoshalProduct,
-} from "@/lib/roshal/types";
+} from "@/lib/store-types";
 
 type Language = "bn" | "en";
 

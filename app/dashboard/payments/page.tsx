@@ -1,21 +1,21 @@
-import { saveRoshalPaymentSettings } from "@/actions/roshal-admin";
-import { DashboardFormCheckbox } from "@/components/roshal/dashboard/form-checkbox";
-import { DashboardFormSelect } from "@/components/roshal/dashboard/form-select";
-import { ImageUploadField } from "@/components/roshal/shared/image-upload-field";
+import { saveRoshalPaymentSettings } from "@/actions/admin";
+import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
+import { DashboardFormSelect } from "@/components/dashboard/form-select";
+import { ImageUploadField } from "@/components/shared/image-upload-field";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { requireRoshalAdmin } from "@/lib/roshal/auth";
-import { getRoshalPaymentSettings } from "@/lib/roshal/content";
-import { getRoshalLocale } from "@/lib/roshal/i18n";
-import { getRoshalPaymentGatewaySummary } from "@/lib/roshal/payments";
+import { requireRoshalAdmin } from "@/lib/store-auth";
+import { getRoshalPaymentSettings } from "@/lib/store-content";
+import { getRoshalLocale } from "@/lib/store-i18n";
+import { getRoshalPaymentGatewaySummary } from "@/lib/store-payments";
 import type {
   RoshalPaymentMethod,
   RoshalPaymentOption,
-} from "@/lib/roshal/types";
+} from "@/lib/store-types";
 
 const paymentMethodOrder: RoshalPaymentMethod[] = [
   "card",

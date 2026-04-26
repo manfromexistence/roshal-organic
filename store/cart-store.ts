@@ -2,7 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { LocalizedValue, RoshalProduct } from "@/lib/roshal/types";
+import type { LocalizedValue, RoshalProduct } from "@/lib/store-types";
 
 export interface CartItem {
   productId: string;

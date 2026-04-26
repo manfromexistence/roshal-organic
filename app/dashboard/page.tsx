@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { requireRoshalAdmin } from "@/lib/roshal/auth";
-import { getRoshalDashboardSnapshot } from "@/lib/roshal/content";
-import { formatBdt, formatOrderDate } from "@/lib/roshal/format";
-import { getRoshalLocale } from "@/lib/roshal/i18n";
-import { getRoshalOrderStatusLabel } from "@/lib/roshal/orders";
+import { requireRoshalAdmin } from "@/lib/store-auth";
+import { getRoshalDashboardSnapshot } from "@/lib/store-content";
+import { formatBdt, formatOrderDate } from "@/lib/store-format";
+import { getRoshalLocale } from "@/lib/store-i18n";
+import { getRoshalOrderStatusLabel } from "@/lib/store-orders";
 
 export default async function DashboardHomePage() {
   const [locale, snapshot] = await Promise.all([

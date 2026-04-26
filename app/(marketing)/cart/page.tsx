@@ -1,6 +1,6 @@
-import { CartPageClient } from "@/components/roshal/storefront/cart-page-client";
-import { getRoshalProducts } from "@/lib/roshal/content";
-import { getRoshalLocale } from "@/lib/roshal/i18n";
+import { CartPageClient } from "@/components/storefront/cart-page-client";
+import { getRoshalProducts } from "@/lib/store-content";
+import { getRoshalLocale } from "@/lib/store-i18n";
 
 export default async function CartPage() {
   const [locale, products] = await Promise.all([

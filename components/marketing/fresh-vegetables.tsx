@@ -1,12 +1,12 @@
 import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { AddToCartButton } from "@/components/roshal/storefront/add-to-cart-button";
+import { AddToCartButton } from "@/components/storefront/add-to-cart-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ImageCard, ImageCardContent } from "@/components/ui/image-card";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
-import type { RoshalProduct } from "@/lib/roshal/types";
+import type { RoshalProduct } from "@/lib/store-types";
 
 interface FreshVegetablesProps {
   language: "en" | "bn";

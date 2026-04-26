@@ -1,5 +1,5 @@
-import { localizedValue } from "@/lib/roshal/locale";
-import type { RoshalProduct } from "@/lib/roshal/types";
+import { localizedValue } from "@/lib/store-locale";
+import type { RoshalProduct } from "@/lib/store-types";
 
 const vegetableNames: { bn: string; en: string }[] = [
   { bn: "পালং শাক", en: "Spinach" },
@@ -80,40 +80,42 @@ const vegetableNames: { bn: string; en: string }[] = [
   { bn: "ধান পাতা", en: "Rice Leaves" },
 ];
 
-export const vegetableProducts: RoshalProduct[] = vegetableNames.map((name, index) => {
-  const id = index + 1;
-  const price = Math.floor(Math.random() * 400) + 50; // Random price between 50-450
-  const compareAtPrice = price + Math.floor(Math.random() * 100) + 20;
-  const inventory = Math.floor(Math.random() * 50) + 10;
-  
-  return {
-    id: `vegetable-${id}`,
-    slug: `vegetable-${id}`,
-    sku: `RO-VEG-${String(id).padStart(3, '0')}`,
-    name: localizedValue(name.bn, name.en),
-    summary: localizedValue(
-      `তাজা ও পুষ্টিকর ${name.bn}, সরাসরি কৃষকের কাছ থেকে।`,
-      `Fresh and nutritious ${name.en}, directly from farmers.`
-    ),
-    description: localizedValue(
-      `১০০% জৈব ও প্রাকৃতিক ${name.bn} যা কোনো কীটনাশক ছাড়াই চাষ করা হয়। রান্নায় দারুণ স্বাদ এবং পুষ্টিগুণে সমৃদ্ধ।`,
-      `100% organic and natural ${name.en} grown without pesticides. Great taste in cooking and rich in nutrients.`
-    ),
-    categoryKey: "vegetables",
-    categoryLabel: localizedValue("সবজি", "Vegetables"),
-    price: price,
-    compareAtPrice: compareAtPrice,
-    inventory: inventory,
-    badge: index < 10 ? "fresh" : null,
-    heroImage: `/vegetables/vegetable-${id}.jpg`,
-    gallery: [`/vegetables/vegetable-${id}.jpg`],
-    features: [
-      localizedValue("১০০% জৈব", "100% organic"),
-      localizedValue("কীটনাশকমুক্ত", "Pesticide-free"),
-      localizedValue("তাজা", "Fresh"),
-    ],
-    isFeatured: index < 15,
-    isPublished: true,
-    sortOrder: index,
-  };
-});
+export const vegetableProducts: RoshalProduct[] = vegetableNames.map(
+  (name, index) => {
+    const id = index + 1;
+    const price = 85 + (index % 12) * 22 + Math.floor(index / 12) * 6;
+    const compareAtPrice = price + 24 + (index % 5) * 8;
+    const inventory = 12 + ((index * 7) % 41);
+
+    return {
+      id: `vegetable-${id}`,
+      slug: `vegetable-${id}`,
+      sku: `RO-VEG-${String(id).padStart(3, "0")}`,
+      name: localizedValue(name.bn, name.en),
+      summary: localizedValue(
+        `তাজা ও পুষ্টিকর ${name.bn}, সরাসরি কৃষকের কাছ থেকে।`,
+        `Fresh and nutritious ${name.en}, directly from farmers.`,
+      ),
+      description: localizedValue(
+        `১০০% জৈব ও প্রাকৃতিক ${name.bn} যা কোনো কীটনাশক ছাড়াই চাষ করা হয়। রান্নায় দারুণ স্বাদ এবং পুষ্টিগুণে সমৃদ্ধ।`,
+        `100% organic and natural ${name.en} grown without pesticides. Great taste in cooking and rich in nutrients.`,
+      ),
+      categoryKey: "vegetables",
+      categoryLabel: localizedValue("সবজি", "Vegetables"),
+      price: price,
+      compareAtPrice: compareAtPrice,
+      inventory: inventory,
+      badge: index < 12 ? "fresh" : index % 9 === 0 ? "seasonal" : null,
+      heroImage: `/vegetables/vegetable-${id}.jpg`,
+      gallery: [`/vegetables/vegetable-${id}.jpg`],
+      features: [
+        localizedValue("১০০% জৈব", "100% organic"),
+        localizedValue("কীটনাশকমুক্ত", "Pesticide-free"),
+        localizedValue("তাজা", "Fresh"),
+      ],
+      isFeatured: index < 18,
+      isPublished: true,
+      sortOrder: 100 + index,
+    };
+  },
+);

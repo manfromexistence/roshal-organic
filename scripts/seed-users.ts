@@ -2,21 +2,21 @@ import { hashPassword } from "@better-auth/utils/password";
 import { eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { db } from "@/lib/db";
+import { accounts, users } from "@/lib/schema";
 import {
   defaultRoshalPages,
   defaultRoshalPaymentSettings,
   defaultRoshalProducts,
   defaultRoshalSections,
   defaultRoshalSiteSettings,
-} from "@/lib/roshal/defaults";
+} from "@/lib/store-defaults";
 import {
   upsertRoshalPage,
   upsertRoshalPaymentSettings,
   upsertRoshalProduct,
   upsertRoshalSection,
   upsertRoshalSiteSettings,
-} from "@/lib/roshal/mutations";
-import { accounts, users } from "@/lib/schema";
+} from "@/lib/store-mutations";
 
 const seedUsers = [
   {

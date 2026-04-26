@@ -1,24 +1,17 @@
 import type { Metadata } from "next";
-import type { CSSProperties } from "react";
-import { StorefrontBottomNavigation } from "@/components/roshal/storefront/storefront-bottom-navigation";
-import { StorefrontFooter } from "@/components/roshal/storefront/storefront-footer";
-import { StorefrontHeader } from "@/components/roshal/storefront/storefront-header";
-import { getRoshalSessionUser } from "@/lib/roshal/auth";
+import { StorefrontBottomNavigation } from "@/components/storefront/storefront-bottom-navigation";
+import { StorefrontFooter } from "@/components/storefront/storefront-footer";
+import { StorefrontHeader } from "@/components/storefront/storefront-header";
+import { getRoshalSessionUser } from "@/lib/store-auth";
 import {
   getRoshalNavigationPages,
   getRoshalPaymentSettings,
   getRoshalProducts,
   getRoshalSiteSettings,
-} from "@/lib/roshal/content";
-import { getRoshalLocale } from "@/lib/roshal/i18n";
-import { getLocalizedValue } from "@/lib/roshal/locale";
+} from "@/lib/store-content";
+import { getRoshalLocale } from "@/lib/store-i18n";
+import { getLocalizedValue } from "@/lib/store-locale";
 import "../globals.css";
-
-const marketingThemeStyles = {
-  "--primary": "oklch(72.3% 0.219 149.579)",
-  "--primary-foreground": "oklch(0.985 0 0)",
-  "--ring": "oklch(72.3% 0.219 149.579)",
-} as CSSProperties;
 
 export const metadata: Metadata = {
   title: "Roshal Organic",
@@ -54,10 +47,7 @@ export default async function MarketingLayout({
   );
 
   return (
-    <div
-      style={marketingThemeStyles}
-      className="min-h-screen bg-background text-foreground antialiased"
-    >
+    <div className="min-h-screen bg-background text-foreground antialiased">
       <StorefrontHeader
         locale={locale}
         pages={pages}

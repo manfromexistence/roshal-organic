@@ -3,7 +3,7 @@
 import { ShoppingCart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { FavoriteToggleButton } from "@/components/roshal/storefront/favorite-toggle-button";
+import { FavoriteToggleButton } from "@/components/storefront/favorite-toggle-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {

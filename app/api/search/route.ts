@@ -1,8 +1,8 @@
 import { desc, like, or } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { getRoshalSessionUser } from "@/lib/roshal/auth";
 import { roshalOrders, roshalPages, roshalProducts, users } from "@/lib/schema";
+import { getRoshalSessionUser } from "@/lib/store-auth";
 
 type SearchResult = {
   id: string;
@@ -169,7 +169,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ results });
   } catch (error) {
-    console.error("Error searching Roshal admin workspace:", error);
+    console.error("Error searching dashboard workspace:", error);
     return NextResponse.json({ results: [] satisfies SearchResult[] });
   }
 }

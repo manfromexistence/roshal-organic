@@ -51,7 +51,9 @@ export function DealCard({
         </Badge>
       </div>
       <ImageCardHeader className="px-4 pt-3 pb-2">
-        <ImageCardTitle className="text-xl md:text-2xl">{title[language]}</ImageCardTitle>
+        <ImageCardTitle className="text-xl md:text-2xl">
+          {title[language]}
+        </ImageCardTitle>
         <ImageCardDescription className="text-base">
           {description[language]}
         </ImageCardDescription>

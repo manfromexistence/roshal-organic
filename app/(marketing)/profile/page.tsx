@@ -1,21 +1,21 @@
 import Link from "next/link";
-import { saveRoshalUserProfile } from "@/actions/roshal-admin";
-import { DashboardFormSelect } from "@/components/roshal/dashboard/form-select";
-import { LogoutButton } from "@/components/roshal/storefront/logout-button";
+import { saveRoshalUserProfile } from "@/actions/admin";
+import { DashboardFormSelect } from "@/components/dashboard/form-select";
+import { LogoutButton } from "@/components/storefront/logout-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { requireRoshalUser } from "@/lib/roshal/auth";
-import { getRoshalOrdersForUser } from "@/lib/roshal/content";
-import { formatBdt, formatOrderDate } from "@/lib/roshal/format";
-import { getRoshalLocale } from "@/lib/roshal/i18n";
+import { requireRoshalUser } from "@/lib/store-auth";
+import { getRoshalOrdersForUser } from "@/lib/store-content";
+import { formatBdt, formatOrderDate } from "@/lib/store-format";
+import { getRoshalLocale } from "@/lib/store-i18n";
 import {
   getRoshalOrderStatusBadgeVariant,
   getRoshalOrderStatusLabel,
-} from "@/lib/roshal/orders";
+} from "@/lib/store-orders";
 
 export default async function ProfilePage() {
   const [locale, sessionUser] = await Promise.all([

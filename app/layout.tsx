@@ -5,8 +5,11 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
-import { getRoshalMetadataBase } from "@/lib/roshal/site";
-import { getThemeBootstrapScript } from "@/lib/theme-bootstrap";
+import { getRoshalMetadataBase } from "@/lib/store-site";
+import {
+  getThemeBootstrapScript,
+  NEXT_THEME_STORAGE_KEY,
+} from "@/lib/theme-bootstrap";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -46,9 +49,10 @@ export default async function RootLayout({
         </Script>
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
-          enableSystem
+          defaultTheme="dark"
+          enableSystem={false}
           disableTransitionOnChange
+          storageKey={NEXT_THEME_STORAGE_KEY}
         >
           <QueryProvider>
             <NuqsAdapter>{children}</NuqsAdapter>

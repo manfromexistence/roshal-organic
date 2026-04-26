@@ -1,7 +1,7 @@
-import { OrdersPageClient } from "@/components/roshal/storefront/orders-page-client";
-import { requireRoshalUser } from "@/lib/roshal/auth";
-import { getRoshalOrdersForUser } from "@/lib/roshal/content";
-import { getRoshalLocale } from "@/lib/roshal/i18n";
+import { OrdersPageClient } from "@/components/storefront/orders-page-client";
+import { requireRoshalUser } from "@/lib/store-auth";
+import { getRoshalOrdersForUser } from "@/lib/store-content";
+import { getRoshalLocale } from "@/lib/store-i18n";
 
 export default async function OrdersPage() {
   const [locale, sessionUser] = await Promise.all([

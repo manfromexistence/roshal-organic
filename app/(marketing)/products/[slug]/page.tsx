@@ -1,14 +1,14 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { AddToCartButton } from "@/components/roshal/storefront/add-to-cart-button";
-import { FavoriteToggleButton } from "@/components/roshal/storefront/favorite-toggle-button";
+import { AddToCartButton } from "@/components/storefront/add-to-cart-button";
+import { FavoriteToggleButton } from "@/components/storefront/favorite-toggle-button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { getRoshalProductBySlug } from "@/lib/roshal/content";
-import { formatBdt } from "@/lib/roshal/format";
-import { getRoshalLocale } from "@/lib/roshal/i18n";
-import { getLocalizedValue } from "@/lib/roshal/locale";
-import { buildRoshalProductMetadata } from "@/lib/roshal/seo";
+import { getRoshalProductBySlug } from "@/lib/store-content";
+import { formatBdt } from "@/lib/store-format";
+import { getRoshalLocale } from "@/lib/store-i18n";
+import { getLocalizedValue } from "@/lib/store-locale";
+import { buildRoshalProductMetadata } from "@/lib/store-seo";
 
 export async function generateMetadata({
   params,

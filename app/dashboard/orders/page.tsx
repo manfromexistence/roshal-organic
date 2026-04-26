@@ -1,8 +1,8 @@
-import { RoshalOrdersTable } from "@/components/roshal/dashboard/orders-table";
+import { RoshalOrdersTable } from "@/components/dashboard/orders-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { requireRoshalAdmin } from "@/lib/roshal/auth";
-import { getRoshalOrders } from "@/lib/roshal/content";
-import { getRoshalLocale } from "@/lib/roshal/i18n";
+import { requireRoshalAdmin } from "@/lib/store-auth";
+import { getRoshalOrders } from "@/lib/store-content";
+import { getRoshalLocale } from "@/lib/store-i18n";
 
 export default async function DashboardOrdersPage() {
   const [locale, orders] = await Promise.all([

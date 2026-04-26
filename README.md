@@ -17,7 +17,7 @@ Roshal Organic is a bilingual Bangla/English ecommerce CMS built on Next.js 16, 
 - Gateway-mode checkout now makes the template limitation explicit: until a real processor is wired, `card` orders fall back to admin follow-up instead of pretending a live gateway exists
 - Inventory movement: confirmed order creation reserves stock in the database, and cancelled orders restore stock through the admin order workflow
 - Cart and checkout now reconcile persisted cart items against the live published catalog, reducing stale-quantity checkout failures for returning users
-- Storefront product discovery: search, category filter, and sort controls on `/products`
+- Storefront product discovery: URL-synced search, sticky category/price sidebar filters, mobile filter sheet, and sort controls on `/products`
 - Customer order history now includes search, status filtering, and summary metrics on `/orders`
 - Account UX: `/profile` now includes order metrics, recent orders, quick links back to cart/order history/admin, and a working storefront logout control
 - Customer order pages now show itemized line items, delivery details, proof screenshots, payment verification timestamps, and admin/tracking notes instead of only top-level status badges
@@ -107,6 +107,8 @@ bun run scripts/seed-users.ts
 ## Delivery Notes
 
 - The Roshal storefront and admin CMS flow are implemented in the root app.
+- The live component tree is now reduced to the active app-facing groups: `components/dashboard`, `components/data-table`, `components/marketing`, `components/providers`, `components/shared`, `components/storefront`, and `components/ui`.
+- The legacy Quadra EDMS route tree and namespaces have been removed from the live app surface; the current code now lives under generic shared locations such as `components/dashboard`, `components/storefront`, `components/shared`, `lib/store-*`, `actions/admin.ts`, and `/api/{cms,orders,payments,upload}`.
 - The old root-level `marketting` source app has been removed after transplanting its landing page, header/footer shell, and mobile bottom navigation into the active storefront.
 - Temporary manual verification is in place for wallet payments and can be managed from `/dashboard/payments` and `/dashboard/orders`.
 - AamarPay is the active live gateway abstraction for `card`, `bkash`, `nagad`, `rocket`, and `upay` when its merchant credentials are configured.
@@ -121,6 +123,9 @@ bun run scripts/seed-users.ts
 - Homepage sections can now be enabled or disabled directly from the dashboard through a DB-backed API without changing the storefront code or opening raw JSON first.
 - The homepage page editor now exposes a section map and inline guidance for the landing-page section keys that drive the copied marketing UI.
 - Generic marketing pages now resolve their product sections from the live catalog using dashboard section settings, so custom/about/contact pages can reuse the same CMS product-block model instead of a hardcoded featured-only fallback.
+- The public catalog now merges dashboard-managed product overrides with the built-in Roshal defaults instead of treating the database as an all-or-nothing source, so the full fallback catalog remains visible until explicitly overridden or unpublished from the dashboard.
+- The default runtime theme now boots into a Roshal-organic dark preset with the storefront green as the primary accent across both the public shop and the dashboard, instead of falling back to the older neutral template colors.
+- The theme mode and theme-state storage keys are now Roshal-specific, so older template-era blue theme preferences no longer win by default in returning browsers.
 - Public storefront routes now bypass the auth proxy entirely, which removes unnecessary session lookups from `/`, `/about`, `/products`, and other public pages.
 - Public metadata is now aligned to Roshal Organic instead of the old Quadra identity, including sitemap and robots output for live marketing/product routes.
 - The transplanted marketing landing shell was visually smoke-checked locally at `http://localhost:3000/` in desktop and mobile-sized viewports after the copy/removal pass.

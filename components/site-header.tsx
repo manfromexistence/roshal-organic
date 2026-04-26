@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Fragment, useEffect, useMemo, useState } from "react";
-import { SearchCommand } from "@/components/edms/search-command";
+import { SearchCommand } from "@/components/dashboard/search-command";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Breadcrumb,

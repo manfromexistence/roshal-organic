@@ -32,8 +32,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a root `.env.example` that documents the required Roshal auth, Turso, upload, and AamarPay gateway keys for deployment handoff
 - Added richer dashboard media controls for marketing pages, sections, and products using the shared image-upload field with live previews
 - Added a richer storefront catalog experience with client-side product search, category filtering, and sorting on `/products`
+- Added a marketplace-style storefront catalog sidebar on `/products`, with URL-synced search, category counts, price-range inputs, a dual-thumb range slider, applied-filter badges, and a mobile filter sheet
+- Added a Roshal Organic theme preset derived from the old Vercel-style neutral base but recolored around the storefront green accent for use as the project default
 - Added dynamic Roshal SEO helpers so the home page, marketing pages, and product detail pages now emit page-specific metadata
 - Added Roshal-specific admin command search results for products, orders, users, and marketing pages through the shared `/api/search` endpoint
+- Added a generic shared file-upload surface at `components/shared/file-upload-field.tsx` plus `/api/upload/files`, preserving reusable upload capability after removing the EDMS-specific dashboard
+- Added a backward-compatible `/api/upload/catbox` route alias so existing Catbox-based integrations continue to work alongside the shared `/api/upload/files` handler
 - Added a shared dashboard navigation config and restored the missing `/api/search` route so the global command palette can return instant live results for projects, documents, workflows, transmittals, and the current user's notifications
 - Added database-backed create actions, forms, and `/new` routes for daily reports, extension-of-time requests, inspections, safety observations, warranty records, meetings, memos, RFIs, and site technical queries
 - Added a real technical query creation flow at `/technical-queries/new`, including validated form submission and live register data loading from the database
@@ -78,6 +82,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed the public login flow to call Better Auth with `disableRedirect: true`, letting Roshal explicitly control the post-auth navigation for checkout callbacks, storefront logins, and role-aware admin landing
 - Changed the shared dashboard command dialog copy, placeholders, and result categories to match the Roshal admin workspace instead of the legacy EDMS search model
 - Changed the env configuration to use the real `roshal-organic` Turso database in `.env` and `.env.local`, and replaced the stale production `app-quadra` auth URL with explicit Roshal production-domain placeholders
+- Changed the live app structure to remove the old `components/roshal`, `lib/roshal`, `actions/roshal-admin.ts`, and `app/api/roshal/*` namespaces in favor of generic shared locations like `components/dashboard`, `components/storefront`, `components/shared`, `lib/store-*`, `actions/admin.ts`, `/api/cms`, `/api/orders`, and `/api/payments`
+- Changed storefront product loading so dashboard-managed records now merge over the built-in Roshal catalog instead of replacing it wholesale, keeping the full default vegetable/image catalog visible until explicitly overridden or unpublished
+- Changed the default live theme boot flow to use a Roshal-organic dark preset with green primary/ring/sidebar accents across both the storefront and dashboard, and removed the extra storefront-only primary override from the marketing layout
+- Changed the live theme storage keys to Roshal-specific values so stale blue template preferences no longer override the new green default on returning browsers
+- Changed the generated vegetable catalog defaults to use deterministic pricing, inventory, badges, and sort ordering instead of random values so search/filter results stay stable across restarts and builds
+- Changed the `/products` page layout from stacked filter/result cards into a real ecommerce split view with a sticky left filter rail on desktop/tablet widths and a filter sheet on smaller screens
+- Changed the preserved shared search and upload utilities to use neutral dashboard/file-upload naming instead of the old Roshal/EDMS-specific wording
 - Changed the Roshal gateway env guidance and checkout copy to reflect the current AamarPay-backed payment surface, including `upay`
 - Changed the root `proxy.ts` matcher so auth session checks only run on login and protected account/dashboard routes instead of slowing every public storefront request
 - Removed the stray `app/(marketing)/page-backup.tsx` file from the active storefront tree so dead backup code no longer ships beside the real home route
@@ -260,7 +271,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed bulk-upload button rendering by removing suppressHydrationWarning from SheetTrigger in document-bulk-upload-sheet and document-bulk-import-sheet
 - Fixed duplicate component files by removing components/edms/edms/ subdirectory
 - Fixed React key prop warning in site-header.tsx by using Fragment with key prop instead of shorthand fragment syntax
-- Fixed document creation sheet by creating /api/edms/uploads route using Catbox API with proper FormData format (reqtype=fileupload, fileToUpload), removing FormField wrapper from DocumentFileUpload, and using hidden input for fileUrl validation
+- Fixed document creation sheet by creating /api/upload/files route using Catbox API with proper FormData format (reqtype=fileupload, fileToUpload), removing FormField wrapper from DocumentFileUpload, and using hidden input for fileUrl validation
 - Fixed document file upload button click handler by using onClick to trigger file input instead of asChild with label
 - Fixed document file upload UI to show uploaded file details with clickable link to open file and remove button to clear upload
 - Fixed document file upload to require project selection with clear error message and auto-select first project when available
@@ -303,7 +314,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed sessions table to include ipAddress and userAgent fields
 
 ### Removed
+- Removed the dead legacy Quadra EDMS route tree at `app/(dashboard)` along with its obsolete actions, components, API endpoints, and helper modules after preserving the reusable shared upload/session/search pieces
+- Removed the duplicate legacy `/api/upload/catbox` surface once `/api/upload/files` became the single shared file-upload endpoint
 - Removed the old root-level `marketting` app after transplanting its landing page and shell into the live storefront
+- Removed the remaining unused top-level component folders from the old template flow (`components/admin`, `components/base-currency`, `components/config`, `components/modals`, `components/settings`, `components/sheets`, `components/tables`, and `components/theme-editor`) so the live tree now only contains active app-facing component groups
 
 ## [0.1.0] - 2026-04-22
 

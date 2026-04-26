@@ -1,18 +1,18 @@
-import { saveRoshalPage } from "@/actions/roshal-admin";
-import { DashboardFormCheckbox } from "@/components/roshal/dashboard/form-checkbox";
-import { DashboardFormSelect } from "@/components/roshal/dashboard/form-select";
-import { HomepageControlCenter } from "@/components/roshal/dashboard/homepage-control-center";
-import { RoshalPagesTable } from "@/components/roshal/dashboard/pages-table";
-import { ImageUploadField } from "@/components/roshal/shared/image-upload-field";
+import { saveRoshalPage } from "@/actions/admin";
+import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
+import { DashboardFormSelect } from "@/components/dashboard/form-select";
+import { HomepageControlCenter } from "@/components/dashboard/homepage-control-center";
+import { RoshalPagesTable } from "@/components/dashboard/pages-table";
+import { ImageUploadField } from "@/components/shared/image-upload-field";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { requireRoshalAdmin } from "@/lib/roshal/auth";
-import { getRoshalPages } from "@/lib/roshal/content";
-import { getRoshalLocale } from "@/lib/roshal/i18n";
+import { requireRoshalAdmin } from "@/lib/store-auth";
+import { getRoshalPages } from "@/lib/store-content";
+import { getRoshalLocale } from "@/lib/store-i18n";
 
 const pageStatusOptions = [
   { value: "published", label: "published" },

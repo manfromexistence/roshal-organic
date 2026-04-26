@@ -1,12 +1,12 @@
-import { saveRoshalSiteSettings } from "@/actions/roshal-admin";
-import { DashboardFormSelect } from "@/components/roshal/dashboard/form-select";
+import { saveRoshalSiteSettings } from "@/actions/admin";
+import { DashboardFormSelect } from "@/components/dashboard/form-select";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { requireRoshalAdmin } from "@/lib/roshal/auth";
-import { getRoshalSiteSettings } from "@/lib/roshal/content";
-import { getRoshalLocale } from "@/lib/roshal/i18n";
+import { requireRoshalAdmin } from "@/lib/store-auth";
+import { getRoshalSiteSettings } from "@/lib/store-content";
+import { getRoshalLocale } from "@/lib/store-i18n";
 
 export default async function DashboardThemePage() {
   const [locale, siteSettings] = await Promise.all([
