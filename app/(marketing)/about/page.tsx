@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import { RoshalMarketingPageView } from "@/components/roshal/storefront/marketing-page-view";
 import {
-  getFeaturedRoshalProducts,
   getRoshalPageBundle,
+  getRoshalProducts,
   getRoshalSiteSettings,
 } from "@/lib/roshal/content";
 import { getRoshalLocale } from "@/lib/roshal/i18n";
@@ -22,13 +22,12 @@ export async function generateMetadata() {
 }
 
 export default async function AboutPage() {
-  const [locale, siteSettings, pageBundle, featuredProducts] =
-    await Promise.all([
-      getRoshalLocale(),
-      getRoshalSiteSettings(),
-      getRoshalPageBundle("about"),
-      getFeaturedRoshalProducts(4),
-    ]);
+  const [locale, siteSettings, pageBundle, products] = await Promise.all([
+    getRoshalLocale(),
+    getRoshalSiteSettings(),
+    getRoshalPageBundle("about"),
+    getRoshalProducts(),
+  ]);
 
   if (!pageBundle) {
     notFound();
@@ -39,7 +38,7 @@ export default async function AboutPage() {
       locale={locale}
       page={pageBundle.page}
       sections={pageBundle.sections}
-      featuredProducts={featuredProducts}
+      products={products}
       siteSettings={siteSettings}
     />
   );

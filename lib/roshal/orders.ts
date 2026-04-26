@@ -11,38 +11,32 @@ export const ROSHAL_STANDARD_SHIPPING_FEE = 60;
 export function getRoshalOrderStatusLabel(status: string): LocalizedValue {
   switch (status) {
     case "payment-review":
-      return localizedValue(
-        "à¦ªà§‡à¦®à§‡à¦¨à§à¦Ÿ à¦¯à¦¾à¦šà¦¾à¦‡",
-        "Payment review",
-      );
+      return localizedValue("পেমেন্ট যাচাই", "Payment review");
     case "confirmed":
-      return localizedValue("à¦¨à¦¿à¦¶à§à¦šà¦¿à¦¤", "Confirmed");
+      return localizedValue("নিশ্চিত", "Confirmed");
     case "processing":
-      return localizedValue("à¦ªà§à¦°à¦¸à§‡à¦¸à¦¿à¦‚", "Processing");
+      return localizedValue("প্রসেসিং", "Processing");
     case "shipped":
-      return localizedValue("à¦ªà¦¾à¦ à¦¾à¦¨à§‹ à¦¹à§Ÿà§‡à¦›à§‡", "Shipped");
+      return localizedValue("পাঠানো হয়েছে", "Shipped");
     case "delivered":
-      return localizedValue(
-        "à¦¡à§‡à¦²à¦¿à¦­à¦¾à¦° à¦¹à§Ÿà§‡à¦›à§‡",
-        "Delivered",
-      );
+      return localizedValue("ডেলিভার হয়েছে", "Delivered");
     case "cancelled":
-      return localizedValue("à¦¬à¦¾à¦¤à¦¿à¦²", "Cancelled");
+      return localizedValue("বাতিল", "Cancelled");
     default:
-      return localizedValue("à¦…à¦ªà§‡à¦•à§à¦·à¦®à¦¾à¦£", "Pending");
+      return localizedValue("অপেক্ষমাণ", "Pending");
   }
 }
 
 export function getRoshalPaymentStatusLabel(status: string): LocalizedValue {
   switch (status) {
     case "under-review":
-      return localizedValue("à¦¯à¦¾à¦šà¦¾à¦‡ à¦šà¦²à¦›à§‡", "Under review");
+      return localizedValue("যাচাই চলছে", "Under review");
     case "paid":
-      return localizedValue("à¦ªà¦°à¦¿à¦¶à§‹à¦§à¦¿à¦¤", "Paid");
+      return localizedValue("পরিশোধিত", "Paid");
     case "failed":
-      return localizedValue("à¦¬à§à¦¯à¦°à§à¦¥", "Failed");
+      return localizedValue("ব্যর্থ", "Failed");
     default:
-      return localizedValue("à¦…à¦ªà§‡à¦•à§à¦·à¦®à¦¾à¦£", "Pending");
+      return localizedValue("অপেক্ষমাণ", "Pending");
   }
 }
 
@@ -79,15 +73,15 @@ export function getRoshalPaymentMethodLabel(
 ): LocalizedValue {
   switch (method) {
     case "card":
-      return localizedValue("à¦•à¦¾à¦°à§à¦¡", "Card");
+      return localizedValue("কার্ড", "Card");
     case "nagad":
-      return localizedValue("à¦¨à¦—à¦¦", "Nagad");
+      return localizedValue("নগদ", "Nagad");
     case "rocket":
-      return localizedValue("à¦°à¦•à§‡à¦Ÿ", "Rocket");
+      return localizedValue("রকেট", "Rocket");
     case "upay":
-      return localizedValue("à¦‰à¦ªà¦¾à§Ÿ", "Upay");
+      return localizedValue("উপায়", "Upay");
     default:
-      return localizedValue("à¦¬à¦¿à¦•à¦¾à¦¶", "bKash");
+      return localizedValue("বিকাশ", "bKash");
   }
 }
 
@@ -111,22 +105,18 @@ export function getRoshalOrderTrackingSteps(
     return [
       {
         key: "placed",
-        label: localizedValue(
-          "à¦…à¦°à§à¦¡à¦¾à¦° à¦•à¦°à¦¾ à¦¹à§Ÿà§‡à¦›à§‡",
-          "Order placed",
-        ),
+        label: localizedValue("অর্ডার করা হয়েছে", "Order placed"),
         description: localizedValue(
-          "à¦†à¦ªà¦¨à¦¾à¦° à¦…à¦°à§à¦¡à¦¾à¦° à¦—à§à¦°à¦¹à¦£ à¦•à¦°à¦¾ à¦¹à§Ÿà§‡à¦›à§‡à¥¤",
+          "আপনার অর্ডার গ্রহণ করা হয়েছে।",
           "Your order was received.",
         ),
         completed: true,
       },
       {
         key: "cancelled",
-        label: localizedValue("à¦¬à¦¾à¦¤à¦¿à¦²", "Cancelled"),
+        label: localizedValue("বাতিল", "Cancelled"),
         description: localizedValue(
-          order.trackingNote ||
-            "à¦…à¦°à§à¦¡à¦¾à¦°à¦Ÿà¦¿ à¦¬à¦¾à¦¤à¦¿à¦² à¦•à¦°à¦¾ à¦¹à§Ÿà§‡à¦›à§‡à¥¤",
+          order.trackingNote || "অর্ডারটি বাতিল করা হয়েছে।",
           order.trackingNote || "The order was cancelled.",
         ),
         completed: true,
@@ -138,26 +128,20 @@ export function getRoshalOrderTrackingSteps(
   return [
     {
       key: "placed",
-      label: localizedValue(
-        "à¦…à¦°à§à¦¡à¦¾à¦° à¦•à¦°à¦¾ à¦¹à§Ÿà§‡à¦›à§‡",
-        "Order placed",
-      ),
+      label: localizedValue("অর্ডার করা হয়েছে", "Order placed"),
       description: localizedValue(
-        "à¦†à¦®à¦°à¦¾ à¦†à¦ªà¦¨à¦¾à¦° à¦…à¦°à§à¦¡à¦¾à¦°à¦Ÿà¦¿ à¦—à§à¦°à¦¹à¦£ à¦•à¦°à§‡à¦›à¦¿à¥¤",
+        "আমরা আপনার অর্ডারটি গ্রহণ করেছি।",
         "We have received your order.",
       ),
       completed: true,
     },
     {
       key: "payment",
-      label: localizedValue(
-        "à¦ªà§‡à¦®à§‡à¦¨à§à¦Ÿ à¦¯à¦¾à¦šà¦¾à¦‡",
-        "Payment review",
-      ),
+      label: localizedValue("পেমেন্ট যাচাই", "Payment review"),
       description: localizedValue(
         order.paymentStatus === "paid"
-          ? "à¦ªà§‡à¦®à§‡à¦¨à§à¦Ÿ à¦¯à¦¾à¦šà¦¾à¦‡ à¦¸à¦®à§à¦ªà¦¨à§à¦¨ à¦¹à§Ÿà§‡à¦›à§‡à¥¤"
-          : "à¦ªà§‡à¦®à§‡à¦¨à§à¦Ÿ à¦¯à¦¾à¦šà¦¾à¦‡ à¦šà¦²à¦›à§‡ à¦¬à¦¾ à¦…à¦ªà§‡à¦•à§à¦·à¦®à¦¾à¦£à¥¤",
+          ? "পেমেন্ট যাচাই সম্পন্ন হয়েছে।"
+          : "পেমেন্ট যাচাই চলছে বা অপেক্ষমাণ।",
         order.paymentStatus === "paid"
           ? "Payment verification is complete."
           : "Payment is pending or under review.",
@@ -170,12 +154,9 @@ export function getRoshalOrderTrackingSteps(
     },
     {
       key: "confirmed",
-      label: localizedValue(
-        "à¦…à¦°à§à¦¡à¦¾à¦° à¦¨à¦¿à¦¶à§à¦šà¦¿à¦¤",
-        "Order confirmed",
-      ),
+      label: localizedValue("অর্ডার নিশ্চিত", "Order confirmed"),
       description: localizedValue(
-        "à¦…à§à¦¯à¦¾à¦¡à¦®à¦¿à¦¨ à¦…à¦°à§à¦¡à¦¾à¦°à¦Ÿà¦¿ à¦ªà§à¦°à¦¸à§‡à¦¸à§‡à¦° à¦œà¦¨à§à¦¯ à¦…à¦¨à§à¦®à§‹à¦¦à¦¨ à¦¦à¦¿à§Ÿà§‡à¦›à§‡à¥¤",
+        "অ্যাডমিন অর্ডারটি প্রসেসের জন্য অনুমোদন দিয়েছে।",
         "The admin has approved the order for processing.",
       ),
       completed: isOrderAtLeast(order, "confirmed"),
@@ -183,9 +164,9 @@ export function getRoshalOrderTrackingSteps(
     },
     {
       key: "processing",
-      label: localizedValue("à¦ªà§à¦°à¦¸à§‡à¦¸à¦¿à¦‚", "Processing"),
+      label: localizedValue("প্রসেসিং", "Processing"),
       description: localizedValue(
-        "à¦†à¦ªà¦¨à¦¾à¦° à¦…à¦°à§à¦¡à¦¾à¦° à¦ªà§à¦°à¦¸à§‡à¦¸ à¦•à¦°à¦¾ à¦¹à¦šà§à¦›à§‡ à¦à¦¬à¦‚ à¦¡à§‡à¦²à¦¿à¦­à¦¾à¦°à¦¿à¦° à¦œà¦¨à§à¦¯ à¦ªà§à¦°à¦¸à§à¦¤à§à¦¤ à¦•à¦°à¦¾ à¦¹à¦šà§à¦›à§‡à¥¤",
+        "আপনার অর্ডার প্রস্তুত ও প্যাক করা হচ্ছে।",
         "Your order is being prepared and packed for delivery.",
       ),
       completed: isOrderAtLeast(order, "processing"),
@@ -193,9 +174,9 @@ export function getRoshalOrderTrackingSteps(
     },
     {
       key: "shipped",
-      label: localizedValue("à¦ªà¦¾à¦ à¦¾à¦¨à§‹ à¦¹à§Ÿà§‡à¦›à§‡", "Shipped"),
+      label: localizedValue("পাঠানো হয়েছে", "Shipped"),
       description: localizedValue(
-        "à¦…à¦°à§à¦¡à¦¾à¦°à¦Ÿà¦¿ à¦¡à§‡à¦²à¦¿à¦­à¦¾à¦°à¦¿à¦° à¦œà¦¨à§à¦¯ à¦ªà¦¾à¦ à¦¾à¦¨à§‹ à¦¹à§Ÿà§‡à¦›à§‡à¥¤",
+        "অর্ডারটি ডেলিভারির জন্য পাঠানো হয়েছে।",
         "The order has been dispatched for delivery.",
       ),
       completed: isOrderAtLeast(order, "shipped"),
@@ -203,12 +184,9 @@ export function getRoshalOrderTrackingSteps(
     },
     {
       key: "delivered",
-      label: localizedValue(
-        "à¦¡à§‡à¦²à¦¿à¦­à¦¾à¦° à¦¹à§Ÿà§‡à¦›à§‡",
-        "Delivered",
-      ),
+      label: localizedValue("ডেলিভার হয়েছে", "Delivered"),
       description: localizedValue(
-        "à¦…à¦°à§à¦¡à¦¾à¦°à¦Ÿà¦¿ à¦¸à¦«à¦²à¦­à¦¾à¦¬à§‡ à¦¡à§‡à¦²à¦¿à¦­à¦¾à¦° à¦¹à§Ÿà§‡à¦›à§‡à¥¤",
+        "অর্ডারটি সফলভাবে ডেলিভার হয়েছে।",
         "The order has been delivered successfully.",
       ),
       completed: order.status === "delivered",

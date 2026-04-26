@@ -4,12 +4,17 @@ import { saveRoshalPage, saveRoshalSection } from "@/actions/roshal-admin";
 import { DashboardFormCheckbox } from "@/components/roshal/dashboard/form-checkbox";
 import { DashboardFormSelect } from "@/components/roshal/dashboard/form-select";
 import { ImageUploadField } from "@/components/roshal/shared/image-upload-field";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { requireRoshalAdmin } from "@/lib/roshal/auth";
+import {
+  getRoshalHomeSectionGuide,
+  roshalHomeSectionGuides,
+} from "@/lib/roshal/cms-guides";
 import { getRoshalPages, getRoshalSectionsForPage } from "@/lib/roshal/content";
 import { getRoshalLocale } from "@/lib/roshal/i18n";
 
@@ -46,12 +51,25 @@ function storefrontPathFromSlug(slug: string) {
 
 export default async function DashboardPageEditorRoute({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams?: Promise<{
+    error?: string;
+    slug?: string;
+    sectionKey?: string;
+  }>;
 }) {
-  const [{ id }, locale] = await Promise.all([
+  const [{ id }, locale, resolvedSearchParams] = await Promise.all([
     params,
     getRoshalLocale(),
+    searchParams
+      ? searchParams
+      : Promise.resolve<{
+          error?: string;
+          slug?: string;
+          sectionKey?: string;
+        }>({}),
     requireRoshalAdmin(),
   ]);
   const pages = await getRoshalPages();
@@ -63,6 +81,12 @@ export default async function DashboardPageEditorRoute({
 
   const sections = await getRoshalSectionsForPage(page.id);
   const storefrontPath = storefrontPathFromSlug(page.slug);
+  const errorMessage = getPageEditorErrorMessage(
+    locale,
+    resolvedSearchParams.error,
+    resolvedSearchParams.slug,
+    resolvedSearchParams.sectionKey,
+  );
 
   return (
     <div className="space-y-6 p-4 md:p-6">
@@ -83,6 +107,12 @@ export default async function DashboardPageEditorRoute({
           </Button>
         ) : null}
       </div>
+
+      {errorMessage ? (
+        <Alert variant="destructive">
+          <AlertDescription>{errorMessage}</AlertDescription>
+        </Alert>
+      ) : null}
 
       <Card>
         <CardHeader>
@@ -173,18 +203,71 @@ export default async function DashboardPageEditorRoute({
         </CardContent>
       </Card>
 
+      {page.slug === "home" ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Homepage section map</CardTitle>
+          </CardHeader>
+          <CardContent className="grid gap-3 md:grid-cols-2">
+            {roshalHomeSectionGuides.map((guide) => (
+              <div
+                key={guide.sectionKey}
+                className="rounded-xl border border-border/70 bg-muted/20 p-4"
+              >
+                <p className="font-medium">
+                  {locale === "bn" ? guide.label.bn : guide.label.en}
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {guide.sectionKey}
+                </p>
+                <p className="mt-3 text-sm text-muted-foreground">
+                  {locale === "bn" ? guide.summary.bn : guide.summary.en}
+                </p>
+                <p className="mt-3 text-sm text-muted-foreground">
+                  {locale === "bn" ? guide.stylesHint.bn : guide.stylesHint.en}
+                </p>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      ) : null}
+
       <div className="space-y-4">
         <h2 className="text-2xl font-semibold">
           {locale === "bn" ? "সেকশনসমূহ" : "Sections"}
         </h2>
         {sections.map((section) => (
-          <Card key={section.id}>
+          <Card key={section.id} id={`section-${section.sectionKey}`}>
             <CardHeader>
               <CardTitle>
                 {section.sectionKey} · {section.type}
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4">
+              {page.slug === "home" &&
+              getRoshalHomeSectionGuide(section.sectionKey) ? (
+                <div className="rounded-xl border border-border/70 bg-muted/20 p-4 text-sm text-muted-foreground">
+                  <p className="font-medium text-foreground">
+                    {locale === "bn"
+                      ? getRoshalHomeSectionGuide(section.sectionKey)?.label.bn
+                      : getRoshalHomeSectionGuide(section.sectionKey)?.label.en}
+                  </p>
+                  <p className="mt-2">
+                    {locale === "bn"
+                      ? getRoshalHomeSectionGuide(section.sectionKey)
+                          ?.contentHint.bn
+                      : getRoshalHomeSectionGuide(section.sectionKey)
+                          ?.contentHint.en}
+                  </p>
+                  <p className="mt-2">
+                    {locale === "bn"
+                      ? getRoshalHomeSectionGuide(section.sectionKey)
+                          ?.stylesHint.bn
+                      : getRoshalHomeSectionGuide(section.sectionKey)
+                          ?.stylesHint.en}
+                  </p>
+                </div>
+              ) : null}
               <form
                 action={saveRoshalSection}
                 className="grid gap-5 md:grid-cols-2"
@@ -470,4 +553,36 @@ function TextField({
       <Textarea id={name} name={name} defaultValue={defaultValue} rows={rows} />
     </div>
   );
+}
+
+function getPageEditorErrorMessage(
+  locale: "bn" | "en",
+  code: string | undefined,
+  slug: string | undefined,
+  sectionKey: string | undefined,
+) {
+  switch (code) {
+    case "reserved-slug":
+      return locale === "bn"
+        ? `\`${slug || ""}\` স্লাগটি সিস্টেম রুটের সঙ্গে সংঘর্ষ করছে। অন্য একটি স্লাগ ব্যবহার করুন।`
+        : `The slug \`${slug || ""}\` conflicts with a system route. Choose a different slug.`;
+    case "duplicate-slug":
+      return locale === "bn"
+        ? `\`${slug || ""}\` স্লাগটি ইতিমধ্যেই অন্য একটি মার্কেটিং পেজে ব্যবহৃত হচ্ছে।`
+        : `The slug \`${slug || ""}\` is already used by another marketing page.`;
+    case "invalid-slug":
+      return locale === "bn"
+        ? "পেজ স্লাগে শুধুমাত্র ছোট হাতের অক্ষর, সংখ্যা এবং হাইফেন ব্যবহার করুন।"
+        : "Use only lowercase letters, numbers, and hyphens in page slugs.";
+    case "duplicate-section-key":
+      return locale === "bn"
+        ? `\`${sectionKey || ""}\` সেকশন কীটি এই পেজে ইতিমধ্যেই আছে। নতুন একটি ইউনিক কী দিন।`
+        : `The section key \`${sectionKey || ""}\` already exists on this page. Use a unique key.`;
+    case "invalid-section-key":
+      return locale === "bn"
+        ? "সেকশন কীতে শুধুমাত্র ছোট হাতের অক্ষর, সংখ্যা এবং হাইফেন ব্যবহার করুন।"
+        : "Use only lowercase letters, numbers, and hyphens in section keys.";
+    default:
+      return null;
+  }
 }

@@ -1,8 +1,10 @@
 import { saveRoshalPage } from "@/actions/roshal-admin";
 import { DashboardFormCheckbox } from "@/components/roshal/dashboard/form-checkbox";
 import { DashboardFormSelect } from "@/components/roshal/dashboard/form-select";
+import { HomepageControlCenter } from "@/components/roshal/dashboard/homepage-control-center";
 import { RoshalPagesTable } from "@/components/roshal/dashboard/pages-table";
 import { ImageUploadField } from "@/components/roshal/shared/image-upload-field";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -28,6 +30,11 @@ export default async function DashboardPagesPage({
     getRoshalPages(),
     requireRoshalAdmin(),
   ]);
+  const errorMessage = getPageListErrorMessage(
+    locale,
+    resolvedSearchParams.error,
+    resolvedSearchParams.slug,
+  );
 
   return (
     <div className="space-y-6 p-4 md:p-6">
@@ -40,15 +47,13 @@ export default async function DashboardPagesPage({
         </h1>
       </div>
 
-      {resolvedSearchParams.error === "reserved-slug" ? (
-        <Card className="border-destructive/30 bg-destructive/5">
-          <CardContent className="p-4 text-sm text-foreground">
-            {locale === "bn"
-              ? `\`${resolvedSearchParams.slug || ""}\` স্লাগটি সিস্টেম রুটের সঙ্গে সংঘর্ষ করছে। অন্য একটি স্লাগ ব্যবহার করুন।`
-              : `The slug \`${resolvedSearchParams.slug || ""}\` conflicts with a system route. Choose a different slug.`}
-          </CardContent>
-        </Card>
+      {errorMessage ? (
+        <Alert variant="destructive">
+          <AlertDescription>{errorMessage}</AlertDescription>
+        </Alert>
       ) : null}
+
+      <HomepageControlCenter locale={locale} />
 
       <Card>
         <CardHeader>
@@ -80,7 +85,7 @@ export default async function DashboardPagesPage({
                 }
                 helperText={
                   locale === "bn"
-                    ? "নতুন পেজে হিরো সেকশন না থাকলে এই ইমেজটি উপরের কভার হিসেবে দেখানো হবে।"
+                    ? "নতুন পেজে hero/story সেকশন না থাকলে এই ইমেজটি উপরের কভার হিসেবে ব্যবহৃত হবে।"
                     : "This image will be used as the top cover when the page has no hero/story section yet."
                 }
                 value=""
@@ -120,15 +125,15 @@ export default async function DashboardPagesPage({
                 defaultChecked
                 label={
                   locale === "bn"
-                    ? "নেভিগেশনে দেখান"
+                    ? "স্টোরফ্রন্ট নেভিগেশনে দেখান"
                     : "Show in storefront navigation"
                 }
               />
             </div>
             <div className="md:col-span-2 rounded-xl border border-border/70 bg-muted/25 p-4 text-sm text-muted-foreground">
               {locale === "bn"
-                ? "সিস্টেম রুট যেমন products, cart, checkout, orders, profile, login, dashboard ব্যবহার করবেন না। পেজ তৈরি হওয়ার পর সেটির সেকশন ও লেআউট `/dashboard/pages/[id]` থেকে সম্পাদনা করতে পারবেন।"
-                : "Avoid system slugs such as products, cart, checkout, orders, profile, login, and dashboard. After creation, you can edit the page sections and layout from `/dashboard/pages/[id]`."}
+                ? "সিস্টেম রুট যেমন products, cart, checkout, orders, profile, login, dashboard, collections, payment-return ব্যবহার করবেন না। পেজ তৈরি হওয়ার পর সেটির সেকশন ও লেআউট `/dashboard/pages/[id]` থেকে সম্পাদনা করতে পারবেন।"
+                : "Avoid system slugs such as products, cart, checkout, orders, profile, login, dashboard, collections, and payment-return. After creation, you can edit the page sections and layout from `/dashboard/pages/[id]`."}
             </div>
             <div className="md:col-span-2">
               <Button type="submit">
@@ -185,4 +190,27 @@ function TextField({
       <Textarea id={name} name={name} defaultValue={defaultValue} rows={rows} />
     </div>
   );
+}
+
+function getPageListErrorMessage(
+  locale: "bn" | "en",
+  code: string | undefined,
+  slug: string | undefined,
+) {
+  switch (code) {
+    case "reserved-slug":
+      return locale === "bn"
+        ? `\`${slug || ""}\` স্লাগটি সিস্টেম রুটের সঙ্গে সংঘর্ষ করছে। অন্য একটি স্লাগ ব্যবহার করুন।`
+        : `The slug \`${slug || ""}\` conflicts with a system route. Choose a different slug.`;
+    case "duplicate-slug":
+      return locale === "bn"
+        ? `\`${slug || ""}\` স্লাগটি ইতিমধ্যেই অন্য একটি মার্কেটিং পেজে ব্যবহৃত হচ্ছে।`
+        : `The slug \`${slug || ""}\` is already used by another marketing page.`;
+    case "invalid-slug":
+      return locale === "bn"
+        ? "পেজ স্লাগে শুধুমাত্র ছোট হাতের অক্ষর, সংখ্যা এবং হাইফেন ব্যবহার করুন।"
+        : "Use only lowercase letters, numbers, and hyphens in page slugs.";
+    default:
+      return null;
+  }
 }

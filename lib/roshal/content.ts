@@ -1,4 +1,4 @@
-import { and, asc, desc, eq } from "drizzle-orm";
+import { asc, desc, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import {
   roshalOrders,
@@ -67,6 +67,24 @@ function mapPage(row: typeof roshalPages.$inferSelect): RoshalMarketingPage {
   };
 }
 
+function mergeRoshalPages(pages: RoshalMarketingPage[]) {
+  const pageBySlug = new Map(pages.map((page) => [page.slug, page]));
+  const mergedPages: RoshalMarketingPage[] = [];
+  const seenSlugs = new Set<string>();
+
+  for (const defaultPage of defaultRoshalPages) {
+    const page = pageBySlug.get(defaultPage.slug) || defaultPage;
+    mergedPages.push(page);
+    seenSlugs.add(page.slug);
+  }
+
+  const customPages = pages
+    .filter((page) => !seenSlugs.has(page.slug))
+    .sort((left, right) => left.slug.localeCompare(right.slug));
+
+  return [...mergedPages, ...customPages];
+}
+
 function mapSection(
   row: typeof roshalSections.$inferSelect,
 ): RoshalMarketingSection {
@@ -100,6 +118,27 @@ function mapSection(
     items: safeJsonParse(row.itemsJson, []),
     styles: safeJsonParse(row.stylesJson, {}),
   };
+}
+
+function mergeRoshalSections(
+  defaultSections: RoshalMarketingSection[],
+  sections: RoshalMarketingSection[],
+) {
+  const sectionByKey = new Map(
+    defaultSections.map((section) => [section.sectionKey, section]),
+  );
+
+  for (const section of sections) {
+    sectionByKey.set(section.sectionKey, section);
+  }
+
+  return Array.from(sectionByKey.values()).sort((left, right) => {
+    if (left.sortOrder !== right.sortOrder) {
+      return left.sortOrder - right.sortOrder;
+    }
+
+    return left.sectionKey.localeCompare(right.sectionKey);
+  });
 }
 
 function mapProduct(row: typeof roshalProducts.$inferSelect): RoshalProduct {
@@ -253,27 +292,10 @@ export async function getRoshalPaymentSettings() {
 }
 
 export async function getRoshalNavigationPages() {
-  try {
-    const pages = await db
-      .select()
-      .from(roshalPages)
-      .where(
-        and(
-          eq(roshalPages.showInNavigation, true),
-          eq(roshalPages.status, "published"),
-        ),
-      )
-      .orderBy(asc(roshalPages.slug));
-
-    if (pages.length) {
-      return pages.map(mapPage);
-    }
-
-    const [existingPage] = await db.select().from(roshalPages).limit(1);
-    return existingPage ? [] : defaultRoshalPages;
-  } catch {
-    return defaultRoshalPages;
-  }
+  const pages = await getRoshalPages();
+  return pages.filter(
+    (page) => page.showInNavigation && page.status === "published",
+  );
 }
 
 export async function getRoshalPages() {
@@ -282,7 +304,8 @@ export async function getRoshalPages() {
       .select()
       .from(roshalPages)
       .orderBy(asc(roshalPages.slug));
-    return pages.length ? pages.map(mapPage) : defaultRoshalPages;
+
+    return mergeRoshalPages(pages.map(mapPage));
   } catch {
     return defaultRoshalPages;
   }
@@ -307,18 +330,54 @@ export async function getRoshalPageBySlug(slug: string) {
 }
 
 export async function getRoshalSectionsForPage(pageId: string) {
+  let defaultPage =
+    defaultRoshalPages.find((page) => page.id === pageId) || null;
+
   try {
+    if (!defaultPage) {
+      const [page] = await db
+        .select({
+          slug: roshalPages.slug,
+        })
+        .from(roshalPages)
+        .where(eq(roshalPages.id, pageId))
+        .limit(1);
+
+      if (page?.slug) {
+        defaultPage =
+          defaultRoshalPages.find((item) => item.slug === page.slug) || null;
+      }
+    }
+
     const sections = await db
       .select()
       .from(roshalSections)
       .where(eq(roshalSections.pageId, pageId))
       .orderBy(asc(roshalSections.sortOrder));
+    const mappedSections = sections.map(mapSection);
 
-    return sections.length
-      ? sections.map(mapSection)
-      : defaultRoshalSections.filter((section) => section.pageId === pageId);
+    if (!defaultPage) {
+      return mappedSections;
+    }
+
+    const defaultPageId = defaultPage.id;
+
+    return mergeRoshalSections(
+      defaultRoshalSections.filter(
+        (section) => section.pageId === defaultPageId,
+      ),
+      mappedSections,
+    );
   } catch {
-    return defaultRoshalSections.filter((section) => section.pageId === pageId);
+    if (!defaultPage) {
+      return [];
+    }
+
+    const defaultPageId = defaultPage.id;
+
+    return defaultRoshalSections.filter(
+      (section) => section.pageId === defaultPageId,
+    );
   }
 }
 

@@ -7,6 +7,9 @@ import { safeJsonParse } from "@/lib/roshal/format";
 import {
   createValidatedRoshalOrder,
   RoshalOrderStatusError,
+  RoshalPageError,
+  RoshalProductError,
+  RoshalSectionError,
   RoshalUserRoleError,
   updateRoshalOrderStatus,
   updateRoshalUserProfile,
@@ -17,6 +20,7 @@ import {
   upsertRoshalSection,
   upsertRoshalSiteSettings,
 } from "@/lib/roshal/mutations";
+import { normalizeRoshalRouteSlug } from "@/lib/roshal/routes";
 import type { RoshalPaymentMethod } from "@/lib/roshal/types";
 
 function textValue(formData: FormData, key: string) {
@@ -138,39 +142,40 @@ export async function saveRoshalPaymentSettings(formData: FormData) {
 export async function saveRoshalPage(formData: FormData) {
   await requireRoshalAdmin();
 
-  const pageSlug = textValue(formData, "slug");
-  const previousSlug = textValue(formData, "previousSlug");
-  const reservedSlugs = new Set([
-    "products",
-    "cart",
-    "checkout",
-    "orders",
-    "profile",
-    "login",
-    "dashboard",
-    "api",
-    "_next",
-  ]);
+  const rawPageSlug = textValue(formData, "slug");
+  const pageSlug = normalizeRoshalRouteSlug(rawPageSlug);
+  const previousSlug = normalizeRoshalRouteSlug(
+    textValue(formData, "previousSlug"),
+  );
+  const pageId = textValue(formData, "id");
+  const pageEditorPath = pageId
+    ? `/dashboard/pages/${pageId}`
+    : "/dashboard/pages";
+  let id = pageId;
 
-  if (reservedSlugs.has(pageSlug)) {
-    redirect(
-      `/dashboard/pages?error=reserved-slug&slug=${encodeURIComponent(pageSlug)}`,
-    );
+  try {
+    id = await upsertRoshalPage({
+      id: pageId || undefined,
+      slug: rawPageSlug,
+      navigationLabelBn: textValue(formData, "navigationLabelBn"),
+      navigationLabelEn: textValue(formData, "navigationLabelEn"),
+      titleBn: textValue(formData, "titleBn"),
+      titleEn: textValue(formData, "titleEn"),
+      descriptionBn: optionalTextValue(formData, "descriptionBn"),
+      descriptionEn: optionalTextValue(formData, "descriptionEn"),
+      heroImage: optionalTextValue(formData, "heroImage"),
+      status: textValue(formData, "status") || "published",
+      showInNavigation: boolValue(formData, "showInNavigation"),
+    });
+  } catch (error) {
+    if (error instanceof RoshalPageError) {
+      redirect(
+        `${pageEditorPath}?error=${encodeURIComponent(error.code)}&slug=${encodeURIComponent(pageSlug || rawPageSlug)}`,
+      );
+    }
+
+    throw error;
   }
-
-  const id = await upsertRoshalPage({
-    id: textValue(formData, "id") || undefined,
-    slug: pageSlug,
-    navigationLabelBn: textValue(formData, "navigationLabelBn"),
-    navigationLabelEn: textValue(formData, "navigationLabelEn"),
-    titleBn: textValue(formData, "titleBn"),
-    titleEn: textValue(formData, "titleEn"),
-    descriptionBn: optionalTextValue(formData, "descriptionBn"),
-    descriptionEn: optionalTextValue(formData, "descriptionEn"),
-    heroImage: optionalTextValue(formData, "heroImage"),
-    status: textValue(formData, "status") || "published",
-    showInNavigation: boolValue(formData, "showInNavigation"),
-  });
 
   const storefrontPaths = new Set<string>([
     pageSlug === "home" ? "/" : `/${pageSlug}`,
@@ -193,29 +198,40 @@ export async function saveRoshalSection(formData: FormData) {
 
   const pageId = textValue(formData, "pageId");
   const pageSlug = textValue(formData, "pageSlug");
+  const sectionKey = textValue(formData, "sectionKey");
 
-  await upsertRoshalSection({
-    id: textValue(formData, "id") || undefined,
-    pageId,
-    sectionKey: textValue(formData, "sectionKey"),
-    type: textValue(formData, "type"),
-    sortOrder: numberValue(formData, "sortOrder"),
-    layout: textValue(formData, "layout") || "stacked",
-    variant: textValue(formData, "variant") || "default",
-    isEnabled: boolValue(formData, "isEnabled"),
-    eyebrowBn: optionalTextValue(formData, "eyebrowBn"),
-    eyebrowEn: optionalTextValue(formData, "eyebrowEn"),
-    titleBn: optionalTextValue(formData, "titleBn"),
-    titleEn: optionalTextValue(formData, "titleEn"),
-    bodyBn: optionalTextValue(formData, "bodyBn"),
-    bodyEn: optionalTextValue(formData, "bodyEn"),
-    ctaLabelBn: optionalTextValue(formData, "ctaLabelBn"),
-    ctaLabelEn: optionalTextValue(formData, "ctaLabelEn"),
-    ctaHref: optionalTextValue(formData, "ctaHref"),
-    imageUrl: optionalTextValue(formData, "imageUrl"),
-    itemsJson: optionalTextValue(formData, "itemsJson"),
-    stylesJson: optionalTextValue(formData, "stylesJson"),
-  });
+  try {
+    await upsertRoshalSection({
+      id: textValue(formData, "id") || undefined,
+      pageId,
+      sectionKey,
+      type: textValue(formData, "type"),
+      sortOrder: numberValue(formData, "sortOrder"),
+      layout: textValue(formData, "layout") || "stacked",
+      variant: textValue(formData, "variant") || "default",
+      isEnabled: boolValue(formData, "isEnabled"),
+      eyebrowBn: optionalTextValue(formData, "eyebrowBn"),
+      eyebrowEn: optionalTextValue(formData, "eyebrowEn"),
+      titleBn: optionalTextValue(formData, "titleBn"),
+      titleEn: optionalTextValue(formData, "titleEn"),
+      bodyBn: optionalTextValue(formData, "bodyBn"),
+      bodyEn: optionalTextValue(formData, "bodyEn"),
+      ctaLabelBn: optionalTextValue(formData, "ctaLabelBn"),
+      ctaLabelEn: optionalTextValue(formData, "ctaLabelEn"),
+      ctaHref: optionalTextValue(formData, "ctaHref"),
+      imageUrl: optionalTextValue(formData, "imageUrl"),
+      itemsJson: optionalTextValue(formData, "itemsJson"),
+      stylesJson: optionalTextValue(formData, "stylesJson"),
+    });
+  } catch (error) {
+    if (error instanceof RoshalSectionError) {
+      redirect(
+        `/dashboard/pages/${pageId}?error=${encodeURIComponent(error.code)}&sectionKey=${encodeURIComponent(sectionKey)}`,
+      );
+    }
+
+    throw error;
+  }
 
   finishAction(`/dashboard/pages/${pageId}`, formData, [
     pageSlug === "home" ? "/" : `/${pageSlug}`,
@@ -229,34 +245,55 @@ export async function saveRoshalSection(formData: FormData) {
 export async function saveRoshalProduct(formData: FormData) {
   await requireRoshalAdmin();
 
-  const previousSlug = textValue(formData, "previousSlug");
-  const id = await upsertRoshalProduct({
-    id: textValue(formData, "id") || undefined,
-    slug: textValue(formData, "slug"),
-    sku: textValue(formData, "sku"),
-    nameBn: textValue(formData, "nameBn"),
-    nameEn: textValue(formData, "nameEn"),
-    summaryBn: textValue(formData, "summaryBn"),
-    summaryEn: textValue(formData, "summaryEn"),
-    descriptionBn: textValue(formData, "descriptionBn"),
-    descriptionEn: textValue(formData, "descriptionEn"),
-    categoryKey: textValue(formData, "categoryKey"),
-    categoryLabelBn: textValue(formData, "categoryLabelBn"),
-    categoryLabelEn: textValue(formData, "categoryLabelEn"),
-    price: numberValue(formData, "price"),
-    compareAtPrice: numberValue(formData, "compareAtPrice") || null,
-    inventory: numberValue(formData, "inventory"),
-    badge: optionalTextValue(formData, "badge"),
-    heroImage: textValue(formData, "heroImage"),
-    galleryJson: optionalTextValue(formData, "galleryJson"),
-    featuresBnJson: optionalTextValue(formData, "featuresBnJson"),
-    featuresEnJson: optionalTextValue(formData, "featuresEnJson"),
-    isFeatured: boolValue(formData, "isFeatured"),
-    isPublished: boolValue(formData, "isPublished"),
-    sortOrder: numberValue(formData, "sortOrder"),
-  });
+  const previousSlug = normalizeRoshalRouteSlug(
+    textValue(formData, "previousSlug"),
+  );
+  const productId = textValue(formData, "id");
+  const rawProductSlug = textValue(formData, "slug");
+  const productSlug = normalizeRoshalRouteSlug(rawProductSlug);
+  const productSku = textValue(formData, "sku");
+  const productEditorPath = productId
+    ? `/dashboard/products/${productId}`
+    : "/dashboard/products/new";
+  let id = productId;
 
-  const currentSlug = textValue(formData, "slug");
+  try {
+    id = await upsertRoshalProduct({
+      id: productId || undefined,
+      slug: rawProductSlug,
+      sku: productSku,
+      nameBn: textValue(formData, "nameBn"),
+      nameEn: textValue(formData, "nameEn"),
+      summaryBn: textValue(formData, "summaryBn"),
+      summaryEn: textValue(formData, "summaryEn"),
+      descriptionBn: textValue(formData, "descriptionBn"),
+      descriptionEn: textValue(formData, "descriptionEn"),
+      categoryKey: textValue(formData, "categoryKey"),
+      categoryLabelBn: textValue(formData, "categoryLabelBn"),
+      categoryLabelEn: textValue(formData, "categoryLabelEn"),
+      price: numberValue(formData, "price"),
+      compareAtPrice: numberValue(formData, "compareAtPrice") || null,
+      inventory: numberValue(formData, "inventory"),
+      badge: optionalTextValue(formData, "badge"),
+      heroImage: textValue(formData, "heroImage"),
+      galleryJson: optionalTextValue(formData, "galleryJson"),
+      featuresBnJson: optionalTextValue(formData, "featuresBnJson"),
+      featuresEnJson: optionalTextValue(formData, "featuresEnJson"),
+      isFeatured: boolValue(formData, "isFeatured"),
+      isPublished: boolValue(formData, "isPublished"),
+      sortOrder: numberValue(formData, "sortOrder"),
+    });
+  } catch (error) {
+    if (error instanceof RoshalProductError) {
+      redirect(
+        `${productEditorPath}?error=${encodeURIComponent(error.code)}&slug=${encodeURIComponent(productSlug)}&sku=${encodeURIComponent(productSku)}`,
+      );
+    }
+
+    throw error;
+  }
+
+  const currentSlug = productSlug;
   const productPaths = new Set<string>([
     "/",
     "/products",

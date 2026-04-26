@@ -1,10 +1,10 @@
 import { CategoryCard } from "@/components/marketing/category-card";
 import { FeaturedProducts } from "@/components/marketing/featured-products";
+import { FreshVegetables } from "@/components/marketing/fresh-vegetables";
 import {
   LandingHero,
   type LandingHeroBanner,
 } from "@/components/marketing/landing-hero";
-import { FreshVegetables } from "@/components/marketing/fresh-vegetables";
 import { NewArrivals } from "@/components/marketing/new-arrivals";
 import { OrganicProducts } from "@/components/marketing/organic-products";
 import { SeasonalProducts } from "@/components/marketing/seasonal-products";
@@ -190,7 +190,7 @@ function firstNonEmptyValue(
   values: Array<string | null | undefined>,
   fallback: string,
 ) {
-  return values.find((value) => value && value.trim()) || fallback;
+  return values.find((value) => value?.trim()) || fallback;
 }
 
 function buildHeroBanners(
@@ -496,7 +496,7 @@ export default async function LandingPage() {
     },
   ).map((product, index) => ({
     ...toMarketingProduct(product, language, index + 36),
-    season: index % 2 === 0 ? "winter" : "summer",
+    season: (index % 2 === 0 ? "winter" : "summer") as "winter" | "summer",
   }));
 
   const deals = buildDeals(

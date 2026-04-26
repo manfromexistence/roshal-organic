@@ -15,13 +15,13 @@ export function RoshalMarketingPageView({
   locale,
   page,
   sections,
-  featuredProducts,
+  products,
   siteSettings,
 }: {
   locale: RoshalLocale;
   page: RoshalMarketingPage;
   sections: RoshalMarketingSection[];
-  featuredProducts: RoshalProduct[];
+  products: RoshalProduct[];
   siteSettings: RoshalSiteSettings;
 }) {
   const hasPrimaryHero = sections.some(
@@ -79,7 +79,7 @@ export function RoshalMarketingPageView({
         locale={locale}
         siteSettings={siteSettings}
         sections={sections}
-        featuredProducts={featuredProducts}
+        products={products}
       />
     </div>
   );

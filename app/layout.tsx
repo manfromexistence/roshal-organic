@@ -3,6 +3,7 @@ import { JetBrains_Mono } from "next/font/google";
 import { cookies } from "next/headers";
 import Script from "next/script";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { QueryProvider } from "@/components/providers/query-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { getRoshalMetadataBase } from "@/lib/roshal/site";
@@ -55,8 +56,10 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <NuqsAdapter>{children}</NuqsAdapter>
-          <Toaster closeButton position="top-right" richColors />
+          <QueryProvider>
+            <NuqsAdapter>{children}</NuqsAdapter>
+            <Toaster closeButton position="top-right" richColors />
+          </QueryProvider>
         </ThemeProvider>
       </body>
     </html>

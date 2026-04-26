@@ -83,6 +83,16 @@ export default async function DashboardPaymentsPage() {
               ROSHAL_PAYMENT_GATEWAY_METHODS
             </p>
             <p className="text-xs text-muted-foreground">
+              {`Missing env keys: ${
+                gatewaySummary.missingEnvKeys.length
+                  ? gatewaySummary.missingEnvKeys.join(", ")
+                  : "none"
+              }`}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {`Supported gateway methods: ${gatewaySummary.supportedMethods.join(", ")}`}
+            </p>
+            <p className="text-xs text-muted-foreground">
               {locale === "bn"
                 ? `কলে-ব্যাক URL: ${gatewaySummary.callbackUrls.success}, ${gatewaySummary.callbackUrls.fail}, ${gatewaySummary.callbackUrls.cancel}, ${gatewaySummary.callbackUrls.ipn}`
                 : `Callback URLs: ${gatewaySummary.callbackUrls.success}, ${gatewaySummary.callbackUrls.fail}, ${gatewaySummary.callbackUrls.cancel}, ${gatewaySummary.callbackUrls.ipn}`}

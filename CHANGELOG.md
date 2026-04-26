@@ -24,6 +24,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the shared Roshal toaster to the root app shell so existing dashboard/storefront status messages now render visibly across the live app
 - Added `upay` as a first-class Roshal payment method across checkout, payment settings, order labels, env configuration, and the AamarPay-backed gateway capability list
 - Added a generic CMS-backed storefront route for custom marketing pages at `/(marketing)/[slug]`, plus dashboard forms to create new marketing pages and add new sections without code changes
+- Added a React Query + Zustand homepage control center to `/dashboard/pages`, backed by new Roshal CMS API routes for live homepage reads and section visibility toggles
+- Added DB-backed homepage section enable/disable controls so admins can turn landing blocks on or off without editing raw code or leaving the dashboard
+- Added homepage section guidance metadata plus editor deep-link anchors so the copied marketing landing page is easier to manage from the dashboard
+- Added product-source handling to the generic marketing-page section renderer so CMS `featured-products` blocks on about/contact/custom pages now respect `stylesJson` source, limit, and offset values
+- Added dashboard-safe Roshal validation errors for duplicate marketing-page slugs, duplicate section keys, duplicate product slugs/SKUs, invalid slugs, and negative inventory/pricing so admins no longer hit raw database failures while editing storefront content
+- Added a root `.env.example` that documents the required Roshal auth, Turso, upload, and AamarPay gateway keys for deployment handoff
 - Added richer dashboard media controls for marketing pages, sections, and products using the shared image-upload field with live previews
 - Added a richer storefront catalog experience with client-side product search, category filtering, and sorting on `/products`
 - Added dynamic Roshal SEO helpers so the home page, marketing pages, and product detail pages now emit page-specific metadata
@@ -65,6 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed authentication and seeded data to use only `admin` and `user` roles for the active Roshal experience
 - Changed the package identity and active branding from Quadra to `roshal-organic` across the live app shell, login flow, navigation, metadata, and seeded storefront content
 - Changed Roshal login, checkout, and shared image-upload flows to use inline/toast feedback instead of raw browser alerts, and fixed the remaining Quadra title leak on the login route
+- Changed the login page into a storefront-first ecommerce account entry surface, with clearer checkout/order-tracking positioning for customers and explicit admin-assignment messaging
 - Changed the env configuration to use the real `roshal-organic` Turso database in `.env` and `.env.local`, and replaced the stale production `app-quadra` auth URL with explicit Roshal production-domain placeholders
 - Changed the Roshal gateway env guidance and checkout copy to reflect the current AamarPay-backed payment surface, including `upay`
 - Changed the root `proxy.ts` matcher so auth session checks only run on login and protected account/dashboard routes instead of slowing every public storefront request
@@ -77,6 +84,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed admin order status handling so reactivating a cancelled order now re-checks stock before consuming inventory again and surfaces a dashboard error instead of silently desynchronizing inventory
 - Changed storefront page rendering so pages without a hero/story section now use page metadata and cover imagery as a fallback lead section
 - Changed storefront page visibility so draft marketing pages no longer leak through default fallbacks, and navigation only includes published pages marked for display
+- Changed the dashboard marketing workspace so admins can inspect the live homepage composition with a control-center view before dropping into the raw page/section editor
+- Changed marketing-page and section loading to merge database overrides with the built-in Roshal fallback pages/sections, so editing one default homepage block no longer removes the other default landing sections
+- Changed the stray storefront `/collections` route into a redirect to the real `/products` catalog and removed the dead animated landing backup file from the active marketing directory
+- Changed Roshal storefront route protection so custom CMS pages now also reserve the system-owned `/collections` and `/payment-return` paths
 - Changed the customer profile page into a fuller account surface with order metrics, quick actions, and recent order tracking links
 - Changed storefront and dashboard order screens to show localized order/payment status labels and clearer verification states instead of raw internal status keys
 - Changed the shared `/config` navigation label and route display name to `Project Configuration`, so the sidebar, command search, and breadcrumb copy now match the project-setup workspace more clearly

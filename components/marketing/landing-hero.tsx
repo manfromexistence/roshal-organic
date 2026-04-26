@@ -125,12 +125,14 @@ export function LandingHero({
           <div className="absolute inset-x-0 bottom-8 z-10">
             <div className="container mx-auto flex items-center justify-center gap-2 px-4 md:justify-end">
               {banners.map((banner, index) => (
-                <button
+                <Button
                   key={banner.image}
                   type="button"
                   aria-label={`Go to banner ${index + 1}`}
                   onClick={() => setActiveBanner(index)}
-                  className={`h-2.5 rounded-full transition-all ${
+                  variant="ghost"
+                  size="icon"
+                  className={`h-2.5 min-h-0 rounded-full p-0 transition-all ${
                     index === activeBanner
                       ? "w-10 bg-primary"
                       : "w-2.5 bg-white/55 hover:bg-white/80"

@@ -1,8 +1,8 @@
 import { notFound, redirect } from "next/navigation";
 import { RoshalMarketingPageView } from "@/components/roshal/storefront/marketing-page-view";
 import {
-  getFeaturedRoshalProducts,
   getRoshalPageBundle,
+  getRoshalProducts,
   getRoshalSiteSettings,
 } from "@/lib/roshal/content";
 import { getRoshalLocale } from "@/lib/roshal/i18n";
@@ -33,11 +33,11 @@ export default async function MarketingContentPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const [{ slug }, locale, siteSettings, featuredProducts] = await Promise.all([
+  const [{ slug }, locale, siteSettings, products] = await Promise.all([
     params,
     getRoshalLocale(),
     getRoshalSiteSettings(),
-    getFeaturedRoshalProducts(4),
+    getRoshalProducts(),
   ]);
 
   if (slug === "home") {
@@ -55,7 +55,7 @@ export default async function MarketingContentPage({
       locale={locale}
       page={pageBundle.page}
       sections={pageBundle.sections}
-      featuredProducts={featuredProducts}
+      products={products}
       siteSettings={siteSettings}
     />
   );

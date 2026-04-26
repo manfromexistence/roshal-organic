@@ -1,4 +1,4 @@
-import { and, eq, gte, inArray, sql } from "drizzle-orm";
+import { and, eq, gte, inArray, ne, sql } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { getRoshalPaymentSettings } from "@/lib/roshal/content";
@@ -19,6 +19,13 @@ import {
 } from "@/lib/schema";
 import { safeJsonParse } from "./format";
 import { ROSHAL_STANDARD_SHIPPING_FEE } from "./orders";
+import {
+  isRoshalReservedPageSlug,
+  isValidRoshalRouteSlug,
+  isValidRoshalSectionKey,
+  normalizeRoshalRouteSlug,
+  normalizeRoshalSectionKey,
+} from "./routes";
 import type {
   RoshalOrderItem,
   RoshalPaymentGatewayProvider,
@@ -330,6 +337,42 @@ export class RoshalUserRoleError extends Error {
   }
 }
 
+export class RoshalPageError extends Error {
+  code: string;
+  statusCode: number;
+
+  constructor(code: string, message: string, statusCode = 400) {
+    super(message);
+    this.name = "RoshalPageError";
+    this.code = code;
+    this.statusCode = statusCode;
+  }
+}
+
+export class RoshalSectionError extends Error {
+  code: string;
+  statusCode: number;
+
+  constructor(code: string, message: string, statusCode = 400) {
+    super(message);
+    this.name = "RoshalSectionError";
+    this.code = code;
+    this.statusCode = statusCode;
+  }
+}
+
+export class RoshalProductError extends Error {
+  code: string;
+  statusCode: number;
+
+  constructor(code: string, message: string, statusCode = 400) {
+    super(message);
+    this.name = "RoshalProductError";
+    this.code = code;
+    this.statusCode = statusCode;
+  }
+}
+
 export interface UpsertRoshalSiteSettingsInput {
   id?: string;
   brandName: string;
@@ -454,12 +497,42 @@ export interface UpsertRoshalPageInput {
 export async function upsertRoshalPage(input: UpsertRoshalPageInput) {
   const id = input.id || nextId("page");
   const timestamp = new Date();
+  const slug = normalizeRoshalRouteSlug(input.slug);
+
+  if (!slug || !isValidRoshalRouteSlug(slug)) {
+    throw new RoshalPageError(
+      "invalid-slug",
+      "Page slugs must use lowercase letters, numbers, and hyphens only.",
+    );
+  }
+
+  if (isRoshalReservedPageSlug(slug)) {
+    throw new RoshalPageError(
+      "reserved-slug",
+      "This page slug is reserved by the storefront and cannot be used.",
+    );
+  }
+
+  const [existingPage] = await db
+    .select({
+      id: roshalPages.id,
+    })
+    .from(roshalPages)
+    .where(and(eq(roshalPages.slug, slug), ne(roshalPages.id, id)))
+    .limit(1);
+
+  if (existingPage) {
+    throw new RoshalPageError(
+      "duplicate-slug",
+      "Another marketing page is already using this slug.",
+    );
+  }
 
   await db
     .insert(roshalPages)
     .values({
       id,
-      slug: input.slug,
+      slug,
       navigationLabelBn: input.navigationLabelBn,
       navigationLabelEn: input.navigationLabelEn,
       titleBn: input.titleBn,
@@ -475,7 +548,7 @@ export async function upsertRoshalPage(input: UpsertRoshalPageInput) {
     .onConflictDoUpdate({
       target: roshalPages.id,
       set: {
-        slug: input.slug,
+        slug,
         navigationLabelBn: input.navigationLabelBn,
         navigationLabelEn: input.navigationLabelEn,
         titleBn: input.titleBn,
@@ -518,13 +591,42 @@ export interface UpsertRoshalSectionInput {
 export async function upsertRoshalSection(input: UpsertRoshalSectionInput) {
   const id = input.id || nextId("section");
   const timestamp = new Date();
+  const sectionKey = normalizeRoshalSectionKey(input.sectionKey);
+
+  if (!sectionKey || !isValidRoshalSectionKey(sectionKey)) {
+    throw new RoshalSectionError(
+      "invalid-section-key",
+      "Section keys must use lowercase letters, numbers, and hyphens only.",
+    );
+  }
+
+  const [existingSection] = await db
+    .select({
+      id: roshalSections.id,
+    })
+    .from(roshalSections)
+    .where(
+      and(
+        eq(roshalSections.pageId, input.pageId),
+        eq(roshalSections.sectionKey, sectionKey),
+        ne(roshalSections.id, id),
+      ),
+    )
+    .limit(1);
+
+  if (existingSection) {
+    throw new RoshalSectionError(
+      "duplicate-section-key",
+      "This page already has a section with the same key.",
+    );
+  }
 
   await db
     .insert(roshalSections)
     .values({
       id,
       pageId: input.pageId,
-      sectionKey: input.sectionKey,
+      sectionKey,
       type: input.type,
       sortOrder: input.sortOrder,
       layout: input.layout,
@@ -549,7 +651,7 @@ export async function upsertRoshalSection(input: UpsertRoshalSectionInput) {
       target: roshalSections.id,
       set: {
         pageId: input.pageId,
-        sectionKey: input.sectionKey,
+        sectionKey,
         type: input.type,
         sortOrder: input.sortOrder,
         layout: input.layout,
@@ -603,13 +705,73 @@ export interface UpsertRoshalProductInput {
 export async function upsertRoshalProduct(input: UpsertRoshalProductInput) {
   const id = input.id || nextId("product");
   const timestamp = new Date();
+  const slug = normalizeRoshalRouteSlug(input.slug);
+  const sku = input.sku.trim().toUpperCase();
+
+  if (!slug || !isValidRoshalRouteSlug(slug)) {
+    throw new RoshalProductError(
+      "invalid-product-slug",
+      "Product slugs must use lowercase letters, numbers, and hyphens only.",
+    );
+  }
+
+  if (!sku) {
+    throw new RoshalProductError(
+      "invalid-product-sku",
+      "Product SKU is required.",
+    );
+  }
+
+  if (input.price < 0) {
+    throw new RoshalProductError(
+      "invalid-product-price",
+      "Product price cannot be negative.",
+    );
+  }
+
+  if (input.inventory < 0) {
+    throw new RoshalProductError(
+      "invalid-product-inventory",
+      "Product inventory cannot be negative.",
+    );
+  }
+
+  const [existingSlug] = await db
+    .select({
+      id: roshalProducts.id,
+    })
+    .from(roshalProducts)
+    .where(and(eq(roshalProducts.slug, slug), ne(roshalProducts.id, id)))
+    .limit(1);
+
+  if (existingSlug) {
+    throw new RoshalProductError(
+      "duplicate-product-slug",
+      "Another product is already using this slug.",
+    );
+  }
+
+  const [existingSku] = await db
+    .select({
+      id: roshalProducts.id,
+    })
+    .from(roshalProducts)
+    .where(and(eq(roshalProducts.sku, sku), ne(roshalProducts.id, id)))
+    .limit(1);
+
+  if (existingSku) {
+    throw new RoshalProductError(
+      "duplicate-product-sku",
+      "Another product is already using this SKU.",
+    );
+  }
 
   await db
     .insert(roshalProducts)
     .values({
       id,
-      slug: input.slug,
-      sku: input.sku,
+      slug,
+      sku,
       nameBn: input.nameBn,
       nameEn: input.nameEn,
       summaryBn: input.summaryBn,
@@ -636,8 +798,8 @@ export async function upsertRoshalProduct(input: UpsertRoshalProductInput) {
     .onConflictDoUpdate({
       target: roshalProducts.id,
       set: {
-        slug: input.slug,
-        sku: input.sku,
+        slug,
+        sku,
         nameBn: input.nameBn,
         nameEn: input.nameEn,
         summaryBn: input.summaryBn,

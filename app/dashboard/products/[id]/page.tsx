@@ -2,6 +2,7 @@ import Link from "next/link";
 import { saveRoshalProduct } from "@/actions/roshal-admin";
 import { DashboardFormCheckbox } from "@/components/roshal/dashboard/form-checkbox";
 import { ImageUploadField } from "@/components/roshal/shared/image-upload-field";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,17 +14,38 @@ import { getRoshalLocale } from "@/lib/roshal/i18n";
 
 export default async function ProductEditorRoute({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams?: Promise<{ error?: string; slug?: string; sku?: string }>;
 }) {
   const { id } = await params;
-  return <ProductEditorPage productId={id} />;
+  const resolvedSearchParams = searchParams
+    ? await searchParams
+    : await Promise.resolve<{ error?: string; slug?: string; sku?: string }>(
+        {},
+      );
+
+  return (
+    <ProductEditorPage
+      productId={id}
+      errorCode={resolvedSearchParams.error}
+      errorSlug={resolvedSearchParams.slug}
+      errorSku={resolvedSearchParams.sku}
+    />
+  );
 }
 
 export async function ProductEditorPage({
   productId,
+  errorCode,
+  errorSlug,
+  errorSku,
 }: {
   productId: string | null;
+  errorCode?: string;
+  errorSlug?: string;
+  errorSku?: string;
 }) {
   const [locale, products] = await Promise.all([
     getRoshalLocale(),
@@ -33,6 +55,12 @@ export async function ProductEditorPage({
   const product = productId
     ? products.find((item) => item.id === productId) || null
     : null;
+  const errorMessage = getProductEditorErrorMessage(
+    locale,
+    errorCode,
+    errorSlug,
+    errorSku,
+  );
 
   return (
     <div className="space-y-6 p-4 md:p-6">
@@ -63,6 +91,12 @@ export async function ProductEditorPage({
           </Button>
         ) : null}
       </div>
+
+      {errorMessage ? (
+        <Alert variant="destructive">
+          <AlertDescription>{errorMessage}</AlertDescription>
+        </Alert>
+      ) : null}
 
       <form action={saveRoshalProduct} className="space-y-6">
         <input type="hidden" name="id" value={product?.id || ""} />
@@ -288,4 +322,40 @@ function TextField({
       <Textarea id={name} name={name} defaultValue={defaultValue} rows={rows} />
     </div>
   );
+}
+
+function getProductEditorErrorMessage(
+  locale: "bn" | "en",
+  code: string | undefined,
+  slug: string | undefined,
+  sku: string | undefined,
+) {
+  switch (code) {
+    case "duplicate-product-slug":
+      return locale === "bn"
+        ? `\`${slug || ""}\` স্লাগটি ইতিমধ্যেই অন্য একটি পণ্য ব্যবহার করছে।`
+        : `The slug \`${slug || ""}\` is already used by another product.`;
+    case "duplicate-product-sku":
+      return locale === "bn"
+        ? `\`${sku || ""}\` SKU টি ইতিমধ্যেই অন্য একটি পণ্য ব্যবহার করছে।`
+        : `The SKU \`${sku || ""}\` is already used by another product.`;
+    case "invalid-product-slug":
+      return locale === "bn"
+        ? "পণ্যের স্লাগে শুধুমাত্র ছোট হাতের অক্ষর, সংখ্যা এবং হাইফেন ব্যবহার করুন।"
+        : "Use only lowercase letters, numbers, and hyphens in product slugs.";
+    case "invalid-product-sku":
+      return locale === "bn"
+        ? "পণ্যের SKU অবশ্যই দিতে হবে।"
+        : "Product SKU is required.";
+    case "invalid-product-price":
+      return locale === "bn"
+        ? "পণ্যের মূল্য ঋণাত্মক হতে পারবে না।"
+        : "Product price cannot be negative.";
+    case "invalid-product-inventory":
+      return locale === "bn"
+        ? "পণ্যের স্টক ঋণাত্মক হতে পারবে না।"
+        : "Product inventory cannot be negative.";
+    default:
+      return null;
+  }
 }

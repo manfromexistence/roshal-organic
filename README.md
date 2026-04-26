@@ -22,6 +22,8 @@ Roshal Organic is a bilingual Bangla/English ecommerce CMS built on Next.js 16, 
 - Account UX: `/profile` now includes order metrics, recent orders, quick links back to cart/order history/admin, and a working storefront logout control
 - Customer order pages now show itemized line items, delivery details, proof screenshots, payment verification timestamps, and admin/tracking notes instead of only top-level status badges
 - Shared app feedback is now mounted globally with the Roshal toaster, and checkout/login flows now show in-page errors instead of relying on raw browser alerts
+- Dashboard marketing control center: `/dashboard/pages` now includes a React Query + Zustand workspace for the live homepage, with DB-backed section visibility toggles and direct links into the full page editor
+- Login UX: `/login` now behaves like a storefront customer-account entry point with checkout/order-tracking messaging instead of a generic admin-style auth form
 - SEO surface: dynamic metadata for home, products, and CMS pages plus Roshal-branded sitemap, robots, manifest, and OG image output
 
 ## What The Dashboard Controls
@@ -33,7 +35,10 @@ Roshal Organic is a bilingual Bangla/English ecommerce CMS built on Next.js 16, 
 - User profile data and role assignment
 - Admin safety rails that prevent self-demotion/deactivation and protect the last active admin account from being removed accidentally
 - Marketing page content, sections, layouts, copy, images, and section JSON/style settings
+- Homepage landing composition through a dedicated control center that maps live section keys, supported `stylesJson` rules, and section visibility to the current storefront landing page
 - Creation of new marketing pages and new sections directly from the dashboard, including media uploads and live storefront links for published pages
+- Generic marketing-page sections now honor dashboard `stylesJson` product sourcing (`featured`, `all`, `reverse`, `limit`, `offset`) instead of falling back to a fixed featured-product slice
+- Safe fallback merging for the built-in home/about/contact CMS pages and sections, so partial dashboard edits do not wipe out the rest of the default storefront composition
 - Storefront brand settings such as CTA labels, hero layout, card style, spacing, and contact information
 - Payment method enablement, instructions, merchant/account details, and checkout guide screenshots
 
@@ -111,7 +116,15 @@ bun run scripts/seed-users.ts
 - Inventory is now transactionally updated with orders, so product stock is reserved at checkout time and restored if an order is later cancelled from the dashboard.
 - Roshal admin pages now perform admin checks in the page layer as well as the shared dashboard layout, matching the safer Next.js authorization pattern for App Router pages.
 - Global toast feedback is now mounted in the root app shell, so checkout, login, dashboard settings, and media-upload actions all surface visible status/error messages.
+- `/dashboard/pages` now includes a higher-level homepage control center on top of the raw page/section editor, using React Query for live CMS reads and Zustand for operator workspace state.
+- Homepage sections can now be enabled or disabled directly from the dashboard through a DB-backed API without changing the storefront code or opening raw JSON first.
+- The homepage page editor now exposes a section map and inline guidance for the landing-page section keys that drive the copied marketing UI.
+- Generic marketing pages now resolve their product sections from the live catalog using dashboard section settings, so custom/about/contact pages can reuse the same CMS product-block model instead of a hardcoded featured-only fallback.
 - Public storefront routes now bypass the auth proxy entirely, which removes unnecessary session lookups from `/`, `/about`, `/products`, and other public pages.
 - Public metadata is now aligned to Roshal Organic instead of the old Quadra identity, including sitemap and robots output for live marketing/product routes.
 - The transplanted marketing landing shell was visually smoke-checked locally at `http://localhost:3000/` in desktop and mobile-sized viewports after the copy/removal pass.
+- The leftover static `/collections` template page has been retired from the client-facing surface and now routes customers to the real `/products` catalog instead.
+- The Roshal dashboard now blocks reserved storefront slugs (`collections`, `payment-return`, etc.), duplicate marketing-page slugs, duplicate section keys, duplicate product slugs/SKUs, and negative inventory/pricing with clear inline errors instead of raw database failures.
+- A new `.env.example` now documents the required Roshal auth, Turso, upload, and AamarPay gateway keys so the app can be configured for local or production deployment without guessing hidden env names.
+- The login page now frames auth as a customer ecommerce account flow, with responsive trust/checkout messaging and clearer separation between customer sign-up and admin-assigned access.
 - Real production gateway credentials and the final production domain still need to be provisioned per environment before go-live.

@@ -1,10 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { RoshalProductCard } from "@/components/roshal/storefront/product-card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { getLocalizedValue } from "@/lib/roshal/locale";
 import type {
+  LocalizedValue,
   RoshalLocale,
   RoshalMarketingSection,
   RoshalProduct,
@@ -17,15 +19,48 @@ const spacingMap: Record<string, string> = {
   spacious: "py-24",
 };
 
+function parseLimit(value: string | undefined, fallback: number) {
+  const parsed = Number.parseInt(value || "", 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+function getSectionProducts(
+  section: RoshalMarketingSection,
+  products: RoshalProduct[],
+) {
+  const source = section.styles.source || "featured";
+  const limit = parseLimit(section.styles.limit, 4);
+  const offset = parseLimit(section.styles.offset, 0);
+  const featuredProducts = products.filter((product) => product.isFeatured);
+
+  const baseProducts =
+    source === "all"
+      ? products
+      : source === "reverse"
+        ? [...products].reverse()
+        : featuredProducts.length
+          ? featuredProducts
+          : products;
+
+  return baseProducts.slice(offset, offset + limit);
+}
+
+function resolveLocalizedItemValue(
+  locale: RoshalLocale,
+  value?: LocalizedValue | null,
+) {
+  return value ? getLocalizedValue(locale, value) : "";
+}
+
 export function RoshalSectionRenderer({
   sections,
   locale,
-  featuredProducts,
+  products,
   siteSettings,
 }: {
   sections: RoshalMarketingSection[];
   locale: RoshalLocale;
-  featuredProducts: RoshalProduct[];
+  products: RoshalProduct[];
   siteSettings: RoshalSiteSettings;
 }) {
   return (
@@ -43,7 +78,7 @@ export function RoshalSectionRenderer({
               <SectionContent
                 section={section}
                 locale={locale}
-                featuredProducts={featuredProducts}
+                products={products}
                 siteSettings={siteSettings}
               />
             </div>
@@ -56,12 +91,12 @@ export function RoshalSectionRenderer({
 function SectionContent({
   section,
   locale,
-  featuredProducts,
+  products,
   siteSettings,
 }: {
   section: RoshalMarketingSection;
   locale: RoshalLocale;
-  featuredProducts: RoshalProduct[];
+  products: RoshalProduct[];
   siteSettings: RoshalSiteSettings;
 }) {
   const eyebrow = getLocalizedValue(locale, section.eyebrow);
@@ -75,7 +110,7 @@ function SectionContent({
         className={`grid items-center gap-8 rounded-[2rem] border border-border/60 bg-gradient-to-br from-background via-background to-muted/60 p-6 shadow-sm lg:p-10 ${
           siteSettings.heroLayout === "split"
             ? "lg:grid-cols-[1.1fr,0.9fr]"
-            : "max-w-4xl mx-auto"
+            : "mx-auto max-w-4xl"
         }`}
       >
         <div className="space-y-5">
@@ -123,22 +158,57 @@ function SectionContent({
     return (
       <div className="space-y-8">
         <SectionHeading eyebrow={eyebrow} title={title} body={body} />
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {section.items.map((item, index) => (
-            <Card
-              key={`${section.id}-${index}`}
-              className="border-border/60 bg-card/90"
-            >
-              <CardContent className="space-y-3 p-6">
-                <h3 className="text-lg font-semibold">
-                  {item.title ? getLocalizedValue(locale, item.title) : ""}
-                </h3>
-                <p className="text-sm leading-6 text-muted-foreground">
-                  {item.body ? getLocalizedValue(locale, item.body) : ""}
-                </p>
-              </CardContent>
-            </Card>
-          ))}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {section.items.map((item, index) => {
+            const itemTitle = resolveLocalizedItemValue(locale, item.title);
+            const itemBody = resolveLocalizedItemValue(locale, item.body);
+            const itemLabel = resolveLocalizedItemValue(locale, item.label);
+
+            return (
+              <Card
+                key={`${section.id}-${index}`}
+                className="overflow-hidden border-border/60 bg-card/90"
+              >
+                {item.imageUrl ? (
+                  <div className="relative aspect-[4/3] overflow-hidden bg-muted">
+                    <Image
+                      src={item.imageUrl}
+                      alt={itemTitle || itemLabel || title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 100vw, 25vw"
+                    />
+                  </div>
+                ) : null}
+                <CardContent className="space-y-3 p-6">
+                  {itemLabel ? (
+                    <Badge variant="secondary">{itemLabel}</Badge>
+                  ) : null}
+                  {itemTitle ? (
+                    <h3 className="text-lg font-semibold">{itemTitle}</h3>
+                  ) : null}
+                  {itemBody ? (
+                    <p className="text-sm leading-6 text-muted-foreground">
+                      {itemBody}
+                    </p>
+                  ) : null}
+                  {item.value ? (
+                    <p className="text-lg font-semibold text-primary">
+                      {item.value}
+                    </p>
+                  ) : null}
+                  {item.href ? (
+                    <Button asChild variant="outline" size="sm">
+                      <Link href={item.href}>
+                        {itemLabel ||
+                          (locale === "bn" ? "বিস্তারিত" : "Learn more")}
+                      </Link>
+                    </Button>
+                  ) : null}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
         {ctaLabel ? (
           <Button asChild variant="outline">
@@ -150,11 +220,13 @@ function SectionContent({
   }
 
   if (section.type === "featured-products") {
+    const sectionProducts = getSectionProducts(section, products);
+
     return (
       <div className="space-y-8">
         <SectionHeading eyebrow={eyebrow} title={title} body={body} />
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {featuredProducts.map((product) => (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {sectionProducts.map((product) => (
             <RoshalProductCard
               key={product.id}
               product={product}
@@ -162,6 +234,11 @@ function SectionContent({
             />
           ))}
         </div>
+        {ctaLabel ? (
+          <Button asChild variant="outline">
+            <Link href={section.ctaHref || "/products"}>{ctaLabel}</Link>
+          </Button>
+        ) : null}
       </div>
     );
   }
@@ -170,24 +247,51 @@ function SectionContent({
     return (
       <div className="space-y-8">
         <SectionHeading eyebrow={eyebrow} title={title} body={body} />
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {section.items.map((item, index) => (
-            <Card
-              key={`${section.id}-${index}`}
-              className="border-border/60 bg-card/90"
-            >
-              <CardContent className="space-y-2 p-6">
-                <p className="text-sm font-medium text-muted-foreground">
-                  {item.label ? getLocalizedValue(locale, item.label) : ""}
-                </p>
-                <p className="text-lg font-semibold">{item.value}</p>
-              </CardContent>
-            </Card>
-          ))}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {section.items.map((item, index) => {
+            const itemLabel = resolveLocalizedItemValue(locale, item.label);
+            const itemTitle = resolveLocalizedItemValue(locale, item.title);
+            const itemBody = resolveLocalizedItemValue(locale, item.body);
+
+            return (
+              <Card
+                key={`${section.id}-${index}`}
+                className="border-border/60 bg-card/90"
+              >
+                <CardContent className="space-y-3 p-6">
+                  {itemLabel ? (
+                    <p className="text-sm font-medium text-muted-foreground">
+                      {itemLabel}
+                    </p>
+                  ) : null}
+                  {itemTitle ? (
+                    <p className="text-lg font-semibold">{itemTitle}</p>
+                  ) : null}
+                  {item.value ? (
+                    <p className="text-lg font-semibold">{item.value}</p>
+                  ) : null}
+                  {itemBody ? (
+                    <p className="text-sm leading-6 text-muted-foreground">
+                      {itemBody}
+                    </p>
+                  ) : null}
+                  {item.href ? (
+                    <Button asChild variant="outline" size="sm">
+                      <Link href={item.href}>
+                        {itemLabel || (locale === "bn" ? "খুলুন" : "Open")}
+                      </Link>
+                    </Button>
+                  ) : null}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
-        <Button asChild size="lg">
-          <Link href={section.ctaHref}>{ctaLabel}</Link>
-        </Button>
+        {ctaLabel ? (
+          <Button asChild size="lg">
+            <Link href={section.ctaHref}>{ctaLabel}</Link>
+          </Button>
+        ) : null}
       </div>
     );
   }
