@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { getLocalizedValue } from "@/lib/store-locale";
 import type {
   RoshalLocale,
@@ -174,26 +173,22 @@ export function StorefrontFooter({
               ? "পেমেন্ট পার্টনার ও বিশ্বস্ত কোম্পানি"
               : "Payment Partners & Trusted Companies"}
           </h3>
-          <ScrollArea
-            type="always"
-            scrollHideDelay={0}
-            showHorizontalScrollbar
-            className="w-full"
-            viewportClassName="w-full"
-          >
-            <div className="flex w-max min-w-full items-center gap-4 pb-3 sm:w-full sm:flex-wrap sm:justify-center">
-              {partnerLogos.map((logo) => (
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            {partnerLogos.map((logo) => (
+              <div
+                key={logo.src}
+                className="flex h-10 min-w-24 items-center justify-center rounded-xl border border-border/60 bg-background/70 px-3 py-2"
+              >
                 <Image
-                  key={logo.src}
                   src={logo.src}
                   alt={logo.alt}
                   width={120}
                   height={32}
-                  className="h-8 w-auto rounded-md object-contain opacity-80 transition-opacity hover:opacity-100"
+                  className="h-8 w-auto object-contain opacity-80 transition-opacity hover:opacity-100"
                 />
-              ))}
-            </div>
-          </ScrollArea>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="mt-8 border-t pt-8 text-center text-sm text-muted-foreground">

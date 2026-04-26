@@ -3,16 +3,16 @@ import { type NextRequest, NextResponse } from "next/server";
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
-    const file = formData.get("file") as File;
-    const folder = formData.get("folder") as string;
+    const file = formData.get("file");
 
-    console.log("File upload request:", { fileName: file?.name, folder });
-
-    if (!file) {
+    if (!(file instanceof File)) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 });
     }
 
-    // Upload to catbox
+    if (file.size === 0) {
+      return NextResponse.json({ error: "Empty files cannot be uploaded" }, { status: 400 });
+    }
+
     const catboxFormData = new FormData();
     catboxFormData.append("reqtype", "fileupload");
     catboxFormData.append("fileToUpload", file);
@@ -22,33 +22,29 @@ export async function POST(request: NextRequest) {
       catboxFormData.append("userhash", userhash);
     }
 
-    console.log("Uploading to catbox...", {
-      fileSize: file.size,
-      fileType: file.type,
-      hasUserhash: !!userhash,
-    });
-
     const response = await fetch("https://catbox.moe/user/api.php", {
       method: "POST",
       body: catboxFormData,
     });
 
     const data = await response.text();
-    console.log("Catbox response:", {
-      status: response.status,
-      data: data.substring(0, 100),
-    });
 
     if (!response.ok || !data) {
       console.error("Catbox upload failed:", { status: response.status, data });
       return NextResponse.json(
-        { error: "Failed to upload to catbox" },
+        { error: "Failed to upload file" },
         { status: 500 },
       );
     }
 
-    // Catbox returns just the URL as plain text
     const url = data.trim();
+    if (!url.startsWith("http://") && !url.startsWith("https://")) {
+      console.error("Catbox returned an invalid upload URL", { data: url });
+      return NextResponse.json(
+        { error: "Upload provider returned an invalid file URL" },
+        { status: 500 },
+      );
+    }
 
     return NextResponse.json({
       fileName: file.name,
@@ -59,7 +55,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("File upload error:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Unexpected file upload error" },
       { status: 500 },
     );
   }

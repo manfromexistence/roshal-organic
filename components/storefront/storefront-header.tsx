@@ -4,13 +4,15 @@ import {
   Heart,
   LayoutDashboard,
   Menu,
+  MoreHorizontal,
   Package,
   ShoppingBag,
   User,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { LocaleSwitcher } from "@/components/storefront/locale-switcher";
 import { StorefrontThemeToggle } from "@/components/storefront/theme-toggle";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -23,6 +25,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { authClient } from "@/lib/auth-client";
 import { getLocalizedValue } from "@/lib/store-locale";
@@ -61,7 +70,16 @@ export function StorefrontHeader({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [visibleCategoryCount, setVisibleCategoryCount] = useState(
+    categories.length,
+  );
+  const [moreMenuResetKey, setMoreMenuResetKey] = useState(0);
+  const subHeaderContainerRef = useRef<HTMLDivElement | null>(null);
+  const subHeaderMeasureRowRef = useRef<HTMLDivElement | null>(null);
+  const moreTriggerMeasureRef = useRef<HTMLDivElement | null>(null);
+  const categoryMeasureRefs = useRef<Array<HTMLSpanElement | null>>([]);
   const items = useCartStore((state) => state.items);
+  const router = useRouter();
   const favoriteIds = useWishlistStore(
     (state) => state.favoritesByOwner[sessionUser?.id || "guest"],
   );
@@ -71,10 +89,81 @@ export function StorefrontHeader({
     setIsHydrated(true);
   }, []);
 
+  useEffect(() => {
+    const container = subHeaderContainerRef.current;
+    const measureRow = subHeaderMeasureRowRef.current;
+
+    if (!container || !measureRow || categories.length === 0) {
+      setVisibleCategoryCount(categories.length);
+      return;
+    }
+
+    const computeVisibleCategoryCount = () => {
+      const containerWidth = container.clientWidth;
+      const gap = Number.parseFloat(
+        window.getComputedStyle(measureRow).columnGap || "0",
+      );
+      const categoryWidths = categories.map(
+        (_, index) => categoryMeasureRefs.current[index]?.offsetWidth ?? 0,
+      );
+      const totalWidth = categoryWidths.reduce((sum, width, index) => {
+        if (width <= 0) {
+          return sum;
+        }
+
+        return sum + width + (index > 0 ? gap : 0);
+      }, 0);
+
+      if (totalWidth <= containerWidth) {
+        setVisibleCategoryCount(categories.length);
+        return;
+      }
+
+      const moreTriggerWidth = moreTriggerMeasureRef.current?.offsetWidth ?? 96;
+      const reservedWidth = moreTriggerWidth + gap;
+      let consumedWidth = 0;
+      let nextVisibleCount = 0;
+
+      for (const width of categoryWidths) {
+        if (width <= 0) {
+          continue;
+        }
+
+        const nextWidth = width + (nextVisibleCount > 0 ? gap : 0);
+
+        if (consumedWidth + nextWidth > containerWidth - reservedWidth) {
+          break;
+        }
+
+        consumedWidth += nextWidth;
+        nextVisibleCount += 1;
+      }
+
+      setVisibleCategoryCount(
+        Math.max(0, Math.min(nextVisibleCount, categories.length - 1)),
+      );
+    };
+
+    computeVisibleCategoryCount();
+
+    const resizeObserver = new ResizeObserver(() => {
+      computeVisibleCategoryCount();
+    });
+
+    resizeObserver.observe(container);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [categories]);
+
   const cartCount = useMemo(
     () => items.reduce((sum, item) => sum + item.quantity, 0),
     [items],
   );
+  const visibleCategories = categories.slice(0, visibleCategoryCount);
+  const overflowCategories = categories.slice(visibleCategoryCount);
+  const moreLabel = locale === "bn" ? "আরও" : "More";
 
   const navLinks = [
     {
@@ -398,12 +487,15 @@ export function StorefrontHeader({
       </div>
 
       <div className="min-w-full border-b">
-        <div className="container mx-auto overflow-hidden px-4">
+        <div
+          ref={subHeaderContainerRef}
+          className="relative container mx-auto overflow-hidden px-4"
+        >
           <nav
             aria-label={locale === "bn" ? "দ্রুত ক্যাটাগরি" : "Quick categories"}
-            className="flex flex-wrap items-center gap-x-5 gap-y-2 py-3 md:flex-nowrap md:gap-x-6 md:overflow-hidden"
+            className="flex items-center gap-x-5 overflow-hidden py-3 md:gap-x-6"
           >
-            {categories.map((link) => (
+            {visibleCategories.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -412,7 +504,63 @@ export function StorefrontHeader({
                 {link.label}
               </Link>
             ))}
+            {overflowCategories.length > 0 ? (
+              <Select
+                key={moreMenuResetKey}
+                onValueChange={(href) => {
+                  router.push(href);
+                  setMoreMenuResetKey((current) => current + 1);
+                }}
+              >
+                <SelectTrigger
+                  size="sm"
+                  className="h-8 shrink-0 rounded-full border-border/60 bg-background/70 px-3 text-xs font-medium text-muted-foreground hover:text-foreground"
+                  aria-label={moreLabel}
+                >
+                  <div className="flex items-center gap-2">
+                    <MoreHorizontal className="size-3.5" />
+                    <SelectValue placeholder={moreLabel} />
+                  </div>
+                </SelectTrigger>
+                <SelectContent align="end">
+                  {overflowCategories.map((link) => (
+                    <SelectItem key={link.href} value={link.href}>
+                      {link.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            ) : null}
           </nav>
+
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -z-10 h-0 overflow-hidden opacity-0"
+          >
+            <div
+              ref={subHeaderMeasureRowRef}
+              className="flex items-center gap-x-5 whitespace-nowrap py-3 md:gap-x-6"
+            >
+              {categories.map((link, index) => (
+                <span
+                  key={`${link.href}-measure`}
+                  ref={(element) => {
+                    categoryMeasureRefs.current[index] = element;
+                  }}
+                  className="shrink-0 text-sm text-muted-foreground"
+                >
+                  {link.label}
+                </span>
+              ))}
+              <div
+                ref={moreTriggerMeasureRef}
+                className="flex h-8 shrink-0 items-center gap-2 rounded-full border border-border/60 bg-background/70 px-3 text-xs font-medium text-muted-foreground"
+              >
+                <MoreHorizontal className="size-3.5" />
+                <span>{moreLabel}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </header>

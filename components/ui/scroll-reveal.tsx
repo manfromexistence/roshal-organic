@@ -20,7 +20,11 @@ export function ScrollReveal({
   duration = 0.5,
 }: ScrollRevealProps) {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isInView = useInView(ref, {
+    once: false,
+    amount: 0.2,
+    margin: "0px 0px -12% 0px",
+  });
 
   const directions = {
     up: { y: 40, x: 0 },
@@ -28,23 +32,24 @@ export function ScrollReveal({
     left: { y: 0, x: 40 },
     right: { y: 0, x: -40 },
   };
+  const hiddenState = {
+    opacity: 0,
+    ...directions[direction],
+  };
 
   return (
     <motion.div
       ref={ref}
-      initial={{
-        opacity: 0,
-        ...directions[direction],
+      initial="hidden"
+      animate={isInView ? "visible" : "hidden"}
+      variants={{
+        hidden: hiddenState,
+        visible: {
+          opacity: 1,
+          y: 0,
+          x: 0,
+        },
       }}
-      animate={
-        isInView
-          ? {
-              opacity: 1,
-              y: 0,
-              x: 0,
-            }
-          : {}
-      }
       transition={{
         duration,
         delay,

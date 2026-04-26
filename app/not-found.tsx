@@ -3,52 +3,26 @@
 import { motion } from "framer-motion";
 import { ArrowLeft, Home } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   FlowerOfLifeSvg,
-  GoldenSpiralSvg,
-  MetatronsCubeSvg,
-  SeedOfLifeSvg,
-  SriYantraSvg,
-  VesicaPiscisSvg,
 } from "@/components/ui/svg-shapes";
-
-const sacredGeometryShapes = [
-  FlowerOfLifeSvg,
-  MetatronsCubeSvg,
-  SriYantraSvg,
-  SeedOfLifeSvg,
-  VesicaPiscisSvg,
-  GoldenSpiralSvg,
-];
 
 export default function NotFound() {
   const handleGoBack = () => {
     window.history.back();
   };
 
-  const [Shape, setShape] = useState<
-    (typeof sacredGeometryShapes)[number] | null
-  >(null);
-
-  useEffect(() => {
-    const idx = Math.floor(Math.random() * sacredGeometryShapes.length);
-    setShape(() => sacredGeometryShapes[idx]);
-  }, []);
-
   return (
     <div className="flex flex-col items-center justify-center min-h-[calc(100vh-12rem)] px-4 gap-2">
-      {Shape && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6 }}
-          className="text-primary/20 w-full max-w-2xl h-auto"
-        >
-          <Shape />
-        </motion.div>
-      )}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6 }}
+        className="text-primary/20 w-full max-w-2xl h-auto"
+      >
+        <FlowerOfLifeSvg />
+      </motion.div>
       <div className="text-center space-y-2">
         <motion.h1
           initial={{ opacity: 0, y: -20 }}
