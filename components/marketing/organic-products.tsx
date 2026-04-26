@@ -8,9 +8,28 @@ import { ScrollReveal } from "@/components/ui/scroll-reveal";
 
 interface OrganicProductsProps {
   language: "en" | "bn";
+  products?: GridProduct[];
+  title?: { bn: string; en: string };
+  description?: { bn: string; en: string };
+  ctaHref?: string;
+  ctaLabel?: { bn: string; en: string };
 }
 
-const organicProducts = Array.from({ length: 20 }, (_, i) => ({
+interface GridProduct {
+  id: string | number;
+  image: string;
+  href?: string;
+  name: {
+    en: string;
+    bn: string;
+  };
+  price: number | string;
+  originalPrice?: number | string;
+  rating?: string | number;
+  reviews?: number;
+}
+
+const organicProducts: GridProduct[] = Array.from({ length: 20 }, (_, i) => ({
   id: i + 1,
   image: `/vegetables/vegetable-${(i % 75) + 1}.jpg`,
   name: {
@@ -21,9 +40,22 @@ const organicProducts = Array.from({ length: 20 }, (_, i) => ({
   originalPrice: 170 + ((i * 11) % 140),
   rating: (3.6 + ((i * 5) % 12) / 10).toFixed(1),
   reviews: 30 + i * 11,
+  href: "/products",
 }));
 
-export function OrganicProducts({ language }: OrganicProductsProps) {
+export function OrganicProducts({
+  language,
+  products,
+  title,
+  description,
+  ctaHref,
+  ctaLabel,
+}: OrganicProductsProps) {
+  const displayProducts = (products?.length ? products : organicProducts).slice(
+    0,
+    10,
+  );
+
   return (
     <section className="bg-muted/30 py-16">
       <div className="container mx-auto px-4">
@@ -31,18 +63,24 @@ export function OrganicProducts({ language }: OrganicProductsProps) {
           <div className="mb-4 flex items-center justify-center gap-2">
             <Leaf className="h-8 w-8 text-primary" />
             <h2 className="text-center text-3xl font-bold md:text-4xl">
-              {language === "bn" ? "অর্গানিক পণ্য" : "Organic Products"}
+              {title
+                ? title[language]
+                : language === "bn"
+                  ? "অর্গানিক পণ্য"
+                  : "Organic Products"}
             </h2>
           </div>
           <p className="mx-auto mb-12 max-w-2xl text-center text-muted-foreground">
-            {language === "bn"
-              ? "১০০% অর্গানিক প্রমাণিত পণ্য। কোনো কেমিক্যাল বা কীটনাশক ব্যবহার করা হয়নি।"
-              : "100% certified organic products. No chemicals or pesticides used."}
+            {description
+              ? description[language]
+              : language === "bn"
+                ? "১০০% অর্গানিক প্রমাণিত পণ্য। কোনো কেমিক্যাল বা কীটনাশক ব্যবহার করা হয়নি।"
+                : "100% certified organic products. No chemicals or pesticides used."}
           </p>
         </ScrollReveal>
 
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {organicProducts.slice(0, 10).map((product, index) => (
+          {displayProducts.map((product, index) => (
             <ScrollReveal key={product.id} delay={index * 0.05}>
               <Card className="group overflow-hidden transition-shadow duration-300 hover:shadow-lg">
                 <CardContent className="p-0">
@@ -63,25 +101,32 @@ export function OrganicProducts({ language }: OrganicProductsProps) {
                     <h3 className="mb-2 line-clamp-1 text-sm font-semibold">
                       {product.name[language]}
                     </h3>
-                    <div className="mb-2 flex items-center gap-1">
-                      <span className="text-xs text-primary">★</span>
-                      <span className="text-xs text-muted-foreground">
-                        {product.rating} ({product.reviews})
-                      </span>
-                    </div>
+                    {product.rating ? (
+                      <div className="mb-2 flex items-center gap-1">
+                        <span className="text-xs text-primary">★</span>
+                        <span className="text-xs text-muted-foreground">
+                          {product.rating}
+                          {product.reviews ? ` (${product.reviews})` : ""}
+                        </span>
+                      </div>
+                    ) : null}
                     <div className="mb-3 flex items-center justify-between">
                       <div>
                         <span className="text-lg font-bold">
-                          ৳{product.price}
+                          {typeof product.price === "number"
+                            ? `৳${product.price}`
+                            : product.price}
                         </span>
-                        {product.originalPrice > product.price ? (
+                        {product.originalPrice ? (
                           <span className="ml-2 text-sm text-muted-foreground line-through">
-                            ৳{product.originalPrice}
+                            {typeof product.originalPrice === "number"
+                              ? `৳${product.originalPrice}`
+                              : product.originalPrice}
                           </span>
                         ) : null}
                       </div>
                     </div>
-                    <Link href="/products">
+                    <Link href={product.href || "/products"}>
                       <Button size="sm" className="w-full" variant="secondary">
                         <ShoppingCart className="mr-2 h-4 w-4" />
                         {language === "bn" ? "কার্টে যোগ করুন" : "Add to Cart"}
@@ -96,11 +141,13 @@ export function OrganicProducts({ language }: OrganicProductsProps) {
 
         <ScrollReveal delay={0.5}>
           <div className="mt-12 text-center">
-            <Link href="/products">
+            <Link href={ctaHref || "/products"}>
               <Button size="lg" variant="outline">
-                {language === "bn"
-                  ? "সব অর্গানিক পণ্য দেখুন"
-                  : "View All Organic Products"}
+                {ctaLabel
+                  ? ctaLabel[language]
+                  : language === "bn"
+                    ? "সব অর্গানিক পণ্য দেখুন"
+                    : "View All Organic Products"}
               </Button>
             </Link>
           </div>

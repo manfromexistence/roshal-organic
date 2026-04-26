@@ -123,7 +123,7 @@ function SectionContent({
     return (
       <div className="space-y-8">
         <SectionHeading eyebrow={eyebrow} title={title} body={body} />
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {section.items.map((item, index) => (
             <Card
               key={`${section.id}-${index}`}
@@ -153,7 +153,7 @@ function SectionContent({
     return (
       <div className="space-y-8">
         <SectionHeading eyebrow={eyebrow} title={title} body={body} />
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {featuredProducts.map((product) => (
             <RoshalProductCard
               key={product.id}
@@ -170,7 +170,7 @@ function SectionContent({
     return (
       <div className="space-y-8">
         <SectionHeading eyebrow={eyebrow} title={title} body={body} />
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {section.items.map((item, index) => (
             <Card
               key={`${section.id}-${index}`}

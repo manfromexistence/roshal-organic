@@ -23,6 +23,8 @@ interface NewArrivalsProps {
   language: Language;
   ctaHref?: string;
   ctaLabel?: { bn: string; en: string };
+  title?: { bn: string; en: string };
+  description?: { bn: string; en: string };
 }
 
 export function NewArrivals({
@@ -30,14 +32,25 @@ export function NewArrivals({
   language,
   ctaHref,
   ctaLabel,
+  title,
+  description,
 }: NewArrivalsProps) {
   return (
     <section className="bg-background py-16">
       <div className="container mx-auto px-4">
         <ScrollReveal>
           <h2 className="mb-12 text-center text-3xl font-bold md:text-4xl">
-            {language === "bn" ? "নতুন আগমন" : "New Arrivals"}
+            {title
+              ? title[language]
+              : language === "bn"
+                ? "নতুন আগমন"
+                : "New Arrivals"}
           </h2>
+          {description ? (
+            <p className="-mt-8 mb-12 text-center text-base text-muted-foreground">
+              {description[language]}
+            </p>
+          ) : null}
         </ScrollReveal>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
           {products.slice(0, 4).map((product, index) => (

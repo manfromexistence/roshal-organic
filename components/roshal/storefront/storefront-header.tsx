@@ -41,20 +41,20 @@ interface StorefrontCategoryLink {
 
 export function StorefrontHeader({
   locale,
-  pages,
+  pages = [],
   siteSettings,
   sessionUser,
-  categories,
+  categories = [],
 }: {
   locale: RoshalLocale;
-  pages: RoshalMarketingPage[];
+  pages?: RoshalMarketingPage[];
   siteSettings: RoshalSiteSettings;
   sessionUser: {
     name: string;
     email: string;
     role: RoshalRole;
   } | null;
-  categories: StorefrontCategoryLink[];
+  categories?: StorefrontCategoryLink[];
 }) {
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -258,12 +258,12 @@ export function StorefrontHeader({
             </Button>
 
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-              <SheetContent side="right" className="w-72">
+              <SheetContent side="right" className="w-72 p-4 pt-0">
                 <div className="mt-8 flex flex-col gap-6">
                   <div className="flex items-center gap-2 sm:hidden">
                     <StorefrontThemeToggle />
                   </div>
-                  <nav className="flex flex-col gap-4">
+                  <nav className="flex flex-col gap-4 px-1">
                     {navLinks.map((link) => (
                       <Link
                         key={link.href}
@@ -352,7 +352,7 @@ export function StorefrontHeader({
         </div>
       </div>
 
-      <div className="min-w-full lg:hidden border-b">
+      <div className="min-w-full border-b">
         <div className="container mx-auto px-4">
           <div className="flex items-center gap-6 overflow-x-auto py-3">
             {categories.map((link) => (

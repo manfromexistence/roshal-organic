@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import { cookies } from "next/headers";
+import Script from "next/script";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -44,15 +45,10 @@ export default async function RootLayout({
       className={`${jetbrainsMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <head>
-        <script
-          id="roshal-theme-bootstrap"
-          dangerouslySetInnerHTML={{
-            __html: themeBootstrapScript,
-          }}
-        />
-      </head>
       <body className="h-full w-full">
+        <Script id="roshal-theme-bootstrap" strategy="beforeInteractive">
+          {themeBootstrapScript}
+        </Script>
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

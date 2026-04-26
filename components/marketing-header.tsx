@@ -431,7 +431,7 @@ export function MarketingHeader() {
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-64">
+                <SheetContent side="right" className="w-64 p-4">
                   <nav className="flex flex-col gap-4 mt-8">
                     {navLinks.map((link) => (
                       <Link

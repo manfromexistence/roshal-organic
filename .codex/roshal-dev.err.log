@@ -2310,3 +2310,24 @@ Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
   226 |           opts={{
   227 |             align: "start",
   228 |             loop: true, (app/error.tsx:34:13)
+⨯ Error: Module [project]/node_modules/next/dist/esm/lib/framework/boundary-components.js [app-ssr] (ecmascript) was instantiated because it was required from module [project]/node_modules/next/dist/esm/build/templates/app-page.js?page=/(marketing)/page { METADATA_0 => "[project]/app/favicon.ico.mjs { IMAGE => \"[project]/app/favicon.ico (static in ecmascript, tag client)\" } [app-rsc] (structured image object, ecmascript)", METADATA_1 => "[project]/app/opengraph-image--metadata.js [app-rsc] (ecmascript, Next.js Server Component)", MODULE_2 => "[project]/app/layout.tsx [app-rsc] (ecmascript, Next.js Server Component)", MODULE_3 => "[project]/app/error.tsx [app-rsc] (ecmascript, Next.js Server Component)", MODULE_4 => "[project]/app/not-found.tsx [app-rsc] (ecmascript, Next.js Server Component)", MODULE_5 => "[project]/node_modules/next/dist/client/components/builtin/forbidden.js [app-rsc] (ecmascript, Next.js Server Component)", MODULE_6 => "[project]/node_modules/next/dist/client/components/builtin/unauthorized.js [app-rsc] (ecmascript, Next.js Server Component)", MODULE_7 => "[project]/app/global-error.tsx [app-rsc] (ecmascript, Next.js Server Component)", MODULE_8 => "[project]/app/(marketing)/layout.tsx [app-rsc] (ecmascript, Next.js Server Component)", MODULE_9 => "[project]/app/not-found.tsx [app-rsc] (ecmascript, Next.js Server Component)", MODULE_10 => "[project]/node_modules/next/dist/client/components/builtin/forbidden.js [app-rsc] (ecmascript, Next.js Server Component)", MODULE_11 => "[project]/node_modules/next/dist/client/components/builtin/unauthorized.js [app-rsc] (ecmascript, Next.js Server Component)", MODULE_12 => "[project]/app/(marketing)/page.tsx [app-rsc] (ecmascript, Next.js Server Component)" } [app-rsc] (ecmascript) <locals>, but the module factory is not available.
+This is often caused by a stale browser cache, misconfigured Cache-Control headers, or a service worker serving outdated responses.
+To fix this, make sure your Cache-Control headers allow revalidation of chunks and review your service worker configuration. As an immediate workaround, try hard-reloading the page, clearing the browser cache, or unregistering any service workers.
+    at ignore-listed frames {
+  digest: '2892853137'
+}
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+[browser] Image with src "/honey-2.jpg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/dialog 
+[browser] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+[browser] `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/dialog 
+[browser] Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
