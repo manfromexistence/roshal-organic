@@ -207,9 +207,9 @@ export function ProductsPageClient({
     <div className="container mx-auto space-y-8 px-4 py-10">
       <Card className="overflow-hidden border-border/70 bg-gradient-to-br from-background via-background to-muted/50">
         <CardContent className="space-y-5 p-8">
-          <p className="text-xs uppercase tracking-[0.24em] text-primary">
+          {/* <p className="text-xs uppercase tracking-[0.24em] text-primary">
             {locale === "bn" ? "স্টোরফ্রন্ট" : "Storefront"}
-          </p>
+          </p> */}
           <div className="space-y-3">
             <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
               {locale === "bn"

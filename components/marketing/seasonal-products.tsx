@@ -66,7 +66,7 @@ export function SeasonalProducts({
         <ScrollReveal>
           <div className="mb-4 flex items-center justify-center gap-2">
             <Snowflake className="h-8 w-8 text-primary" />
-            <Sun className="h-8 w-8 text-primary" />
+            {/* <Sun className="h-8 w-8 text-primary" /> */}
             <h2 className="text-center text-3xl font-bold md:text-4xl">
               {title
                 ? title[language]
@@ -88,7 +88,7 @@ export function SeasonalProducts({
           {displayProducts.map((product, index) => (
             <ScrollReveal key={product.id} delay={index * 0.05}>
               <ImageCard className="group overflow-hidden transition-shadow duration-300 hover:shadow-lg">
-                <ImageCardContent>
+                <ImageCardContent className="p-0">
                   <div className="relative aspect-square overflow-hidden">
                     <Image
                       src={product.image}

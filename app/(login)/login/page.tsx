@@ -131,7 +131,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto grid min-h-screen max-w-7xl gap-6 px-4 py-6 lg:grid-cols-[1.08fr,0.92fr]">
-        <section className="relative overflow-hidden rounded-[2rem] border border-border/70 bg-card px-6 py-8 shadow-sm md:px-10 md:py-10">
+        {/* <section className="relative overflow-hidden rounded-[2rem] border border-border/70 bg-card px-6 py-8 shadow-sm md:px-10 md:py-10">
           <div className="absolute inset-x-0 top-0 h-52 bg-linear-to-br from-primary/15 via-primary/0 to-transparent" />
           <div className="absolute inset-y-0 right-0 hidden w-1/3 bg-linear-to-l from-primary/5 via-transparent to-transparent lg:block" />
 
@@ -269,15 +269,15 @@ export default function LoginPage() {
               </Card>
             </div>
           </div>
-        </section>
+        </section> */}
 
         <section className="flex items-center justify-center">
           <Card className="w-full max-w-xl border-border/70 shadow-sm">
             <CardHeader className="space-y-4">
               <div className="space-y-2">
-                <Badge variant="secondary">
+                {/* <Badge variant="secondary">
                   {isSignIn ? "Customer sign in" : "Create customer account"}
-                </Badge>
+                </Badge> */}
                 <CardTitle className="text-3xl">
                   {isSignIn
                     ? "Continue your Roshal account"
@@ -381,10 +381,10 @@ export default function LoginPage() {
                 </Button>
               </form>
 
-              <div className="rounded-2xl border border-border/70 bg-muted/20 p-4 text-sm text-muted-foreground">
+              {/* <div className="rounded-2xl border border-border/70 bg-muted/20 p-4 text-sm text-muted-foreground">
                 After sign in, customers land back on the requested storefront
                 page, checkout, or order detail screen automatically.
-              </div>
+              </div> */}
             </CardContent>
           </Card>
         </section>

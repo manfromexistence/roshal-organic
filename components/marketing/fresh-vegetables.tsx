@@ -85,7 +85,7 @@ export function FreshVegetables({
           {displayProducts.map((product, index) => (
             <ScrollReveal key={product.id} delay={index * 0.02}>
               <ImageCard className="!px-0 group overflow-hidden transition-shadow duration-300 hover:shadow-lg">
-                <ImageCardContent>
+                <ImageCardContent className="p-0">
                   <div className="relative aspect-square overflow-hidden">
                     <Image
                       src={product.image}
