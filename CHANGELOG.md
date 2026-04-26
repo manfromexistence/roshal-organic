@@ -67,6 +67,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed the app from the former Quadra template into the Roshal Organic storefront-first experience, with the public site mounted at `/` and the admin workspace moved under `/dashboard`
 - Changed the live storefront `/` route plus the active marketing header/footer shell to use the copied `marketting` landing experience directly inside the root Roshal app
 - Changed the marketing layout to scope the copied green storefront accent variables to the storefront shell instead of overriding the dashboard theme globally
+- Changed both app layouts to use local CSS font stacks instead of `next/font/google`, removing build-time dependence on external Google font downloads
 - Changed the copied storefront sub-header to use the same glassmorphism treatment as the main header so the secondary navigation reads as one cohesive floating shell
 - Changed the transplanted marketing image cards to remove unnecessary top padding and reduce bottom padding for a tighter catalog look
 - Changed authentication and seeded data to use only `admin` and `user` roles for the active Roshal experience
@@ -74,6 +75,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed Roshal login, checkout, and shared image-upload flows to use inline/toast feedback instead of raw browser alerts, and fixed the remaining Quadra title leak on the login route
 - Changed the login page into a storefront-first ecommerce account entry surface, with clearer checkout/order-tracking positioning for customers and explicit admin-assignment messaging
 - Changed the login submit flow to use the Better Auth React client and a full post-auth redirect, so protected Roshal dashboard routes see the fresh session cookie immediately after sign-in
+- Changed the public login flow to call Better Auth with `disableRedirect: true`, letting Roshal explicitly control the post-auth navigation for checkout callbacks, storefront logins, and role-aware admin landing
 - Changed the shared dashboard command dialog copy, placeholders, and result categories to match the Roshal admin workspace instead of the legacy EDMS search model
 - Changed the env configuration to use the real `roshal-organic` Turso database in `.env` and `.env.local`, and replaced the stale production `app-quadra` auth URL with explicit Roshal production-domain placeholders
 - Changed the Roshal gateway env guidance and checkout copy to reflect the current AamarPay-backed payment surface, including `upay`
@@ -169,6 +171,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fixed copied marketing showcase hydration mismatches by replacing `Math.random()`-driven client-visible values with deterministic data in the transplanted sections
+- Fixed Roshal sign-in/sign-out handoff so successful customer/admin authentication now lands on the intended callback or role-aware destination consistently, and confirmed the protected-route matrix locally for anonymous, `user`, and `admin` sessions across `/dashboard`, `/checkout`, `/login`, `/account`, `/profile`, `/orders`, and `/favorites`
 - Fixed copied marketing showcase links so the transplanted landing page no longer routes users into fake `/products/1`-style detail pages inside the active storefront
 - Fixed locale syncing for the transplanted landing shell by mirroring storefront locale changes into the browser language/localStorage events expected by the copied marketing UI
 - Fixed the copied landing hero and storefront shell enough to pass a local browser-level desktop/mobile smoke check without the previous hydration overlay

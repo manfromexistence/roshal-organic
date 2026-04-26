@@ -55,7 +55,9 @@ export default function LoginPage() {
 
   const theme = mounted && resolvedTheme === "dark" ? "dark" : "light";
   const isSignIn = authMode === "signin";
-  const callbackURL = getSafeCallbackUrl(searchParams.get("callbackURL"));
+  const rawCallbackURL = searchParams.get("callbackURL");
+  const hasCallbackURL = isSafeCallbackUrl(rawCallbackURL);
+  const callbackURL = getSafeCallbackUrl(rawCallbackURL);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -64,18 +66,32 @@ export default function LoginPage() {
 
     try {
       const response = isSignIn
-        ? await authClient.signIn.email({
-            email,
-            password,
-            rememberMe: true,
-            callbackURL,
-          })
-        : await authClient.signUp.email({
-            name,
-            email,
-            password,
-            callbackURL,
-          });
+        ? await authClient.signIn.email(
+            {
+              email,
+              password,
+              rememberMe: true,
+              callbackURL,
+            },
+            {
+              body: {
+                disableRedirect: true,
+              },
+            },
+          )
+        : await authClient.signUp.email(
+            {
+              name,
+              email,
+              password,
+              callbackURL,
+            },
+            {
+              body: {
+                disableRedirect: true,
+              },
+            },
+          );
 
       if (response.error) {
         throw new Error(
@@ -87,8 +103,10 @@ export default function LoginPage() {
       }
 
       // Force a fresh request so the new session cookie is reflected across
-      // the auth proxy and server components immediately after sign-in.
-      window.location.replace(callbackURL);
+      // the auth proxy and server components immediately after auth. When no
+      // explicit callback is provided, route back through /login so the proxy
+      // can choose the correct role-aware landing page.
+      window.location.replace(hasCallbackURL ? callbackURL : "/login");
       return;
     } catch (error) {
       console.error("Authentication error:", error);
@@ -376,11 +394,15 @@ export default function LoginPage() {
 }
 
 function getSafeCallbackUrl(value: string | null) {
-  if (value?.startsWith("/") && !value.startsWith("//")) {
+  if (isSafeCallbackUrl(value)) {
     return value;
   }
 
   return "/";
+}
+
+function isSafeCallbackUrl(value: string | null): value is string {
+  return Boolean(value?.startsWith("/") && !value.startsWith("//"));
 }
 
 function QuickStat({

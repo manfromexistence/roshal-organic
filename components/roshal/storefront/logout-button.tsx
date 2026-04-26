@@ -1,7 +1,6 @@
 "use client";
 
 import { LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
 import type * as React from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -26,7 +25,6 @@ export function LogoutButton({
   size = "sm",
   ...props
 }: LogoutButtonProps) {
-  const router = useRouter();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = async () => {
@@ -41,8 +39,7 @@ export function LogoutButton({
         fetchOptions: {
           onSuccess: () => {
             onLoggedOut?.();
-            router.replace(redirectTo);
-            router.refresh();
+            window.location.replace(redirectTo);
           },
         },
       });

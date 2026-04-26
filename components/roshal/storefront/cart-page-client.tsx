@@ -67,9 +67,7 @@ export function CartPageClient({
             {locale === "bn" ? "কার্ট" : "Cart"}
           </p>
           <h1 className="text-4xl font-semibold tracking-tight">
-            {locale === "bn"
-              ? "আপনার নির্বাচিত পণ্য"
-              : "Your selected products"}
+            {locale === "bn" ? "আপনার নির্বাচিত পণ্য" : "Your selected products"}
           </h1>
         </div>
 
@@ -93,9 +91,7 @@ export function CartPageClient({
           <Card>
             <CardContent className="space-y-4 p-8 text-center">
               <p className="text-muted-foreground">
-                {locale === "bn"
-                  ? "কার্ট এখন খালি।"
-                  : "Your cart is empty."}
+                {locale === "bn" ? "কার্ট এখন খালি।" : "Your cart is empty."}
               </p>
               <Button asChild>
                 <Link href="/products">

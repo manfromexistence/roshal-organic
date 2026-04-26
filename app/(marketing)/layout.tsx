@@ -1,9 +1,4 @@
 import type { Metadata } from "next";
-import {
-  Hind_Siliguri,
-  JetBrains_Mono,
-  Noto_Sans_Bengali,
-} from "next/font/google";
 import type { CSSProperties } from "react";
 import { StorefrontBottomNavigation } from "@/components/roshal/storefront/storefront-bottom-navigation";
 import { StorefrontFooter } from "@/components/roshal/storefront/storefront-footer";
@@ -18,23 +13,6 @@ import {
 import { getRoshalLocale } from "@/lib/roshal/i18n";
 import { getLocalizedValue } from "@/lib/roshal/locale";
 import "../globals.css";
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-jetbrains-mono",
-});
-
-const hindSiliguri = Hind_Siliguri({
-  subsets: ["bengali", "latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-hind-siliguri",
-});
-
-const notoSansBengali = Noto_Sans_Bengali({
-  subsets: ["bengali"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-noto-sans-bengali",
-});
 
 const marketingThemeStyles = {
   "--primary": "oklch(72.3% 0.219 149.579)",
@@ -78,7 +56,7 @@ export default async function MarketingLayout({
   return (
     <div
       style={marketingThemeStyles}
-      className={`${jetbrainsMono.variable} ${hindSiliguri.variable} ${notoSansBengali.variable} min-h-screen bg-background text-foreground antialiased`}
+      className="min-h-screen bg-background text-foreground antialiased"
     >
       <StorefrontHeader
         locale={locale}

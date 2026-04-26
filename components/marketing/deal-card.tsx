@@ -5,12 +5,12 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  ImageCard,
+  ImageCardContent,
+  ImageCardDescription,
+  ImageCardHeader,
+  ImageCardTitle,
+} from "@/components/ui/image-card";
 
 type Language = "bn" | "en";
 
@@ -34,7 +34,7 @@ export function DealCard({
   language,
 }: DealCardProps) {
   return (
-    <Card className="overflow-hidden transition-shadow hover:shadow-lg">
+    <ImageCard className="overflow-hidden transition-shadow hover:shadow-lg">
       <div className="relative h-48 md:h-64">
         <Image
           src={image}
@@ -50,15 +50,13 @@ export function DealCard({
           {discount}
         </Badge>
       </div>
-      <CardHeader className="px-4 pt-3 pb-2">
-        <CardTitle className="text-xl md:text-2xl">
-          {title[language]}
-        </CardTitle>
-        <CardDescription className="text-base">
+      <ImageCardHeader className="px-4 pt-3 pb-2">
+        <ImageCardTitle className="text-xl md:text-2xl">{title[language]}</ImageCardTitle>
+        <ImageCardDescription className="text-base">
           {description[language]}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="px-4 pt-0 pb-4">
+        </ImageCardDescription>
+      </ImageCardHeader>
+      <ImageCardContent className="px-4 pt-0 pb-4">
         <Button asChild className="w-full" size="lg">
           <Link href={href || "/products"}>
             {ctaLabel
@@ -68,7 +66,7 @@ export function DealCard({
                 : "View Offer"}
           </Link>
         </Button>
-      </CardContent>
-    </Card>
+      </ImageCardContent>
+    </ImageCard>
   );
 }

@@ -24,7 +24,7 @@ export function CategoryCard({
   return (
     <Link href={href || `/products?category=${slug}`}>
       <div className="transition-transform duration-300 hover:-translate-y-2 hover:scale-105">
-        <Card className="group cursor-pointer border-2 border-transparent transition-shadow hover:border-primary/20 hover:shadow-xl">
+        <Card className="p-0 group cursor-pointer border-2 border-transparent transition-shadow hover:border-primary/20 hover:shadow-xl">
           <CardContent className="p-3 text-center">
             <div className="mx-auto mb-2 h-12 w-12 overflow-hidden rounded-full bg-muted ring-2 ring-primary/10 transition-all group-hover:ring-primary/30 md:h-14 md:w-14">
               <Image

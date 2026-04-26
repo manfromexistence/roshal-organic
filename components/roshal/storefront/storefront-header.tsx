@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { LocaleSwitcher } from "@/components/roshal/storefront/locale-switcher";
 import { StorefrontThemeToggle } from "@/components/roshal/storefront/theme-toggle";
@@ -59,7 +58,6 @@ export function StorefrontHeader({
   } | null;
   categories?: StorefrontCategoryLink[];
 }) {
-  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
@@ -112,8 +110,7 @@ export function StorefrontHeader({
       const { error } = await authClient.signOut({
         fetchOptions: {
           onSuccess: () => {
-            router.replace("/login");
-            router.refresh();
+            window.location.replace("/login");
           },
         },
       });

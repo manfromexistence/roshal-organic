@@ -38,7 +38,10 @@ function ImageCardTitle({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
-function ImageCardDescription({ className, ...props }: React.ComponentProps<"div">) {
+function ImageCardDescription({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-description"
@@ -61,7 +64,10 @@ function ImageCardAction({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
-function ImageCardContent({ className, ...props }: React.ComponentProps<"div">) {
+function ImageCardContent({
+  className,
+  ...props
+}: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-content"

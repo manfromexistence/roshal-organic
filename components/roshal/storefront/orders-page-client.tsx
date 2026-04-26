@@ -6,13 +6,8 @@ import { useDeferredValue, useState } from "react";
 import { OrderTrackingTimeline } from "@/components/roshal/storefront/order-tracking-timeline";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -215,9 +210,7 @@ export function OrdersPageClient({
             <Card key={order.id}>
               <CardHeader className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <CardTitle className="text-xl">
-                    {order.orderNumber}
-                  </CardTitle>
+                  <CardTitle className="text-xl">{order.orderNumber}</CardTitle>
                   <p className="text-sm text-muted-foreground">
                     {formatOrderDate(order.createdAt, locale)}
                   </p>
