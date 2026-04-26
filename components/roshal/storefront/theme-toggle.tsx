@@ -15,8 +15,8 @@ export function StorefrontThemeToggle() {
 
   if (!mounted) {
     return (
-      <Button variant="outline" size="icon" disabled>
-        <Sun className="size-4" />
+      <Button variant="ghost" size="icon" disabled>
+        <Sun className="size-5" />
       </Button>
     );
   }
@@ -25,12 +25,12 @@ export function StorefrontThemeToggle() {
 
   return (
     <Button
-      variant="outline"
+      variant="ghost"
       size="icon"
       onClick={() => setTheme(isDark ? "light" : "dark")}
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
     >
-      {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
+      {isDark ? <Sun className="size-5" /> : <Moon className="size-5" />}
     </Button>
   );
 }

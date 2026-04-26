@@ -5,6 +5,7 @@ Roshal Organic is a bilingual Bangla/English ecommerce CMS built on Next.js 16, 
 ## Current Surface
 
 - Storefront routes: `/`, `/about`, `/contact`, `/products`, `/products/[slug]`, `/cart`, `/checkout`, `/orders`, `/orders/[id]`, `/profile`
+- The live storefront shell at `/` now uses the transplanted landing/header/footer treatment from the former root-level `marketting` app
 - Custom CMS marketing routes: `/(marketing)/[slug]` for additional published pages created from the dashboard
 - Admin routes: `/dashboard`, `/dashboard/products`, `/dashboard/orders`, `/dashboard/payments`, `/dashboard/users`, `/dashboard/pages`, `/dashboard/theme`
 - Auth roles: `admin`, `user`
@@ -100,6 +101,7 @@ bun run scripts/seed-users.ts
 ## Delivery Notes
 
 - The Roshal storefront and admin CMS flow are implemented in the root app.
+- The old root-level `marketting` source app has been removed after transplanting its landing page, header/footer shell, and mobile bottom navigation into the active storefront.
 - Temporary manual verification is in place for wallet payments and can be managed from `/dashboard/payments` and `/dashboard/orders`.
 - AamarPay is the active live gateway abstraction for `card`, `bkash`, `nagad`, `rocket`, and `upay` when its merchant credentials are configured.
 - Gateway-mode checkout currently falls back to manual admin follow-up for any payment option whose live gateway path is not configured yet.
@@ -111,4 +113,5 @@ bun run scripts/seed-users.ts
 - Global toast feedback is now mounted in the root app shell, so checkout, login, dashboard settings, and media-upload actions all surface visible status/error messages.
 - Public storefront routes now bypass the auth proxy entirely, which removes unnecessary session lookups from `/`, `/about`, `/products`, and other public pages.
 - Public metadata is now aligned to Roshal Organic instead of the old Quadra identity, including sitemap and robots output for live marketing/product routes.
+- The transplanted marketing landing shell was visually smoke-checked locally at `http://localhost:3000/` in desktop and mobile-sized viewports after the copy/removal pass.
 - Real production gateway credentials and the final production domain still need to be provisioned per environment before go-live.

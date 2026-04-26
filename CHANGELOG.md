@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Added the Roshal Organic storefront with bilingual Bangla/English marketing and ecommerce routes for home, about, contact, products, product details, cart, checkout, orders, order tracking, and user profile
+- Added the transplanted marketing-shell mobile bottom navigation to the active storefront after moving the old landing experience into the root app
 - Added a Roshal admin dashboard at `/dashboard` for managing products, orders, users, payment options, payment guide screenshots, marketing pages, and storefront theme settings
 - Added Roshal ecommerce/CMS tables and content helpers for localized storefront settings, marketing pages, sections, products, orders, and payment configuration
 - Added checkout support for `card`, `bkash`, `nagad`, and `rocket`, including payment proof uploads, admin-side manual verification, and customer-facing order tracking
@@ -57,6 +58,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Changed the app from the former Quadra template into the Roshal Organic storefront-first experience, with the public site mounted at `/` and the admin workspace moved under `/dashboard`
+- Changed the live storefront `/` route plus the active marketing header/footer shell to use the copied `marketting` landing experience directly inside the root Roshal app
+- Changed the marketing layout to scope the copied green storefront accent variables to the storefront shell instead of overriding the dashboard theme globally
+- Changed the copied storefront sub-header to use the same glassmorphism treatment as the main header so the secondary navigation reads as one cohesive floating shell
+- Changed the transplanted marketing image cards to remove unnecessary top padding and reduce bottom padding for a tighter catalog look
 - Changed authentication and seeded data to use only `admin` and `user` roles for the active Roshal experience
 - Changed the package identity and active branding from Quadra to `roshal-organic` across the live app shell, login flow, navigation, metadata, and seeded storefront content
 - Changed Roshal login, checkout, and shared image-upload flows to use inline/toast feedback instead of raw browser alerts, and fixed the remaining Quadra title leak on the login route
@@ -149,6 +154,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All linting errors and warnings resolved across the codebase
 
 ### Fixed
+- Fixed copied marketing showcase hydration mismatches by replacing `Math.random()`-driven client-visible values with deterministic data in the transplanted sections
+- Fixed copied marketing showcase links so the transplanted landing page no longer routes users into fake `/products/1`-style detail pages inside the active storefront
+- Fixed locale syncing for the transplanted landing shell by mirroring storefront locale changes into the browser language/localStorage events expected by the copied marketing UI
+- Fixed the copied landing hero and storefront shell enough to pass a local browser-level desktop/mobile smoke check without the previous hydration overlay
+- Fixed excess vertical spacing in the transplanted landing product/deal cards so image-first cards no longer waste space above or below the content blocks
 - Fixed Roshal admin authorization depth by verifying admin access in the actual `app/dashboard` page components instead of relying only on the shared dashboard layout guard
 - Fixed Roshal payment-proof rendering in the admin order view by resolving uploaded screenshot URLs through the shared image helper before display
 - Fixed Roshal order creation so the server no longer trusts client-submitted prices, totals, or payment-method availability; checkout now validates published products, stock levels, enabled payment methods, and proof requirements before saving an order
@@ -274,6 +284,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed password hashing to use scrypt algorithm
 - Fixed users table to include emailVerified field
 - Fixed sessions table to include ipAddress and userAgent fields
+
+### Removed
+- Removed the old root-level `marketting` app after transplanting its landing page and shell into the live storefront
 
 ## [0.1.0] - 2026-04-22
 

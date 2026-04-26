@@ -1,15 +1,30 @@
 "use client";
 
-import { Menu } from "lucide-react";
+import {
+  LayoutDashboard,
+  Menu,
+  Package,
+  ShoppingBag,
+  User,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { CartLink } from "@/components/roshal/storefront/cart-link";
+import { useRouter } from "next/navigation";
+import { useMemo, useState } from "react";
 import { LocaleSwitcher } from "@/components/roshal/storefront/locale-switcher";
-import { LogoutButton } from "@/components/roshal/storefront/logout-button";
 import { StorefrontThemeToggle } from "@/components/roshal/storefront/theme-toggle";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { authClient } from "@/lib/auth-client";
 import { getLocalizedValue } from "@/lib/roshal/locale";
 import type {
   RoshalLocale,
@@ -17,12 +32,19 @@ import type {
   RoshalRole,
   RoshalSiteSettings,
 } from "@/lib/roshal/types";
+import { useCartStore } from "@/store/cart-store";
+
+interface StorefrontCategoryLink {
+  href: string;
+  label: string;
+}
 
 export function StorefrontHeader({
   locale,
   pages,
   siteSettings,
   sessionUser,
+  categories,
 }: {
   locale: RoshalLocale;
   pages: RoshalMarketingPage[];
@@ -32,10 +54,19 @@ export function StorefrontHeader({
     email: string;
     role: RoshalRole;
   } | null;
+  categories: StorefrontCategoryLink[];
 }) {
-  const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const items = useCartStore((state) => state.items);
 
-  const navigation = [
+  const cartCount = useMemo(
+    () => items.reduce((sum, item) => sum + item.quantity, 0),
+    [items],
+  );
+
+  const navLinks = [
     {
       href: "/",
       label: getLocalizedValue(
@@ -54,142 +85,286 @@ export function StorefrontHeader({
       })),
     {
       href: "/products",
-      label: locale === "bn" ? "পণ্য" : "Products",
+      label: locale === "bn" ? "পণ্যসমূহ" : "Products",
     },
   ];
 
+  const handleLogout = async () => {
+    if (isLoggingOut) {
+      return;
+    }
+
+    setIsLoggingOut(true);
+
+    try {
+      const { error } = await authClient.signOut({
+        fetchOptions: {
+          onSuccess: () => {
+            router.replace("/login");
+            router.refresh();
+          },
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      console.error("Logout failed:", error);
+      window.location.replace("/login");
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
   return (
-    <header className="sticky top-0 z-40 border-b border-border/70 bg-background/90 backdrop-blur">
-      <div className="container mx-auto flex items-center justify-between gap-4 px-4 py-4">
-        <Link href="/" className="flex items-center gap-3">
-          <div className="flex size-11 items-center justify-center rounded-2xl border bg-card shadow-sm">
+    <header className="sticky top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
+      <div className="border-b">
+        <div className="relative container mx-auto flex items-center justify-between gap-2 px-4 py-3">
+          <Link href="/" className="flex min-w-0 items-center gap-2 md:gap-3">
             <Image
               src="/logo.png"
               alt={siteSettings.brandName}
-              width={34}
-              height={34}
-              className="h-8 w-auto"
+              width={40}
+              height={40}
+              className="h-10 w-auto rounded-md"
             />
-          </div>
-          <div>
-            <p className="text-lg font-semibold leading-tight">
-              {siteSettings.brandName}
-            </p>
-            <p className="hidden text-sm text-muted-foreground md:block">
-              {getLocalizedValue(locale, siteSettings.tagline)}
-            </p>
-          </div>
-        </Link>
+            <div className="min-w-0">
+              <span className="block truncate text-base font-bold text-foreground md:text-lg">
+                {siteSettings.brandName}
+              </span>
+              <span className="hidden text-xs text-muted-foreground md:block">
+                {getLocalizedValue(locale, siteSettings.tagline)}
+              </span>
+            </div>
+          </Link>
 
-        <nav className="hidden items-center gap-6 lg:flex">
-          {navigation.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+          <nav className="hidden items-center gap-6 md:flex">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-sm font-medium text-foreground transition-colors hover:text-primary"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-1 pr-10 md:pr-0 md:gap-2">
+            <div className="hidden sm:block">
+              <StorefrontThemeToggle />
+            </div>
+            <LocaleSwitcher locale={locale} />
+
+            <Button
+              asChild
+              variant="ghost"
+              size="icon"
+              className="relative hidden sm:inline-flex"
             >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="hidden items-center gap-2 lg:flex">
-          <LocaleSwitcher locale={locale} />
-          <StorefrontThemeToggle />
-          <CartLink label={locale === "bn" ? "কার্ট" : "Cart"} />
-          {sessionUser ? (
-            <>
-              <Button asChild variant="outline" size="sm">
-                <Link href="/orders">
-                  {locale === "bn" ? "অর্ডার" : "Orders"}
-                </Link>
-              </Button>
-              <Button asChild variant="outline" size="sm">
-                <Link href="/profile">
-                  {locale === "bn" ? "প্রোফাইল" : "Profile"}
-                </Link>
-              </Button>
-              {sessionUser.role === "admin" ? (
-                <Button asChild size="sm">
-                  <Link href="/dashboard">
-                    {locale === "bn" ? "ড্যাশবোর্ড" : "Dashboard"}
-                  </Link>
-                </Button>
-              ) : null}
-              <LogoutButton locale={locale} />
-            </>
-          ) : (
-            <Button asChild size="sm">
-              <Link href="/login">{locale === "bn" ? "লগইন" : "Login"}</Link>
+              <Link href="/cart" aria-label={locale === "bn" ? "কার্ট" : "Cart"}>
+                <ShoppingBag className="size-5" />
+                <span className="sr-only">
+                  {locale === "bn" ? "কার্ট" : "Cart"}
+                </span>
+                {cartCount > 0 ? (
+                  <span className="absolute -top-1 -right-1 inline-flex min-w-5 items-center justify-center rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-semibold text-primary-foreground">
+                    {cartCount}
+                  </span>
+                ) : null}
+              </Link>
             </Button>
-          )}
-        </div>
 
-        <div className="flex items-center gap-2 lg:hidden">
-          <CartLink label={locale === "bn" ? "কার্ট" : "Cart"} />
-          <Sheet open={open} onOpenChange={setOpen}>
-            <SheetTrigger asChild>
-              <Button variant="outline" size="icon">
-                <Menu className="size-4" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-80">
-              <div className="flex h-full flex-col gap-6 pt-8">
-                <div className="flex items-center gap-2">
-                  <LocaleSwitcher locale={locale} />
-                  <StorefrontThemeToggle />
-                </div>
-                <nav className="flex flex-col gap-4">
-                  {navigation.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="text-base font-medium"
-                      onClick={() => setOpen(false)}
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                </nav>
-                <div className="mt-auto flex flex-col gap-3">
-                  {sessionUser ? (
-                    <>
-                      <Button asChild variant="outline">
-                        <Link href="/orders" onClick={() => setOpen(false)}>
-                          {locale === "bn" ? "আমার অর্ডার" : "My orders"}
-                        </Link>
-                      </Button>
-                      <Button asChild variant="outline">
-                        <Link href="/profile" onClick={() => setOpen(false)}>
-                          {locale === "bn" ? "প্রোফাইল" : "Profile"}
-                        </Link>
-                      </Button>
-                      {sessionUser.role === "admin" ? (
-                        <Button asChild>
-                          <Link
-                            href="/dashboard"
-                            onClick={() => setOpen(false)}
-                          >
-                            {locale === "bn" ? "ড্যাশবোর্ড" : "Dashboard"}
-                          </Link>
-                        </Button>
-                      ) : null}
-                      <LogoutButton
-                        locale={locale}
-                        onLoggedOut={() => setOpen(false)}
-                      />
-                    </>
-                  ) : (
-                    <Button asChild>
-                      <Link href="/login" onClick={() => setOpen(false)}>
-                        {locale === "bn" ? "লগইন" : "Login"}
+            {sessionUser ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <Avatar>
+                      <AvatarFallback className="bg-primary text-primary-foreground">
+                        {sessionUser.name.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium">{sessionUser.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {sessionUser.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {sessionUser.role === "admin" ? (
+                    <DropdownMenuItem asChild>
+                      <Link href="/dashboard" className="cursor-pointer">
+                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                        {locale === "bn" ? "ড্যাশবোর্ড" : "Dashboard"}
                       </Link>
-                    </Button>
+                    </DropdownMenuItem>
+                  ) : null}
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile" className="cursor-pointer">
+                      <User className="mr-2 h-4 w-4" />
+                      {locale === "bn" ? "প্রোফাইল" : "Profile"}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/orders" className="cursor-pointer">
+                      <Package className="mr-2 h-4 w-4" />
+                      {locale === "bn" ? "অর্ডার" : "Orders"}
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleLogout}
+                    disabled={isLoggingOut}
+                    className="cursor-pointer"
+                  >
+                    {isLoggingOut
+                      ? locale === "bn"
+                        ? "লগআউট হচ্ছে..."
+                        : "Logging out..."
+                      : locale === "bn"
+                        ? "লগআউট"
+                        : "Logout"}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <div className="hidden items-center gap-2 md:flex">
+                <Link href="/login">
+                  <Button variant="outline" size="sm">
+                    {locale === "bn" ? "লগইন" : "Login"}
+                  </Button>
+                </Link>
+                <Link href="/login">
+                  <Button size="sm">
+                    {locale === "bn" ? "সাইন আপ" : "Sign Up"}
+                  </Button>
+                </Link>
+              </div>
+            )}
+
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute top-1/2 right-4 -translate-y-1/2 md:hidden"
+              onClick={() => setMobileMenuOpen(true)}
+            >
+              <Menu className="size-5" />
+            </Button>
+
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetContent side="right" className="w-72">
+                <div className="mt-8 flex flex-col gap-6">
+                  <div className="flex items-center gap-2 sm:hidden">
+                    <StorefrontThemeToggle />
+                  </div>
+                  <nav className="flex flex-col gap-4">
+                    {navLinks.map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className="text-sm font-medium text-foreground transition-colors hover:text-primary"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                  </nav>
+
+                  {sessionUser ? (
+                    <div className="flex flex-col gap-2">
+                      <Link
+                        href="/orders"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start"
+                        >
+                          {locale === "bn" ? "আমার অর্ডার" : "My orders"}
+                        </Button>
+                      </Link>
+                      <Link
+                        href="/profile"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start"
+                        >
+                          {locale === "bn" ? "প্রোফাইল" : "Profile"}
+                        </Button>
+                      </Link>
+                      {sessionUser.role === "admin" ? (
+                        <Link
+                          href="/dashboard"
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          <Button className="w-full justify-start">
+                            {locale === "bn" ? "ড্যাশবোর্ড" : "Dashboard"}
+                          </Button>
+                        </Link>
+                      ) : null}
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start"
+                        onClick={handleLogout}
+                        disabled={isLoggingOut}
+                      >
+                        {isLoggingOut
+                          ? locale === "bn"
+                            ? "লগআউট হচ্ছে..."
+                            : "Logging out..."
+                          : locale === "bn"
+                            ? "লগআউট"
+                            : "Logout"}
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-2">
+                      <Link
+                        href="/login"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <Button variant="outline" className="w-full">
+                          {locale === "bn" ? "লগইন" : "Login"}
+                        </Button>
+                      </Link>
+                      <Link
+                        href="/login"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        <Button className="w-full">
+                          {locale === "bn" ? "সাইন আপ" : "Sign Up"}
+                        </Button>
+                      </Link>
+                    </div>
                   )}
                 </div>
-              </div>
-            </SheetContent>
-          </Sheet>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
+      </div>
+
+      <div className="border-b border-white/10 bg-background/35 backdrop-blur-xl supports-[backdrop-filter]:bg-background/25">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center gap-6 overflow-x-auto py-3">
+            {categories.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="whitespace-nowrap text-sm text-muted-foreground transition-colors hover:text-primary"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </header>

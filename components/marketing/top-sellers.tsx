@@ -9,33 +9,42 @@ type Language = "bn" | "en";
 
 interface Product {
   id: string | number;
+  href?: string;
   image: string;
   name: { bn: string; en: string };
   price: string;
-  originalPrice: string;
-  rating: number;
-  reviews: number;
+  originalPrice?: string;
+  rating?: number;
+  reviews?: number;
 }
 
 interface TopSellersProps {
   products: Product[];
   language: Language;
+  ctaHref?: string;
+  ctaLabel?: { bn: string; en: string };
 }
 
-export function TopSellers({ products, language }: TopSellersProps) {
+export function TopSellers({
+  products,
+  language,
+  ctaHref,
+  ctaLabel,
+}: TopSellersProps) {
   return (
-    <section className="py-16 bg-muted/30">
+    <section className="bg-muted/30 py-16">
       <div className="container mx-auto px-4">
         <ScrollReveal>
-          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
+          <h2 className="mb-12 text-center text-3xl font-bold md:text-4xl">
             {language === "bn" ? "সেরা বিক্রেতা" : "Top Sellers"}
           </h2>
         </ScrollReveal>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
           {products.slice(0, 4).map((product, index) => (
             <ScrollReveal key={product.id} delay={index * 0.1} direction="up">
               <ProductCard
                 id={product.id}
+                href={product.href}
                 image={product.image}
                 name={product.name}
                 price={product.price}
@@ -50,10 +59,14 @@ export function TopSellers({ products, language }: TopSellersProps) {
           ))}
         </div>
         <ScrollReveal delay={0.5}>
-          <div className="text-center mt-12">
-            <Link href="/products?sort=top-sellers">
+          <div className="mt-12 text-center">
+            <Link href={ctaHref || "/products"}>
               <Button size="lg" variant="outline">
-                {language === "bn" ? "আরও দেখুন" : "View More"}
+                {ctaLabel
+                  ? ctaLabel[language]
+                  : language === "bn"
+                    ? "আরও দেখুন"
+                    : "View More"}
               </Button>
             </Link>
           </div>

@@ -10,6 +10,8 @@ interface Deal {
   description: { bn: string; en: string };
   image: string;
   discount: string;
+  href?: string;
+  ctaLabel?: { bn: string; en: string };
 }
 
 interface SpecialOffersProps {
@@ -19,21 +21,26 @@ interface SpecialOffersProps {
 
 export function SpecialOffers({ deals, language }: SpecialOffersProps) {
   return (
-    <section className="py-16 bg-muted/30">
+    <section className="bg-muted/30 py-16">
       <div className="container mx-auto px-4">
         <ScrollReveal>
-          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">
+          <h2 className="mb-12 text-center text-3xl font-bold md:text-4xl">
             {language === "bn" ? "বিশেষ ডিল" : "Special Deals"}
           </h2>
         </ScrollReveal>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
           {deals.map((deal, index) => (
-            <ScrollReveal key={index} delay={index * 0.15}>
+            <ScrollReveal
+              key={`${deal.title.en}-${index}`}
+              delay={index * 0.15}
+            >
               <DealCard
                 title={deal.title}
                 description={deal.description}
                 image={deal.image}
                 discount={deal.discount}
+                href={deal.href}
+                ctaLabel={deal.ctaLabel}
                 language={language}
               />
             </ScrollReveal>

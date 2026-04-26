@@ -18,19 +18,22 @@ type Language = "bn" | "en";
 
 interface ProductCardProps {
   id: string | number;
+  href?: string;
   image: string;
   name: { bn: string; en: string };
   price: string;
-  originalPrice: string;
-  rating: number;
-  reviews: number;
+  originalPrice?: string;
+  rating?: number;
+  reviews?: number;
   badge?: string;
   badgeVariant?: "default" | "secondary" | "destructive" | "outline";
+  ctaLabel?: { bn: string; en: string };
   language: Language;
 }
 
 export function ProductCard({
   id,
+  href,
   image,
   name,
   price,
@@ -39,45 +42,58 @@ export function ProductCard({
   reviews,
   badge,
   badgeVariant = "default",
+  ctaLabel,
   language,
 }: ProductCardProps) {
+  const actionHref = href || `/products/${id}`;
+
   return (
-    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+    <Card className="overflow-hidden transition-shadow hover:shadow-lg">
       <div className="relative h-40 md:h-48">
         <Image
           src={image}
           alt={name[language]}
           width={300}
           height={200}
-          className="w-full h-full object-cover"
+          className="h-full w-full object-cover"
         />
-        {badge && (
+        {badge ? (
           <Badge className="absolute top-2 right-2" variant={badgeVariant}>
             {badge}
           </Badge>
-        )}
+        ) : null}
       </div>
-      <CardHeader className="p-3">
-        <CardTitle className="text-sm line-clamp-2">{name[language]}</CardTitle>
-        <CardDescription className="flex items-center gap-1 text-xs">
-          <span className="text-yellow-500">★</span>
-          <span>{rating}</span>
-          <span className="text-muted-foreground">({reviews})</span>
-        </CardDescription>
+      <CardHeader className="space-y-1 px-3 pt-0 pb-2">
+        <CardTitle className="line-clamp-2 text-sm">{name[language]}</CardTitle>
+        {typeof rating === "number" || typeof reviews === "number" ? (
+          <CardDescription className="flex items-center gap-1 text-xs">
+            <span className="text-primary">★</span>
+            {typeof rating === "number" ? <span>{rating}</span> : null}
+            {typeof reviews === "number" ? (
+              <span className="text-muted-foreground">({reviews})</span>
+            ) : null}
+          </CardDescription>
+        ) : null}
       </CardHeader>
-      <CardContent className="p-3 pt-0">
+      <CardContent className="px-3 pt-0 pb-2">
         <div className="flex items-center gap-2">
           <span className="text-base font-bold text-primary">{price}</span>
-          <span className="text-lg font-semibold text-muted-foreground line-through">
-            {originalPrice}
-          </span>
+          {originalPrice ? (
+            <span className="text-sm font-semibold text-muted-foreground line-through">
+              {originalPrice}
+            </span>
+          ) : null}
         </div>
       </CardContent>
-      <CardFooter className="p-3 pt-0">
-        <Link href={`/products/${id}`} className="w-full">
+      <CardFooter className="px-3 pt-0 pb-2">
+        <Link href={actionHref} className="w-full">
           <Button className="w-full" size="sm">
-            <ShoppingCart className="h-4 w-4 mr-2" />
-            {language === "bn" ? "কার্টে যোগ করুন" : "Add to Cart"}
+            <ShoppingCart className="mr-2 h-4 w-4" />
+            {ctaLabel
+              ? ctaLabel[language]
+              : language === "bn"
+                ? "বিস্তারিত দেখুন"
+                : "View details"}
           </Button>
         </Link>
       </CardFooter>

@@ -2,6 +2,7 @@
 
 import { Languages } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ROSHAL_LOCALE_COOKIE } from "@/lib/roshal/locale";
 import type { RoshalLocale } from "@/lib/roshal/types";
@@ -10,8 +11,21 @@ export function LocaleSwitcher({ locale }: { locale: RoshalLocale }) {
   const router = useRouter();
   const pathname = usePathname();
 
+  useEffect(() => {
+    localStorage.setItem("language", locale);
+    document.documentElement.lang = locale;
+  }, [locale]);
+
   const toggleLocale = async () => {
     const nextLocale = locale === "bn" ? "en" : "bn";
+
+    localStorage.setItem("language", nextLocale);
+    document.documentElement.lang = nextLocale;
+    window.dispatchEvent(
+      new CustomEvent<RoshalLocale>("languageChange", {
+        detail: nextLocale,
+      }),
+    );
 
     if ("cookieStore" in window) {
       await window.cookieStore.set({
@@ -27,15 +41,18 @@ export function LocaleSwitcher({ locale }: { locale: RoshalLocale }) {
 
   return (
     <Button
-      variant="outline"
-      size="sm"
+      variant="ghost"
+      size="icon"
       onClick={toggleLocale}
       aria-label={locale === "bn" ? "Switch to English" : "বাংলায় পরিবর্তন করুন"}
-      className="gap-2"
+      className="shrink-0"
       data-pathname={pathname}
+      title={locale === "bn" ? "Switch to English" : "বাংলায় পরিবর্তন করুন"}
     >
-      <Languages className="size-4" />
-      {locale === "bn" ? "EN" : "বাং"}
+      <Languages className="size-5" />
+      <span className="sr-only">
+        {locale === "bn" ? "Switch to English" : "বাংলায় পরিবর্তন করুন"}
+      </span>
     </Button>
   );
 }
