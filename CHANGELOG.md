@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to Quadra EDMS will be documented in this file.
+All notable changes to Roshal Organic will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -8,6 +8,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Added the Roshal Organic storefront with bilingual Bangla/English marketing and ecommerce routes for home, about, contact, products, product details, cart, checkout, orders, order tracking, and user profile
+- Added a Roshal admin dashboard at `/dashboard` for managing products, orders, users, payment options, payment guide screenshots, marketing pages, and storefront theme settings
+- Added Roshal ecommerce/CMS tables and content helpers for localized storefront settings, marketing pages, sections, products, orders, and payment configuration
+- Added checkout support for `card`, `bkash`, `nagad`, and `rocket`, including payment proof uploads, admin-side manual verification, and customer-facing order tracking
+- Added a server-side Roshal checkout validation layer that parses checkout input, rebuilds order items from published products, and returns structured error codes for storefront/API failures
+- Added transactional Roshal inventory movement so successful order creation reserves product stock and cancelled orders restore stock back to the catalog
+- Added low-stock and out-of-stock summary cards to the admin dashboard and catalog management screen, plus inventory-status badges in the products table
+- Added live cart and checkout stock reconciliation so persisted cart items are clamped or removed against the current published catalog before purchase
+- Added dashboard safety rails that block admins from removing their own active admin access or deactivating/demoting the last remaining active admin
+- Added a storefront logout control for authenticated Roshal users in the active header and profile experience
+- Added a fuller customer order-details surface with line items, totals, delivery info, proof screenshots, and admin/tracking notes on `/orders/[id]`
+- Added a richer customer order-history surface with search, status filtering, and summary metrics on `/orders`
+- Added the shared Roshal toaster to the root app shell so existing dashboard/storefront status messages now render visibly across the live app
+- Added `upay` as a first-class Roshal payment method across checkout, payment settings, order labels, env configuration, and the AamarPay-backed gateway capability list
+- Added a generic CMS-backed storefront route for custom marketing pages at `/(marketing)/[slug]`, plus dashboard forms to create new marketing pages and add new sections without code changes
+- Added richer dashboard media controls for marketing pages, sections, and products using the shared image-upload field with live previews
+- Added a richer storefront catalog experience with client-side product search, category filtering, and sorting on `/products`
+- Added dynamic Roshal SEO helpers so the home page, marketing pages, and product detail pages now emit page-specific metadata
 - Added a shared dashboard navigation config and restored the missing `/api/search` route so the global command palette can return instant live results for projects, documents, workflows, transmittals, and the current user's notifications
 - Added database-backed create actions, forms, and `/new` routes for daily reports, extension-of-time requests, inspections, safety observations, warranty records, meetings, memos, RFIs, and site technical queries
 - Added a real technical query creation flow at `/technical-queries/new`, including validated form submission and live register data loading from the database
@@ -38,6 +56,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added dynamic title fetching to PageBreadcrumb component - now detects ID segments and fetches entity names from database
 
 ### Changed
+- Changed the app from the former Quadra template into the Roshal Organic storefront-first experience, with the public site mounted at `/` and the admin workspace moved under `/dashboard`
+- Changed authentication and seeded data to use only `admin` and `user` roles for the active Roshal experience
+- Changed the package identity and active branding from Quadra to `roshal-organic` across the live app shell, login flow, navigation, metadata, and seeded storefront content
+- Changed Roshal login, checkout, and shared image-upload flows to use inline/toast feedback instead of raw browser alerts, and fixed the remaining Quadra title leak on the login route
+- Changed the env configuration to use the real `roshal-organic` Turso database in `.env` and `.env.local`, and replaced the stale production `app-quadra` auth URL with explicit Roshal production-domain placeholders
+- Changed the Roshal gateway env guidance and checkout copy to reflect the current AamarPay-backed payment surface, including `upay`
+- Changed the root `proxy.ts` matcher so auth session checks only run on login and protected account/dashboard routes instead of slowing every public storefront request
+- Removed the stray `app/(marketing)/page-backup.tsx` file from the active storefront tree so dead backup code no longer ships beside the real home route
+- Changed Roshal order creation so payment-review status now follows the dashboard-configured payment option mode/proof rules instead of assuming all wallets are manual and all cards are not
+- Changed storefront checkout copy so gateway-mode payment options now clearly state that live card processing is not wired in this template yet and will fall back to admin follow-up
+- Changed Roshal order tracking to include a visible processing stage between confirmation and shipment, with clearer current-stage highlighting for pending, confirmed, and shipped orders
+- Changed Roshal order-detail pages so customers can review actual order contents and payment evidence instead of only seeing summary status fields
+- Changed checkout and cart totals to use the shared Roshal shipping constant, and changed successful checkout redirects to land on the newly created order details route from both the API and server-action order flows
+- Changed admin order status handling so reactivating a cancelled order now re-checks stock before consuming inventory again and surfaces a dashboard error instead of silently desynchronizing inventory
+- Changed storefront page rendering so pages without a hero/story section now use page metadata and cover imagery as a fallback lead section
+- Changed storefront page visibility so draft marketing pages no longer leak through default fallbacks, and navigation only includes published pages marked for display
+- Changed the customer profile page into a fuller account surface with order metrics, quick actions, and recent order tracking links
+- Changed storefront and dashboard order screens to show localized order/payment status labels and clearer verification states instead of raw internal status keys
 - Changed the shared `/config` navigation label and route display name to `Project Configuration`, so the sidebar, command search, and breadcrumb copy now match the project-setup workspace more clearly
 - Changed the global command palette to render its result list inside the shared shadcn `ScrollArea`, so the header search popover now uses the same styled scroll container as the rest of the dashboard shell
 - Changed the dashboard search UX by moving search out of the sidebar and into the fixed header as a shadcn command search entry point backed by shared navigation data and keyboard shortcut support
@@ -113,6 +149,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All linting errors and warnings resolved across the codebase
 
 ### Fixed
+- Fixed Roshal admin authorization depth by verifying admin access in the actual `app/dashboard` page components instead of relying only on the shared dashboard layout guard
+- Fixed Roshal payment-proof rendering in the admin order view by resolving uploaded screenshot URLs through the shared image helper before display
+- Fixed Roshal order creation so the server no longer trusts client-submitted prices, totals, or payment-method availability; checkout now validates published products, stock levels, enabled payment methods, and proof requirements before saving an order
+- Fixed Roshal order-tracking freshness so admin order-status updates now revalidate the customer order details page and profile order summaries instead of only the dashboard views
+- Fixed a stock-accounting gap where orders previously validated inventory without actually reducing it, and fixed duplicate-item checkout requests so repeated product ids now validate and reserve against the combined quantity
+- Fixed Next.js 16 dynamic route typing for the new Roshal routes by switching to explicit async `params` props and removing reliance on stale `.next/dev` generated validator files during TypeScript checks
+- Fixed missing UI dependency blockers by installing the required `motion`, `gsap`, `@gsap/react`, and `@radix-ui/react-icons` packages used by the current component set
+- Fixed storefront revalidation after marketing page updates so saved Roshal pages now invalidate the real storefront routes instead of malformed `//...` paths
+- Fixed Roshal custom-page and product cache invalidation so slug changes now revalidate both the current and previous storefront paths
+- Fixed section-save revalidation so custom CMS-managed storefront pages update immediately after section edits instead of only refreshing the built-in home/about/contact routes
+- Fixed CMS publication behavior so draft pages/products no longer leak through template fallbacks, and blocked reserved page slugs that would clash with system routes such as `/products`, `/cart`, and `/dashboard`
+- Fixed public sitemap, robots, manifest, and Open Graph branding so Roshal Organic no longer exposes stale Quadra metadata or dead legacy marketing routes
 - Fixed both transmittal creation entry points so the issue/send action no longer stays disabled behind a blank required subject: the forms now auto-fill a valid subject from purpose/project/document selection, and the sheet flow validates live with `react-hook-form` instead of waiting for a blocked submit attempt
 - Fixed the remaining matrix responsiveness by switching the summary/stakeholder strips to safer breakpoint grids and tightening matrix table column widths so wide routing data stays inside local scroll containers instead of widening the page
 - Fixed the remaining matrix overflow at the dashboard-shell level by removing the shared `SidebarInset` full-width flex bug, adding `min-w-0` containment through the main scroll viewport, and letting the matrix summary and stakeholder grids shrink safely on narrower desktop rails

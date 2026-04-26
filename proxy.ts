@@ -3,38 +3,58 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 
+function getSafeCallbackUrl(value: string | null, fallback: string) {
+  if (value?.startsWith("/") && !value.startsWith("//")) {
+    return value;
+  }
+
+  return fallback;
+}
+
 export async function proxy(request: NextRequest) {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
+  const role = session?.user?.role === "admin" ? "admin" : "user";
 
   const isAuthPage = request.nextUrl.pathname.startsWith("/login");
+  const isDashboardRoute = request.nextUrl.pathname.startsWith("/dashboard");
   const isProtectedRoute =
-    request.nextUrl.pathname.startsWith("/projects") ||
-    request.nextUrl.pathname.startsWith("/documents") ||
-    request.nextUrl.pathname.startsWith("/workflows") ||
-    request.nextUrl.pathname.startsWith("/transmittals") ||
-    request.nextUrl.pathname.startsWith("/correspondence") ||
-    request.nextUrl.pathname.startsWith("/queries") ||
-    request.nextUrl.pathname.startsWith("/submittals") ||
-    request.nextUrl.pathname.startsWith("/change-orders") ||
-    request.nextUrl.pathname.startsWith("/schedule") ||
-    request.nextUrl.pathname.startsWith("/commissioning") ||
-    request.nextUrl.pathname.startsWith("/admin");
+    isDashboardRoute ||
+    request.nextUrl.pathname.startsWith("/checkout") ||
+    request.nextUrl.pathname.startsWith("/orders") ||
+    request.nextUrl.pathname.startsWith("/profile");
+  const callbackURL = `${request.nextUrl.pathname}${request.nextUrl.search}`;
 
-  // Redirect to login if no session and trying to access protected route
   if (!session && isProtectedRoute && !isAuthPage) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("callbackURL", callbackURL);
+
+    return NextResponse.redirect(loginUrl);
   }
 
-  // Redirect to home if already authenticated and on login page
-  if (session && isAuthPage) {
+  if (session && isDashboardRoute && role !== "admin") {
     return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  if (session && isAuthPage) {
+    const destination = getSafeCallbackUrl(
+      request.nextUrl.searchParams.get("callbackURL"),
+      role === "admin" ? "/dashboard" : "/",
+    );
+
+    return NextResponse.redirect(new URL(destination, request.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    "/login",
+    "/dashboard/:path*",
+    "/checkout/:path*",
+    "/orders/:path*",
+    "/profile/:path*",
+  ],
 };

@@ -4,10 +4,14 @@ import {
   JetBrains_Mono,
   Noto_Sans_Bengali,
 } from "next/font/google";
-import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { BottomNavigation } from "@/components/bottom-navigation";
-import { MarketingFooter } from "@/components/marketing-footer";
-import { MarketingHeader } from "@/components/marketing-header";
+import { StorefrontFooter } from "@/components/roshal/storefront/storefront-footer";
+import { StorefrontHeader } from "@/components/roshal/storefront/storefront-header";
+import { getRoshalSessionUser } from "@/lib/roshal/auth";
+import {
+  getRoshalNavigationPages,
+  getRoshalSiteSettings,
+} from "@/lib/roshal/content";
+import { getRoshalLocale } from "@/lib/roshal/i18n";
 import "../globals.css";
 
 const jetbrainsMono = JetBrains_Mono({
@@ -28,31 +32,47 @@ const notoSansBengali = Noto_Sans_Bengali({
 });
 
 export const metadata: Metadata = {
-  title: "Roshal Organic - খাঁটি স্বাদের আসল ঠিকানা",
-  description: "খাঁটি স্বাদের আসল ঠিকানা - ১০০% প্রাকৃতিক ও অর্গানিক খাদ্য ব্র্যান্ড",
+  title: "Roshal Organic",
+  description:
+    "Pure food storefront and content-managed dashboard for Roshal Organic.",
 };
 
-export default function MarketingLayout({
+export default async function MarketingLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [locale, pages, siteSettings, sessionUser] = await Promise.all([
+    getRoshalLocale(),
+    getRoshalNavigationPages(),
+    getRoshalSiteSettings(),
+    getRoshalSessionUser(),
+  ]);
+
   return (
     <div
-      className={`${jetbrainsMono.variable} ${hindSiliguri.variable} ${notoSansBengali.variable} h-full antialiased`}
+      className={`${jetbrainsMono.variable} ${hindSiliguri.variable} ${notoSansBengali.variable} min-h-screen bg-background text-foreground antialiased`}
     >
-      <NuqsAdapter>
-        <MarketingHeader />
-
-        {/* Main Content */}
-        <main className="flex-1">{children}</main>
-
-        {/* Bottom Navigation */}
-        <BottomNavigation />
-
-        {/* Footer */}
-        <MarketingFooter />
-      </NuqsAdapter>
+      <StorefrontHeader
+        locale={locale}
+        pages={pages}
+        siteSettings={siteSettings}
+        sessionUser={
+          sessionUser
+            ? {
+                name: sessionUser.name,
+                email: sessionUser.email,
+                role: sessionUser.role,
+              }
+            : null
+        }
+      />
+      <main className="min-h-[calc(100vh-18rem)]">{children}</main>
+      <StorefrontFooter
+        locale={locale}
+        pages={pages}
+        siteSettings={siteSettings}
+      />
     </div>
   );
 }

@@ -15,7 +15,8 @@ export async function POST(request: NextRequest) {
     const base64 = buffer.toString("base64");
 
     // Upload to imgbb
-    const imgbbApiKey = process.env.IMGBB;
+    const imgbbApiKey =
+      process.env.IMGBB_API_KEY || process.env.IMGBB || undefined;
     if (!imgbbApiKey) {
       return NextResponse.json(
         { error: "IMGBB API key not configured" },

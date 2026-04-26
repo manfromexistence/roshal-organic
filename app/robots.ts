@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { getRoshalAbsoluteUrl } from "@/lib/roshal/site";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -6,9 +7,9 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/login", "/settings"],
+        disallow: ["/login", "/dashboard", "/checkout", "/orders", "/profile"],
       },
     ],
-    sitemap: "https://quadra-edms.com/sitemap.xml",
+    sitemap: getRoshalAbsoluteUrl("/sitemap.xml"),
   };
 }

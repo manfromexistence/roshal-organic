@@ -15,8 +15,8 @@ export function toast({
     description,
     ...(variant === "destructive" && {
       style: {
-        background: "hsl(var(--destructive))",
-        color: "hsl(var(--destructive-foreground))",
+        background: "oklch(var(--destructive))",
+        color: "oklch(var(--destructive-foreground))",
       },
     }),
   });

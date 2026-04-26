@@ -13,7 +13,12 @@ export const users = sqliteTable("users", {
   id: text("id").primaryKey(),
   email: text("email").notNull().unique(),
   name: text("name").notNull(),
-  role: text("role").notNull().default("user"), // EDMS related role: user, admin, client, pmc, vendor, subcontractor
+  image: text("image"),
+  role: text("role").notNull().default("user"), // Roshal roles: user, admin
+  phone: text("phone"),
+  preferredLanguage: text("preferred_language").notNull().default("bn"),
+  defaultAddress: text("default_address"),
+  isActive: integer("is_active", { mode: "boolean" }).notNull().default(true),
   organizationId: text("organization_id").references(() => organizations.id, {
     onDelete: "set null",
   }),
@@ -56,6 +61,151 @@ export const files = sqliteTable("files", {
   fileId: text("file_id").notNull(), // Unique ID from imgbb or catbox
   fileName: text("file_name").notNull(),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+});
+
+export const roshalSiteSettings = sqliteTable("roshal_site_settings", {
+  id: text("id").primaryKey(),
+  brandName: text("brand_name").notNull().default("Roshal Organic"),
+  taglineBn: text("tagline_bn").notNull(),
+  taglineEn: text("tagline_en").notNull(),
+  contactPhone: text("contact_phone"),
+  contactEmail: text("contact_email"),
+  whatsappPhone: text("whatsapp_phone"),
+  addressBn: text("address_bn"),
+  addressEn: text("address_en"),
+  heroLayout: text("hero_layout").notNull().default("split"),
+  cardStyle: text("card_style").notNull().default("soft"),
+  sectionSpacing: text("section_spacing").notNull().default("comfortable"),
+  primaryCtaHref: text("primary_cta_href").notNull().default("/products"),
+  primaryCtaLabelBn: text("primary_cta_label_bn").notNull(),
+  primaryCtaLabelEn: text("primary_cta_label_en").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+});
+
+export const roshalPaymentSettings = sqliteTable("roshal_payment_settings", {
+  id: text("id").primaryKey(),
+  manualReviewNoticeBn: text("manual_review_notice_bn").notNull(),
+  manualReviewNoticeEn: text("manual_review_notice_en").notNull(),
+  supportMessageBn: text("support_message_bn").notNull(),
+  supportMessageEn: text("support_message_en").notNull(),
+  optionsJson: text("options_json").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+});
+
+export const roshalPages = sqliteTable("roshal_pages", {
+  id: text("id").primaryKey(),
+  slug: text("slug").notNull().unique(),
+  navigationLabelBn: text("navigation_label_bn").notNull(),
+  navigationLabelEn: text("navigation_label_en").notNull(),
+  titleBn: text("title_bn").notNull(),
+  titleEn: text("title_en").notNull(),
+  descriptionBn: text("description_bn"),
+  descriptionEn: text("description_en"),
+  heroImage: text("hero_image"),
+  status: text("status").notNull().default("published"),
+  showInNavigation: integer("show_in_navigation", { mode: "boolean" })
+    .notNull()
+    .default(true),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+});
+
+export const roshalSections = sqliteTable("roshal_sections", {
+  id: text("id").primaryKey(),
+  pageId: text("page_id")
+    .notNull()
+    .references(() => roshalPages.id, { onDelete: "cascade" }),
+  sectionKey: text("section_key").notNull(),
+  type: text("type").notNull(),
+  sortOrder: integer("sort_order").notNull().default(0),
+  layout: text("layout").notNull().default("stacked"),
+  variant: text("variant").notNull().default("default"),
+  isEnabled: integer("is_enabled", { mode: "boolean" }).notNull().default(true),
+  eyebrowBn: text("eyebrow_bn"),
+  eyebrowEn: text("eyebrow_en"),
+  titleBn: text("title_bn"),
+  titleEn: text("title_en"),
+  bodyBn: text("body_bn"),
+  bodyEn: text("body_en"),
+  ctaLabelBn: text("cta_label_bn"),
+  ctaLabelEn: text("cta_label_en"),
+  ctaHref: text("cta_href"),
+  imageUrl: text("image_url"),
+  itemsJson: text("items_json"),
+  stylesJson: text("styles_json"),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+});
+
+export const roshalProducts = sqliteTable("roshal_products", {
+  id: text("id").primaryKey(),
+  slug: text("slug").notNull().unique(),
+  sku: text("sku").notNull().unique(),
+  nameBn: text("name_bn").notNull(),
+  nameEn: text("name_en").notNull(),
+  summaryBn: text("summary_bn").notNull(),
+  summaryEn: text("summary_en").notNull(),
+  descriptionBn: text("description_bn").notNull(),
+  descriptionEn: text("description_en").notNull(),
+  categoryKey: text("category_key").notNull(),
+  categoryLabelBn: text("category_label_bn").notNull(),
+  categoryLabelEn: text("category_label_en").notNull(),
+  price: integer("price").notNull(), // BDT in minor units
+  compareAtPrice: integer("compare_at_price"),
+  inventory: integer("inventory").notNull().default(0),
+  badge: text("badge"),
+  heroImage: text("hero_image").notNull(),
+  galleryJson: text("gallery_json"),
+  featuresBnJson: text("features_bn_json"),
+  featuresEnJson: text("features_en_json"),
+  isFeatured: integer("is_featured", { mode: "boolean" })
+    .notNull()
+    .default(false),
+  isPublished: integer("is_published", { mode: "boolean" })
+    .notNull()
+    .default(true),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+});
+
+export const roshalOrders = sqliteTable("roshal_orders", {
+  id: text("id").primaryKey(),
+  orderNumber: text("order_number").notNull().unique(),
+  userId: text("user_id").references(() => users.id, {
+    onDelete: "set null",
+  }),
+  status: text("status").notNull().default("pending"),
+  paymentMethod: text("payment_method").notNull(),
+  paymentStatus: text("payment_status").notNull().default("pending"),
+  paymentProvider: text("payment_provider"),
+  gatewayTransactionId: text("gateway_transaction_id"),
+  gatewayPaymentType: text("gateway_payment_type"),
+  gatewayMetaJson: text("gateway_meta_json"),
+  paymentReference: text("payment_reference"),
+  paymentSender: text("payment_sender"),
+  paymentProofUrl: text("payment_proof_url"),
+  trackingNote: text("tracking_note"),
+  adminReviewNote: text("admin_review_note"),
+  verifiedAt: integer("verified_at", { mode: "timestamp" }),
+  subtotal: integer("subtotal").notNull(),
+  shippingFee: integer("shipping_fee").notNull().default(0),
+  discount: integer("discount").notNull().default(0),
+  total: integer("total").notNull(),
+  currency: text("currency").notNull().default("BDT"),
+  customerName: text("customer_name").notNull(),
+  phone: text("phone").notNull(),
+  email: text("email"),
+  addressLine1: text("address_line_1").notNull(),
+  addressLine2: text("address_line_2"),
+  city: text("city").notNull(),
+  postalCode: text("postal_code"),
+  notes: text("notes"),
+  itemsJson: text("items_json").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
 });
 
 // EDMS Schema - Projects

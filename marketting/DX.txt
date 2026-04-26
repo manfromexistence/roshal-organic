@@ -1,0 +1,209 @@
+Today is 22nd April 2016. Please do a latest website about latest nextjs version, shadcn-ui version, and tailwindcss version of the package and create a new project in this workspace. Do not create any other new folder; just inside this folder, create a new project.Do a website about the best and next best packages for creating a website right now, and install all of the best packages on our website. Like:
+nextjs
+better-auth
+drizzle
+turso database
+shadcn-ui
+tailwindcss
+zod
+zustand
+react-quaery
+offline database
+prefetch
+caching
+biome for linting and formatting
+Do a web search and latest packages for nextjs projects add in our website please add all of them correctly!!!
+
+Use bun as the package manager
+
+And this is "quadra" project edms!!!
+
+And this is "quadra" project edms!!! and please do web search about shadcn-ui and its cli and install packages - create pro readme - lint format and build this project
+
+diceui table added
+
+Good, now please search for the latest npm packages that have gone viral in these times or are very useful for our product. Just give a description of the whole package and what they do so that I can choose if we need to implement it in our project or not.
+
+Awesome, now please add these new packages to our project. Also, please do the latest comprehensive website about shadcnUI and its components. It has many packages or UI component libraries like Magic UI as an UI and things like that. Please do research and pre-update the @AGENTS.md
+
+Please make this nextjs src project to not have the src and put everything outside of the src folder
+
+And in our website please create latest nextjs version auth and middleware for authentication - we will only support email and password input using better-auth and drizzle with turso database - in the root env file you can find the keys for turso database - so first please use our os wsl shell with inline turso-cli to access the database and there please drop all the tables and data and create a new authentication and then apply it in our os and for the login screen please use video back in the hexed/edms folder in the left and on the right please put email, name. role(edms related), password  and auth please show our current page.tsx page
+
+Please do a latest websearch about how to do auth in nextjs latest version as today is 23 april 2026 as they don't use middleware as they use proxy nowadays
+
+Good, now if I am not authenticated then it will show the login page and make sure that the login page uses our shadcn-ui components correctly!!!
+
+Even I am not loged in but still its showoing the / page instead of going to the login page
+
+Nowadays we use proxy.ts file instead of middleware.ts file so please fix it
+
+Now no need to run the server again and again - please make the video container on our login page have some border radius. Make the whole right side login container have the full right side like the left side video container. Inside the video container, learn from the text pdms logging testimonial carousel and use Primer Motion to render a carousel-like text effect as the file.
+
+Okay, let's start from the top left side. On the top left side, there should be a logo with our Vadra name, Vadra demo. On the test terminal carousel, there is no need to put our branding, as we already did our branding on the top left. Only show the testimonials in the center. The video screen should have less border radius and will grow to have more height. On the right side, currently you are putting the login boxes in a container, but it will not work like that. It will not be inside any container. Remove that border radius and put the right side login text in the bottom most bottom only. The create new account and forms will be in the center, and on the login right side there will be a chatcnyui select element with different kinds of account roles. When we select it or we will be creating an account by that role.
+
+On our database please put user@gmail.com, admin@gmail.com and first users for all roles and put different powers to them and properly create the rbac correctly
+
+After successful authentication, please redirect the user to the home page. On the home page, please remove everything; just keep the table. Instead of showing dummy data on the table, please show our database data on the table and render the authentication details on the table so that we can manage all the users (create, read, update, and delete) through the data table. On the home page, please put a theme switcher. No need to put that theme selector; just when we click the Create button, it is just to toggle between light and dark theme, and by default please use dark theme.
+
+Our login page is complete. First, make sure our login page is fully responsive on a mobile device. Please put the role selector or sign up at the most top with full width, and put the theme together right beside it on the left side. On mobile screen, put the theme together on the right side and make it totally responsive. Now we have to make sure our source code is properly professional with ten out of ten quality. Please make sure all files are formatted, linked, and that every file has professional code so that it's very good for maintainability. Make sure all folder structures are correct and brutal is just them. If you see many things suspicious, let's place to implement best folder check for our whole project correctly.
+
+Please create proper documention about our current status and goal to make our quadra the edms possible - and for ai agents please put alway use root CHANGELOG.md instead of creating stupid markdown files here and there update the README its very important and also use TODO.md file track what ai is doing what the status and things like that and create put that if users asks for x do exactly x not anything stupid - and do latest web search and always tend to use latest packages by using package manager that's will use latest version of all packages and also ask users for clarification question is lost with option with numbers but don't ask simple stuffs that may waste time in those cases do web search and if a task is very complex then have a 3 tries rules so if you fail to do something for straight 3 time then create a help file asking help to better ai and put all details in the file and ask user questions and do latest web search for solutions insead of messiong things up - in here we maintain folder structure, code quality, documentation, and seriously for future maintainability so all ai agents must follow these rules!!!
+
+On this project for image uploads we will use imgbb and for any other files input we will use catbox in the env there is imgbb api key so in our / page please create a to inputs to store and render the files using those connected on our project correctly and in our turso database we will store only the unique parts of the data like not the repeative imgbb url just the unique id same for catbox so please do a latest web search about them and in our / page please create two inputs for their storage correctly working on our project
+
+Bro what are you doing - create scripts to test all the turso database connections directly instead of guesing things - use a scripts so that we can mimic real users apis to check for errors instead of me manually giving you errors like these:
+
+And we don't care about email verification will add later so just skip that so that our auth works correctly only email, password, names, roles there are the thing we care so configure them correctly
+
+On the homepage I told you to use our table not a custom data-table so please our correctly table correctly
+
+Oh, this is a critical flaw - why you even though of evne using native html instead of using shadcn-ui componets - please nver do that and put this details int the AGENTS.md file critically
+
+Now this is a very critical task - so please at the new tablecn folder and in there is the real tablecn codebase so alonside our users table in our homepage please render the data-table example of that by copying its files and also it has a theme in the globals please copy those into our main project and make it as the our default theme  and remember it carefully I don't care about other examples but the data-table first exmpple should be excactly as the tablecn example copy everything folder install every deps it has but I want that data-table exactly how it is with the same demo json - just copy and configure in our main project correctly no custom stuffs needed!!!
+
+Now remove our current user table - and only keep the demo table and insead of showing demo data pleas show user data but please don't change any ui stuff as the reason we are removing the user table as it has edit and delete text instead of button so pleas put that in the action more icon and like that ui principles of that demo table - and when we reload again and again the user table was fetching so pelase cache it correclty so it don't don that flashing on the table!!!
+
+And make that as our project's default data-table and remove all other data-table from our codebase other than that and properly document it and funtionalities
+
+In here we maintain folder structure, code quality, documentation, and seriously for future maintainability so apply it correctly!!!
+
+Now please search about search engine UI admin driver sidebar, and please update our current driver sidebar to be a collapsible sidebar. Remove all the items and put items related to our edms project - and in our dashboard sideheader please put avatar notification bell and theme toggle buttons on the top right to left and in the sidebar make the items collapsible sidebar and it should have these items with these icons
+
+Now swap the color of the sidebar instead with the sidebar's main background. Only swap the color; no need to change the variables or anything. Swap the underlined colors in globals.css, as the opposite colors suit the diode more nicely. Also, in the extended sidebar, between the sidebar nav top item and other nav items, don't put any gaps.And in the Sidebars Scroll Area, when we click on the scroll area, please make sure to render search in your context menu and put an item to search and go to any pages of our admin dashboard items.
+
+Always show the border but the border but on hover just from transborder to real border dashboard boreder in this way when we apply border on hover it will not mess up with the hieght of the sidebar
+
+Good now please analize all changes and then commit changes and create pro commit and also please lint and format all files
+PS F:\hexed\quadra> bun run dev
+$ next dev
+▲ Next.js 16.2.4 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.105:3000
+- Environments: .env.local, .env
+✓ Ready in 447ms
+
+ GET / 200 in 1829ms (next.js: 95ms, proxy.ts: 1179ms, application-code: 556ms)
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+[browser] Uncaught Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+On the loading page please only render loader-2 roading icon in the center on loading nothing else is needed and make sure to make 404 and other pages professinal using our compoentsna and theme colors and make everything professinal and beautiful!!!
+
+Now, is its the latest best practices on nextjs projects, or do we need anything more? Do a latest web search, and if we need some new pages, then create them. Use our components and theme colors throughout all pages.
+
+Now these are very basic errors pages so please create creative animated errors pages with framer-motion animation and always use theme colors and shadcn-ui components
+
+Still the sideabr accordion items are flashing - they should stray as they are are correctly and also my main problem is the top stupid icon circle so please replace it with any kind shapes and anything interestiong by doing we search about shadcn-ui components for these stuffs
+
+In our scroll area component, add scrollbar tag. Please put the most z-index so it shows on top of everything.
+
+Good, now today is 23 April 2026. Please do your latest website about the latest next days' practices and folder structure, and create all error 404 and other pages and make all types of pages so that our project can be professional.
+
+So, about the acoring not staying still on the sidebar so please create a ai help file and ask better ai for help and its a remote ai so please mention all useful code as it can't have any direct access to the codebase!!!
+
+So, as you can see in the root edms folder, there are many pages and components related to edms. We have to integrate it in our current website, so please create a plan to integrate it in our current website.
+
+
+[10:52 pm, 23/04/2026] +880 1719-403627: 
+
+
+Please change the project from quadra edms to Roshal Organic website:
+
+Previously, our plan was to just show the dashboard page on this website, but now we are integrating the landing page too. So please make sure that when we are not authenticated, it will show our landing page, and when we are authenticated, it will redirect to the dashboard (what we are currently doing). Also, make sure that previously there were no marketing pages. So please take a group of marketing pages and, in that group, implement layout and, by default, use that layout. Make sure that the website uses these details.
+🌿 Roshal Organic – পরিচিতি
+Roshal Organic একটি প্রাকৃতিক ও স্বাস্থ্যসম্মত খাদ্য ব্র্যান্ড, যেখানে আমরা চেষ্টা করি মানুষের কাছে পৌঁছে দিতে সম্পূর্ণ খাঁটি ও অর্গানিক খাবার। আমাদের লক্ষ্য হলো রাসায়নিকমুক্ত, ভেজালহীন এবং স্বাস্থ্যকর খাবার সরবরাহ করা, যা মানুষের দৈনন্দিন জীবনে সুস্থতা ও শক্তি যোগায়।
+
+আমরা বিশ্বাস করি—প্রকৃতির কাছ থেকে পাওয়া খাবারই সবচেয়ে নিরাপদ ও পুষ্টিকর। তাই Roshal Organic এ আমরা দেশি কৃষক ও প্রাকৃতিক উৎস থেকে সংগ্রহ করা পণ্য নিয়ে কাজ করি, যেমন অর্গানিক ফল, মধু, ঘি, গুড়, তেল ও অন্যান্য প্রাকৃতিক খাদ্য।
+
+🌱 আমাদের লক্ষ্য
+মানুষকে স্বাস্থ্যকর জীবনযাপনে উৎসাহিত করা এবং অর্গানিক খাদ্যের প্রতি আস্থা তৈরি করা।
+🌾 আমাদের প্রতিশ্রুতি
+
+* ১০০% খাঁটি ও প্রাকৃতিক পণ্য
+* কোনো প্রিজারভেটিভ বা কেমিক্যাল নেই
+* সরাসরি কৃষক ও প্রাকৃতিক উৎস থেকে সংগ্রহ
+* গ্রাহকের…
+[10:52 pm, 23/04/2026] +880 1719-403627: 🌿 Roshal Organic – খাঁটি স্বাদের আসল ঠিকানা! 🍯🥭
+
+আপনি কি নিশ্চিত আপনার খাওয়া মধু, আম বা গুড় সত্যিই খাঁটি? 🤔
+আজকাল বাজারে ভেজালের ভিড়ে আসল জিনিস খুঁজে পাওয়া কঠিন!
+তাই আমরা নিয়ে এসেছি—
+✅ ১০০% প্রাকৃতিক
+✅ কোনো কেমিক্যাল নেই
+✅ সরাসরি গ্রাম থেকে সংগ্রহ
+✅ টেস্টে আসল, বিশ্বাসে অটুট
+🍯 খাঁটি মধু
+🥭 মৌসুমী আম
+🍯 দেশি গুড়
+🥛 ফ্রেশ দই
+👉 আপনার পরিবারের জন্য সেরা পছন্দ Roshal Organic
+🔥 আজই অর্ডার করুন – সীমিত স্টক!
+#RoshalOrganic #OrganicFood #HealthyLife #PureFood #Bangladesh
+
+In here at the public folder I have added favicon.zip logo.png so please use those resource in our project correctly!!!
+
+Here is the thing on the marketing pages:
+- In the marketing pages, authentication will be for the users
+- On the logging page, if it's an admin account, then it will redirect to the dashboard
+- If it's a user account, then it will show the user details in the top right with all the features for a user to have like watch, display, watch list, and all other e-commerce-related functionalities  Make sure to always use search engine UI components with thin colors, and also don't create any dummy UI. Always make all the UI components interactive, functional, and connect with all other components. Keep making sure to make the website responsive for even mobile devices.
+And on this website, there will be a language switcher, and only put English and Bangla on that language switcher, and make the Bangla language the default language.
+
+On our marketting header please put theme toggler and again make dark as the default theme - and what about the images - create a script and search for resources for more natureal fresh food items and then please download tons of images and also the bangaladesh compani logos(may be use logo.dev for logo)!!!
+
+Please make the header in our marketting fixed with glassmorphism ui and don't use any kind of emojis - always use lucide-react icons and download more images and use them throughout marking website correctly
+
+Please make the height of the header a little smaller and make the bangla english langue switcher to work correctly!!!
+
+Ok, let's start from the top.
+- In our top banner, please increase the height of the carousel banner way bigger. I am currently only showing 3 items there, but please show 7 items there in the top header carousel.
+- All of the product cards have a critical UI flaw. First of all, the image will not have any padding around it. The image of the product will have full height and width on the top and in the bottom, but currently our card has padding top and padding bottom. Please remove the extra padding bottom and, from the operating top, remove it completely. Also make the images have no border radius and make the card have overflow hidden.
+- In the most bottom, at the footer, we are only showing five logos, but we have more than 40 logos. Please render all of them, as many of the logos are not showing correctly. I identified what logos are not showing correctly, and you remove those from our project.
+
+Good, now in our marketing page, please add three more sections with images and download the images and configure them correctly - use different shadcn-ui components - maybe use install from midday ui and put some more sections for our marketting page!!!
+
+Now please work on our subheader and make sure that it's the same width as the top header items are getting by default. Use that as a guard so that if any content gets outside of that, we can put a more item. When we click on the more item, it will show those items so that we will not have any kind of horizontal scroll in our top header, as it will make the UI look bad.
+
+Please lint and format files and fix all errors and warnings!!!
+
+Today is 24th April 2026. Please do the latest website about Chachi NUI and the Midday Chachi NUI component library. From there please choose any component that is good for E-Commerce landing pages and please put all of them in our current E-Commerce marketing pages landing page.
+Now here's the thing: the cards are very static. If you can, then implement some beautiful animation using Framer Motion or gsap as your choice. Maybe alongside the Framer Motion install the gsub package and configure it with our next project and implement some scroll-based animation on our Ecommerce landing page but don't overdo it. Please make it seem simple but make sure that it's more visible to any users so that anyone who is first looking at our website can visibly see the animations correctly.
+
+I am talkding about magicui, accertinity-ui, cult-ui components libraries so please do latest web search about them correctly
+
+I already have herd and php 8.5 installed in my system, so can we convert this nextjs bun project to laravel intertia project?? please do a latest web search and give me plan for it as today is 24th April 2026!
+
+Please make sure to use only shadcn-ui components and try to make ui as user friendly as possible!!!
+
+Please create amazon website organic foods ecomerce listing and fitlering pages in our project
+
+Please do a latest web search about shadcn-ui latest components and examples and please use those examples and cards and make our marketting ladning page to more sections with proper shadcn-ui ckomponents and cards
+
+Bro, instead of creating stupid pages - please create the ecomerce realted pages like product details - price, range, payment and these types of pages with our shadcn-ui components
+
+Create - your account, watchlist, history and these of pages
+
+Make all the pages responsive
+
+Create more sections in the landing page in the with project shadcn-ui cards and images as current the cards and image sizes is very big issue in our ladninage - so please learn from shadcn-ui does things and implement it in that way correctly and add more sections!!!
+
+In the new version we only use proxy.ts not middleware.ts - do latest website about nextjs and you will find about it
+
+Let us start with the marketing page header. Previously, we were showing a header, and at the bottom we were also showing a subheader, but currently the subheader is at the bottom of the header. It is not at the bottom of the header, so please fix it. The whole right side cards are really messed up, so use a proper grid system to calculate the available space and put the cards in the available spaces correctly. This is an ecommerce project, so we do not have to show testimonials or any question and answer section. Please show more image cards showing more products, top sellers, and things like that. Remove all unnecessary sections and put more sections relating to ecommerce. Keep that in mind and fix the card section with a proper grid system and images, making good cards. Learn from the shadcn UI cards, do the latest research, and implement it correctly.
+
+So this is a Bangladeshi e-commerce website. For payment, we will implement bKash, nobot, Rocket, and things like that, but for now please put the system-issued online payment screenshot and transaction ID proof of payment system, and also put them in the payment system too. As those payment systems need production access, that's why for locally we will also in the transaction screenshot way too
+
+Okay now we have dashboard pages rigth - so please make it for our current ecomce project so that admin's can manage projects in the maretting website - replace old edms related dashboard items with edms related items and create different pages and connect dashboard with marketting ui correctly
+
+Make sure to not change any kind of layout in our dashboard layout. Instead of the edms website, please create and configure e-commerce-related pages with the marketing pages so that we can manage the marketing data from our admin management pages correctly.
+
+Now please do a latest nextjs web search and if possible make the images to have more briging as the images are looking so bad and like not good quility so please do a ltest websearch about it
+
+Now, please create reusable components instead of putting all the UI components of the Marketing page into one file and using all public images. Create three more ecommerce-related sections. Please don't put any kind of details; please just show the products in more different ways correctly, like top sellers and things like that.It has to be related to E-Commerce. No useless data.Like a banner or anything useful that is related to e-commerce
+
+@vegetables I have added 75+ more visible related images, so update our marketing page to somehow render all of the images. Create sections and render it correctly. Create new sections related to e-marts and render those images correctly in our app. We're saved.

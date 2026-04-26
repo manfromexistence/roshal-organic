@@ -1,7 +1,5 @@
 import { ImageResponse } from "next/og";
 
-// Edge runtime is used for OG image generation for better performance
-// This warning is expected and intentional - OG images are dynamically generated
 export const runtime = "edge";
 
 export const size = {
@@ -17,31 +15,57 @@ export default function Image() {
       style={{
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
+        alignItems: "flex-start",
+        justifyContent: "space-between",
         width: "100%",
         height: "100%",
-        backgroundColor: "#000000",
-        color: "#ffffff",
+        padding: "64px",
+        background:
+          "linear-gradient(135deg, #f8f7f2 0%, #e8efd8 52%, #d2e0b5 100%)",
+        color: "#1f3d2d",
         fontFamily: "system-ui, sans-serif",
       }}
     >
       <div
         style={{
-          fontSize: 72,
-          fontWeight: "bold",
-          marginBottom: 24,
+          display: "flex",
+          alignItems: "center",
+          gap: "18px",
+          fontSize: 28,
+          fontWeight: 700,
+          letterSpacing: "0.18em",
+          textTransform: "uppercase",
         }}
       >
-        Quadra EDMS
+        Roshal Organic
       </div>
       <div
         style={{
-          fontSize: 32,
-          opacity: 0.8,
+          display: "flex",
+          flexDirection: "column",
+          gap: "20px",
+          maxWidth: "860px",
         }}
       >
-        Enterprise Document Management System
+        <div
+          style={{
+            fontSize: 82,
+            fontWeight: 800,
+            lineHeight: 1.05,
+          }}
+        >
+          Pure organic food for everyday Bangladeshi homes.
+        </div>
+        <div
+          style={{
+            fontSize: 32,
+            lineHeight: 1.4,
+            opacity: 0.84,
+          }}
+        >
+          Honey, ghee, jaggery, oils, seasonal fruits, and a content-managed
+          storefront from Roshal Organic.
+        </div>
       </div>
     </div>,
     {

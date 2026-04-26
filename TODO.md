@@ -1,10 +1,13 @@
 # TODO - AI Agent Task Tracking
 
-This file tracks tasks, progress, and status for AI agents working on Quadra EDMS.
+This file tracks tasks, progress, and status for AI agents working on Roshal Organic.
 
 ## Active Tasks
 
 ### Current Session (2026-04-25)
+- [ ] Replatform the Quadra template into Roshal Organic: switch the root experience to the marketing storefront, move admin work under `/dashboard`, reduce auth roles to `admin` and `user`, add ecommerce/CMS data models plus dashboard management for products, orders, users, marketing pages, storefront theme, payment guides, manual verification, and bilingual Bangla/English shop routes - in progress 2026-04-27 00:09 +06:00
+  Blockers: real production card gateway credentials/integration still need provider-specific merchant access, and the final production Roshal domain still needs to replace the placeholder value in `.env.production`.
+  Progress: storefront routes, admin routes, roles, checkout options, manual wallet verification, order tracking, payment settings, generic CMS-backed marketing pages, page/section creation flows, media upload controls, product search/filter/sort, richer order history/profile and order status UX, fuller customer order details, public SEO metadata cleanup, authoritative server-side checkout validation, transactional inventory reservation/restock, live cart/checkout stock sync, low-stock dashboard visibility, shared shipping-fee handling, payment-review state derived from dashboard payment-mode/proof settings, gateway-mode manual-follow-up messaging, storefront logout controls, admin self-lockout/last-admin safeguards, page-level Roshal admin auth checks, global toast feedback, inline checkout/login error states, real Roshal Turso env wiring, public-route proxy narrowing for faster visual loads, AamarPay-backed `upay` support, docs refresh, and TS hardening are done locally.
 - [x] Fix the disabled `Issue Transmittal` action on `/transmittals/new`, align both transmittal creation entry points with auto-filled required subjects plus live validity updates, and rename the shared configuration navigation label to `Project Configuration` - completed 2026-04-26 08:33 +06:00
 - [x] Replace the command palette result list overflow with the shared shadcn `ScrollArea` so the global header search popover scrolls through the design-system scrollbar instead of a raw native list scroller - completed 2026-04-26 08:01 +06:00
 - [x] Retire the DX loop task and update `AGENTS.md` so normal repo work executes the user's request directly without calling `d` unless the user explicitly re-enables DX - completed 2026-04-26 07:06 +06:00
@@ -128,16 +131,19 @@ This file tracks tasks, progress, and status for AI agents working on Quadra EDM
 
 ### Authentication & User Management
 - [x] Email/password authentication with better-auth
-- [x] Role-based access control (RBAC) with 6 roles
-- [x] Login page with video background and testimonial carousel
-- [x] User management data table with CRUD operations
-- [x] Database seeding with demo users
+- [x] Roshal auth roles reduced to `admin` and `user` for the active storefront/dashboard flow
+- [x] Roshal login page and redirects updated for storefront-first routing
+- [x] User management data table with CRUD operations for the active Roshal dashboard
+- [x] Database seeding with Roshal admin and user demo accounts
 - [x] Accounts table for better-auth compatibility
 
 ### UI/UX
 - [x] Mobile responsive design
 - [x] Theme switcher with dark mode default
 - [x] Professional styling with shadcn-ui and Tailwind CSS 4
+- [x] Responsive Roshal storefront and admin dashboard routes
+- [x] Bangla and English storefront content support
+- [x] Marketing page, product, checkout, and order tracking screens for Roshal Organic
 
 ### Code Quality
 - [x] Biome linting and formatting
@@ -149,6 +155,29 @@ This file tracks tasks, progress, and status for AI agents working on Quadra EDM
 - [x] CHANGELOG.md
 - [x] Updated README.md
 - [x] TODO.md
+
+### Roshal Ecommerce CMS
+- [x] Storefront-first home page and marketing pages
+- [x] Product listing and product details routes
+- [x] Cart, checkout, order history, order tracking, and profile routes
+- [x] Admin dashboard for products, orders, users, pages, payments, and storefront settings
+- [x] Manual bKash, Nagad, and Rocket verification with screenshot upload flow
+- [x] Payment settings management from the dashboard
+- [x] Server-authoritative checkout validation for product availability, inventory, payment-method enablement, proof requirements, and total recomputation
+- [x] Transactional product inventory movement on order create/cancel flows, including admin-safe cancellation reactivation checks
+- [x] Low-stock and out-of-stock visibility on the admin dashboard and product catalog management screen
+- [x] Live cart and checkout reconciliation against current published product stock, including removal/clamping notices for stale persisted cart items
+- [x] Payment-review state now follows each dashboard-configured payment option's mode and proof requirements instead of hardcoded method assumptions
+- [x] Gateway-mode checkout now communicates the current manual follow-up fallback until a live card processor is integrated
+- [x] Dashboard user management now blocks self-admin lockout and prevents removing the last active admin
+- [x] Roshal admin pages now enforce admin access in the page layer as well as the shared dashboard layout
+- [x] Storefront logout is now available from the active Roshal header and profile surface
+- [x] Roshal order tracking now includes a dedicated processing stage with clearer current-step highlighting
+- [x] Customer order detail pages now show itemized items, totals, delivery info, proof screenshots, and admin/tracking notes
+- [x] Customer order history now supports search, status filtering, and summary metrics
+- [x] Global toast feedback now renders in the root app shell and replaced the remaining raw login/checkout/media-upload alerts
+- [x] Active env files now point to the real Roshal Turso database instead of the old Quadra database
+- [x] Removed the dead `app/(marketing)/page-backup.tsx` backup file from the active storefront tree
 
 ## Planned Features
 
@@ -223,21 +252,13 @@ This file tracks tasks, progress, and status for AI agents working on Quadra EDM
 - Accounts table: id, userId, provider, providerAccountId, createdAt, updatedAt
 
 ### RBAC Roles and Permissions
-- **user**: read:documents, read:projects
-- **admin**: read:documents, write:documents, delete:documents, read:projects, write:projects, delete:projects, manage:users
-- **client**: read:documents, read:projects, read:reports
-- **pmc**: read:documents, write:documents, read:projects, write:projects, approve:documents
-- **vendor**: read:documents, write:documents, read:projects
-- **subcontractor**: read:documents, write:documents, read:projects
+- **user**: browse storefront, manage own profile, place orders, upload manual payment proof, and track own orders
+- **admin**: full storefront CMS access plus products, orders, users, payments, payment-guide screenshots, and manual payment verification
 
 ### Demo Users
 All demo users have password: `password`
 - user@gmail.com (user)
 - admin@gmail.com (admin)
-- client@gmail.com (client)
-- pmc@gmail.com (pmc)
-- vendor@gmail.com (vendor)
-- subcontractor@gmail.com (subcontractor)
 
 ## Last Updated
-2026-04-24 - Completed comprehensive admin dashboard with 30+ pages, linting configuration, and build verification
+2026-04-27 - Wired env files to the real Roshal Turso database, removed the dead storefront backup page, narrowed proxy to protected/auth routes, and added AamarPay-backed Upay support

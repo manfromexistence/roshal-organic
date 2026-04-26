@@ -3,34 +3,22 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "./db";
 import { accounts, sessions, users } from "./schema";
 
-// Define permissions for each role
 export const permissions = {
-  user: ["read:documents", "read:projects"],
+  user: ["read:storefront", "manage:profile", "create:orders"],
   admin: [
-    "read:documents",
-    "write:documents",
-    "delete:documents",
-    "read:projects",
-    "write:projects",
-    "delete:projects",
+    "manage:catalog",
+    "manage:orders",
     "manage:users",
+    "manage:marketing",
+    "manage:theme",
   ],
-  client: ["read:documents", "read:projects", "read:reports"],
-  pmc: [
-    "read:documents",
-    "write:documents",
-    "read:projects",
-    "write:projects",
-    "approve:documents",
-  ],
-  vendor: ["read:documents", "write:documents", "read:projects"],
-  subcontractor: ["read:documents", "write:documents", "read:projects"],
 } as const;
 
 export type Role = keyof typeof permissions;
 export type Permission = (typeof permissions)[Role][number];
 
 export const auth = betterAuth({
+  baseURL: process.env.BETTER_AUTH_URL,
   database: drizzleAdapter(db, {
     provider: "sqlite",
     schema: {
@@ -61,9 +49,29 @@ export const auth = betterAuth({
   user: {
     additionalFields: {
       role: {
-        type: "string",
+        type: ["user", "admin"],
         required: false,
         defaultValue: "user",
+        input: false,
+      },
+      preferredLanguage: {
+        type: "string",
+        required: false,
+        defaultValue: "bn",
+      },
+      phone: {
+        type: "string",
+        required: false,
+      },
+      defaultAddress: {
+        type: "string",
+        required: false,
+      },
+      isActive: {
+        type: "boolean",
+        required: false,
+        defaultValue: true,
+        input: false,
       },
     },
   },

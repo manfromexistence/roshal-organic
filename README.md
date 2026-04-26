@@ -1,245 +1,114 @@
-# Quadra EDMS - Enterprise Document Management System
+# Roshal Organic
 
-A modern, full-featured Enterprise Document Management System (EDMS) built with Next.js 16, designed for construction and project management workflows. Built with TypeScript, Tailwind CSS 4, and optimized for performance, type safety, and maintainability.
+Roshal Organic is a bilingual Bangla/English ecommerce CMS built on Next.js 16, Bun, Drizzle, Turso, Better Auth, and shadcn/ui. The public site is storefront-first, while `/dashboard` is the admin control panel for products, orders, users, marketing pages, theme settings, and payment-guide management.
 
-## 🎯 Current Status
+## Current Surface
 
-### Completed Features
-- ✅ Authentication system with better-auth (email/password)
-- ✅ Role-based access control (RBAC) with 6 roles: user, admin, client, pmc, vendor, subcontractor
-- ✅ Login page with video background and testimonial carousel
-- ✅ User management data table with full CRUD operations
-- ✅ Theme switcher with dark mode as default
-- ✅ Mobile responsive design
-- ✅ Database seeding with demo users
-- ✅ Turso (SQLite) database with Drizzle ORM
-- ✅ Professional code quality with Biome linting
-- ✅ Smart form auto-fill and auto-selection features for improved UX
+- Storefront routes: `/`, `/about`, `/contact`, `/products`, `/products/[slug]`, `/cart`, `/checkout`, `/orders`, `/orders/[id]`, `/profile`
+- Custom CMS marketing routes: `/(marketing)/[slug]` for additional published pages created from the dashboard
+- Admin routes: `/dashboard`, `/dashboard/products`, `/dashboard/orders`, `/dashboard/payments`, `/dashboard/users`, `/dashboard/pages`, `/dashboard/theme`
+- Auth roles: `admin`, `user`
+- Languages: Bangla and English
+- Payment options: `card`, `bkash`, `nagad`, `rocket`, `upay`
+- Manual wallet verification flow: customers can submit transaction ID, sender number, and screenshot; admins can review and mark orders paid
+- Checkout enforcement: pricing, delivery fee, enabled payment methods, payment-proof requirements, and inventory are validated on the server before an order is created
+- Payment-review workflow now follows each payment option's dashboard-configured mode and proof requirements, so manual/gateway changes affect order intake correctly
+- Gateway-mode checkout now makes the template limitation explicit: until a real processor is wired, `card` orders fall back to admin follow-up instead of pretending a live gateway exists
+- Inventory movement: confirmed order creation reserves stock in the database, and cancelled orders restore stock through the admin order workflow
+- Cart and checkout now reconcile persisted cart items against the live published catalog, reducing stale-quantity checkout failures for returning users
+- Storefront product discovery: search, category filter, and sort controls on `/products`
+- Customer order history now includes search, status filtering, and summary metrics on `/orders`
+- Account UX: `/profile` now includes order metrics, recent orders, quick links back to cart/order history/admin, and a working storefront logout control
+- Customer order pages now show itemized line items, delivery details, proof screenshots, payment verification timestamps, and admin/tracking notes instead of only top-level status badges
+- Shared app feedback is now mounted globally with the Roshal toaster, and checkout/login flows now show in-page errors instead of relying on raw browser alerts
+- SEO surface: dynamic metadata for home, products, and CMS pages plus Roshal-branded sitemap, robots, manifest, and OG image output
 
-## ✨ Smart Auto-Fill & Auto-Selection Features
+## What The Dashboard Controls
 
-Quadra EDMS includes intelligent form features that automatically populate data to reduce manual entry and improve user experience:
+- Product catalog, pricing, inventory, featured status, gallery, and localized descriptions
+- Low-stock and out-of-stock visibility in the admin dashboard and product management table
+- Order review, payment verification, status updates, and order-tracking notes
+- Storefront order tracking with a dedicated processing stage between confirmation and shipment
+- User profile data and role assignment
+- Admin safety rails that prevent self-demotion/deactivation and protect the last active admin account from being removed accidentally
+- Marketing page content, sections, layouts, copy, images, and section JSON/style settings
+- Creation of new marketing pages and new sections directly from the dashboard, including media uploads and live storefront links for published pages
+- Storefront brand settings such as CTA labels, hero layout, card style, spacing, and contact information
+- Payment method enablement, instructions, merchant/account details, and checkout guide screenshots
 
-### Project Creation Sheet
-- **Auto-generated Project ID**: Automatically generates a unique project ID in the format `PRJ-YYYY-XXXX` (e.g., PRJ-2026-A3B7)
-- **Auto-populated Start Date**: Automatically fills the start date field with the current date
-- **Auto-detected Location**: Uses browser geolocation to automatically detect and fill the user's location (requires user permission)
+## Environment Variables
 
-### Document Creation Sheet
-- **Auto-selected Project**: Automatically selects the first available project when the document creation sheet opens
-- **Auto-generated Document Number**: Generates a document number based on the selected project's project number
-- **Auto-suggested Title**: Suggests a document title based on the uploaded file name (smart filename parsing)
-- **File Upload Integration**: Automatically populates file metadata (name, type, size, URL) when a file is uploaded via the integrated upload component
+Set these in `.env`, `.env.local`, and `.env.production` as needed:
 
-### Workflow Creation Sheet
-- **Real User Data**: Fetches and displays real users and project members for reviewer/approver selection
-- **Auto-persisted Due Dates**: Automatically saves due dates when creating workflow steps
-
-### Document Details Page
-- **Download Button**: Automatically shows a download button for documents with an associated file URL
-
-These features work together to minimize manual data entry, reduce errors, and provide a smoother user experience across the platform.
-
-### In Progress
-- 🔄 Document management features
-- 🔄 Project workflows
-- 🔄 Advanced permissions system
-
-### Planned Features
-- � Document upload and version control
-- 📋 Transmittal management
-- 📋 Drawing and RFI tracking
-- 📋 Approval workflows
-- 📋 Audit trails
-- 📋 Reporting and analytics
-- 📋 Integration with project management tools
-
-## �🚀 Tech Stack
-
-### Core Framework
-- **Next.js 16.2.4** - React framework with App Router, Server Components, and Turbopack
-- **React 19.2.4** - Latest React with improved performance and features
-- **TypeScript 5** - End-to-end type safety
-
-### Styling & UI
-- **Tailwind CSS 4.2.4** - Utility-first CSS framework with modern features
-- **shadcn-ui v4** - Beautiful, accessible component library
-- **JetBrains Mono** - Global monospace font
-- **Framer Motion** - Animation library for UI transitions
-
-### Authentication & Database
-- **better-auth 1.6.7** - Comprehensive authentication framework
-- **Drizzle ORM 0.45.2** - Type-safe, lightweight ORM for TypeScript
-- **Turso (@libsql/client 0.17.2)** - Edge SQLite database for serverless deployment
-
-### State & Data
-- **Zustand 5.0.12** - Fast, scalable state management
-- **TanStack Query 5.99.2** - Powerful async state management and data fetching
-- **Zod 4.3.6** - TypeScript-first schema validation
-
-### Tooling
-- **Bun 1.3.13** - Fast package manager, runtime, and test runner
-- **Biome 2.4.12** - Fast formatter and linter (replaced ESLint)
-
-## 📦 Installation
-
-### Prerequisites
-- Node.js 18+ or Bun 1.3+
-- Git
-- Turso database account (for production)
-
-### Setup
-
-1. **Clone the repository**
-```bash
-git clone <repository-url>
-cd quadra
-```
-
-2. **Install dependencies**
-```bash
-bun install
-```
-
-3. **Environment variables**
-Create a `.env` file in the root directory:
 ```env
-DATABASE_URL=libsql://your-database.turso.io
-DATABASE_AUTH_TOKEN=your-auth-token
-BETTER_AUTH_SECRET=your-secret-key
+DATABASE_URL=libsql://your-turso-db-url
+DATABASE_AUTH_TOKEN=your-turso-auth-token
+BETTER_AUTH_SECRET=your-better-auth-secret
 BETTER_AUTH_URL=http://localhost:3000
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+ROSHAL_PAYMENT_GATEWAY_PROVIDER=aamarpay
+ROSHAL_PAYMENT_GATEWAY_METHODS=card,bkash,nagad,rocket,upay
+AAMARPAY_SANDBOX=true
+AAMARPAY_BASE_URL=https://sandbox.aamarpay.com
+AAMARPAY_STORE_ID=your-aamarpay-store-id
+AAMARPAY_SIGNATURE_KEY=your-aamarpay-signature-key
+IMGBB=your-imgbb-api-key
+IMGBB_API_KEY=your-imgbb-api-key
+CATBOX_USERHASH=optional-catbox-userhash
 ```
 
-4. **Run database migrations**
+## Local Setup
+
+1. Install dependencies with `bun install`.
+2. Provision or connect a Turso database.
+3. Run migrations with `bun run scripts/migrate.ts`.
+4. Seed Roshal users and storefront content with `bun run scripts/seed-users.ts`.
+5. Start the app with `bun run dev`.
+
+## Turso Setup
+
+Run these inside WSL or any shell where the Turso CLI is authenticated:
+
 ```bash
-bun run scripts/migrate.ts
-bun run scripts/migrate-accounts.ts
+turso auth login
+turso db create roshal-organic
+turso db show roshal-organic
+turso db tokens create roshal-organic
 ```
 
-5. **Seed database with demo users**
-```bash
-bun run scripts/seed-users.ts
-```
+Then place the returned database URL and auth token into the env files listed above.
 
-6. **Run development server**
+## Demo Accounts
+
+All seeded demo users use password `password`.
+
+- `admin@gmail.com`
+- `user@gmail.com`
+
+## Available Scripts
+
 ```bash
 bun run dev
-```
-
-7. **Open your browser**
-Navigate to [http://localhost:3000](http://localhost:3000)
-
-### Demo Users
-All demo users have password: `password`
-- `user@gmail.com` - User role
-- `admin@gmail.com` - Admin role
-- `client@gmail.com` - Client role
-- `pmc@gmail.com` - PMC role
-- `vendor@gmail.com` - Vendor role
-- `subcontractor@gmail.com` - Subcontractor role
-
-## 🛠️ Available Scripts
-
-```bash
-# Development server
-bun run dev
-
-# Production build
 bun run build
-
-# Start production server
 bun run start
-
-# Lint with Biome
-bun run lint
-
-# Format with Biome
 bun run format
-
-# Database migrations
+bun run lint
 bun run scripts/migrate.ts
-bun run scripts/migrate-accounts.ts
-
-# Seed database
 bun run scripts/seed-users.ts
-
-# Drop all tables (use with caution)
-bun run scripts/drop-tables.ts
 ```
 
-## 📁 Project Structure
+## Delivery Notes
 
-```
-quadra/
-├── app/                    # Next.js App Router
-│   ├── api/               # API routes
-│   │   ├── auth/          # Authentication endpoints
-│   │   └── users/         # User management endpoints
-│   ├── login/            # Login page
-│   ├── layout.tsx        # Root layout with NuqsAdapter
-│   ├── page.tsx          # Home page (user management)
-│   └── globals.css       # Global styles (Tailwind v4)
-├── components/            # React components
-│   ├── data-table/       # Diceui data table components
-│   └── ui/               # shadcn-ui components
-├── config/               # Configuration files
-├── hooks/                # Custom React hooks
-├── lib/                  # Utility libraries
-│   ├── auth.ts          # better-auth configuration
-│   ├── db.ts            # Drizzle database client
-│   ├── schema.ts        # Database schema
-│   └── text-utils.ts    # Text utilities
-├── scripts/              # Database scripts
-│   ├── migrate.ts
-│   ├── migrate-accounts.ts
-│   ├── seed-users.ts
-│   └── drop-tables.ts
-├── types/                # TypeScript type definitions
-├── CHANGELOG.md          # Changelog (use this for all changes)
-├── TODO.md               # AI agent task tracking
-├── AI_AGENT_RULES.md     # AI agent guidelines
-├── biome.json            # Biome configuration
-├── drizzle.config.ts     # Drizzle ORM configuration
-├── next.config.ts        # Next.js configuration
-├── proxy.ts              # Next.js 16 proxy for auth
-└── package.json          # Dependencies
-```
-
-## 🔧 Configuration
-
-### Biome
-The project uses Biome for linting and formatting. Configuration is in `biome.json` with overrides for third-party components.
-
-### shadcn-ui
-Components are managed via shadcn CLI. To add new components:
-```bash
-bunx shadcn@latest add <component-name>
-```
-
-### Tailwind CSS 4
-Tailwind CSS 4 is configured with the new v4 syntax. Import in your CSS file:
-```css
-@import "tailwindcss";
-```
-
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these guidelines:
-1. All changes must be documented in `CHANGELOG.md`
-2. AI agents should track their work in `TODO.md`
-3. Follow the code quality standards defined in `AI_AGENT_RULES.md`
-4. Run linting and formatting before committing
-
-## 📄 License
-
-This project is open source and available under the MIT License.
-
-## � Documentation
-
-- [CHANGELOG.md](./CHANGELOG.md) - Detailed changelog of all changes
-- [TODO.md](./TODO.md) - AI agent task tracking
-- [AI_AGENT_RULES.md](./AI_AGENT_RULES.md) - Guidelines for AI agents
-
----
-
-**Built with ❤️ for modern construction project management**
+- The Roshal storefront and admin CMS flow are implemented in the root app.
+- Temporary manual verification is in place for wallet payments and can be managed from `/dashboard/payments` and `/dashboard/orders`.
+- AamarPay is the active live gateway abstraction for `card`, `bkash`, `nagad`, `rocket`, and `upay` when its merchant credentials are configured.
+- Gateway-mode checkout currently falls back to manual admin follow-up for any payment option whose live gateway path is not configured yet.
+- The local env files now point at the real `roshal-organic` Turso database instead of the old Quadra database.
+- `.env.production` now expects your final live domain in `BETTER_AUTH_URL` and `NEXT_PUBLIC_APP_URL`; those should match the actual deployed Roshal storefront URL before go-live.
+- Checkout is now server-authoritative: the client submits delivery/payment details plus product ids and quantities, while the server recomputes order items, subtotal, delivery, and total from live product/payment settings.
+- Inventory is now transactionally updated with orders, so product stock is reserved at checkout time and restored if an order is later cancelled from the dashboard.
+- Roshal admin pages now perform admin checks in the page layer as well as the shared dashboard layout, matching the safer Next.js authorization pattern for App Router pages.
+- Global toast feedback is now mounted in the root app shell, so checkout, login, dashboard settings, and media-upload actions all surface visible status/error messages.
+- Public storefront routes now bypass the auth proxy entirely, which removes unnecessary session lookups from `/`, `/about`, `/products`, and other public pages.
+- Public metadata is now aligned to Roshal Organic instead of the old Quadra identity, including sitemap and robots output for live marketing/product routes.
+- Real production gateway credentials and the final production domain still need to be provisioned per environment before go-live.

@@ -86,9 +86,9 @@ export function DashboardLayout({
         }
         organization={
           organization || {
-            name: "Quadra Workspace",
-            email: "workspace@quadra.local",
-            avatar: "/evilrabbit.png",
+            name: "Roshal Organic",
+            email: "info@roshalorganic.com",
+            avatar: "/logo.png",
           }
         }
       />

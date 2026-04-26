@@ -47,6 +47,7 @@ export const CardContainer = ({
           perspective: "1000px",
         }}
       >
+        {/* biome-ignore lint/a11y/noStaticElementInteractions: This wrapper only tracks pointer movement for a decorative 3D tilt effect. */}
         <div
           ref={containerRef}
           onMouseEnter={handleMouseEnter}
@@ -112,18 +113,25 @@ export const CardItem = ({
   const ref = useRef<HTMLDivElement>(null);
   const [isMouseEntered] = useMouseEnter();
 
-  const handleAnimations = () => {
+  useEffect(() => {
     if (!ref.current) return;
+
     if (isMouseEntered) {
       ref.current.style.transform = `translateX(${translateX}px) translateY(${translateY}px) translateZ(${translateZ}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg)`;
-    } else {
-      ref.current.style.transform = `translateX(0px) translateY(0px) translateZ(0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)`;
+      return;
     }
-  };
 
-  useEffect(() => {
-    handleAnimations();
-  }, [isMouseEntered]);
+    ref.current.style.transform =
+      "translateX(0px) translateY(0px) translateZ(0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg)";
+  }, [
+    isMouseEntered,
+    rotateX,
+    rotateY,
+    rotateZ,
+    translateX,
+    translateY,
+    translateZ,
+  ]);
 
   return (
     <Tag

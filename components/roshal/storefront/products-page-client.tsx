@@ -1,0 +1,229 @@
+"use client";
+
+import { Search } from "lucide-react";
+import { useDeferredValue, useState } from "react";
+import { RoshalProductCard } from "@/components/roshal/storefront/product-card";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { getLocalizedValue } from "@/lib/roshal/locale";
+import type { RoshalLocale, RoshalProduct } from "@/lib/roshal/types";
+
+type ProductSortKey = "featured" | "price-low" | "price-high" | "name";
+
+function normalizeSearchValue(value: string) {
+  return value.trim().toLocaleLowerCase();
+}
+
+export function ProductsPageClient({
+  locale,
+  products,
+}: {
+  locale: RoshalLocale;
+  products: RoshalProduct[];
+}) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [sortKey, setSortKey] = useState<ProductSortKey>("featured");
+  const deferredSearchQuery = useDeferredValue(searchQuery);
+  const normalizedQuery = normalizeSearchValue(deferredSearchQuery);
+  const categoryOptions = [
+    {
+      key: "all",
+      label: locale === "bn" ? "সব ক্যাটাগরি" : "All categories",
+    },
+    ...Array.from(
+      new Map(
+        products.map((product) => [
+          product.categoryKey,
+          getLocalizedValue(locale, product.categoryLabel),
+        ]),
+      ),
+    ).map(([key, label]) => ({ key, label })),
+  ];
+
+  const filteredProducts = products
+    .filter((product) => {
+      if (activeCategory !== "all" && product.categoryKey !== activeCategory) {
+        return false;
+      }
+
+      if (!normalizedQuery) {
+        return true;
+      }
+
+      const haystack = [
+        product.name.bn,
+        product.name.en,
+        product.summary.bn,
+        product.summary.en,
+        product.categoryLabel.bn,
+        product.categoryLabel.en,
+      ]
+        .join(" ")
+        .toLocaleLowerCase();
+
+      return haystack.includes(normalizedQuery);
+    })
+    .slice()
+    .sort((left, right) => {
+      if (sortKey === "price-low") {
+        return left.price - right.price;
+      }
+
+      if (sortKey === "price-high") {
+        return right.price - left.price;
+      }
+
+      if (sortKey === "name") {
+        return getLocalizedValue(locale, left.name).localeCompare(
+          getLocalizedValue(locale, right.name),
+          locale === "en" ? "en" : "bn",
+        );
+      }
+
+      if (left.isFeatured !== right.isFeatured) {
+        return left.isFeatured ? -1 : 1;
+      }
+
+      return left.sortOrder - right.sortOrder;
+    });
+
+  return (
+    <div className="container mx-auto space-y-8 px-4 py-10">
+      <Card className="overflow-hidden border-border/70 bg-gradient-to-br from-background via-background to-muted/50">
+        <CardContent className="space-y-5 p-8">
+          <p className="text-xs uppercase tracking-[0.24em] text-primary">
+            {locale === "bn" ? "স্টোরফ্রন্ট" : "Storefront"}
+          </p>
+          <div className="space-y-3">
+            <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
+              {locale === "bn"
+                ? "Roshal Organic এর পণ্যসমূহ"
+                : "Products from Roshal Organic"}
+            </h1>
+            <p className="max-w-3xl text-base leading-7 text-muted-foreground">
+              {locale === "bn"
+                ? "মধু, ঘি, গুড়, তেল, ফল এবং আরও অনেক খাঁটি ও প্রাকৃতিক পণ্য এক জায়গায়।"
+                : "Pure honey, ghee, jaggery, oils, fruits, and more natural essentials in one place."}
+            </p>
+          </div>
+
+          <div className="grid gap-3 lg:grid-cols-[1fr,14rem]">
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder={
+                  locale === "bn"
+                    ? "পণ্য, ক্যাটাগরি বা সারাংশ খুঁজুন"
+                    : "Search products, categories, or summaries"
+                }
+                className="pl-9"
+              />
+            </div>
+            <Select
+              value={sortKey}
+              onValueChange={(value) => setSortKey(value as ProductSortKey)}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="featured">
+                  {locale === "bn" ? "ফিচারড আগে" : "Featured first"}
+                </SelectItem>
+                <SelectItem value="price-low">
+                  {locale === "bn" ? "কম দাম আগে" : "Price: low to high"}
+                </SelectItem>
+                <SelectItem value="price-high">
+                  {locale === "bn" ? "বেশি দাম আগে" : "Price: high to low"}
+                </SelectItem>
+                <SelectItem value="name">
+                  {locale === "bn" ? "নাম অনুযায়ী" : "Name"}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            {categoryOptions.map((category) => (
+              <Button
+                key={category.key}
+                type="button"
+                variant={
+                  activeCategory === category.key ? "default" : "outline"
+                }
+                size="sm"
+                onClick={() => setActiveCategory(category.key)}
+              >
+                {category.label}
+              </Button>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-sm text-muted-foreground">
+          {locale === "bn"
+            ? `${filteredProducts.length}টি পণ্য পাওয়া গেছে`
+            : `${filteredProducts.length} products found`}
+        </p>
+        <p className="text-sm text-muted-foreground">
+          {locale === "bn"
+            ? activeCategory === "all"
+              ? "সব ক্যাটাগরি"
+              : "নির্বাচিত ক্যাটাগরি"
+            : activeCategory === "all"
+              ? "Showing all categories"
+              : "Filtered by category"}
+        </p>
+      </div>
+
+      {filteredProducts.length === 0 ? (
+        <Card className="border-dashed border-border/70">
+          <CardContent className="space-y-3 p-8 text-center">
+            <h2 className="text-2xl font-semibold tracking-tight">
+              {locale === "bn" ? "মিল পাওয়া যায়নি" : "No matching products found"}
+            </h2>
+            <p className="text-sm leading-6 text-muted-foreground">
+              {locale === "bn"
+                ? "ফিল্টার পরিবর্তন করুন অথবা অন্য কিওয়ার্ড দিয়ে খুঁজুন।"
+                : "Change the filters or search with a different keyword."}
+            </p>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setSearchQuery("");
+                setActiveCategory("all");
+                setSortKey("featured");
+              }}
+            >
+              {locale === "bn" ? "ফিল্টার রিসেট" : "Reset filters"}
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {filteredProducts.map((product) => (
+            <RoshalProductCard
+              key={product.id}
+              product={product}
+              locale={locale}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}

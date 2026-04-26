@@ -1,0 +1,20 @@
+{
+  "name": "Roshal Organic - খাঁটি স্বাদের আসল ঠিকানা",
+  "short_name": "Roshal Organic",
+  "description": "খাঁটি স্বাদের আসল ঠিকানা - ১০০% প্রাকৃতিক ও অর্গানিক খাদ্য ব্র্যান্ড",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "display": "standalone"
+}

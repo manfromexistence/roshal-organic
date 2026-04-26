@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { createClient } from "@libsql/client";
 import { config } from "dotenv";
@@ -12,21 +12,22 @@ const client = createClient({
 });
 
 async function runMigration() {
-  const migrationPath = join(
-    process.cwd(),
-    "drizzle",
-    "0002_wide_forgotten_one.sql",
-  );
-  const sql = readFileSync(migrationPath, "utf-8");
+  const drizzleDir = join(process.cwd(), "drizzle");
+  const migrationFiles = readdirSync(drizzleDir)
+    .filter((file) => /^\d+_.+\.sql$/.test(file))
+    .sort();
 
-  // Split by statement breakpoint and execute each statement
-  const statements = sql
-    .split("--> statement-breakpoint")
-    .map((s) => s.trim())
-    .filter((s) => s);
+  for (const migrationFile of migrationFiles) {
+    const migrationPath = join(drizzleDir, migrationFile);
+    const sql = readFileSync(migrationPath, "utf-8");
+    const statements = sql
+      .split("--> statement-breakpoint")
+      .map((statement) => statement.trim())
+      .filter(Boolean);
 
-  for (const statement of statements) {
-    if (statement) {
+    console.log(`Running ${migrationFile}...`);
+
+    for (const statement of statements) {
       try {
         await client.execute(statement);
         console.log("Executed statement successfully");
@@ -37,7 +38,7 @@ async function runMigration() {
     }
   }
 
-  console.log("Migration completed");
+  console.log("All migrations completed");
 }
 
 runMigration().catch(console.error);

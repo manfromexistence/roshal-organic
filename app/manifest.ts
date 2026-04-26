@@ -2,21 +2,22 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Quadra EDMS",
-    short_name: "Quadra",
-    description: "Electronic Document Management System",
+    name: "Roshal Organic",
+    short_name: "Roshal",
+    description:
+      "Roshal Organic storefront for pure honey, ghee, jaggery, seasonal fruits, and natural foods.",
     start_url: "/",
     display: "standalone",
-    background_color: "#ffffff",
-    theme_color: "#000000",
+    background_color: "#f8f7f2",
+    theme_color: "#1f3d2d",
     icons: [
       {
-        src: "/icon-192.png",
+        src: "/android-chrome-192x192.png",
         sizes: "192x192",
         type: "image/png",
       },
       {
-        src: "/icon-512.png",
+        src: "/android-chrome-512x512.png",
         sizes: "512x512",
         type: "image/png",
       },

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NavMain } from "@/components/nav-main";
 import { NavOrganization } from "@/components/nav-organization";
 import { NavSecondary } from "@/components/nav-secondary";
@@ -48,42 +48,6 @@ export function AppSidebar({
 }: AppSidebarProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [scrollRestored, setScrollRestored] = useState(false);
-  const [logoColor, setLogoColor] = useState("bg-sidebar-primary");
-
-  const colors = useMemo(
-    () => [
-      "bg-red-500",
-      "bg-orange-500",
-      "bg-amber-500",
-      "bg-yellow-500",
-      "bg-lime-500",
-      "bg-green-500",
-      "bg-emerald-500",
-      "bg-teal-500",
-      "bg-cyan-500",
-      "bg-sky-500",
-      "bg-blue-500",
-      "bg-indigo-500",
-      "bg-violet-500",
-      "bg-purple-500",
-      "bg-fuchsia-500",
-      "bg-pink-500",
-      "bg-rose-500",
-    ],
-    [],
-  );
-
-  const changeLogoColor = useCallback(() => {
-    const randomColor = colors[Math.floor(Math.random() * colors.length)];
-    setLogoColor(randomColor);
-  }, [colors]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      changeLogoColor();
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [changeLogoColor]);
 
   useEffect(() => {
     const element = scrollRef.current;
@@ -117,38 +81,20 @@ export function AppSidebar({
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link
-                href="/projects"
-                onMouseOver={changeLogoColor}
-                onClick={changeLogoColor}
-              >
-                <div
-                  className={`flex aspect-square size-8 items-center justify-center overflow-hidden rounded-lg bg-background text-sidebar-primary-foreground transition-colors duration-1000 ${logoColor}`}
-                >
+              <Link href="/dashboard">
+                <div className="flex aspect-square size-8 items-center justify-center overflow-hidden rounded-lg border border-sidebar-border bg-sidebar-accent text-sidebar-accent-foreground">
                   <Image
-                    src="/logo-light.svg"
-                    alt="Quadra EDMS Demo"
-                    width={16}
-                    height={16}
+                    src="/logo.png"
+                    alt="Roshal Organic"
+                    width={24}
+                    height={24}
                     priority
-                    className="h-auto w-auto dark:hidden"
-                  />
-                  <Image
-                    src="/logo-dark.svg"
-                    alt="Quadra EDMS Demo"
-                    width={16}
-                    height={16}
-                    priority
-                    className="hidden h-auto w-auto dark:block"
+                    className="h-6 w-auto"
                   />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
-                  <span className="truncate font-semibold">
-                    Quadra EDMS Demo
-                  </span>
-                  <span className="truncate text-xs">
-                    Electronic Document Management System
-                  </span>
+                  <span className="truncate font-semibold">Roshal Organic</span>
+                  <span className="truncate text-xs">Storefront CMS</span>
                 </div>
               </Link>
             </SidebarMenuButton>
@@ -186,9 +132,9 @@ export function AppSidebar({
         <NavOrganization
           organization={
             organization || {
-              name: "Quadra Workspace",
-              email: "workspace@quadra.local",
-              avatar: "/evilrabbit.png",
+              name: "Roshal Organic",
+              email: "info@roshalorganic.com",
+              avatar: "/logo.png",
             }
           }
         />

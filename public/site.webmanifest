@@ -1,6 +1,7 @@
 {
-  "name": "Quadra EDMS",
-  "short_name": "Quadra",
+  "name": "Roshal Organic",
+  "short_name": "Roshal",
+  "description": "Roshal Organic storefront for pure honey, ghee, jaggery, seasonal fruits, and natural foods.",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
@@ -13,7 +14,7 @@
       "type": "image/png"
     }
   ],
-  "theme_color": "#09090b",
-  "background_color": "#09090b",
+  "theme_color": "#1f3d2d",
+  "background_color": "#f8f7f2",
   "display": "standalone"
 }

@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "header": "Project Alpha",
+    "type": "Engineering",
+    "status": "Active",
+    "target": "2024-12-31",
+    "limit": "100000",
+    "reviewer": "John Doe"
+  },
+  {
+    "id": 2,
+    "header": "Project Beta",
+    "type": "Design",
+    "status": "Pending",
+    "target": "2025-01-15",
+    "limit": "50000",
+    "reviewer": "Jane Smith"
+  },
+  {
+    "id": 3,
+    "header": "Project Gamma",
+    "type": "Marketing",
+    "status": "Completed",
+    "target": "2024-11-30",
+    "limit": "75000",
+    "reviewer": "Bob Johnson"
+  },
+  {
+    "id": 4,
+    "header": "Project Delta",
+    "type": "Engineering",
+    "status": "Active",
+    "target": "2025-02-28",
+    "limit": "120000",
+    "reviewer": "Alice Williams"
+  },
+  {
+    "id": 5,
+    "header": "Project Epsilon",
+    "type": "Research",
+    "status": "Pending",
+    "target": "2025-03-15",
+    "limit": "80000",
+    "reviewer": "Charlie Brown"
+  }
+]

@@ -9,10 +9,14 @@ import {
   minutesOfMeeting,
   projects,
   rfis,
+  roshalOrders,
+  roshalPages,
+  roshalProducts,
   siteTechQueries,
   submittals,
   technicalQueries,
   transmittals,
+  users,
 } from "@/lib/schema";
 
 export interface BreadcrumbRouteConfig {
@@ -71,6 +75,25 @@ export const BREADCRUMB_ROUTE_MAPPING: Record<string, BreadcrumbRouteConfig> = {
     table: changeOrders,
     field: "changeOrderNumber",
   },
+  orders: {
+    table: roshalOrders,
+    field: "orderNumber",
+  },
+  pages: {
+    table: roshalPages,
+    field: "titleEn",
+    fallbackField: "slug",
+  },
+  products: {
+    table: roshalProducts,
+    field: "nameEn",
+    fallbackField: "sku",
+  },
+  users: {
+    table: users,
+    field: "name",
+    fallbackField: "email",
+  },
 };
 
 export async function getBreadcrumbTitle(
@@ -81,8 +104,16 @@ export async function getBreadcrumbTitle(
   if (!config) return null;
 
   try {
+    const selectShape: Record<string, unknown> = {
+      [config.field]: config.table[config.field],
+    };
+    if (config.fallbackField) {
+      selectShape[config.fallbackField] = config.table[config.fallbackField];
+    }
+
     const result = await db
-      .select({ [config.field]: config.table[config.field] })
+      // biome-ignore lint/suspicious/noExplicitAny: Dynamic select shape is intentional here.
+      .select(selectShape as any)
       .from(config.table)
       .where(eq(config.table.id, id))
       .limit(1);
@@ -90,7 +121,16 @@ export async function getBreadcrumbTitle(
     if (result.length === 0) return null;
 
     const value = result[0][config.field];
-    return value ? String(value) : null;
+    if (value) {
+      return String(value);
+    }
+
+    if (config.fallbackField) {
+      const fallbackValue = result[0][config.fallbackField];
+      return fallbackValue ? String(fallbackValue) : null;
+    }
+
+    return null;
   } catch (error) {
     console.error(`Error fetching breadcrumb title for ${route}/${id}:`, error);
     return null;

@@ -6,7 +6,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { SearchCommand } from "@/components/edms/search-command";
-import { NotificationBell } from "@/components/notification-bell";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Breadcrumb,
@@ -137,7 +136,7 @@ function AvatarDropdown({
 
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
-            <Link href="/admin/users">
+            <Link href="/profile">
               <User className="mr-2 size-4" />
               Profile
             </Link>
@@ -186,18 +185,23 @@ export function SiteHeader({ user }: SiteHeaderProps) {
 
   // Generate breadcrumb items from pathname
   const breadcrumbItems: BreadcrumbItemData[] = useMemo(() => {
-    const pathSegments = pathname
+    const dashboardPath = pathname.startsWith("/dashboard")
+      ? pathname.slice("/dashboard".length) || "/"
+      : pathname;
+
+    const pathSegments = dashboardPath
       .replace(/^\//, "")
       .split("/")
       .filter(
         (segment) =>
           segment !== "[locale]" &&
           segment !== "(app)" &&
-          segment !== "(sidebar)",
+          segment !== "(sidebar)" &&
+          segment !== "dashboard",
       );
 
     return pathSegments.map((segment, index) => {
-      const path = `/${pathSegments.slice(0, index + 1).join("/")}`;
+      const path = `/dashboard/${pathSegments.slice(0, index + 1).join("/")}`;
       const isLast = index === pathSegments.length - 1;
       const title = getRouteName(path);
 
@@ -280,7 +284,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
-                  <BreadcrumbLink href="/">Dashboard</BreadcrumbLink>
+                  <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
                 </BreadcrumbItem>
                 {breadcrumbItems.map((item) => {
                   const displayTitle =
@@ -314,7 +318,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
               <span className="flex min-w-0 items-center gap-2">
                 <Search className="size-4 shrink-0" />
                 <span className="truncate text-sm">
-                  Search pages, places, and records...
+                  Search products, orders, and pages...
                 </span>
               </span>
               <span className="shrink-0 rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
@@ -342,10 +346,6 @@ export function SiteHeader({ user }: SiteHeaderProps) {
               </Button>
             )}
 
-            {/* Notification bell */}
-            <NotificationBell notifications={[]} unreadCount={0} />
-
-            {/* User avatar dropdown */}
             {user ? (
               <AvatarDropdown user={user} />
             ) : (

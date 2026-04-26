@@ -1,0 +1,2075 @@
+$ next dev
+⨯ ./lib/roshal/i18n.ts:1:1
+You're importing a module that depends on "next/headers". This API is only available in Server Components in the App Router, but you are using it in the Pages Router.
+    Learn more: https://nextjs.org/docs/app/building-your-application/rendering/server-components
+[31m[1m>[0m [90m1 |[0m [36mimport[0m { cookies } [36mfrom[0m [32m"next/headers"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m2 |[0m [36mimport[0m [36mtype[0m { [33mLocalizedValue[0m, [33mRoshalLocale[0m } [36mfrom[0m [32m"./types"[0m;
+  [90m3 |[0m
+  [90m4 |[0m [36mexport[0m [36mconst[0m [33mROSHAL_LOCALE_COOKIE[0m = [32m"roshal-locale"[0m;
+
+Ecmascript file had an error
+
+Import traces:
+  #1 [Server Component]:
+    ./lib/roshal/i18n.ts
+    ./app/(marketing)/layout.tsx
+
+  #2 [Server Component]:
+    ./lib/roshal/i18n.ts
+    ./app/(marketing)/page.tsx
+
+  #3 [Client Component Browser]:
+    ./lib/roshal/i18n.ts [Client Component Browser]
+    ./components/roshal/storefront/storefront-header.tsx [Client Component Browser]
+    ./components/roshal/storefront/storefront-header.tsx [Server Component]
+    ./app/(marketing)/layout.tsx [Server Component]
+
+  #4 [Client Component SSR]:
+    ./lib/roshal/i18n.ts [Client Component SSR]
+    ./components/roshal/storefront/storefront-header.tsx [Client Component SSR]
+    ./components/roshal/storefront/storefront-header.tsx [Server Component]
+    ./app/(marketing)/layout.tsx [Server Component]
+
+
+[browser] Uncaught Error: ./lib/roshal/i18n.ts:1:1
+You're importing a module that depends on "next/headers". This API is only available in Server Components in the App Router, but you are using it in the Pages Router.
+    Learn more: https://nextjs.org/docs/app/building-your-application/rendering/server-components
+> 1 | import { cookies } from "next/headers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  2 | import type { LocalizedValue, RoshalLocale } from "./types";
+  3 |
+  4 | export const ROSHAL_LOCALE_COOKIE = "roshal-locale";
+
+Ecmascript file had an error
+
+Import traces:
+  #1 [Server Component]:
+    ./lib/roshal/i18n.ts
+    ./app/(marketing)/layout.tsx
+
+  #2 [Server Component]:
+    ./lib/roshal/i18n.ts
+    ./app/(marketing)/page.tsx
+
+  #3 [Client Component Browser]:
+    ./lib/roshal/i18n.ts [Client Component Browser]
+    ./components/roshal/storefront/storefront-header.tsx [Client Component Browser]
+    ./components/roshal/storefront/storefront-header.tsx [Server Component]
+    ./app/(marketing)/layout.tsx [Server Component]
+
+  #4 [Client Component SSR]:
+    ./lib/roshal/i18n.ts [Client Component SSR]
+    ./components/roshal/storefront/storefront-header.tsx [Client Component SSR]
+    ./components/roshal/storefront/storefront-header.tsx [Server Component]
+    ./app/(marketing)/layout.tsx [Server Component]
+
+
+    at <unknown> (Error: ./lib/roshal/i18n.ts:1:1)
+    at <unknown> (Error: (./lib/roshal/i18n.ts:1:1)
+[browser] ./lib/roshal/i18n.ts:1:1
+You're importing a module that depends on "next/headers". This API is only available in Server Components in the App Router, but you are using it in the Pages Router.
+    Learn more: https://nextjs.org/docs/app/building-your-application/rendering/server-components
+> 1 | import { cookies } from "next/headers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  2 | import type { LocalizedValue, RoshalLocale } from "./types";
+  3 |
+  4 | export const ROSHAL_LOCALE_COOKIE = "roshal-locale";
+
+Ecmascript file had an error
+
+Import traces:
+  #1 [Server Component]:
+    ./lib/roshal/i18n.ts
+    ./app/(marketing)/layout.tsx
+
+  #2 [Server Component]:
+    ./lib/roshal/i18n.ts
+    ./app/(marketing)/page.tsx
+
+  #3 [Client Component Browser]:
+    ./lib/roshal/i18n.ts [Client Component Browser]
+    ./components/roshal/storefront/storefront-header.tsx [Client Component Browser]
+    ./components/roshal/storefront/storefront-header.tsx [Server Component]
+    ./app/(marketing)/layout.tsx [Server Component]
+
+  #4 [Client Component SSR]:
+    ./lib/roshal/i18n.ts [Client Component SSR]
+    ./components/roshal/storefront/storefront-header.tsx [Client Component SSR]
+    ./components/roshal/storefront/storefront-header.tsx [Server Component]
+    ./app/(marketing)/layout.tsx [Server Component] 
+[browser] ./lib/roshal/i18n.ts:1:1
+You're importing a module that depends on "next/headers". This API is only available in Server Components in the App Router, but you are using it in the Pages Router.
+    Learn more: https://nextjs.org/docs/app/building-your-application/rendering/server-components
+> 1 | import { cookies } from "next/headers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  2 | import type { LocalizedValue, RoshalLocale } from "./types";
+  3 |
+  4 | export const ROSHAL_LOCALE_COOKIE = "roshal-locale";
+
+Ecmascript file had an error
+
+Import traces:
+  #1 [Server Component]:
+    ./lib/roshal/i18n.ts
+    ./app/(marketing)/layout.tsx
+
+  #2 [Server Component]:
+    ./lib/roshal/i18n.ts
+    ./app/(marketing)/page.tsx
+
+  #3 [Client Component Browser]:
+    ./lib/roshal/i18n.ts [Client Component Browser]
+    ./components/roshal/storefront/storefront-header.tsx [Client Component Browser]
+    ./components/roshal/storefront/storefront-header.tsx [Server Component]
+    ./app/(marketing)/layout.tsx [Server Component]
+
+  #4 [Client Component SSR]:
+    ./lib/roshal/i18n.ts [Client Component SSR]
+    ./components/roshal/storefront/storefront-header.tsx [Client Component SSR]
+    ./components/roshal/storefront/storefront-header.tsx [Server Component]
+    ./app/(marketing)/layout.tsx [Server Component] 
+[browser] ./lib/roshal/i18n.ts:1:1
+You're importing a module that depends on "next/headers". This API is only available in Server Components in the App Router, but you are using it in the Pages Router.
+    Learn more: https://nextjs.org/docs/app/building-your-application/rendering/server-components
+> 1 | import { cookies } from "next/headers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  2 | import type { LocalizedValue, RoshalLocale } from "./types";
+  3 |
+  4 | export const ROSHAL_LOCALE_COOKIE = "roshal-locale";
+
+Ecmascript file had an error
+
+Import traces:
+  #1 [Server Component]:
+    ./lib/roshal/i18n.ts
+    ./app/(marketing)/layout.tsx
+
+  #2 [Server Component]:
+    ./lib/roshal/i18n.ts
+    ./app/(marketing)/page.tsx
+
+  #3 [Client Component Browser]:
+    ./lib/roshal/i18n.ts [Client Component Browser]
+    ./components/roshal/storefront/storefront-header.tsx [Client Component Browser]
+    ./components/roshal/storefront/storefront-header.tsx [Server Component]
+    ./app/(marketing)/layout.tsx [Server Component]
+
+  #4 [Client Component SSR]:
+    ./lib/roshal/i18n.ts [Client Component SSR]
+    ./components/roshal/storefront/storefront-header.tsx [Client Component SSR]
+    ./components/roshal/storefront/storefront-header.tsx [Server Component]
+    ./app/(marketing)/layout.tsx [Server Component] 
+⨯ ./lib/roshal/i18n.ts:1:1
+You're importing a module that depends on "next/headers". This API is only available in Server Components in the App Router, but you are using it in the Pages Router.
+    Learn more: https://nextjs.org/docs/app/building-your-application/rendering/server-components
+[31m[1m>[0m [90m1 |[0m [36mimport[0m { cookies } [36mfrom[0m [32m"next/headers"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m2 |[0m [36mimport[0m [36mtype[0m { [33mLocalizedValue[0m, [33mRoshalLocale[0m } [36mfrom[0m [32m"./types"[0m;
+  [90m3 |[0m
+  [90m4 |[0m [36mexport[0m [36mconst[0m [33mROSHAL_LOCALE_COOKIE[0m = [32m"roshal-locale"[0m;
+
+Ecmascript file had an error
+
+Import traces:
+  #1 [Server Component]:
+    ./lib/roshal/i18n.ts
+    ./app/(marketing)/layout.tsx
+
+  #2 [Server Component]:
+    ./lib/roshal/i18n.ts
+    ./app/(marketing)/page.tsx
+
+  #3 [Client Component Browser]:
+    ./lib/roshal/i18n.ts [Client Component Browser]
+    ./components/roshal/storefront/storefront-header.tsx [Client Component Browser]
+    ./components/roshal/storefront/storefront-header.tsx [Server Component]
+    ./app/(marketing)/layout.tsx [Server Component]
+
+  #4 [Client Component SSR]:
+    ./lib/roshal/i18n.ts [Client Component SSR]
+    ./components/roshal/storefront/storefront-header.tsx [Client Component SSR]
+    ./components/roshal/storefront/storefront-header.tsx [Server Component]
+    ./app/(marketing)/layout.tsx [Server Component]
+
+
+[browser] Uncaught Error: ./lib/roshal/i18n.ts:1:1
+You're importing a module that depends on "next/headers". This API is only available in Server Components in the App Router, but you are using it in the Pages Router.
+    Learn more: https://nextjs.org/docs/app/building-your-application/rendering/server-components
+> 1 | import { cookies } from "next/headers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  2 | import type { LocalizedValue, RoshalLocale } from "./types";
+  3 |
+  4 | export const ROSHAL_LOCALE_COOKIE = "roshal-locale";
+
+Ecmascript file had an error
+
+Import traces:
+  #1 [Server Component]:
+    ./lib/roshal/i18n.ts
+    ./app/(marketing)/layout.tsx
+
+  #2 [Server Component]:
+    ./lib/roshal/i18n.ts
+    ./app/(marketing)/page.tsx
+
+  #3 [Client Component Browser]:
+    ./lib/roshal/i18n.ts [Client Component Browser]
+    ./components/roshal/storefront/storefront-header.tsx [Client Component Browser]
+    ./components/roshal/storefront/storefront-header.tsx [Server Component]
+    ./app/(marketing)/layout.tsx [Server Component]
+
+  #4 [Client Component SSR]:
+    ./lib/roshal/i18n.ts [Client Component SSR]
+    ./components/roshal/storefront/storefront-header.tsx [Client Component SSR]
+    ./components/roshal/storefront/storefront-header.tsx [Server Component]
+    ./app/(marketing)/layout.tsx [Server Component]
+
+
+    at <unknown> (Error: ./lib/roshal/i18n.ts:1:1)
+    at <unknown> (Error: (./lib/roshal/i18n.ts:1:1)
+[browser] ./lib/roshal/i18n.ts:1:1
+You're importing a module that depends on "next/headers". This API is only available in Server Components in the App Router, but you are using it in the Pages Router.
+    Learn more: https://nextjs.org/docs/app/building-your-application/rendering/server-components
+> 1 | import { cookies } from "next/headers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  2 | import type { LocalizedValue, RoshalLocale } from "./types";
+  3 |
+  4 | export const ROSHAL_LOCALE_COOKIE = "roshal-locale";
+
+Ecmascript file had an error
+
+Import traces:
+  #1 [Server Component]:
+    ./lib/roshal/i18n.ts
+    ./app/(marketing)/layout.tsx
+
+  #2 [Server Component]:
+    ./lib/roshal/i18n.ts
+    ./app/(marketing)/page.tsx
+
+  #3 [Client Component Browser]:
+    ./lib/roshal/i18n.ts [Client Component Browser]
+    ./components/roshal/storefront/storefront-header.tsx [Client Component Browser]
+    ./components/roshal/storefront/storefront-header.tsx [Server Component]
+    ./app/(marketing)/layout.tsx [Server Component]
+
+  #4 [Client Component SSR]:
+    ./lib/roshal/i18n.ts [Client Component SSR]
+    ./components/roshal/storefront/storefront-header.tsx [Client Component SSR]
+    ./components/roshal/storefront/storefront-header.tsx [Server Component]
+    ./app/(marketing)/layout.tsx [Server Component] 
+[browser] ./lib/roshal/i18n.ts:1:1
+You're importing a module that depends on "next/headers". This API is only available in Server Components in the App Router, but you are using it in the Pages Router.
+    Learn more: https://nextjs.org/docs/app/building-your-application/rendering/server-components
+> 1 | import { cookies } from "next/headers";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  2 | import type { LocalizedValue, RoshalLocale } from "./types";
+  3 |
+  4 | export const ROSHAL_LOCALE_COOKIE = "roshal-locale";
+
+Ecmascript file had an error
+
+Import traces:
+  #1 [Server Component]:
+    ./lib/roshal/i18n.ts
+    ./app/(marketing)/layout.tsx
+
+  #2 [Server Component]:
+    ./lib/roshal/i18n.ts
+    ./app/(marketing)/page.tsx
+
+  #3 [Client Component Browser]:
+    ./lib/roshal/i18n.ts [Client Component Browser]
+    ./components/roshal/storefront/storefront-header.tsx [Client Component Browser]
+    ./components/roshal/storefront/storefront-header.tsx [Server Component]
+    ./app/(marketing)/layout.tsx [Server Component]
+
+  #4 [Client Component SSR]:
+    ./lib/roshal/i18n.ts [Client Component SSR]
+    ./components/roshal/storefront/storefront-header.tsx [Client Component SSR]
+    ./components/roshal/storefront/storefront-header.tsx [Server Component]
+    ./app/(marketing)/layout.tsx [Server Component] 
+[browser] ./components/roshal/storefront/marketing-page-view.tsx:5:1
+Export getLocalizedValue doesn't exist in target module
+  3 | import { RoshalSectionRenderer } from "@/components/roshal/storefront/section-renderer";
+  4 | import { Button } from "@/components/ui/button";
+> 5 | import { getLocalizedValue } from "@/lib/roshal/i18n";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import type {
+  7 |   RoshalLocale,
+  8 |   RoshalMarketingPage,
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/marketing-page-view.tsx
+    ./app/(marketing)/page.tsx 
+[browser] ./components/roshal/storefront/product-card.tsx:13:1
+Export getLocalizedValue doesn't exist in target module
+  11 | } from "@/components/ui/card";
+  12 | import { formatBdt } from "@/lib/roshal/format";
+> 13 | import { getLocalizedValue } from "@/lib/roshal/i18n";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import type { RoshalLocale, RoshalProduct } from "@/lib/roshal/types";
+  15 |
+  16 | export function RoshalProductCard({
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/product-card.tsx
+    ./components/roshal/storefront/section-renderer.tsx
+    ./components/roshal/storefront/marketing-page-view.tsx
+    ./app/(marketing)/page.tsx 
+[browser] ./components/roshal/storefront/section-renderer.tsx:6:1
+Export getLocalizedValue doesn't exist in target module
+  4 | import { Button } from "@/components/ui/button";
+  5 | import { Card, CardContent } from "@/components/ui/card";
+> 6 | import { getLocalizedValue } from "@/lib/roshal/i18n";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import type {
+  8 |   RoshalLocale,
+  9 |   RoshalMarketingSection,
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/section-renderer.tsx
+    ./components/roshal/storefront/marketing-page-view.tsx
+    ./app/(marketing)/page.tsx 
+[browser] ./components/roshal/storefront/storefront-footer.tsx:2:1
+Export getLocalizedValue doesn't exist in target module
+  1 | import Link from "next/link";
+> 2 | import { getLocalizedValue } from "@/lib/roshal/i18n";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 | import type {
+  4 |   RoshalLocale,
+  5 |   RoshalMarketingPage,
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/storefront-footer.tsx
+    ./app/(marketing)/layout.tsx 
+⨯ ./components/roshal/storefront/marketing-page-view.tsx:5:1
+Export getLocalizedValue doesn't exist in target module
+  [90m3 |[0m [36mimport[0m { [33mRoshalSectionRenderer[0m } [36mfrom[0m [32m"@/components/roshal/storefront/section-renderer"[0m;
+  [90m4 |[0m [36mimport[0m { [33mButton[0m } [36mfrom[0m [32m"@/components/ui/button"[0m;
+[31m[1m>[0m [90m5 |[0m [36mimport[0m { getLocalizedValue } [36mfrom[0m [32m"@/lib/roshal/i18n"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m6 |[0m [36mimport[0m [36mtype[0m {
+  [90m7 |[0m   [33mRoshalLocale[0m,
+  [90m8 |[0m   [33mRoshalMarketingPage[0m,
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/marketing-page-view.tsx
+    ./app/(marketing)/page.tsx
+
+
+
+./components/roshal/storefront/product-card.tsx:13:1
+Export getLocalizedValue doesn't exist in target module
+  [90m11 |[0m } [36mfrom[0m [32m"@/components/ui/card"[0m;
+  [90m12 |[0m [36mimport[0m { formatBdt } [36mfrom[0m [32m"@/lib/roshal/format"[0m;
+[31m[1m>[0m [90m13 |[0m [36mimport[0m { getLocalizedValue } [36mfrom[0m [32m"@/lib/roshal/i18n"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m14 |[0m [36mimport[0m [36mtype[0m { [33mRoshalLocale[0m, [33mRoshalProduct[0m } [36mfrom[0m [32m"@/lib/roshal/types"[0m;
+  [90m15 |[0m
+  [90m16 |[0m [36mexport[0m [36mfunction[0m [33mRoshalProductCard[0m({
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/product-card.tsx
+    ./components/roshal/storefront/section-renderer.tsx
+    ./components/roshal/storefront/marketing-page-view.tsx
+    ./app/(marketing)/page.tsx
+
+
+
+./components/roshal/storefront/section-renderer.tsx:6:1
+Export getLocalizedValue doesn't exist in target module
+  [90m4 |[0m [36mimport[0m { [33mButton[0m } [36mfrom[0m [32m"@/components/ui/button"[0m;
+  [90m5 |[0m [36mimport[0m { [33mCard[0m, [33mCardContent[0m } [36mfrom[0m [32m"@/components/ui/card"[0m;
+[31m[1m>[0m [90m6 |[0m [36mimport[0m { getLocalizedValue } [36mfrom[0m [32m"@/lib/roshal/i18n"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m {
+  [90m8 |[0m   [33mRoshalLocale[0m,
+  [90m9 |[0m   [33mRoshalMarketingSection[0m,
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/section-renderer.tsx
+    ./components/roshal/storefront/marketing-page-view.tsx
+    ./app/(marketing)/page.tsx
+
+
+
+./components/roshal/storefront/storefront-footer.tsx:2:1
+Export getLocalizedValue doesn't exist in target module
+  [90m1 |[0m [36mimport[0m [33mLink[0m [36mfrom[0m [32m"next/link"[0m;
+[31m[1m>[0m [90m2 |[0m [36mimport[0m { getLocalizedValue } [36mfrom[0m [32m"@/lib/roshal/i18n"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m3 |[0m [36mimport[0m [36mtype[0m {
+  [90m4 |[0m   [33mRoshalLocale[0m,
+  [90m5 |[0m   [33mRoshalMarketingPage[0m,
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/storefront-footer.tsx
+    ./app/(marketing)/layout.tsx
+
+
+[browser] ./components/roshal/storefront/marketing-page-view.tsx:5:1
+Export getLocalizedValue doesn't exist in target module
+  3 | import { RoshalSectionRenderer } from "@/components/roshal/storefront/section-renderer";
+  4 | import { Button } from "@/components/ui/button";
+> 5 | import { getLocalizedValue } from "@/lib/roshal/i18n";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import type {
+  7 |   RoshalLocale,
+  8 |   RoshalMarketingPage,
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/marketing-page-view.tsx
+    ./app/(marketing)/page.tsx 
+[browser] ./components/roshal/storefront/product-card.tsx:13:1
+Export getLocalizedValue doesn't exist in target module
+  11 | } from "@/components/ui/card";
+  12 | import { formatBdt } from "@/lib/roshal/format";
+> 13 | import { getLocalizedValue } from "@/lib/roshal/i18n";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import type { RoshalLocale, RoshalProduct } from "@/lib/roshal/types";
+  15 |
+  16 | export function RoshalProductCard({
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/product-card.tsx
+    ./components/roshal/storefront/section-renderer.tsx
+    ./components/roshal/storefront/marketing-page-view.tsx
+    ./app/(marketing)/page.tsx 
+[browser] ./components/roshal/storefront/section-renderer.tsx:6:1
+Export getLocalizedValue doesn't exist in target module
+  4 | import { Button } from "@/components/ui/button";
+  5 | import { Card, CardContent } from "@/components/ui/card";
+> 6 | import { getLocalizedValue } from "@/lib/roshal/i18n";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import type {
+  8 |   RoshalLocale,
+  9 |   RoshalMarketingSection,
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/section-renderer.tsx
+    ./components/roshal/storefront/marketing-page-view.tsx
+    ./app/(marketing)/page.tsx 
+[browser] ./components/roshal/storefront/storefront-footer.tsx:2:1
+Export getLocalizedValue doesn't exist in target module
+  1 | import Link from "next/link";
+> 2 | import { getLocalizedValue } from "@/lib/roshal/i18n";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 | import type {
+  4 |   RoshalLocale,
+  5 |   RoshalMarketingPage,
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/storefront-footer.tsx
+    ./app/(marketing)/layout.tsx 
+[browser] Uncaught Error: ./components/roshal/storefront/marketing-page-view.tsx:5:1
+Export getLocalizedValue doesn't exist in target module
+  3 | import { RoshalSectionRenderer } from "@/components/roshal/storefront/section-renderer";
+  4 | import { Button } from "@/components/ui/button";
+> 5 | import { getLocalizedValue } from "@/lib/roshal/i18n";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import type {
+  7 |   RoshalLocale,
+  8 |   RoshalMarketingPage,
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/marketing-page-view.tsx
+    ./app/(marketing)/page.tsx
+
+
+    at <unknown> (Error: ./components/roshal/storefront/marketing-page-view.tsx:5:1)
+    at <unknown> (Error: (./components/roshal/storefront/marketing-page-view.tsx:5:1)
+[browser] ./components/roshal/storefront/marketing-page-view.tsx:5:1
+Export getLocalizedValue doesn't exist in target module
+  3 | import { RoshalSectionRenderer } from "@/components/roshal/storefront/section-renderer";
+  4 | import { Button } from "@/components/ui/button";
+> 5 | import { getLocalizedValue } from "@/lib/roshal/i18n";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import type {
+  7 |   RoshalLocale,
+  8 |   RoshalMarketingPage,
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/marketing-page-view.tsx
+    ./app/(marketing)/page.tsx 
+[browser] ./components/roshal/storefront/product-card.tsx:13:1
+Export getLocalizedValue doesn't exist in target module
+  11 | } from "@/components/ui/card";
+  12 | import { formatBdt } from "@/lib/roshal/format";
+> 13 | import { getLocalizedValue } from "@/lib/roshal/i18n";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import type { RoshalLocale, RoshalProduct } from "@/lib/roshal/types";
+  15 |
+  16 | export function RoshalProductCard({
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/product-card.tsx
+    ./components/roshal/storefront/section-renderer.tsx
+    ./components/roshal/storefront/marketing-page-view.tsx
+    ./app/(marketing)/page.tsx 
+[browser] ./components/roshal/storefront/section-renderer.tsx:6:1
+Export getLocalizedValue doesn't exist in target module
+  4 | import { Button } from "@/components/ui/button";
+  5 | import { Card, CardContent } from "@/components/ui/card";
+> 6 | import { getLocalizedValue } from "@/lib/roshal/i18n";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import type {
+  8 |   RoshalLocale,
+  9 |   RoshalMarketingSection,
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/section-renderer.tsx
+    ./components/roshal/storefront/marketing-page-view.tsx
+    ./app/(marketing)/page.tsx 
+[browser] ./components/roshal/storefront/storefront-footer.tsx:2:1
+Export getLocalizedValue doesn't exist in target module
+  1 | import Link from "next/link";
+> 2 | import { getLocalizedValue } from "@/lib/roshal/i18n";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 | import type {
+  4 |   RoshalLocale,
+  5 |   RoshalMarketingPage,
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/storefront-footer.tsx
+    ./app/(marketing)/layout.tsx 
+[browser] ./components/roshal/storefront/marketing-page-view.tsx:5:1
+Export getLocalizedValue doesn't exist in target module
+  3 | import { RoshalSectionRenderer } from "@/components/roshal/storefront/section-renderer";
+  4 | import { Button } from "@/components/ui/button";
+> 5 | import { getLocalizedValue } from "@/lib/roshal/i18n";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import type {
+  7 |   RoshalLocale,
+  8 |   RoshalMarketingPage,
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/marketing-page-view.tsx
+    ./app/(marketing)/page.tsx 
+[browser] ./components/roshal/storefront/product-card.tsx:13:1
+Export getLocalizedValue doesn't exist in target module
+  11 | } from "@/components/ui/card";
+  12 | import { formatBdt } from "@/lib/roshal/format";
+> 13 | import { getLocalizedValue } from "@/lib/roshal/i18n";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import type { RoshalLocale, RoshalProduct } from "@/lib/roshal/types";
+  15 |
+  16 | export function RoshalProductCard({
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/product-card.tsx
+    ./components/roshal/storefront/section-renderer.tsx
+    ./components/roshal/storefront/marketing-page-view.tsx
+    ./app/(marketing)/page.tsx 
+[browser] ./components/roshal/storefront/section-renderer.tsx:6:1
+Export getLocalizedValue doesn't exist in target module
+  4 | import { Button } from "@/components/ui/button";
+  5 | import { Card, CardContent } from "@/components/ui/card";
+> 6 | import { getLocalizedValue } from "@/lib/roshal/i18n";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import type {
+  8 |   RoshalLocale,
+  9 |   RoshalMarketingSection,
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/section-renderer.tsx
+    ./components/roshal/storefront/marketing-page-view.tsx
+    ./app/(marketing)/page.tsx 
+[browser] ./components/roshal/storefront/storefront-footer.tsx:2:1
+Export getLocalizedValue doesn't exist in target module
+  1 | import Link from "next/link";
+> 2 | import { getLocalizedValue } from "@/lib/roshal/i18n";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 | import type {
+  4 |   RoshalLocale,
+  5 |   RoshalMarketingPage,
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/storefront-footer.tsx
+    ./app/(marketing)/layout.tsx 
+⨯ ./components/roshal/storefront/marketing-page-view.tsx:5:1
+Export getLocalizedValue doesn't exist in target module
+  [90m3 |[0m [36mimport[0m { [33mRoshalSectionRenderer[0m } [36mfrom[0m [32m"@/components/roshal/storefront/section-renderer"[0m;
+  [90m4 |[0m [36mimport[0m { [33mButton[0m } [36mfrom[0m [32m"@/components/ui/button"[0m;
+[31m[1m>[0m [90m5 |[0m [36mimport[0m { getLocalizedValue } [36mfrom[0m [32m"@/lib/roshal/i18n"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m6 |[0m [36mimport[0m [36mtype[0m {
+  [90m7 |[0m   [33mRoshalLocale[0m,
+  [90m8 |[0m   [33mRoshalMarketingPage[0m,
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/marketing-page-view.tsx
+    ./app/(marketing)/page.tsx
+
+
+
+./components/roshal/storefront/product-card.tsx:13:1
+Export getLocalizedValue doesn't exist in target module
+  [90m11 |[0m } [36mfrom[0m [32m"@/components/ui/card"[0m;
+  [90m12 |[0m [36mimport[0m { formatBdt } [36mfrom[0m [32m"@/lib/roshal/format"[0m;
+[31m[1m>[0m [90m13 |[0m [36mimport[0m { getLocalizedValue } [36mfrom[0m [32m"@/lib/roshal/i18n"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m14 |[0m [36mimport[0m [36mtype[0m { [33mRoshalLocale[0m, [33mRoshalProduct[0m } [36mfrom[0m [32m"@/lib/roshal/types"[0m;
+  [90m15 |[0m
+  [90m16 |[0m [36mexport[0m [36mfunction[0m [33mRoshalProductCard[0m({
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/product-card.tsx
+    ./components/roshal/storefront/section-renderer.tsx
+    ./components/roshal/storefront/marketing-page-view.tsx
+    ./app/(marketing)/page.tsx
+
+
+
+./components/roshal/storefront/section-renderer.tsx:6:1
+Export getLocalizedValue doesn't exist in target module
+  [90m4 |[0m [36mimport[0m { [33mButton[0m } [36mfrom[0m [32m"@/components/ui/button"[0m;
+  [90m5 |[0m [36mimport[0m { [33mCard[0m, [33mCardContent[0m } [36mfrom[0m [32m"@/components/ui/card"[0m;
+[31m[1m>[0m [90m6 |[0m [36mimport[0m { getLocalizedValue } [36mfrom[0m [32m"@/lib/roshal/i18n"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m7 |[0m [36mimport[0m [36mtype[0m {
+  [90m8 |[0m   [33mRoshalLocale[0m,
+  [90m9 |[0m   [33mRoshalMarketingSection[0m,
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/section-renderer.tsx
+    ./components/roshal/storefront/marketing-page-view.tsx
+    ./app/(marketing)/page.tsx
+
+
+
+./components/roshal/storefront/storefront-footer.tsx:2:1
+Export getLocalizedValue doesn't exist in target module
+  [90m1 |[0m [36mimport[0m [33mLink[0m [36mfrom[0m [32m"next/link"[0m;
+[31m[1m>[0m [90m2 |[0m [36mimport[0m { getLocalizedValue } [36mfrom[0m [32m"@/lib/roshal/i18n"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m3 |[0m [36mimport[0m [36mtype[0m {
+  [90m4 |[0m   [33mRoshalLocale[0m,
+  [90m5 |[0m   [33mRoshalMarketingPage[0m,
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/storefront-footer.tsx
+    ./app/(marketing)/layout.tsx
+
+
+[browser] Uncaught Error: ./components/roshal/storefront/marketing-page-view.tsx:5:1
+Export getLocalizedValue doesn't exist in target module
+  3 | import { RoshalSectionRenderer } from "@/components/roshal/storefront/section-renderer";
+  4 | import { Button } from "@/components/ui/button";
+> 5 | import { getLocalizedValue } from "@/lib/roshal/i18n";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import type {
+  7 |   RoshalLocale,
+  8 |   RoshalMarketingPage,
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/marketing-page-view.tsx
+    ./app/(marketing)/page.tsx
+
+
+    at <unknown> (Error: ./components/roshal/storefront/marketing-page-view.tsx:5:1)
+    at <unknown> (Error: (./components/roshal/storefront/marketing-page-view.tsx:5:1)
+[browser] ./components/roshal/storefront/marketing-page-view.tsx:5:1
+Export getLocalizedValue doesn't exist in target module
+  3 | import { RoshalSectionRenderer } from "@/components/roshal/storefront/section-renderer";
+  4 | import { Button } from "@/components/ui/button";
+> 5 | import { getLocalizedValue } from "@/lib/roshal/i18n";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import type {
+  7 |   RoshalLocale,
+  8 |   RoshalMarketingPage,
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/marketing-page-view.tsx
+    ./app/(marketing)/page.tsx 
+[browser] ./components/roshal/storefront/product-card.tsx:13:1
+Export getLocalizedValue doesn't exist in target module
+  11 | } from "@/components/ui/card";
+  12 | import { formatBdt } from "@/lib/roshal/format";
+> 13 | import { getLocalizedValue } from "@/lib/roshal/i18n";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import type { RoshalLocale, RoshalProduct } from "@/lib/roshal/types";
+  15 |
+  16 | export function RoshalProductCard({
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/product-card.tsx
+    ./components/roshal/storefront/section-renderer.tsx
+    ./components/roshal/storefront/marketing-page-view.tsx
+    ./app/(marketing)/page.tsx 
+[browser] ./components/roshal/storefront/section-renderer.tsx:6:1
+Export getLocalizedValue doesn't exist in target module
+  4 | import { Button } from "@/components/ui/button";
+  5 | import { Card, CardContent } from "@/components/ui/card";
+> 6 | import { getLocalizedValue } from "@/lib/roshal/i18n";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import type {
+  8 |   RoshalLocale,
+  9 |   RoshalMarketingSection,
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/section-renderer.tsx
+    ./components/roshal/storefront/marketing-page-view.tsx
+    ./app/(marketing)/page.tsx 
+[browser] ./components/roshal/storefront/storefront-footer.tsx:2:1
+Export getLocalizedValue doesn't exist in target module
+  1 | import Link from "next/link";
+> 2 | import { getLocalizedValue } from "@/lib/roshal/i18n";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 | import type {
+  4 |   RoshalLocale,
+  5 |   RoshalMarketingPage,
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/storefront-footer.tsx
+    ./app/(marketing)/layout.tsx 
+[browser] ./components/roshal/storefront/marketing-page-view.tsx:5:1
+Export getLocalizedValue doesn't exist in target module
+  3 | import { RoshalSectionRenderer } from "@/components/roshal/storefront/section-renderer";
+  4 | import { Button } from "@/components/ui/button";
+> 5 | import { getLocalizedValue } from "@/lib/roshal/i18n";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  6 | import type {
+  7 |   RoshalLocale,
+  8 |   RoshalMarketingPage,
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/marketing-page-view.tsx
+    ./app/(marketing)/page.tsx 
+[browser] ./components/roshal/storefront/product-card.tsx:13:1
+Export getLocalizedValue doesn't exist in target module
+  11 | } from "@/components/ui/card";
+  12 | import { formatBdt } from "@/lib/roshal/format";
+> 13 | import { getLocalizedValue } from "@/lib/roshal/i18n";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  14 | import type { RoshalLocale, RoshalProduct } from "@/lib/roshal/types";
+  15 |
+  16 | export function RoshalProductCard({
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/product-card.tsx
+    ./components/roshal/storefront/section-renderer.tsx
+    ./components/roshal/storefront/marketing-page-view.tsx
+    ./app/(marketing)/page.tsx 
+[browser] ./components/roshal/storefront/section-renderer.tsx:6:1
+Export getLocalizedValue doesn't exist in target module
+  4 | import { Button } from "@/components/ui/button";
+  5 | import { Card, CardContent } from "@/components/ui/card";
+> 6 | import { getLocalizedValue } from "@/lib/roshal/i18n";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  7 | import type {
+  8 |   RoshalLocale,
+  9 |   RoshalMarketingSection,
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/section-renderer.tsx
+    ./components/roshal/storefront/marketing-page-view.tsx
+    ./app/(marketing)/page.tsx 
+[browser] ./components/roshal/storefront/storefront-footer.tsx:2:1
+Export getLocalizedValue doesn't exist in target module
+  1 | import Link from "next/link";
+> 2 | import { getLocalizedValue } from "@/lib/roshal/i18n";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  3 | import type {
+  4 |   RoshalLocale,
+  5 |   RoshalMarketingPage,
+
+The export getLocalizedValue was not found in module [project]/lib/roshal/i18n.ts [app-rsc] (ecmascript).
+Did you mean to import getRoshalLocale?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/storefront-footer.tsx
+    ./app/(marketing)/layout.tsx 
+[browser] Image with src "/organic-benefits.jpg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/honey-2.jpg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/honey-2.jpg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+⚠ Fast Refresh had to perform a full reload when ./node_modules/next/dist/client/image-component.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+⨯ ./components/roshal/storefront/cart-page-client.tsx:17:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m15 |[0m } [36mfrom[0m [32m"@/components/ui/card"[0m;
+  [90m16 |[0m [36mimport[0m { formatBdt } [36mfrom[0m [32m"@/lib/roshal/format"[0m;
+[31m[1m>[0m [90m17 |[0m [36mimport[0m { [33mROSHAL_STANDARD_SHIPPING_FEE[0m } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m18 |[0m [36mimport[0m [36mtype[0m { [33mRoshalLocale[0m, [33mRoshalProduct[0m } [36mfrom[0m [32m"@/lib/roshal/types"[0m;
+  [90m19 |[0m [36mimport[0m { useCartStore } [36mfrom[0m [32m"@/store/cart-store"[0m;
+  [90m20 |[0m
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/cart-page-client.tsx
+    ./app/(marketing)/cart/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./components/roshal/storefront/cart-page-client.tsx:17:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m15 |[0m } [36mfrom[0m [32m"@/components/ui/card"[0m;
+  [90m16 |[0m [36mimport[0m { formatBdt } [36mfrom[0m [32m"@/lib/roshal/format"[0m;
+[31m[1m>[0m [90m17 |[0m [36mimport[0m { [33mROSHAL_STANDARD_SHIPPING_FEE[0m } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m18 |[0m [36mimport[0m [36mtype[0m { [33mRoshalLocale[0m, [33mRoshalProduct[0m } [36mfrom[0m [32m"@/lib/roshal/types"[0m;
+  [90m19 |[0m [36mimport[0m { useCartStore } [36mfrom[0m [32m"@/store/cart-store"[0m;
+  [90m20 |[0m
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/cart-page-client.tsx
+    ./app/(marketing)/cart/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./components/roshal/storefront/cart-page-client.tsx:17:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m15 |[0m } [36mfrom[0m [32m"@/components/ui/card"[0m;
+  [90m16 |[0m [36mimport[0m { formatBdt } [36mfrom[0m [32m"@/lib/roshal/format"[0m;
+[31m[1m>[0m [90m17 |[0m [36mimport[0m { [33mROSHAL_STANDARD_SHIPPING_FEE[0m } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m18 |[0m [36mimport[0m [36mtype[0m { [33mRoshalLocale[0m, [33mRoshalProduct[0m } [36mfrom[0m [32m"@/lib/roshal/types"[0m;
+  [90m19 |[0m [36mimport[0m { useCartStore } [36mfrom[0m [32m"@/store/cart-store"[0m;
+  [90m20 |[0m
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/cart-page-client.tsx
+    ./app/(marketing)/cart/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./components/roshal/storefront/cart-page-client.tsx:17:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m15 |[0m } [36mfrom[0m [32m"@/components/ui/card"[0m;
+  [90m16 |[0m [36mimport[0m { formatBdt } [36mfrom[0m [32m"@/lib/roshal/format"[0m;
+[31m[1m>[0m [90m17 |[0m [36mimport[0m { [33mROSHAL_STANDARD_SHIPPING_FEE[0m } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m18 |[0m [36mimport[0m [36mtype[0m { [33mRoshalLocale[0m, [33mRoshalProduct[0m } [36mfrom[0m [32m"@/lib/roshal/types"[0m;
+  [90m19 |[0m [36mimport[0m { useCartStore } [36mfrom[0m [32m"@/store/cart-store"[0m;
+  [90m20 |[0m
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/cart-page-client.tsx
+    ./app/(marketing)/cart/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./components/roshal/storefront/checkout-page-client.tsx:23:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m21 |[0m [36mimport[0m { formatBdt } [36mfrom[0m [32m"@/lib/roshal/format"[0m;
+  [90m22 |[0m [36mimport[0m { getLocalizedValue } [36mfrom[0m [32m"@/lib/roshal/locale"[0m;
+[31m[1m>[0m [90m23 |[0m [36mimport[0m {
+  [90m   |[0m [31m[1m^^^^^^^[0m
+[31m[1m>[0m [90m24 |[0m   getRoshalPaymentMethodLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m25 |[0m   [33mROSHAL_STANDARD_SHIPPING_FEE[0m,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m26 |[0m } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m27 |[0m [36mimport[0m [36mtype[0m {
+  [90m28 |[0m   [33mRoshalLocale[0m,
+  [90m29 |[0m   [33mRoshalPaymentGatewaySummary[0m,
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./components/roshal/storefront/checkout-page-client.tsx:23:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m21 |[0m [36mimport[0m { formatBdt } [36mfrom[0m [32m"@/lib/roshal/format"[0m;
+  [90m22 |[0m [36mimport[0m { getLocalizedValue } [36mfrom[0m [32m"@/lib/roshal/locale"[0m;
+[31m[1m>[0m [90m23 |[0m [36mimport[0m {
+  [90m   |[0m [31m[1m^^^^^^^[0m
+[31m[1m>[0m [90m24 |[0m   getRoshalPaymentMethodLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m25 |[0m   [33mROSHAL_STANDARD_SHIPPING_FEE[0m,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m26 |[0m } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m27 |[0m [36mimport[0m [36mtype[0m {
+  [90m28 |[0m   [33mRoshalLocale[0m,
+  [90m29 |[0m   [33mRoshalPaymentGatewaySummary[0m,
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./components/roshal/storefront/checkout-page-client.tsx:23:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m21 |[0m [36mimport[0m { formatBdt } [36mfrom[0m [32m"@/lib/roshal/format"[0m;
+  [90m22 |[0m [36mimport[0m { getLocalizedValue } [36mfrom[0m [32m"@/lib/roshal/locale"[0m;
+[31m[1m>[0m [90m23 |[0m [36mimport[0m {
+  [90m   |[0m [31m[1m^^^^^^^[0m
+[31m[1m>[0m [90m24 |[0m   getRoshalPaymentMethodLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m25 |[0m   [33mROSHAL_STANDARD_SHIPPING_FEE[0m,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m26 |[0m } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m27 |[0m [36mimport[0m [36mtype[0m {
+  [90m28 |[0m   [33mRoshalLocale[0m,
+  [90m29 |[0m   [33mRoshalPaymentGatewaySummary[0m,
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./components/roshal/storefront/checkout-page-client.tsx:23:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m21 |[0m [36mimport[0m { formatBdt } [36mfrom[0m [32m"@/lib/roshal/format"[0m;
+  [90m22 |[0m [36mimport[0m { getLocalizedValue } [36mfrom[0m [32m"@/lib/roshal/locale"[0m;
+[31m[1m>[0m [90m23 |[0m [36mimport[0m {
+  [90m   |[0m [31m[1m^^^^^^^[0m
+[31m[1m>[0m [90m24 |[0m   getRoshalPaymentMethodLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m25 |[0m   [33mROSHAL_STANDARD_SHIPPING_FEE[0m,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m26 |[0m } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m27 |[0m [36mimport[0m [36mtype[0m {
+  [90m28 |[0m   [33mRoshalLocale[0m,
+  [90m29 |[0m   [33mRoshalPaymentGatewaySummary[0m,
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./components/roshal/storefront/checkout-page-client.tsx:23:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m21 |[0m [36mimport[0m { formatBdt } [36mfrom[0m [32m"@/lib/roshal/format"[0m;
+  [90m22 |[0m [36mimport[0m { getLocalizedValue } [36mfrom[0m [32m"@/lib/roshal/locale"[0m;
+[31m[1m>[0m [90m23 |[0m [36mimport[0m {
+  [90m   |[0m [31m[1m^^^^^^^[0m
+[31m[1m>[0m [90m24 |[0m   getRoshalPaymentMethodLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m25 |[0m   [33mROSHAL_STANDARD_SHIPPING_FEE[0m,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m26 |[0m } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m27 |[0m [36mimport[0m [36mtype[0m {
+  [90m28 |[0m   [33mRoshalLocale[0m,
+  [90m29 |[0m   [33mRoshalPaymentGatewaySummary[0m,
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./components/roshal/storefront/checkout-page-client.tsx:23:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m21 |[0m [36mimport[0m { formatBdt } [36mfrom[0m [32m"@/lib/roshal/format"[0m;
+  [90m22 |[0m [36mimport[0m { getLocalizedValue } [36mfrom[0m [32m"@/lib/roshal/locale"[0m;
+[31m[1m>[0m [90m23 |[0m [36mimport[0m {
+  [90m   |[0m [31m[1m^^^^^^^[0m
+[31m[1m>[0m [90m24 |[0m   getRoshalPaymentMethodLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m25 |[0m   [33mROSHAL_STANDARD_SHIPPING_FEE[0m,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m26 |[0m } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m27 |[0m [36mimport[0m [36mtype[0m {
+  [90m28 |[0m   [33mRoshalLocale[0m,
+  [90m29 |[0m   [33mRoshalPaymentGatewaySummary[0m,
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./components/roshal/storefront/order-tracking-timeline.tsx:3:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m1 |[0m [36mimport[0m { [33mCheckCircle2[0m, [33mCircleDashed[0m, [33mClock3[0m, [33mXCircle[0m } [36mfrom[0m [32m"lucide-react"[0m;
+  [90m2 |[0m [36mimport[0m { getLocalizedValue } [36mfrom[0m [32m"@/lib/roshal/locale"[0m;
+[31m[1m>[0m [90m3 |[0m [36mimport[0m { getRoshalOrderTrackingSteps } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m4 |[0m [36mimport[0m [36mtype[0m { [33mRoshalLocale[0m, [33mRoshalOrder[0m } [36mfrom[0m [32m"@/lib/roshal/types"[0m;
+  [90m5 |[0m
+  [90m6 |[0m [36mexport[0m [36mfunction[0m [33mOrderTrackingTimeline[0m({
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./components/roshal/storefront/order-tracking-timeline.tsx [Client Component Browser]
+    ./components/roshal/storefront/orders-page-client.tsx [Client Component Browser]
+    ./components/roshal/storefront/orders-page-client.tsx [Server Component]
+    ./app/(marketing)/orders/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./components/roshal/storefront/order-tracking-timeline.tsx [Client Component SSR]
+    ./components/roshal/storefront/orders-page-client.tsx [Client Component SSR]
+    ./components/roshal/storefront/orders-page-client.tsx [Server Component]
+    ./app/(marketing)/orders/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./components/roshal/storefront/order-tracking-timeline.tsx:3:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m1 |[0m [36mimport[0m { [33mCheckCircle2[0m, [33mCircleDashed[0m, [33mClock3[0m, [33mXCircle[0m } [36mfrom[0m [32m"lucide-react"[0m;
+  [90m2 |[0m [36mimport[0m { getLocalizedValue } [36mfrom[0m [32m"@/lib/roshal/locale"[0m;
+[31m[1m>[0m [90m3 |[0m [36mimport[0m { getRoshalOrderTrackingSteps } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m4 |[0m [36mimport[0m [36mtype[0m { [33mRoshalLocale[0m, [33mRoshalOrder[0m } [36mfrom[0m [32m"@/lib/roshal/types"[0m;
+  [90m5 |[0m
+  [90m6 |[0m [36mexport[0m [36mfunction[0m [33mOrderTrackingTimeline[0m({
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./components/roshal/storefront/order-tracking-timeline.tsx [Client Component Browser]
+    ./components/roshal/storefront/orders-page-client.tsx [Client Component Browser]
+    ./components/roshal/storefront/orders-page-client.tsx [Server Component]
+    ./app/(marketing)/orders/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./components/roshal/storefront/order-tracking-timeline.tsx [Client Component SSR]
+    ./components/roshal/storefront/orders-page-client.tsx [Client Component SSR]
+    ./components/roshal/storefront/orders-page-client.tsx [Server Component]
+    ./app/(marketing)/orders/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./components/roshal/storefront/order-tracking-timeline.tsx:3:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m1 |[0m [36mimport[0m { [33mCheckCircle2[0m, [33mCircleDashed[0m, [33mClock3[0m, [33mXCircle[0m } [36mfrom[0m [32m"lucide-react"[0m;
+  [90m2 |[0m [36mimport[0m { getLocalizedValue } [36mfrom[0m [32m"@/lib/roshal/locale"[0m;
+[31m[1m>[0m [90m3 |[0m [36mimport[0m { getRoshalOrderTrackingSteps } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m4 |[0m [36mimport[0m [36mtype[0m { [33mRoshalLocale[0m, [33mRoshalOrder[0m } [36mfrom[0m [32m"@/lib/roshal/types"[0m;
+  [90m5 |[0m
+  [90m6 |[0m [36mexport[0m [36mfunction[0m [33mOrderTrackingTimeline[0m({
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./components/roshal/storefront/order-tracking-timeline.tsx [Client Component Browser]
+    ./components/roshal/storefront/orders-page-client.tsx [Client Component Browser]
+    ./components/roshal/storefront/orders-page-client.tsx [Server Component]
+    ./app/(marketing)/orders/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./components/roshal/storefront/order-tracking-timeline.tsx [Client Component SSR]
+    ./components/roshal/storefront/orders-page-client.tsx [Client Component SSR]
+    ./components/roshal/storefront/orders-page-client.tsx [Server Component]
+    ./app/(marketing)/orders/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./components/roshal/storefront/order-tracking-timeline.tsx:3:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m1 |[0m [36mimport[0m { [33mCheckCircle2[0m, [33mCircleDashed[0m, [33mClock3[0m, [33mXCircle[0m } [36mfrom[0m [32m"lucide-react"[0m;
+  [90m2 |[0m [36mimport[0m { getLocalizedValue } [36mfrom[0m [32m"@/lib/roshal/locale"[0m;
+[31m[1m>[0m [90m3 |[0m [36mimport[0m { getRoshalOrderTrackingSteps } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m4 |[0m [36mimport[0m [36mtype[0m { [33mRoshalLocale[0m, [33mRoshalOrder[0m } [36mfrom[0m [32m"@/lib/roshal/types"[0m;
+  [90m5 |[0m
+  [90m6 |[0m [36mexport[0m [36mfunction[0m [33mOrderTrackingTimeline[0m({
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./components/roshal/storefront/order-tracking-timeline.tsx [Client Component Browser]
+    ./components/roshal/storefront/orders-page-client.tsx [Client Component Browser]
+    ./components/roshal/storefront/orders-page-client.tsx [Server Component]
+    ./app/(marketing)/orders/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./components/roshal/storefront/order-tracking-timeline.tsx [Client Component SSR]
+    ./components/roshal/storefront/orders-page-client.tsx [Client Component SSR]
+    ./components/roshal/storefront/orders-page-client.tsx [Server Component]
+    ./app/(marketing)/orders/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./components/roshal/storefront/orders-page-client.tsx:19:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m17 |[0m } [36mfrom[0m [32m"@/components/ui/select"[0m;
+  [90m18 |[0m [36mimport[0m { formatBdt, formatOrderDate } [36mfrom[0m [32m"@/lib/roshal/format"[0m;
+[31m[1m>[0m [90m19 |[0m [36mimport[0m {
+  [90m   |[0m [31m[1m^^^^^^^[0m
+[31m[1m>[0m [90m20 |[0m   getRoshalOrderStatusBadgeVariant,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m21 |[0m   getRoshalOrderStatusLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m22 |[0m   getRoshalPaymentMethodLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m23 |[0m   getRoshalPaymentStatusBadgeVariant,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m24 |[0m   getRoshalPaymentStatusLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m25 |[0m } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m26 |[0m [36mimport[0m [36mtype[0m { [33mRoshalLocale[0m, [33mRoshalOrder[0m } [36mfrom[0m [32m"@/lib/roshal/types"[0m;
+  [90m27 |[0m
+  [90m28 |[0m [36mfunction[0m normalizeSearchValue(value: string) {
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/orders-page-client.tsx
+    ./app/(marketing)/orders/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./components/roshal/storefront/orders-page-client.tsx:19:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m17 |[0m } [36mfrom[0m [32m"@/components/ui/select"[0m;
+  [90m18 |[0m [36mimport[0m { formatBdt, formatOrderDate } [36mfrom[0m [32m"@/lib/roshal/format"[0m;
+[31m[1m>[0m [90m19 |[0m [36mimport[0m {
+  [90m   |[0m [31m[1m^^^^^^^[0m
+[31m[1m>[0m [90m20 |[0m   getRoshalOrderStatusBadgeVariant,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m21 |[0m   getRoshalOrderStatusLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m22 |[0m   getRoshalPaymentMethodLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m23 |[0m   getRoshalPaymentStatusBadgeVariant,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m24 |[0m   getRoshalPaymentStatusLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m25 |[0m } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m26 |[0m [36mimport[0m [36mtype[0m { [33mRoshalLocale[0m, [33mRoshalOrder[0m } [36mfrom[0m [32m"@/lib/roshal/types"[0m;
+  [90m27 |[0m
+  [90m28 |[0m [36mfunction[0m normalizeSearchValue(value: string) {
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/orders-page-client.tsx
+    ./app/(marketing)/orders/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./components/roshal/storefront/orders-page-client.tsx:19:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m17 |[0m } [36mfrom[0m [32m"@/components/ui/select"[0m;
+  [90m18 |[0m [36mimport[0m { formatBdt, formatOrderDate } [36mfrom[0m [32m"@/lib/roshal/format"[0m;
+[31m[1m>[0m [90m19 |[0m [36mimport[0m {
+  [90m   |[0m [31m[1m^^^^^^^[0m
+[31m[1m>[0m [90m20 |[0m   getRoshalOrderStatusBadgeVariant,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m21 |[0m   getRoshalOrderStatusLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m22 |[0m   getRoshalPaymentMethodLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m23 |[0m   getRoshalPaymentStatusBadgeVariant,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m24 |[0m   getRoshalPaymentStatusLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m25 |[0m } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m26 |[0m [36mimport[0m [36mtype[0m { [33mRoshalLocale[0m, [33mRoshalOrder[0m } [36mfrom[0m [32m"@/lib/roshal/types"[0m;
+  [90m27 |[0m
+  [90m28 |[0m [36mfunction[0m normalizeSearchValue(value: string) {
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/orders-page-client.tsx
+    ./app/(marketing)/orders/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./components/roshal/storefront/orders-page-client.tsx:19:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m17 |[0m } [36mfrom[0m [32m"@/components/ui/select"[0m;
+  [90m18 |[0m [36mimport[0m { formatBdt, formatOrderDate } [36mfrom[0m [32m"@/lib/roshal/format"[0m;
+[31m[1m>[0m [90m19 |[0m [36mimport[0m {
+  [90m   |[0m [31m[1m^^^^^^^[0m
+[31m[1m>[0m [90m20 |[0m   getRoshalOrderStatusBadgeVariant,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m21 |[0m   getRoshalOrderStatusLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m22 |[0m   getRoshalPaymentMethodLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m23 |[0m   getRoshalPaymentStatusBadgeVariant,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m24 |[0m   getRoshalPaymentStatusLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m25 |[0m } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m26 |[0m [36mimport[0m [36mtype[0m { [33mRoshalLocale[0m, [33mRoshalOrder[0m } [36mfrom[0m [32m"@/lib/roshal/types"[0m;
+  [90m27 |[0m
+  [90m28 |[0m [36mfunction[0m normalizeSearchValue(value: string) {
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/orders-page-client.tsx
+    ./app/(marketing)/orders/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./components/roshal/storefront/orders-page-client.tsx:19:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m17 |[0m } [36mfrom[0m [32m"@/components/ui/select"[0m;
+  [90m18 |[0m [36mimport[0m { formatBdt, formatOrderDate } [36mfrom[0m [32m"@/lib/roshal/format"[0m;
+[31m[1m>[0m [90m19 |[0m [36mimport[0m {
+  [90m   |[0m [31m[1m^^^^^^^[0m
+[31m[1m>[0m [90m20 |[0m   getRoshalOrderStatusBadgeVariant,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m21 |[0m   getRoshalOrderStatusLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m22 |[0m   getRoshalPaymentMethodLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m23 |[0m   getRoshalPaymentStatusBadgeVariant,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m24 |[0m   getRoshalPaymentStatusLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m25 |[0m } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m26 |[0m [36mimport[0m [36mtype[0m { [33mRoshalLocale[0m, [33mRoshalOrder[0m } [36mfrom[0m [32m"@/lib/roshal/types"[0m;
+  [90m27 |[0m
+  [90m28 |[0m [36mfunction[0m normalizeSearchValue(value: string) {
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/orders-page-client.tsx
+    ./app/(marketing)/orders/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./components/roshal/storefront/orders-page-client.tsx:19:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m17 |[0m } [36mfrom[0m [32m"@/components/ui/select"[0m;
+  [90m18 |[0m [36mimport[0m { formatBdt, formatOrderDate } [36mfrom[0m [32m"@/lib/roshal/format"[0m;
+[31m[1m>[0m [90m19 |[0m [36mimport[0m {
+  [90m   |[0m [31m[1m^^^^^^^[0m
+[31m[1m>[0m [90m20 |[0m   getRoshalOrderStatusBadgeVariant,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m21 |[0m   getRoshalOrderStatusLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m22 |[0m   getRoshalPaymentMethodLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m23 |[0m   getRoshalPaymentStatusBadgeVariant,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m24 |[0m   getRoshalPaymentStatusLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m25 |[0m } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m26 |[0m [36mimport[0m [36mtype[0m { [33mRoshalLocale[0m, [33mRoshalOrder[0m } [36mfrom[0m [32m"@/lib/roshal/types"[0m;
+  [90m27 |[0m
+  [90m28 |[0m [36mfunction[0m normalizeSearchValue(value: string) {
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/orders-page-client.tsx
+    ./app/(marketing)/orders/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./components/roshal/storefront/orders-page-client.tsx:19:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m17 |[0m } [36mfrom[0m [32m"@/components/ui/select"[0m;
+  [90m18 |[0m [36mimport[0m { formatBdt, formatOrderDate } [36mfrom[0m [32m"@/lib/roshal/format"[0m;
+[31m[1m>[0m [90m19 |[0m [36mimport[0m {
+  [90m   |[0m [31m[1m^^^^^^^[0m
+[31m[1m>[0m [90m20 |[0m   getRoshalOrderStatusBadgeVariant,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m21 |[0m   getRoshalOrderStatusLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m22 |[0m   getRoshalPaymentMethodLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m23 |[0m   getRoshalPaymentStatusBadgeVariant,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m24 |[0m   getRoshalPaymentStatusLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m25 |[0m } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m26 |[0m [36mimport[0m [36mtype[0m { [33mRoshalLocale[0m, [33mRoshalOrder[0m } [36mfrom[0m [32m"@/lib/roshal/types"[0m;
+  [90m27 |[0m
+  [90m28 |[0m [36mfunction[0m normalizeSearchValue(value: string) {
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/orders-page-client.tsx
+    ./app/(marketing)/orders/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./components/roshal/storefront/orders-page-client.tsx:19:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m17 |[0m } [36mfrom[0m [32m"@/components/ui/select"[0m;
+  [90m18 |[0m [36mimport[0m { formatBdt, formatOrderDate } [36mfrom[0m [32m"@/lib/roshal/format"[0m;
+[31m[1m>[0m [90m19 |[0m [36mimport[0m {
+  [90m   |[0m [31m[1m^^^^^^^[0m
+[31m[1m>[0m [90m20 |[0m   getRoshalOrderStatusBadgeVariant,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m21 |[0m   getRoshalOrderStatusLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m22 |[0m   getRoshalPaymentMethodLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m23 |[0m   getRoshalPaymentStatusBadgeVariant,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m24 |[0m   getRoshalPaymentStatusLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m25 |[0m } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m26 |[0m [36mimport[0m [36mtype[0m { [33mRoshalLocale[0m, [33mRoshalOrder[0m } [36mfrom[0m [32m"@/lib/roshal/types"[0m;
+  [90m27 |[0m
+  [90m28 |[0m [36mfunction[0m normalizeSearchValue(value: string) {
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/orders-page-client.tsx
+    ./app/(marketing)/orders/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./components/roshal/storefront/orders-page-client.tsx:19:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m17 |[0m } [36mfrom[0m [32m"@/components/ui/select"[0m;
+  [90m18 |[0m [36mimport[0m { formatBdt, formatOrderDate } [36mfrom[0m [32m"@/lib/roshal/format"[0m;
+[31m[1m>[0m [90m19 |[0m [36mimport[0m {
+  [90m   |[0m [31m[1m^^^^^^^[0m
+[31m[1m>[0m [90m20 |[0m   getRoshalOrderStatusBadgeVariant,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m21 |[0m   getRoshalOrderStatusLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m22 |[0m   getRoshalPaymentMethodLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m23 |[0m   getRoshalPaymentStatusBadgeVariant,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m24 |[0m   getRoshalPaymentStatusLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m25 |[0m } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m26 |[0m [36mimport[0m [36mtype[0m { [33mRoshalLocale[0m, [33mRoshalOrder[0m } [36mfrom[0m [32m"@/lib/roshal/types"[0m;
+  [90m27 |[0m
+  [90m28 |[0m [36mfunction[0m normalizeSearchValue(value: string) {
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/orders-page-client.tsx
+    ./app/(marketing)/orders/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./components/roshal/storefront/orders-page-client.tsx:19:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m17 |[0m } [36mfrom[0m [32m"@/components/ui/select"[0m;
+  [90m18 |[0m [36mimport[0m { formatBdt, formatOrderDate } [36mfrom[0m [32m"@/lib/roshal/format"[0m;
+[31m[1m>[0m [90m19 |[0m [36mimport[0m {
+  [90m   |[0m [31m[1m^^^^^^^[0m
+[31m[1m>[0m [90m20 |[0m   getRoshalOrderStatusBadgeVariant,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m21 |[0m   getRoshalOrderStatusLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m22 |[0m   getRoshalPaymentMethodLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m23 |[0m   getRoshalPaymentStatusBadgeVariant,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m24 |[0m   getRoshalPaymentStatusLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m25 |[0m } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m26 |[0m [36mimport[0m [36mtype[0m { [33mRoshalLocale[0m, [33mRoshalOrder[0m } [36mfrom[0m [32m"@/lib/roshal/types"[0m;
+  [90m27 |[0m
+  [90m28 |[0m [36mfunction[0m normalizeSearchValue(value: string) {
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/orders-page-client.tsx
+    ./app/(marketing)/orders/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./components/roshal/storefront/orders-page-client.tsx:19:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m17 |[0m } [36mfrom[0m [32m"@/components/ui/select"[0m;
+  [90m18 |[0m [36mimport[0m { formatBdt, formatOrderDate } [36mfrom[0m [32m"@/lib/roshal/format"[0m;
+[31m[1m>[0m [90m19 |[0m [36mimport[0m {
+  [90m   |[0m [31m[1m^^^^^^^[0m
+[31m[1m>[0m [90m20 |[0m   getRoshalOrderStatusBadgeVariant,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m21 |[0m   getRoshalOrderStatusLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m22 |[0m   getRoshalPaymentMethodLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m23 |[0m   getRoshalPaymentStatusBadgeVariant,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m24 |[0m   getRoshalPaymentStatusLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m25 |[0m } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m26 |[0m [36mimport[0m [36mtype[0m { [33mRoshalLocale[0m, [33mRoshalOrder[0m } [36mfrom[0m [32m"@/lib/roshal/types"[0m;
+  [90m27 |[0m
+  [90m28 |[0m [36mfunction[0m normalizeSearchValue(value: string) {
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/orders-page-client.tsx
+    ./app/(marketing)/orders/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./components/roshal/storefront/orders-page-client.tsx:19:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m17 |[0m } [36mfrom[0m [32m"@/components/ui/select"[0m;
+  [90m18 |[0m [36mimport[0m { formatBdt, formatOrderDate } [36mfrom[0m [32m"@/lib/roshal/format"[0m;
+[31m[1m>[0m [90m19 |[0m [36mimport[0m {
+  [90m   |[0m [31m[1m^^^^^^^[0m
+[31m[1m>[0m [90m20 |[0m   getRoshalOrderStatusBadgeVariant,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m21 |[0m   getRoshalOrderStatusLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m22 |[0m   getRoshalPaymentMethodLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m23 |[0m   getRoshalPaymentStatusBadgeVariant,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m24 |[0m   getRoshalPaymentStatusLabel,
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+[31m[1m>[0m [90m25 |[0m } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m26 |[0m [36mimport[0m [36mtype[0m { [33mRoshalLocale[0m, [33mRoshalOrder[0m } [36mfrom[0m [32m"@/lib/roshal/types"[0m;
+  [90m27 |[0m
+  [90m28 |[0m [36mfunction[0m normalizeSearchValue(value: string) {
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/orders-page-client.tsx
+    ./app/(marketing)/orders/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/dashboard/page.tsx:8:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m 6 |[0m [36mimport[0m { formatBdt, formatOrderDate } [36mfrom[0m [32m"@/lib/roshal/format"[0m;
+  [90m 7 |[0m [36mimport[0m { getRoshalLocale } [36mfrom[0m [32m"@/lib/roshal/i18n"[0m;
+[31m[1m>[0m [90m 8 |[0m [36mimport[0m { getRoshalOrderStatusLabel } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m 9 |[0m
+  [90m10 |[0m [36mexport[0m [36mdefault[0m [36masync[0m [36mfunction[0m [33mDashboardHomePage[0m() {
+  [90m11 |[0m   [36mconst[0m [locale, snapshot] = [36mawait[0m [33mPromise[0m.all([
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./app/dashboard/page.tsx:8:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  [90m 6 |[0m [36mimport[0m { formatBdt, formatOrderDate } [36mfrom[0m [32m"@/lib/roshal/format"[0m;
+  [90m 7 |[0m [36mimport[0m { getRoshalLocale } [36mfrom[0m [32m"@/lib/roshal/i18n"[0m;
+[31m[1m>[0m [90m 8 |[0m [36mimport[0m { getRoshalOrderStatusLabel } [36mfrom[0m [32m"@/lib/roshal/orders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m 9 |[0m
+  [90m10 |[0m [36mexport[0m [36mdefault[0m [36masync[0m [36mfunction[0m [33mDashboardHomePage[0m() {
+  [90m11 |[0m   [36mconst[0m [locale, snapshot] = [36mawait[0m [33mPromise[0m.all([
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./lib/roshal/mutations.ts:21:1
+Module not found: Can't resolve './orders'
+  [90m19 |[0m } [36mfrom[0m [32m"@/lib/schema"[0m;
+  [90m20 |[0m [36mimport[0m { safeJsonParse } [36mfrom[0m [32m"./format"[0m;
+[31m[1m>[0m [90m21 |[0m [36mimport[0m { [33mROSHAL_STANDARD_SHIPPING_FEE[0m } [36mfrom[0m [32m"./orders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m22 |[0m [36mimport[0m [36mtype[0m {
+  [90m23 |[0m   [33mRoshalOrderItem[0m,
+  [90m24 |[0m   [33mRoshalPaymentGatewayProvider[0m,
+
+
+
+Import trace:
+  Server Component:
+    ./lib/roshal/mutations.ts
+    ./actions/roshal-admin.ts
+    ./app/dashboard/payments/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./lib/roshal/mutations.ts:21:1
+Module not found: Can't resolve './orders'
+  [90m19 |[0m } [36mfrom[0m [32m"@/lib/schema"[0m;
+  [90m20 |[0m [36mimport[0m { safeJsonParse } [36mfrom[0m [32m"./format"[0m;
+[31m[1m>[0m [90m21 |[0m [36mimport[0m { [33mROSHAL_STANDARD_SHIPPING_FEE[0m } [36mfrom[0m [32m"./orders"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m22 |[0m [36mimport[0m [36mtype[0m {
+  [90m23 |[0m   [33mRoshalOrderItem[0m,
+  [90m24 |[0m   [33mRoshalPaymentGatewayProvider[0m,
+
+
+
+Import trace:
+  Server Component:
+    ./lib/roshal/mutations.ts
+    ./actions/roshal-admin.ts
+    ./app/dashboard/payments/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+[browser] Uncaught Error: ./components/roshal/storefront/cart-page-client.tsx:17:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  15 | } from "@/components/ui/card";
+  16 | import { formatBdt } from "@/lib/roshal/format";
+> 17 | import { ROSHAL_STANDARD_SHIPPING_FEE } from "@/lib/roshal/orders";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  18 | import type { RoshalLocale, RoshalProduct } from "@/lib/roshal/types";
+  19 | import { useCartStore } from "@/store/cart-store";
+  20 |
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/cart-page-client.tsx
+    ./app/(marketing)/cart/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (Error: ./components/roshal/storefront/cart-page-client.tsx:17:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (Error: (./components/roshal/storefront/cart-page-client.tsx:17:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+[browser] ./components/roshal/storefront/cart-page-client.tsx:17:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  15 | } from "@/components/ui/card";
+  16 | import { formatBdt } from "@/lib/roshal/format";
+> 17 | import { ROSHAL_STANDARD_SHIPPING_FEE } from "@/lib/roshal/orders";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  18 | import type { RoshalLocale, RoshalProduct } from "@/lib/roshal/types";
+  19 | import { useCartStore } from "@/store/cart-store";
+  20 |
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/cart-page-client.tsx
+    ./app/(marketing)/cart/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./components/roshal/storefront/checkout-page-client.tsx:23:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  21 | import { formatBdt } from "@/lib/roshal/format";
+  22 | import { getLocalizedValue } from "@/lib/roshal/locale";
+> 23 | import {
+     | ^^^^^^^
+> 24 |   getRoshalPaymentMethodLabel,
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 25 |   ROSHAL_STANDARD_SHIPPING_FEE,
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 26 | } from "@/lib/roshal/orders";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  27 | import type {
+  28 |   RoshalLocale,
+  29 |   RoshalPaymentGatewaySummary,
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./components/roshal/storefront/order-tracking-timeline.tsx:3:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  1 | import { CheckCircle2, CircleDashed, Clock3, XCircle } from "lucide-react";
+  2 | import { getLocalizedValue } from "@/lib/roshal/locale";
+> 3 | import { getRoshalOrderTrackingSteps } from "@/lib/roshal/orders";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  4 | import type { RoshalLocale, RoshalOrder } from "@/lib/roshal/types";
+  5 |
+  6 | export function OrderTrackingTimeline({
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/roshal/storefront/order-tracking-timeline.tsx [Client Component Browser]
+    ./components/roshal/storefront/orders-page-client.tsx [Client Component Browser]
+    ./components/roshal/storefront/orders-page-client.tsx [Server Component]
+    ./app/(marketing)/orders/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./components/roshal/storefront/order-tracking-timeline.tsx [Client Component SSR]
+    ./components/roshal/storefront/orders-page-client.tsx [Client Component SSR]
+    ./components/roshal/storefront/orders-page-client.tsx [Server Component]
+    ./app/(marketing)/orders/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./components/roshal/storefront/orders-page-client.tsx:19:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  17 | } from "@/components/ui/select";
+  18 | import { formatBdt, formatOrderDate } from "@/lib/roshal/format";
+> 19 | import {
+     | ^^^^^^^
+> 20 |   getRoshalOrderStatusBadgeVariant,
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 21 |   getRoshalOrderStatusLabel,
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 22 |   getRoshalPaymentMethodLabel,
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 23 |   getRoshalPaymentStatusBadgeVariant,
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 24 |   getRoshalPaymentStatusLabel,
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 25 | } from "@/lib/roshal/orders";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  26 | import type { RoshalLocale, RoshalOrder } from "@/lib/roshal/types";
+  27 |
+  28 | function normalizeSearchValue(value: string) {
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/orders-page-client.tsx
+    ./app/(marketing)/orders/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/dashboard/page.tsx:8:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+   6 | import { formatBdt, formatOrderDate } from "@/lib/roshal/format";
+   7 | import { getRoshalLocale } from "@/lib/roshal/i18n";
+>  8 | import { getRoshalOrderStatusLabel } from "@/lib/roshal/orders";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default async function DashboardHomePage() {
+  11 |   const [locale, snapshot] = await Promise.all([
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./lib/roshal/mutations.ts:21:1
+Module not found: Can't resolve './orders'
+  19 | } from "@/lib/schema";
+  20 | import { safeJsonParse } from "./format";
+> 21 | import { ROSHAL_STANDARD_SHIPPING_FEE } from "./orders";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  22 | import type {
+  23 |   RoshalOrderItem,
+  24 |   RoshalPaymentGatewayProvider,
+
+Import trace:
+  Server Component:
+    ./lib/roshal/mutations.ts
+    ./actions/roshal-admin.ts
+    ./app/dashboard/payments/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./components/roshal/storefront/cart-page-client.tsx:17:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  15 | } from "@/components/ui/card";
+  16 | import { formatBdt } from "@/lib/roshal/format";
+> 17 | import { ROSHAL_STANDARD_SHIPPING_FEE } from "@/lib/roshal/orders";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  18 | import type { RoshalLocale, RoshalProduct } from "@/lib/roshal/types";
+  19 | import { useCartStore } from "@/store/cart-store";
+  20 |
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/cart-page-client.tsx
+    ./app/(marketing)/cart/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./components/roshal/storefront/checkout-page-client.tsx:23:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  21 | import { formatBdt } from "@/lib/roshal/format";
+  22 | import { getLocalizedValue } from "@/lib/roshal/locale";
+> 23 | import {
+     | ^^^^^^^
+> 24 |   getRoshalPaymentMethodLabel,
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 25 |   ROSHAL_STANDARD_SHIPPING_FEE,
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 26 | } from "@/lib/roshal/orders";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  27 | import type {
+  28 |   RoshalLocale,
+  29 |   RoshalPaymentGatewaySummary,
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./components/roshal/storefront/order-tracking-timeline.tsx:3:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  1 | import { CheckCircle2, CircleDashed, Clock3, XCircle } from "lucide-react";
+  2 | import { getLocalizedValue } from "@/lib/roshal/locale";
+> 3 | import { getRoshalOrderTrackingSteps } from "@/lib/roshal/orders";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  4 | import type { RoshalLocale, RoshalOrder } from "@/lib/roshal/types";
+  5 |
+  6 | export function OrderTrackingTimeline({
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./components/roshal/storefront/order-tracking-timeline.tsx [Client Component Browser]
+    ./components/roshal/storefront/orders-page-client.tsx [Client Component Browser]
+    ./components/roshal/storefront/orders-page-client.tsx [Server Component]
+    ./app/(marketing)/orders/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./components/roshal/storefront/order-tracking-timeline.tsx [Client Component SSR]
+    ./components/roshal/storefront/orders-page-client.tsx [Client Component SSR]
+    ./components/roshal/storefront/orders-page-client.tsx [Server Component]
+    ./app/(marketing)/orders/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./components/roshal/storefront/orders-page-client.tsx:19:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+  17 | } from "@/components/ui/select";
+  18 | import { formatBdt, formatOrderDate } from "@/lib/roshal/format";
+> 19 | import {
+     | ^^^^^^^
+> 20 |   getRoshalOrderStatusBadgeVariant,
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 21 |   getRoshalOrderStatusLabel,
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 22 |   getRoshalPaymentMethodLabel,
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 23 |   getRoshalPaymentStatusBadgeVariant,
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 24 |   getRoshalPaymentStatusLabel,
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 25 | } from "@/lib/roshal/orders";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  26 | import type { RoshalLocale, RoshalOrder } from "@/lib/roshal/types";
+  27 |
+  28 | function normalizeSearchValue(value: string) {
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+Import trace:
+  Server Component:
+    ./components/roshal/storefront/orders-page-client.tsx
+    ./app/(marketing)/orders/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./app/dashboard/page.tsx:8:1
+Module not found: Can't resolve '@/lib/roshal/orders'
+   6 | import { formatBdt, formatOrderDate } from "@/lib/roshal/format";
+   7 | import { getRoshalLocale } from "@/lib/roshal/i18n";
+>  8 | import { getRoshalOrderStatusLabel } from "@/lib/roshal/orders";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   9 |
+  10 | export default async function DashboardHomePage() {
+  11 |   const [locale, snapshot] = await Promise.all([
+
+Import map: aliased to relative './lib/roshal/orders' inside of [project]/
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./lib/roshal/mutations.ts:21:1
+Module not found: Can't resolve './orders'
+  19 | } from "@/lib/schema";
+  20 | import { safeJsonParse } from "./format";
+> 21 | import { ROSHAL_STANDARD_SHIPPING_FEE } from "./orders";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  22 | import type {
+  23 |   RoshalOrderItem,
+  24 |   RoshalPaymentGatewayProvider,
+
+Import trace:
+  Server Component:
+    ./lib/roshal/mutations.ts
+    ./actions/roshal-admin.ts
+    ./app/dashboard/payments/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found 
+⚠ Fast Refresh had to perform a full reload when ./node_modules/next/dist/client/image-component.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+[browser] Image with src "/honey-2.jpg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/honey-2.jpg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
