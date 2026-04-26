@@ -265,7 +265,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
 
   return (
     <>
-      <header className="fixed top-0 left-[var(--sidebar-width)] right-0 z-40 flex h-(--header-height) shrink-0 items-center gap-0 border-b border-border bg-background/40 bg-clip-padding backdrop-filter backdrop-blur-2xl transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:left-[var(--sidebar-width-icon)]">
+      <header className="fixed top-0 left-0 right-0 z-40 flex h-(--header-height) shrink-0 items-center gap-0 border-b border-border bg-background/40 bg-clip-padding backdrop-filter backdrop-blur-2xl transition-[width,height] ease-linear lg:left-[var(--sidebar-width)] group-has-data-[collapsible=icon]/sidebar-wrapper:lg:left-[var(--sidebar-width-icon)]">
         <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
           <SidebarTrigger className="-ml-1" />
           <Separator

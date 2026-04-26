@@ -177,7 +177,7 @@ export function StorefrontFooter({
             {partnerLogos.map((logo) => (
               <div
                 key={logo.src}
-                className="flex h-10 min-w-24 items-center justify-center rounded-xl border border-border/60 bg-background/70 px-3 py-2"
+                className="flex items-center justify-center rounded-xl border overflow-hidden bg-background/70"
               >
                 <Image
                   src={logo.src}

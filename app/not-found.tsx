@@ -4,9 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Home } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import {
-  FlowerOfLifeSvg,
-} from "@/components/ui/svg-shapes";
+import { FlowerOfLifeSvg } from "@/components/ui/svg-shapes";
 
 export default function NotFound() {
   const handleGoBack = () => {

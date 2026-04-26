@@ -10,7 +10,10 @@ export async function POST(request: NextRequest) {
     }
 
     if (file.size === 0) {
-      return NextResponse.json({ error: "Empty files cannot be uploaded" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Empty files cannot be uploaded" },
+        { status: 400 },
+      );
     }
 
     const catboxFormData = new FormData();

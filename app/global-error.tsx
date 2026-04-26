@@ -3,9 +3,7 @@
 import { motion } from "framer-motion";
 import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  FlowerOfLifeSvg,
-} from "@/components/ui/svg-shapes";
+import { FlowerOfLifeSvg } from "@/components/ui/svg-shapes";
 
 export default function GlobalError({
   error: _error,

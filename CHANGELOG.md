@@ -68,11 +68,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added dynamic title fetching to PageBreadcrumb component - now detects ID segments and fetches entity names from database
 
 ### Changed
+- Changed the storefront quick-category sub-header from a clipped static strip into a measured first-row navigation that moves overflowed items into a shadcn `More` select instead of reintroducing horizontal scrolling
 - Changed the storefront sub-header from a horizontal `ScrollArea` rail into a plain non-scrolling quick-category navigation strip, expanded it with more curated ecommerce filter links, and kept the row free of both custom and native scrollbars
 - Changed the storefront shell to scroll through the shared shadcn `ScrollArea`, including the main marketing layout plus the horizontal category rail and trusted-partner footer rail, so the public site now uses the same scrollbar treatment as the dashboard
 - Changed reusable table rendering to use the shared `ScrollArea` horizontal scrollbar instead of a raw native overflow container, reducing dashboard page spill on narrower widths
 - Changed dashboard user and organization avatars to render as letter-based fallbacks instead of the old template image placeholders
 - Changed the active storefront and dashboard page shells to tighten `min-w-0` containment, smaller mobile-first heading scales, and stickier cart/checkout summaries for better narrow-width behavior
+- Changed the shared dashboard/sidebar loading skeleton to use deterministic widths instead of `Math.random()` so fallback UI stays stable across renders
 - Changed the app from the former Quadra template into the Roshal Organic storefront-first experience, with the public site mounted at `/` and the admin workspace moved under `/dashboard`
 - Changed the live storefront `/` route plus the active marketing header/footer shell to use the copied `marketting` landing experience directly inside the root Roshal app
 - Changed the marketing layout to scope the copied green storefront accent variables to the storefront shell instead of overriding the dashboard theme globally
@@ -186,6 +188,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All linting errors and warnings resolved across the codebase
 
 ### Fixed
+- Fixed the storefront footer partner/payment rail so it no longer renders decorative scrollbars in the live marketing shell
+- Fixed landing-section reveal motion so animations can replay when users scroll back upward through the homepage instead of only firing once on the first downward pass
+- Fixed the shared Catbox upload route to reject empty files, validate the returned file URL, and stop emitting debug `console.log` noise in the live upload path
 - Fixed Roshal product-media normalization so CMS-entered relative image paths are corrected, guide images and section images use valid public-root URLs, and the generated vegetable catalog no longer references the missing `/vegetables/vegetable-76.jpg` file
 - Fixed broken landing, category, product-card, and product-detail image previews caused by invalid public asset paths by routing live product media through a shared Roshal storefront media resolver
 - Fixed the marketing shell so the public storefront now uses the shared `ScrollArea` as the actual viewport-height scroller instead of leaving the browser window to show a native vertical scrollbar beside decorative custom rails
@@ -324,6 +329,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed sessions table to include ipAddress and userAgent fields
 
 ### Removed
+- Removed the remaining root-level placeholder components and dead helper shells that were no longer imported by the live Roshal app, plus the stale internal `hexed/` cleanup notes and unused `public/sw.js` service-worker scaffold
 - Removed the dead legacy Quadra EDMS route tree at `app/(dashboard)` along with its obsolete actions, components, API endpoints, and helper modules after preserving the reusable shared upload/session/search pieces
 - Removed the duplicate legacy `/api/upload/catbox` surface once `/api/upload/files` became the single shared file-upload endpoint
 - Removed the old root-level `marketting` app after transplanting its landing page and shell into the live storefront

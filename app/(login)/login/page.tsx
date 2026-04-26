@@ -47,38 +47,38 @@ export default function LoginPage() {
     try {
       const response = isSignIn
         ? await authClient.signIn.email(
-            {
-              email,
-              password,
-              rememberMe: true,
-              callbackURL,
+          {
+            email,
+            password,
+            rememberMe: true,
+            callbackURL,
+          },
+          {
+            body: {
+              disableRedirect: true,
             },
-            {
-              body: {
-                disableRedirect: true,
-              },
-            },
-          )
+          },
+        )
         : await authClient.signUp.email(
-            {
-              name,
-              email,
-              password,
-              callbackURL,
+          {
+            name,
+            email,
+            password,
+            callbackURL,
+          },
+          {
+            body: {
+              disableRedirect: true,
             },
-            {
-              body: {
-                disableRedirect: true,
-              },
-            },
-          );
+          },
+        );
 
       if (response.error) {
         throw new Error(
           response.error.message ||
-            (isSignIn
-              ? "Could not sign in. Please check your credentials."
-              : "Could not create the account. Please try again."),
+          (isSignIn
+            ? "Could not sign in. Please check your credentials."
+            : "Could not create the account. Please try again."),
         );
       }
 
@@ -120,11 +120,6 @@ export default function LoginPage() {
                     ? "Continue your Roshal account"
                     : "Create your Roshal account"}
                 </CardTitle>
-                <CardDescription className="text-sm leading-6">
-                  {isSignIn
-                    ? "Access your cart, checkout, profile, and order history."
-                    : "Create a customer account for faster checkout and order tracking. Admin access is assigned from the dashboard only."}
-                </CardDescription>
               </div>
 
               <Tabs
@@ -141,13 +136,6 @@ export default function LoginPage() {
               </Tabs>
             </CardHeader>
             <CardContent className="space-y-5">
-              <Alert>
-                <AlertDescription>
-                  Customers can register here. Admin privileges are still
-                  controlled from the Roshal dashboard by an existing admin.
-                </AlertDescription>
-              </Alert>
-
               <form onSubmit={handleSubmit} className="space-y-5">
                 {errorMessage ? (
                   <Alert variant="destructive">

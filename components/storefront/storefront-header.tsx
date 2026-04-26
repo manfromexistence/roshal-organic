@@ -32,7 +32,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { authClient } from "@/lib/auth-client";
 import { getLocalizedValue } from "@/lib/store-locale";
 import type {
@@ -382,6 +386,9 @@ export function StorefrontHeader({
 
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetContent side="right" className="w-72 p-4 pt-0">
+                <SheetTitle className="sr-only">
+                  {locale === "bn" ? "মোবাইল মেনু" : "Mobile Menu"}
+                </SheetTitle>
                 <div className="mt-8 flex flex-col gap-6">
                   <div className="flex items-center gap-2 sm:hidden">
                     <StorefrontThemeToggle />

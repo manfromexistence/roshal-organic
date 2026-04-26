@@ -5,9 +5,7 @@ import { Home, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  FlowerOfLifeSvg,
-} from "@/components/ui/svg-shapes";
+import { FlowerOfLifeSvg } from "@/components/ui/svg-shapes";
 
 export default function ErrorPage({
   error,

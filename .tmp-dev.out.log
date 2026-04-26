@@ -326,3 +326,39 @@
  GET /products 200 in 2.3s (next.js: 8ms, application-code: 2.3s)
  GET /products 200 in 2.9s (next.js: 10ms, application-code: 2.9s)
  GET /products 200 in 2.9s (next.js: 8ms, application-code: 2.9s)
+ GET /products 200 in 3.1s (next.js: 336ms, application-code: 2.8s)
+ GET /cart 200 in 2.2s (next.js: 614ms, application-code: 1556ms)
+✓ Compiled in 348ms
+ GET /cart 200 in 3.0s (next.js: 35ms, application-code: 3.0s)
+ GET /cart 200 in 4.9s (next.js: 192ms, application-code: 4.7s)
+ GET /cart 200 in 5.8s (next.js: 4ms, application-code: 5.8s)
+ GET / 200 in 5.1s (next.js: 694ms, application-code: 4.4s)
+ GET /api/auth/get-session 200 in 850ms (next.js: 243ms, application-code: 607ms)
+ GET /products?category=fruit 200 in 1431ms (next.js: 257ms, application-code: 1174ms)
+ GET /api/auth/get-session 200 in 888ms (next.js: 8ms, application-code: 880ms)
+ GET /dashboard/products 200 in 4.3s (next.js: 392ms, proxy.ts: 2.0s, application-code: 1930ms)
+ GET / 200 in 3.7s (next.js: 67ms, application-code: 3.6s)
+ GET /api/auth/get-session 200 in 1496ms (next.js: 354ms, application-code: 1143ms)
+ GET /dashboard 200 in 5.1s (next.js: 2.2s, proxy.ts: 2.1s, application-code: 759ms)
+ GET /dashboard 200 in 11.0s (next.js: 7ms, proxy.ts: 1790ms, application-code: 9.2s)
+ GET /dashboard 200 in 1853ms (next.js: 9ms, proxy.ts: 1830ms, application-code: 14ms)
+ GET /dashboard 200 in 3.5s (next.js: 36ms, proxy.ts: 1178ms, application-code: 2.2s)
+✓ Compiled in 6.3s
+✓ Compiled in 251ms
+✓ Compiled in 126ms
+ GET / 200 in 5.7s (next.js: 1632ms, application-code: 4.1s)
+ GET /api/auth/get-session 200 in 729ms (next.js: 333ms, application-code: 395ms)
+ GET /api/auth/get-session 200 in 17ms (next.js: 10ms, application-code: 8ms)
+ GET /api/auth/get-session 200 in 15ms (next.js: 4ms, application-code: 11ms)
+ GET /api/auth/get-session 200 in 193ms (next.js: 121ms, application-code: 71ms)
+ GET /api/auth/get-session 200 in 23ms (next.js: 8ms, application-code: 14ms)
+○ Compiling /_error ...
+✓ Compiled in 7.8s
+✓ Finished writing to filesystem cache in 16.2s
+ GET / 500 in 24.2s (next.js: 23.1s, application-code: 1116ms)
+ GET / 500 in 3.4s (next.js: 3.3s, application-code: 124ms)
+ GET / 500 in 23.0s (next.js: 23.0s, application-code: 83ms)
+ GET / 500 in 3.5s (next.js: 3.4s, application-code: 71ms)
+ GET / 500 in 3.6s (next.js: 3.6s, application-code: 44ms)
+ GET / 500 in 3.6s (next.js: 3.6s, application-code: 34ms)
+ GET / 500 in 28ms (next.js: 17ms, application-code: 11ms)
