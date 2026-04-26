@@ -6,6 +6,7 @@ import type {
   RoshalProduct,
   RoshalSiteSettings,
 } from "./types";
+import { vegetableProducts } from "@/data/vegetable-products";
 
 const nowId = "default";
 
@@ -767,6 +768,7 @@ export const defaultRoshalProducts: RoshalProduct[] = [
     isPublished: true,
     sortOrder: 5,
   },
+  ...vegetableProducts,
 ];
 
 export const defaultRoshalPaymentSettings: RoshalPaymentSettings = {
