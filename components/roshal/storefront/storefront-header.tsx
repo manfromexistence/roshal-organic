@@ -352,7 +352,7 @@ export function StorefrontHeader({
         </div>
       </div>
 
-      <div className="border-b border-white/10 bg-background/35 backdrop-blur-xl supports-[backdrop-filter]:bg-background/25">
+      <div className="min-w-full lg:hidden border-b">
         <div className="container mx-auto px-4">
           <div className="flex items-center gap-6 overflow-x-auto py-3">
             {categories.map((link) => (

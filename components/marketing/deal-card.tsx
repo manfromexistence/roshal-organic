@@ -34,7 +34,7 @@ export function DealCard({
   language,
 }: DealCardProps) {
   return (
-    <Card className="overflow-hidden pb-4 transition-shadow hover:shadow-lg">
+    <Card className="overflow-hidden pb-2 transition-shadow hover:shadow-lg">
       <div className="relative h-48 md:h-64">
         <Image
           src={image}

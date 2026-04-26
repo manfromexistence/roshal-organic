@@ -2292,3 +2292,21 @@ Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
 Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
 [browser] Image with src "/vegetables/vegetable-1.jpg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
 Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] ReferenceError: Carousel is not defined
+    at LandingPage (app/(marketing)/page.tsx:225:10)
+  223 |     <div className="flex flex-col overflow-hidden">
+  224 |       <section className="relative h-screen min-w-full w-full overflow-hidden p-0">
+> 225 |         <Carousel
+      |          ^
+  226 |           opts={{
+  227 |             align: "start",
+  228 |             loop: true, (app/error.tsx:34:13)
+[browser] ReferenceError: Carousel is not defined
+    at LandingPage (app/(marketing)/page.tsx:225:10)
+  223 |     <div className="flex flex-col overflow-hidden">
+  224 |       <section className="relative h-screen min-w-full w-full overflow-hidden p-0">
+> 225 |         <Carousel
+      |          ^
+  226 |           opts={{
+  227 |             align: "start",
+  228 |             loop: true, (app/error.tsx:34:13)
