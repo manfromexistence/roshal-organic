@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Added a structured shadcn JSON field editor for Roshal CMS sections and product arrays/objects, replacing raw dashboard blob editing for marketing items/styles, galleries, and localized feature lists
 - Added the Roshal Organic storefront with bilingual Bangla/English marketing and ecommerce routes for home, about, contact, products, product details, cart, checkout, orders, order tracking, and user profile
 - Added the transplanted marketing-shell mobile bottom navigation to the active storefront after moving the old landing experience into the root app
 - Added a Roshal admin dashboard at `/dashboard` for managing products, orders, users, payment options, payment guide screenshots, marketing pages, and storefront theme settings
@@ -68,6 +69,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added dynamic title fetching to PageBreadcrumb component - now detects ID segments and fetches entity names from database
 
 ### Changed
+- Changed the dashboard marketing sidebar menu to resolve its page sub-links from the real CMS page ids instead of hardcoded fallback editor paths, so custom or DB-overridden home/about/contact pages open the correct editor routes
+- Changed the shared dashboard image-upload field to use stable input refs, surface ImgBB server errors directly in toast feedback, and accept the returned URL immediately after upload
 - Changed the storefront quick-category sub-header from a clipped static strip into a measured first-row navigation that moves overflowed items into a shadcn `More` select instead of reintroducing horizontal scrolling
 - Changed the storefront sub-header from a horizontal `ScrollArea` rail into a plain non-scrolling quick-category navigation strip, expanded it with more curated ecommerce filter links, and kept the row free of both custom and native scrollbars
 - Changed the storefront shell to scroll through the shared shadcn `ScrollArea`, including the main marketing layout plus the horizontal category rail and trusted-partner footer rail, so the public site now uses the same scrollbar treatment as the dashboard
@@ -188,6 +191,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All linting errors and warnings resolved across the codebase
 
 ### Fixed
+- Fixed the ImgBB upload route to validate missing, empty, or oversized files, preserve the uploaded filename, and return the real ImgBB image id plus display URL instead of guessing them from the response URL
 - Fixed the storefront footer partner/payment rail so it no longer renders decorative scrollbars in the live marketing shell
 - Fixed landing-section reveal motion so animations can replay when users scroll back upward through the homepage instead of only firing once on the first downward pass
 - Fixed the shared Catbox upload route to reject empty files, validate the returned file URL, and stop emitting debug `console.log` noise in the live upload path

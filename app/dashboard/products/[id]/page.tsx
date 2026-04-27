@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { saveRoshalProduct } from "@/actions/admin";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
+import { JsonFieldEditor } from "@/components/dashboard/json-field-editor";
 import { ImageUploadField } from "@/components/shared/image-upload-field";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -236,31 +237,37 @@ export async function ProductEditorPage({
               defaultValue={product?.description.en || ""}
               rows={5}
             />
-            <TextField
+            <JsonFieldEditor
               name="galleryJson"
-              label="Gallery JSON"
+              label="Gallery"
               defaultValue={JSON.stringify(product?.gallery || [], null, 2)}
-              rows={4}
+              mode="array-string"
+              itemLabel="Image"
+              hint="Each entry should be an image URL. Use the uploader above, then paste or reorder them here."
             />
-            <TextField
+            <JsonFieldEditor
               name="featuresBnJson"
-              label="Features BN JSON"
+              label="Features (BN)"
               defaultValue={JSON.stringify(
                 product?.features.map((item) => item.bn) || [],
                 null,
                 2,
               )}
-              rows={4}
+              mode="array-string"
+              itemLabel="Feature"
+              hint="Each row becomes one Bangla feature bullet on the storefront."
             />
-            <TextField
+            <JsonFieldEditor
               name="featuresEnJson"
-              label="Features EN JSON"
+              label="Features (EN)"
               defaultValue={JSON.stringify(
                 product?.features.map((item) => item.en) || [],
                 null,
                 2,
               )}
-              rows={4}
+              mode="array-string"
+              itemLabel="Feature"
+              hint="Each row becomes one English feature bullet on the storefront."
             />
           </CardContent>
         </Card>

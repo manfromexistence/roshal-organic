@@ -1,0 +1,14 @@
+▲ Next.js 16.2.4 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://10.2.0.2:3000
+- Environments: .env.local, .env
+✓ Ready in 468ms
+
+ GET /dashboard/pages/page-home 200 in 4.4s (next.js: 907ms, proxy.ts: 1368ms, application-code: 2.2s)
+ POST /api/upload/imgbb 200 in 1654ms (next.js: 74ms, application-code: 1580ms)
+ POST /api/upload/imgbb 200 in 2.5s (next.js: 5ms, application-code: 2.5s)
+ GET /dashboard/pages/page-home 200 in 1377ms (next.js: 9ms, proxy.ts: 248ms, application-code: 1120ms)
+ POST /dashboard/pages/page-home 303 in 2.7s (next.js: 18ms, proxy.ts: 699ms, application-code: 2.0s)
+  └─ ƒ saveRoshalPage({}) in 599ms actions/admin.ts
+ GET / 200 in 2.1s (next.js: 64ms, application-code: 2.0s)
+ GET /api/auth/get-session 200 in 1397ms (next.js: 1033ms, application-code: 363ms)

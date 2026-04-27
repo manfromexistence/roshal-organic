@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { saveRoshalPage, saveRoshalSection } from "@/actions/admin";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
+import { JsonFieldEditor } from "@/components/dashboard/json-field-editor";
 import { ImageUploadField } from "@/components/shared/image-upload-field";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -488,19 +489,22 @@ function SectionFields({
       />
       <Field name="ctaHref" label="CTA Href" defaultValue={defaults.ctaHref} />
       <div className="md:col-span-2">
-        <TextField
+        <JsonFieldEditor
           name="itemsJson"
-          label="Items JSON"
+          label="Items"
           defaultValue={defaults.itemsJson}
-          rows={6}
+          mode="array-object"
+          itemLabel="Content item"
+          hint="Each item is a set of key-value fields (e.g. title, body, imageUrl, href)."
         />
       </div>
       <div className="md:col-span-2">
-        <TextField
+        <JsonFieldEditor
           name="stylesJson"
-          label="Styles JSON"
+          label="Styles"
           defaultValue={defaults.stylesJson}
-          rows={4}
+          mode="object"
+          hint="Style keys like columns, highlight, density, source, limit, offset."
         />
       </div>
       <div className="md:col-span-2">

@@ -8,6 +8,7 @@ import {
   ShoppingCart,
   Users,
 } from "lucide-react";
+import type { RoshalMarketingPage } from "@/lib/store-types";
 
 export interface DashboardNavChildItem {
   title: string;
@@ -32,7 +33,25 @@ export interface DashboardSearchPage {
   keywords: string[];
 }
 
-export const dashboardPrimaryNavigation: DashboardNavItem[] = [
+const fallbackMarketingPageItems: DashboardNavChildItem[] = [
+  {
+    title: "Home",
+    url: "/dashboard/pages/page-home",
+    keywords: ["landing", "homepage", "front"],
+  },
+  {
+    title: "About",
+    url: "/dashboard/pages/page-about",
+    keywords: ["about us", "company", "story"],
+  },
+  {
+    title: "Contact",
+    url: "/dashboard/pages/page-contact",
+    keywords: ["contact us", "support", "help"],
+  },
+];
+
+const primaryNavigationTemplate: DashboardNavItem[] = [
   {
     title: "Overview",
     url: "/dashboard",
@@ -86,34 +105,66 @@ export const dashboardPrimaryNavigation: DashboardNavItem[] = [
         url: "/dashboard/pages",
         keywords: ["list", "manage", "edit"],
       },
-      {
-        title: "Home",
-        url: "/dashboard/pages/home",
-        keywords: ["landing", "homepage", "front"],
-      },
-      {
-        title: "About",
-        url: "/dashboard/pages/about",
-        keywords: ["about us", "company", "story"],
-      },
-      {
-        title: "Contact",
-        url: "/dashboard/pages/contact",
-        keywords: ["contact us", "support", "help"],
-      },
-      {
-        title: "Products",
-        url: "/dashboard/pages/products",
-        keywords: ["catalog", "shop", "store"],
-      },
-      {
-        title: "Collections",
-        url: "/dashboard/pages/collections",
-        keywords: ["categories", "groups", "sets"],
-      },
+      ...fallbackMarketingPageItems,
     ],
   },
 ];
+
+function titleCaseFromSlug(slug: string) {
+  return slug
+    .split("-")
+    .filter(Boolean)
+    .map((segment) => segment[0]?.toUpperCase() + segment.slice(1))
+    .join(" ");
+}
+
+function getMarketingPageTitle(page: RoshalMarketingPage) {
+  return (
+    page.navigationLabel.en ||
+    page.title.en ||
+    titleCaseFromSlug(page.slug) ||
+    "Page"
+  );
+}
+
+export function buildDashboardPrimaryNavigation(
+  marketingPages: RoshalMarketingPage[] = [],
+): DashboardNavItem[] {
+  const marketingPageItems =
+    marketingPages.length > 0
+      ? marketingPages.map((page) => ({
+          title: getMarketingPageTitle(page),
+          url: `/dashboard/pages/${page.id}`,
+          keywords: [
+            page.slug,
+            page.navigationLabel.en,
+            page.navigationLabel.bn,
+            page.title.en,
+            page.title.bn,
+            page.status,
+          ].filter(Boolean),
+        }))
+      : fallbackMarketingPageItems;
+
+  return primaryNavigationTemplate.map((item) =>
+    item.title === "Marketing Pages"
+      ? {
+          ...item,
+          items: [
+            {
+              title: "All Pages",
+              url: "/dashboard/pages",
+              keywords: ["list", "manage", "edit"],
+            },
+            ...marketingPageItems,
+          ],
+        }
+      : item,
+  );
+}
+
+export const dashboardPrimaryNavigation: DashboardNavItem[] =
+  buildDashboardPrimaryNavigation();
 
 export const dashboardSectionNavigation: DashboardNavItem[] = [];
 

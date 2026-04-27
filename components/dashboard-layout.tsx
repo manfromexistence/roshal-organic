@@ -6,12 +6,14 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { SiteHeader } from "@/components/site-header";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import type { RoshalMarketingPage } from "@/lib/store-types";
 
 const SCROLL_KEY = "sidebar-inset-scroll";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
   navInitialState: Record<string, boolean>;
+  marketingPages?: RoshalMarketingPage[];
   user?: {
     name: string;
     email: string;
@@ -27,6 +29,7 @@ interface DashboardLayoutProps {
 export function DashboardLayout({
   children,
   navInitialState,
+  marketingPages,
   user,
   organization,
 }: DashboardLayoutProps) {
@@ -71,6 +74,7 @@ export function DashboardLayout({
         variant="sidebar"
         collapsible="icon"
         navInitialState={navInitialState}
+        marketingPages={marketingPages}
         user={
           user
             ? {

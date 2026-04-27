@@ -18,16 +18,19 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import {
+  buildDashboardPrimaryNavigation,
   dashboardPrimaryNavigation,
   dashboardSecondaryNavigation,
   dashboardSectionNavigation,
 } from "@/lib/dashboard-navigation";
+import type { RoshalMarketingPage } from "@/lib/store-types";
 
 const SCROLL_KEY = "sidebar-scroll";
 
 interface AppSidebarProps
   extends Omit<React.ComponentProps<typeof Sidebar>, "navInitialState"> {
   navInitialState?: Record<string, boolean>;
+  marketingPages?: RoshalMarketingPage[];
   user?: {
     name: string;
     email: string;
@@ -42,6 +45,7 @@ interface AppSidebarProps
 
 export function AppSidebar({
   navInitialState = {},
+  marketingPages,
   user,
   organization,
   ...sidebarProps
@@ -74,6 +78,11 @@ export function AppSidebar({
       // Ignore localStorage access failures in restricted contexts.
     }
   };
+
+  const resolvedPrimaryNavigation =
+    marketingPages && marketingPages.length > 0
+      ? buildDashboardPrimaryNavigation(marketingPages)
+      : dashboardPrimaryNavigation;
 
   return (
     <Sidebar {...sidebarProps}>
@@ -114,7 +123,7 @@ export function AppSidebar({
         >
           <div className="flex flex-col gap-0 px-3 group-data-[collapsible=icon]:px-0">
             <NavMain
-              items={dashboardPrimaryNavigation}
+              items={resolvedPrimaryNavigation}
               initialState={navInitialState}
             />
             <NavMain

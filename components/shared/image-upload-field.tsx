@@ -2,7 +2,7 @@
 
 import { ImagePlus, Loader2, Trash2 } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -25,6 +25,7 @@ export function ImageUploadField({
   const [isUploading, setIsUploading] = useState(false);
   const [currentValue, setCurrentValue] = useState(value);
   const inputId = useId();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setCurrentValue(value);
@@ -53,18 +54,28 @@ export function ImageUploadField({
         method: "POST",
         body: formData,
       });
+      const data = (await response.json()) as {
+        error?: string;
+        url?: string;
+      };
 
-      if (!response.ok) {
-        throw new Error("Upload failed");
+      if (!response.ok || typeof data.url !== "string" || !data.url) {
+        throw new Error(data.error || "Upload failed");
       }
 
-      const data = await response.json();
-      updateValue(String(data.url || ""));
+      updateValue(data.url);
+      toast({
+        title: "Image uploaded",
+        description: "The image is now linked to this field.",
+      });
     } catch (error) {
       console.error("Image upload failed:", error);
       toast({
         title: "Upload failed",
-        description: "Could not upload the image. Please try again.",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Could not upload the image. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -95,7 +106,7 @@ export function ImageUploadField({
             type="button"
             variant="outline"
             disabled={isUploading}
-            onClick={() => document.getElementById(`${inputId}-file`)?.click()}
+            onClick={() => fileInputRef.current?.click()}
           >
             {isUploading ? (
               <>
@@ -123,9 +134,10 @@ export function ImageUploadField({
       </div>
 
       <input
+        ref={fileInputRef}
         id={`${inputId}-file`}
         type="file"
-        accept="image/jpeg,image/jpg,image/png,image/webp"
+        accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
         className="hidden"
         onChange={handleFileChange}
         disabled={isUploading}

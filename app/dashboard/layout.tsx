@@ -1,15 +1,17 @@
 import { cookies } from "next/headers";
 import { DashboardLayout } from "@/components/dashboard-layout";
 import { requireRoshalAdmin } from "@/lib/store-auth";
+import { getRoshalPages } from "@/lib/store-content";
 
 export default async function RoshalDashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [cookieStore, sessionUser] = await Promise.all([
+  const [cookieStore, sessionUser, marketingPages] = await Promise.all([
     cookies(),
     requireRoshalAdmin(),
+    getRoshalPages(),
   ]);
   const navCookie = cookieStore.get("nav-main-expanded-Platform");
 
@@ -26,6 +28,7 @@ export default async function RoshalDashboardLayout({
   return (
     <DashboardLayout
       navInitialState={navInitialState}
+      marketingPages={marketingPages}
       user={{
         name: sessionUser.name,
         email: sessionUser.email,
