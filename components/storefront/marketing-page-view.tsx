@@ -65,6 +65,8 @@ export function RoshalMarketingPageView({
                     src={page.heroImage}
                     alt={getLocalizedValue(locale, page.title)}
                     fill
+                    priority
+                    loading="eager"
                     className="object-cover"
                     sizes="(max-width: 1024px) 100vw, 45vw"
                   />
@@ -77,6 +79,7 @@ export function RoshalMarketingPageView({
 
       <RoshalSectionRenderer
         locale={locale}
+        page={page}
         siteSettings={siteSettings}
         sections={sections}
         products={products}

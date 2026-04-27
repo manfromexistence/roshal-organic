@@ -142,8 +142,8 @@ export default async function DashboardPageEditorRoute({
                 }
                 helperText={
                   locale === "bn"
-                    ? "পেজে hero/story সেকশন না থাকলে এই ইমেজটি টপ কভার হিসেবে ব্যবহার হবে।"
-                    : "This image becomes the top cover when the page has no hero/story section."
+                    ? "এই ইমেজটি এই মার্কেটিং পেজের প্রাইমারি হিরো বা কভার হিসেবে ব্যবহার হবে।"
+                    : "This image powers the primary hero or cover for this marketing page."
                 }
                 value={page.heroImage || ""}
               />

@@ -23,6 +23,7 @@ import { getRoshalLocale } from "@/lib/store-i18n";
 import { getLocalizedValue, localizedValue } from "@/lib/store-locale";
 import type {
   LocalizedValue,
+  RoshalMarketingPage,
   RoshalMarketingSection,
   RoshalProduct,
 } from "@/lib/store-types";
@@ -197,60 +198,109 @@ function firstNonEmptyValue(
 }
 
 function buildHeroBanners(
+  page: RoshalMarketingPage | null | undefined,
   heroSection: RoshalMarketingSection | undefined,
   siteCtaHref: string,
   siteCtaLabel: LocalizedValue,
 ): LandingHeroBanner[] {
+  const primaryBanner: LandingHeroBanner = {
+    image: page?.heroImage || heroSection?.imageUrl || fallbackBanners[0].image,
+    title: {
+      bn: firstNonEmptyValue(
+        [page?.title.bn, heroSection?.title.bn, fallbackBanners[0].title.bn],
+        fallbackBanners[0].title.bn,
+      ),
+      en: firstNonEmptyValue(
+        [page?.title.en, heroSection?.title.en, fallbackBanners[0].title.en],
+        fallbackBanners[0].title.en,
+      ),
+    },
+    subtitle: {
+      bn: firstNonEmptyValue(
+        [
+          page?.description.bn,
+          heroSection?.body.bn,
+          fallbackBanners[0].subtitle.bn,
+        ],
+        fallbackBanners[0].subtitle.bn,
+      ),
+      en: firstNonEmptyValue(
+        [
+          page?.description.en,
+          heroSection?.body.en,
+          fallbackBanners[0].subtitle.en,
+        ],
+        fallbackBanners[0].subtitle.en,
+      ),
+    },
+    href: heroSection?.ctaHref || siteCtaHref,
+    ctaLabel:
+      heroSection?.ctaLabel.bn || heroSection?.ctaLabel.en
+        ? heroSection.ctaLabel
+        : siteCtaLabel,
+  };
+
   if (heroSection?.items.length) {
-    return heroSection.items.map((item, index) => ({
-      image:
-        item.imageUrl || fallbackBanners[index % fallbackBanners.length].image,
-      title:
-        item.title ||
-        item.label ||
-        fallbackBanners[index % fallbackBanners.length].title,
-      subtitle:
-        item.body || fallbackBanners[index % fallbackBanners.length].subtitle,
-      href: item.href || siteCtaHref,
-      ctaLabel: item.label || siteCtaLabel,
-    }));
+    return heroSection.items.map((item, index) => {
+      const fallbackBanner = fallbackBanners[index % fallbackBanners.length];
+
+      if (index === 0) {
+        return {
+          image: primaryBanner.image || item.imageUrl || fallbackBanner.image,
+          title: {
+            bn: firstNonEmptyValue(
+              [
+                primaryBanner.title.bn,
+                item.title?.bn,
+                item.label?.bn,
+                fallbackBanner.title.bn,
+              ],
+              fallbackBanner.title.bn,
+            ),
+            en: firstNonEmptyValue(
+              [
+                primaryBanner.title.en,
+                item.title?.en,
+                item.label?.en,
+                fallbackBanner.title.en,
+              ],
+              fallbackBanner.title.en,
+            ),
+          },
+          subtitle: {
+            bn: firstNonEmptyValue(
+              [
+                primaryBanner.subtitle.bn,
+                item.body?.bn,
+                fallbackBanner.subtitle.bn,
+              ],
+              fallbackBanner.subtitle.bn,
+            ),
+            en: firstNonEmptyValue(
+              [
+                primaryBanner.subtitle.en,
+                item.body?.en,
+                fallbackBanner.subtitle.en,
+              ],
+              fallbackBanner.subtitle.en,
+            ),
+          },
+          href: item.href || primaryBanner.href,
+          ctaLabel: item.label || primaryBanner.ctaLabel,
+        };
+      }
+
+      return {
+        image: item.imageUrl || fallbackBanner.image,
+        title: item.title || item.label || fallbackBanner.title,
+        subtitle: item.body || fallbackBanner.subtitle,
+        href: item.href || siteCtaHref,
+        ctaLabel: item.label || siteCtaLabel,
+      };
+    });
   }
 
-  if (heroSection) {
-    return [
-      {
-        image: heroSection.imageUrl || fallbackBanners[0].image,
-        title: {
-          bn: firstNonEmptyValue(
-            [heroSection.title.bn, fallbackBanners[0].title.bn],
-            fallbackBanners[0].title.bn,
-          ),
-          en: firstNonEmptyValue(
-            [heroSection.title.en, fallbackBanners[0].title.en],
-            fallbackBanners[0].title.en,
-          ),
-        },
-        subtitle: {
-          bn: firstNonEmptyValue(
-            [heroSection.body.bn, fallbackBanners[0].subtitle.bn],
-            fallbackBanners[0].subtitle.bn,
-          ),
-          en: firstNonEmptyValue(
-            [heroSection.body.en, fallbackBanners[0].subtitle.en],
-            fallbackBanners[0].subtitle.en,
-          ),
-        },
-        href: heroSection.ctaHref || siteCtaHref,
-        ctaLabel:
-          heroSection.ctaLabel.bn || heroSection.ctaLabel.en
-            ? heroSection.ctaLabel
-            : siteCtaLabel,
-      },
-      ...fallbackBanners.slice(1),
-    ];
-  }
-
-  return fallbackBanners;
+  return [primaryBanner, ...fallbackBanners.slice(1)];
 }
 
 function buildCategories(
@@ -441,6 +491,7 @@ export default async function LandingPage() {
     ]);
 
   const language = locale as Language;
+  const page = pageBundle?.page || null;
   const sections = pageBundle?.sections || [];
   const sectionsByKey = sectionMap(sections);
 
@@ -457,6 +508,7 @@ export default async function LandingPage() {
 
   const categories = buildCategories(categoriesSection, products);
   const heroBanners = buildHeroBanners(
+    page,
     heroSection,
     siteSettings.primaryCtaHref,
     siteSettings.primaryCtaLabel,

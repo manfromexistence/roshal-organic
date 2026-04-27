@@ -8,6 +8,7 @@ import { getLocalizedValue } from "@/lib/store-locale";
 import type {
   LocalizedValue,
   RoshalLocale,
+  RoshalMarketingPage,
   RoshalMarketingSection,
   RoshalProduct,
   RoshalSiteSettings,
@@ -57,33 +58,41 @@ export function RoshalSectionRenderer({
   locale,
   products,
   siteSettings,
+  page,
 }: {
   sections: RoshalMarketingSection[];
   locale: RoshalLocale;
   products: RoshalProduct[];
   siteSettings: RoshalSiteSettings;
+  page?: RoshalMarketingPage;
 }) {
+  const sortedSections = [...sections].sort(
+    (left, right) => left.sortOrder - right.sortOrder,
+  );
+  const primarySectionId = sortedSections.find(
+    (section) => section.type === "hero" || section.type === "story",
+  )?.id;
+
   return (
     <>
-      {sections
-        .sort((left, right) => left.sortOrder - right.sortOrder)
-        .map((section) => (
-          <section
-            key={section.id}
-            className={`${spacingMap[siteSettings.sectionSpacing] || spacingMap.comfortable} ${
-              section.variant === "muted" ? "bg-muted/35" : "bg-transparent"
-            }`}
-          >
-            <div className="container mx-auto px-4">
-              <SectionContent
-                section={section}
-                locale={locale}
-                products={products}
-                siteSettings={siteSettings}
-              />
-            </div>
-          </section>
-        ))}
+      {sortedSections.map((section) => (
+        <section
+          key={section.id}
+          className={`${spacingMap[siteSettings.sectionSpacing] || spacingMap.comfortable} ${
+            section.variant === "muted" ? "bg-muted/35" : "bg-transparent"
+          }`}
+        >
+          <div className="container mx-auto px-4">
+            <SectionContent
+              section={section}
+              locale={locale}
+              products={products}
+              siteSettings={siteSettings}
+              page={section.id === primarySectionId ? page : undefined}
+            />
+          </div>
+        </section>
+      ))}
     </>
   );
 }
@@ -93,16 +102,27 @@ function SectionContent({
   locale,
   products,
   siteSettings,
+  page,
 }: {
   section: RoshalMarketingSection;
   locale: RoshalLocale;
   products: RoshalProduct[];
   siteSettings: RoshalSiteSettings;
+  page?: RoshalMarketingPage;
 }) {
   const eyebrow = getLocalizedValue(locale, section.eyebrow);
   const title = getLocalizedValue(locale, section.title);
   const body = getLocalizedValue(locale, section.body);
   const ctaLabel = getLocalizedValue(locale, section.ctaLabel);
+  const pageEyebrow = page
+    ? getLocalizedValue(locale, page.navigationLabel)
+    : "";
+  const pageTitle = page ? getLocalizedValue(locale, page.title) : "";
+  const pageBody = page ? getLocalizedValue(locale, page.description) : "";
+  const heroEyebrow = eyebrow || pageEyebrow;
+  const heroTitle = pageTitle || title;
+  const heroBody = pageBody || body;
+  const heroImage = page?.heroImage || section.imageUrl;
 
   if (section.type === "hero" || section.type === "story") {
     return (
@@ -114,16 +134,16 @@ function SectionContent({
         }`}
       >
         <div className="space-y-5">
-          {eyebrow ? (
+          {heroEyebrow ? (
             <p className="text-xs uppercase tracking-[0.24em] text-primary">
-              {eyebrow}
+              {heroEyebrow}
             </p>
           ) : null}
           <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-foreground md:text-5xl">
-            {title}
+            {heroTitle}
           </h1>
           <p className="max-w-2xl text-base leading-7 text-muted-foreground md:text-lg">
-            {body}
+            {heroBody}
           </p>
           <div className="flex flex-wrap gap-3">
             <Button asChild size="lg">
@@ -139,12 +159,14 @@ function SectionContent({
             </Button>
           </div>
         </div>
-        {section.imageUrl ? (
+        {heroImage ? (
           <div className="relative min-h-80 overflow-hidden rounded-[1.5rem] border bg-muted">
             <Image
-              src={section.imageUrl}
-              alt={title}
+              src={heroImage}
+              alt={heroTitle}
               fill
+              priority
+              loading="eager"
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 45vw"
             />

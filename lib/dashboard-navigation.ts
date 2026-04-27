@@ -1,14 +1,13 @@
-import type { LucideIcon } from "lucide-react";
-import {
-  CreditCard,
-  ExternalLink,
-  FileText,
-  LayoutDashboard,
-  Package,
-  ShoppingCart,
-  Users,
-} from "lucide-react";
 import type { RoshalMarketingPage } from "@/lib/store-types";
+
+export type DashboardNavIconKey =
+  | "overview"
+  | "products"
+  | "orders"
+  | "payments"
+  | "users"
+  | "pages"
+  | "storefront";
 
 export interface DashboardNavChildItem {
   title: string;
@@ -19,7 +18,7 @@ export interface DashboardNavChildItem {
 export interface DashboardNavItem {
   title: string;
   url: string;
-  icon?: LucideIcon;
+  icon?: DashboardNavIconKey;
   items?: DashboardNavChildItem[];
   keywords?: string[];
 }
@@ -29,7 +28,6 @@ export interface DashboardSearchPage {
   title: string;
   href: string;
   subtitle: string;
-  icon?: LucideIcon;
   keywords: string[];
 }
 
@@ -55,13 +53,13 @@ const primaryNavigationTemplate: DashboardNavItem[] = [
   {
     title: "Overview",
     url: "/dashboard",
-    icon: LayoutDashboard,
+    icon: "overview",
     keywords: ["dashboard", "overview", "summary"],
   },
   {
     title: "Products",
     url: "/dashboard/products",
-    icon: Package,
+    icon: "products",
     keywords: ["catalog", "inventory", "shop"],
     items: [
       {
@@ -79,25 +77,25 @@ const primaryNavigationTemplate: DashboardNavItem[] = [
   {
     title: "Orders",
     url: "/dashboard/orders",
-    icon: ShoppingCart,
+    icon: "orders",
     keywords: ["checkout", "purchases", "sales"],
   },
   {
     title: "Payments",
     url: "/dashboard/payments",
-    icon: CreditCard,
+    icon: "payments",
     keywords: ["bkash", "nagad", "rocket", "upay", "card"],
   },
   {
     title: "Users",
     url: "/dashboard/users",
-    icon: Users,
+    icon: "users",
     keywords: ["accounts", "roles", "customers"],
   },
   {
     title: "Marketing Pages",
     url: "/dashboard/pages",
-    icon: FileText,
+    icon: "pages",
     keywords: ["content", "cms", "landing pages"],
     items: [
       {
@@ -172,7 +170,7 @@ export const dashboardSecondaryNavigation: DashboardNavItem[] = [
   {
     title: "Storefront",
     url: "/",
-    icon: ExternalLink,
+    icon: "storefront",
     keywords: ["home", "shop", "website"],
   },
 ];
@@ -193,7 +191,6 @@ export function getDashboardSearchPages(): DashboardSearchPage[] {
     item: {
       title: string;
       url: string;
-      icon?: LucideIcon;
       keywords?: string[];
     },
     sectionTitle?: string,
@@ -210,7 +207,6 @@ export function getDashboardSearchPages(): DashboardSearchPage[] {
       subtitle: sectionTitle
         ? `${sectionTitle} workspace`
         : "Primary workspace page",
-      icon: item.icon,
       keywords: [
         item.title,
         sectionTitle || "",
@@ -230,7 +226,6 @@ export function getDashboardSearchPages(): DashboardSearchPage[] {
       pushPage(
         {
           ...child,
-          icon: item.icon,
           keywords: [item.title, ...(child.keywords || [])],
         },
         item.title,

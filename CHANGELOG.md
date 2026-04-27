@@ -69,6 +69,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added dynamic title fetching to PageBreadcrumb component - now detects ID segments and fetches entity names from database
 
 ### Changed
+- Changed the homepage and shared marketing hero rendering so the existing storefront UI now reads its primary hero image/title/description from the dashboard-managed page fields instead of leaving those CMS values disconnected from the live frontend
+- Changed the dashboard navigation config to use serializable icon keys and moved Lucide icon resolution into the client sidebar components, removing server-to-client function props from the active admin shell
 - Changed the dashboard marketing sidebar menu to resolve its page sub-links from the real CMS page ids instead of hardcoded fallback editor paths, so custom or DB-overridden home/about/contact pages open the correct editor routes
 - Changed the shared dashboard image-upload field to use stable input refs, surface ImgBB server errors directly in toast feedback, and accept the returned URL immediately after upload
 - Changed the storefront quick-category sub-header from a clipped static strip into a measured first-row navigation that moves overflowed items into a shadcn `More` select instead of reintroducing horizontal scrolling
@@ -191,6 +193,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All linting errors and warnings resolved across the codebase
 
 ### Fixed
+- Fixed the remaining homepage and product-detail LCP image warnings by marking live marketing hero images and product hero imagery as eager priority assets where they render above the fold
 - Fixed the ImgBB upload route to validate missing, empty, or oversized files, preserve the uploaded filename, and return the real ImgBB image id plus display URL instead of guessing them from the response URL
 - Fixed the storefront footer partner/payment rail so it no longer renders decorative scrollbars in the live marketing shell
 - Fixed landing-section reveal motion so animations can replay when users scroll back upward through the homepage instead of only firing once on the first downward pass

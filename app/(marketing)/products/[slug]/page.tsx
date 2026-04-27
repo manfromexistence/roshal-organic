@@ -44,6 +44,8 @@ export default async function ProductDetailsPage({
           src={product.heroImage}
           alt={getLocalizedValue(locale, product.name)}
           fill
+          priority
+          loading="eager"
           className="object-cover"
           sizes="(max-width: 1024px) 100vw, 52vw"
         />

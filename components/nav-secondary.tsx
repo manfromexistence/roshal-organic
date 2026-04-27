@@ -1,6 +1,16 @@
 "use client";
 
-import { ChevronRight, type LucideIcon } from "lucide-react";
+import {
+  ChevronRight,
+  CreditCard,
+  ExternalLink,
+  FileText,
+  LayoutDashboard,
+  type LucideIcon,
+  Package,
+  ShoppingCart,
+  Users,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 
 import {
@@ -17,12 +27,32 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
+import type { DashboardNavIconKey } from "@/lib/dashboard-navigation";
 
 interface NavSecondaryItem {
   title: string;
   url: string;
-  icon?: LucideIcon;
+  icon?: DashboardNavIconKey;
   items?: { title: string; url: string }[];
+}
+
+const NAV_ICONS: Record<DashboardNavIconKey, LucideIcon> = {
+  overview: LayoutDashboard,
+  products: Package,
+  orders: ShoppingCart,
+  payments: CreditCard,
+  users: Users,
+  pages: FileText,
+  storefront: ExternalLink,
+};
+
+function NavIcon({ icon }: { icon?: DashboardNavIconKey }) {
+  if (!icon) {
+    return null;
+  }
+
+  const Icon = NAV_ICONS[icon];
+  return <Icon />;
 }
 
 export function NavSecondary({
@@ -77,7 +107,7 @@ export function NavSecondary({
               <SidebarMenuItem suppressHydrationWarning>
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton tooltip={item.title}>
-                    {item.icon && <item.icon />}
+                    <NavIcon icon={item.icon} />
                     <span>{item.title}</span>
                     <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                   </SidebarMenuButton>
@@ -101,7 +131,7 @@ export function NavSecondary({
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild tooltip={item.title}>
                 <a href={item.url}>
-                  {item.icon && <item.icon />}
+                  <NavIcon icon={item.icon} />
                   <span>{item.title}</span>
                 </a>
               </SidebarMenuButton>
