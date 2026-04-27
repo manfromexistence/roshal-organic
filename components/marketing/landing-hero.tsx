@@ -56,7 +56,7 @@ export function LandingHero({
   };
 
   return (
-    <section className="relative isolate min-h-[78vh] overflow-hidden md:min-h-[88vh]">
+    <section className="relative isolate overflow-hidden lg:min-h-[calc(100vh-80px)] min-h-[calc(100vh-120px)]">
       <Image
         key={currentBanner.image}
         src={currentBanner.image}
@@ -70,7 +70,7 @@ export function LandingHero({
       <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/35 to-black/10" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
 
-      <div className="relative flex min-h-[78vh] items-end md:min-h-[88vh]">
+      <div className="relative flex min-h-[78vh] items-end md:min-h-[calc(100vh-100px)]">
         <div className="container mx-auto px-4 pb-24 pt-28 md:pb-20 md:pt-36">
           <div className="max-w-3xl">
             <h1 className="mb-4 text-3xl font-bold text-white md:text-6xl">

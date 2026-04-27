@@ -525,7 +525,7 @@ export default async function LandingPage() {
   const stats = buildStats(statsSection);
 
   return (
-    <div className="flex flex-col overflow-hidden">
+    <div className="flex flex-col overflow-hidden pt-22">
       <LandingHero banners={heroBanners} language={language} />
 
       <section className="bg-background py-16">

@@ -80,6 +80,38 @@ export const dashboardPrimaryNavigation: DashboardNavItem[] = [
     url: "/dashboard/pages",
     icon: FileText,
     keywords: ["content", "cms", "landing pages"],
+    items: [
+      {
+        title: "All Pages",
+        url: "/dashboard/pages",
+        keywords: ["list", "manage", "edit"],
+      },
+      {
+        title: "Home",
+        url: "/dashboard/pages/home",
+        keywords: ["landing", "homepage", "front"],
+      },
+      {
+        title: "About",
+        url: "/dashboard/pages/about",
+        keywords: ["about us", "company", "story"],
+      },
+      {
+        title: "Contact",
+        url: "/dashboard/pages/contact",
+        keywords: ["contact us", "support", "help"],
+      },
+      {
+        title: "Products",
+        url: "/dashboard/pages/products",
+        keywords: ["catalog", "shop", "store"],
+      },
+      {
+        title: "Collections",
+        url: "/dashboard/pages/collections",
+        keywords: ["categories", "groups", "sets"],
+      },
+    ],
   },
 ];
 
