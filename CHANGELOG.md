@@ -69,6 +69,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added dynamic title fetching to PageBreadcrumb component - now detects ID segments and fetches entity names from database
 
 ### Changed
+- Changed the shared marketing layout to add a route-aware `pt-22` top offset for fixed-header pages while leaving the landing homepage and `/products` listing aligned to their existing layout
 - Changed the homepage and shared marketing hero rendering so the existing storefront UI now reads its primary hero image/title/description from the dashboard-managed page fields instead of leaving those CMS values disconnected from the live frontend
 - Changed the dashboard navigation config to use serializable icon keys and moved Lucide icon resolution into the client sidebar components, removing server-to-client function props from the active admin shell
 - Changed the dashboard marketing sidebar menu to resolve its page sub-links from the real CMS page ids instead of hardcoded fallback editor paths, so custom or DB-overridden home/about/contact pages open the correct editor routes

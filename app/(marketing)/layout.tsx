@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { MarketingPageOffset } from "@/components/storefront/marketing-page-offset";
 import { StorefrontBottomNavigation } from "@/components/storefront/storefront-bottom-navigation";
 import { StorefrontFooter } from "@/components/storefront/storefront-footer";
 import { StorefrontHeader } from "@/components/storefront/storefront-header";
@@ -137,7 +138,7 @@ export default async function MarketingLayout({
       >
         <div className="flex min-h-full flex-col">
           <main className="min-h-[calc(100vh-18rem)] min-w-0 pb-20 md:pb-0">
-            {children}
+            <MarketingPageOffset>{children}</MarketingPageOffset>
           </main>
           <StorefrontFooter
             locale={locale}
