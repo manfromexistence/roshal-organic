@@ -130,7 +130,7 @@ function CustomNumberInput({
         max={max}
         onChange={(e) => {
           const val = parseInt(e.target.value, 10);
-          if (!isNaN(val)) onChange(val);
+          if (!Number.isNaN(val)) onChange(val);
         }}
         className="flex h-9 w-full min-w-0 rounded-none bg-transparent px-3 py-1 text-center text-sm shadow-none transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
       />

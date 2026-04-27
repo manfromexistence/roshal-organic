@@ -51,4 +51,6 @@ And out of 100 tell me how much we are now at delivering the project to the clie
 ------------------------------------------------------------------------------------------------------------------
 
 current cards compoents that don't have py and remove it as "image-cards" componets and for other cards please put py-6 and we should use image-cards for all product listing in the marketiing pages and in all other places we will use normal cards with py-6 correctly
-Please keep it mind let the cards compoents be same so most of the cards 
+Please keep it mind let the cards compoents be same so most of the cards
+
+------------------------------------------------------------------------------------------------------------------

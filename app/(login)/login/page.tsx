@@ -4,11 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -45,38 +41,38 @@ export default function LoginPage() {
     try {
       const response = isSignIn
         ? await authClient.signIn.email(
-          {
-            email,
-            password,
-            rememberMe: true,
-            callbackURL,
-          },
-          {
-            body: {
-              disableRedirect: true,
+            {
+              email,
+              password,
+              rememberMe: true,
+              callbackURL,
             },
-          },
-        )
+            {
+              body: {
+                disableRedirect: true,
+              },
+            },
+          )
         : await authClient.signUp.email(
-          {
-            name,
-            email,
-            password,
-            callbackURL,
-          },
-          {
-            body: {
-              disableRedirect: true,
+            {
+              name,
+              email,
+              password,
+              callbackURL,
             },
-          },
-        );
+            {
+              body: {
+                disableRedirect: true,
+              },
+            },
+          );
 
       if (response.error) {
         throw new Error(
           response.error.message ||
-          (isSignIn
-            ? "Could not sign in. Please check your credentials."
-            : "Could not create the account. Please try again."),
+            (isSignIn
+              ? "Could not sign in. Please check your credentials."
+              : "Could not create the account. Please try again."),
         );
       }
 
@@ -119,11 +115,17 @@ export default function LoginPage() {
                 >
                   <div className="flex size-16 items-center justify-center rounded-xl bg-primary/5 p-2">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/logo.png" alt="Roshal Organic" className="size-12 object-contain" />
+                    <img
+                      src="/logo.png"
+                      alt="Roshal Organic"
+                      className="size-12 object-contain"
+                    />
                   </div>
                   <span className="sr-only">Roshal Organic</span>
                 </a>
-                <h1 className="text-2xl font-bold">Welcome to Roshal Organic</h1>
+                <h1 className="text-2xl font-bold">
+                  Welcome to Roshal Organic
+                </h1>
               </div>
 
               <Tabs
@@ -212,11 +214,17 @@ export default function LoginPage() {
 
               <p className="pt-4 text-center text-sm text-muted-foreground">
                 By clicking continue, you agree to our{" "}
-                <a href="/terms" className="underline underline-offset-4 hover:text-primary">
+                <a
+                  href="/terms"
+                  className="underline underline-offset-4 hover:text-primary"
+                >
                   Terms of Service
                 </a>{" "}
                 and{" "}
-                <a href="/privacy" className="underline underline-offset-4 hover:text-primary">
+                <a
+                  href="/privacy"
+                  className="underline underline-offset-4 hover:text-primary"
+                >
                   Privacy Policy
                 </a>
                 .
