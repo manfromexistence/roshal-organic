@@ -6,5 +6,5 @@ import type { RoshalLocale } from "@/lib/store-types";
 export async function getRoshalLocale(): Promise<RoshalLocale> {
   const cookieStore = await cookies();
   const candidate = cookieStore.get(ROSHAL_LOCALE_COOKIE)?.value;
-  return isRoshalLocale(candidate) ? candidate : "bn";
+  return isRoshalLocale(candidate) ? candidate : "en";
 }

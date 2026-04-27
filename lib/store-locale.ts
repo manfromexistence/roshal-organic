@@ -1,6 +1,6 @@
 import type { LocalizedValue, RoshalLocale } from "@/lib/store-types";
 
-export const ROSHAL_LOCALE_COOKIE = "roshal-locale";
+export const ROSHAL_LOCALE_COOKIE = "roshal-locale-v2";
 export const roshalLocales = [
   "bn",
   "en",

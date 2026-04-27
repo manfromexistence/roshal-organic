@@ -218,15 +218,17 @@ export function StorefrontHeader({
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
       <div className="border-b">
-        <div className="relative container mx-auto flex items-center justify-between gap-2 px-4 py-1">
+        <div className="relative container mx-auto flex items-center justify-between gap-2 px-4 py-2.5 md:py-3">
           <Link href="/" className="flex min-w-0 items-center gap-2 md:gap-3">
-            <Image
-              src="/logo.png"
-              alt={siteSettings.brandName}
-              width={40}
-              height={40}
-              className="h-10 w-auto rounded-md"
-            />
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-transparent dark:bg-card/85 backdrop-blur-md md:h-9 md:w-9">
+              <Image
+                src="/logo.png"
+                alt={siteSettings.brandName}
+                width={35}
+                height={35}
+                className="h-8 w-auto object-contain md:h-10"
+              />
+            </div>
             <div className="min-w-0">
               <span className="block truncate text-base font-bold text-foreground md:text-lg">
                 {siteSettings.brandName}
@@ -489,20 +491,20 @@ export function StorefrontHeader({
         </div>
       </div>
 
-      <div className="min-w-full border-b">
+      <div className="min-w-full border-b bg-card/95 shadow-sm backdrop-blur-xl supports-[backdrop-filter]:bg-card/85">
         <div
           ref={subHeaderContainerRef}
           className="relative container mx-auto overflow-hidden px-4"
         >
           <nav
             aria-label={locale === "bn" ? "দ্রুত ক্যাটাগরি" : "Quick categories"}
-            className="flex items-center gap-x-5 overflow-hidden py-3 md:gap-x-6"
+            className="flex items-center gap-x-2 overflow-hidden py-3 md:gap-x-3"
           >
             {visibleCategories.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="shrink-0 whitespace-nowrap text-sm text-muted-foreground transition-colors hover:text-primary"
+                className="inline-flex h-9 shrink-0 items-center rounded-full border border-border/60 bg-background/85 px-4 text-sm font-medium whitespace-nowrap text-muted-foreground shadow-sm transition-colors hover:border-primary/30 hover:text-primary"
               >
                 {link.label}
               </Link>
@@ -517,7 +519,7 @@ export function StorefrontHeader({
               >
                 <SelectTrigger
                   size="sm"
-                  className="h-8 shrink-0 rounded-full border-border/60 bg-background/70 px-3 text-xs font-medium text-muted-foreground hover:text-foreground"
+                  className="h-9 shrink-0 rounded-full border-border/60 bg-background/85 px-4 text-xs font-semibold text-muted-foreground shadow-sm hover:text-foreground"
                   aria-label={moreLabel}
                 >
                   <div className="flex items-center gap-2">
@@ -542,7 +544,7 @@ export function StorefrontHeader({
           >
             <div
               ref={subHeaderMeasureRowRef}
-              className="flex items-center gap-x-5 whitespace-nowrap py-3 md:gap-x-6"
+              className="flex items-center gap-x-2 whitespace-nowrap py-3 md:gap-x-3"
             >
               {categories.map((link, index) => (
                 <span
@@ -550,14 +552,14 @@ export function StorefrontHeader({
                   ref={(element) => {
                     categoryMeasureRefs.current[index] = element;
                   }}
-                  className="shrink-0 text-sm text-muted-foreground"
+                  className="shrink-0 rounded-full border border-border/60 px-4 text-sm font-medium text-muted-foreground"
                 >
                   {link.label}
                 </span>
               ))}
               <div
                 ref={moreTriggerMeasureRef}
-                className="flex h-8 shrink-0 items-center gap-2 rounded-full border border-border/60 bg-background/70 px-3 text-xs font-medium text-muted-foreground"
+                className="flex h-9 shrink-0 items-center gap-2 rounded-full border border-border/60 bg-background/85 px-4 text-xs font-semibold text-muted-foreground"
               >
                 <MoreHorizontal className="size-3.5" />
                 <span>{moreLabel}</span>

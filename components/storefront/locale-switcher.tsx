@@ -1,8 +1,7 @@
 "use client";
 
-import { Languages } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ROSHAL_LOCALE_COOKIE } from "@/lib/store-locale";
 import type { RoshalLocale } from "@/lib/store-types";
@@ -10,15 +9,24 @@ import type { RoshalLocale } from "@/lib/store-types";
 export function LocaleSwitcher({ locale }: { locale: RoshalLocale }) {
   const router = useRouter();
   const pathname = usePathname();
+  const [currentLocale, setCurrentLocale] = useState<RoshalLocale>(locale);
 
   useEffect(() => {
-    localStorage.setItem("language", locale);
-    document.documentElement.lang = locale;
+    setCurrentLocale(locale);
   }, [locale]);
 
-  const toggleLocale = async () => {
-    const nextLocale = locale === "bn" ? "en" : "bn";
+  useEffect(() => {
+    localStorage.setItem("language", currentLocale);
+    document.documentElement.lang = currentLocale;
+  }, [currentLocale]);
 
+  const toggleLabel =
+    currentLocale === "bn" ? "Switch to English" : "বাংলায় পরিবর্তন করুন";
+
+  const toggleLocale = async () => {
+    const nextLocale = currentLocale === "bn" ? "en" : "bn";
+
+    setCurrentLocale(nextLocale);
     localStorage.setItem("language", nextLocale);
     document.documentElement.lang = nextLocale;
     window.dispatchEvent(
@@ -34,6 +42,9 @@ export function LocaleSwitcher({ locale }: { locale: RoshalLocale }) {
         path: "/",
         expires: Date.now() + 31_536_000_000,
       });
+    } else {
+      // biome-ignore lint/suspicious/noDocumentCookie: fallback for browsers without the Cookie Store API.
+      document.cookie = `${ROSHAL_LOCALE_COOKIE}=${nextLocale}; path=/; max-age=31536000`;
     }
 
     router.refresh();
@@ -41,18 +52,14 @@ export function LocaleSwitcher({ locale }: { locale: RoshalLocale }) {
 
   return (
     <Button
-      variant="ghost"
-      size="icon"
+      variant="outline"
       onClick={toggleLocale}
-      aria-label={locale === "bn" ? "Switch to English" : "বাংলায় পরিবর্তন করুন"}
-      className="shrink-0"
+      aria-label={toggleLabel}
+      className="relative h-10 min-w-14 shrink-0"
       data-pathname={pathname}
-      title={locale === "bn" ? "Switch to English" : "বাংলায় পরিবর্তন করুন"}
+      title={toggleLabel}
     >
-      <Languages className="size-5" />
-      <span className="sr-only">
-        {locale === "bn" ? "Switch to English" : "বাংলায় পরিবর্তন করুন"}
-      </span>
+        {currentLocale === "en" ? "BN" : "EN"}
     </Button>
   );
 }

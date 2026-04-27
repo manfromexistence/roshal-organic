@@ -69,6 +69,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added dynamic title fetching to PageBreadcrumb component - now detects ID segments and fetches entity names from database
 
 ### Changed
+- Changed the locale toggle again so the visible pill shows the next language to switch to (`BN` while English is active, `EN` while Bangla is active) while preserving the English-first default
+- Changed the locale persistence key so old Bangla-first cookies no longer override the new English-first default, and aligned the header button label back to the active `EN`/`BN` language
+- Changed the locale button label to show the next language (`BN` when English is active, `EN` when Bangla is active), and adjusted the header chrome again with a slightly taller bar plus a smaller logo container
+- Changed the marketing header row to be a little taller while shrinking the surfaced logo container further
+- Changed the locale toggle again so it now shows only the active `EN` or `BN` label inside a single pill, and changed the storefront default locale fallback to English
+- Changed the marketing header again to use a smaller surfaced logo container and converted the BL/EN locale control into a true sliding toggle-style pill
+- Changed the default storefront light/dark theme tokens to use the darker Roshal green `oklch(28.04% 0.05154 150.113)` for the primary, ring, chart, and sidebar-primary accents
+- Changed the marketing header so the logo now sits inside a larger surfaced container and the old language icon toggle is replaced by a BL/EN text switcher in its own pill container
+- Changed the marketing quick-category sub-header from a transparent text rail into a card-backed chip row with a styled `More` trigger for overflowed items
+- Changed the landing-page hero to a shorter half-height presentation with tighter content spacing
 - Changed the shared marketing layout to add a route-aware `pt-22` top offset for fixed-header pages while leaving the landing homepage and `/products` listing aligned to their existing layout
 - Changed the homepage and shared marketing hero rendering so the existing storefront UI now reads its primary hero image/title/description from the dashboard-managed page fields instead of leaving those CMS values disconnected from the live frontend
 - Changed the dashboard navigation config to use serializable icon keys and moved Lucide icon resolution into the client sidebar components, removing server-to-client function props from the active admin shell
@@ -194,6 +204,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All linting errors and warnings resolved across the codebase
 
 ### Fixed
+- Fixed the landing hero controls by hiding the previous/next arrow buttons while keeping the banner rotation and pagination dots active
 - Fixed the remaining homepage and product-detail LCP image warnings by marking live marketing hero images and product hero imagery as eager priority assets where they render above the fold
 - Fixed the ImgBB upload route to validate missing, empty, or oversized files, preserve the uploaded filename, and return the real ImgBB image id plus display URL instead of guessing them from the response URL
 - Fixed the storefront footer partner/payment rail so it no longer renders decorative scrollbars in the live marketing shell

@@ -54,3 +54,12 @@ current cards compoents that don't have py and remove it as "image-cards" compon
 Please keep it mind let the cards compoents be same so most of the cards
 
 ------------------------------------------------------------------------------------------------------------------
+
+On our website, please do this one: First of all please run this project and do these changes and also ui automatically check if all the things works or not properly
+1. Change the primary color of the default light and dark theme to use this color: oklch(28.04% 0.05154 150.113).
+2. In the header, in dark mode, at the marketing header logo, please put a container to make the logo bigger in size in a light and dark mode. Especially in that mode, please put a container around the logo at the marketing header and on the language switcher. In there, please remove the current icon and put BL and EN text.
+3. At the sub-header, put a background color instead of making it transparent. Also, it has more items, so please use a more professional multi-item.
+4. On the marketing page landing hero, please decrease the height of the landing hero to half of the current height.
+
+------------------------------------------------------------------------------------------------------------------
+

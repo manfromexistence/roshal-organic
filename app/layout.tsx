@@ -5,6 +5,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { ROSHAL_LOCALE_COOKIE } from "@/lib/store-locale";
 import { getRoshalMetadataBase } from "@/lib/store-site";
 import {
   getThemeBootstrapScript,
@@ -34,12 +35,13 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const cookieStore = await cookies();
-  const locale = cookieStore.get("roshal-locale")?.value === "en" ? "en" : "bn";
+  const locale =
+    cookieStore.get(ROSHAL_LOCALE_COOKIE)?.value === "bn" ? "bn" : "en";
   const themeBootstrapScript = getThemeBootstrapScript();
 
   return (
     <html
-      lang={locale === "en" ? "en" : "bn-BD"}
+      lang={locale === "bn" ? "bn-BD" : "en"}
       className="h-full antialiased"
       suppressHydrationWarning
     >
