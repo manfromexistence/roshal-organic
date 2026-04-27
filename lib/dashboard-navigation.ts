@@ -5,7 +5,6 @@ import {
   FileText,
   LayoutDashboard,
   Package,
-  Palette,
   ShoppingCart,
   Users,
 } from "lucide-react";
@@ -81,12 +80,6 @@ export const dashboardPrimaryNavigation: DashboardNavItem[] = [
     url: "/dashboard/pages",
     icon: FileText,
     keywords: ["content", "cms", "landing pages"],
-  },
-  {
-    title: "Storefront Theme",
-    url: "/dashboard/theme",
-    icon: Palette,
-    keywords: ["appearance", "layout", "theme"],
   },
 ];
 

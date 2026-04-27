@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { Minus, Plus, Search, SlidersHorizontal, X } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   startTransition,
@@ -94,6 +94,58 @@ function areRangesEqual(
   right: readonly [number, number],
 ) {
   return left[0] === right[0] && left[1] === right[1];
+}
+
+function CustomNumberInput({
+  id,
+  value,
+  min,
+  max,
+  onChange,
+}: {
+  id?: string;
+  value: number;
+  min: number;
+  max: number;
+  onChange: (value: number) => void;
+}) {
+  return (
+    <div className="flex items-center rounded-md border border-input bg-background shadow-sm">
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        className="h-9 w-9 shrink-0 rounded-none rounded-l-md border-r border-input"
+        disabled={value <= min}
+        onClick={() => onChange(Math.max(min, value - 10))}
+      >
+        <Minus className="h-4 w-4" />
+      </Button>
+      <input
+        id={id}
+        type="number"
+        inputMode="numeric"
+        value={value}
+        min={min}
+        max={max}
+        onChange={(e) => {
+          const val = parseInt(e.target.value, 10);
+          if (!isNaN(val)) onChange(val);
+        }}
+        className="flex h-9 w-full min-w-0 rounded-none bg-transparent px-3 py-1 text-center text-sm shadow-none transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+      />
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        className="h-9 w-9 shrink-0 rounded-none rounded-r-md border-l border-input"
+        disabled={value >= max}
+        onClick={() => onChange(Math.min(max, value + 10))}
+      >
+        <Plus className="h-4 w-4" />
+      </Button>
+    </div>
+  );
 }
 
 function ProductFiltersPanel({
@@ -202,15 +254,12 @@ function ProductFiltersPanel({
             <Label htmlFor="min-price">
               {locale === "bn" ? "সর্বনিম্ন" : "Minimum"}
             </Label>
-            <Input
+            <CustomNumberInput
               id="min-price"
-              type="number"
-              inputMode="numeric"
               min={priceBounds.min}
               max={priceBounds.max}
               value={priceRange[0]}
-              onChange={(event) => {
-                const nextValue = parsePriceValue(event.target.value);
+              onChange={(nextValue) => {
                 onPriceRangeChange(
                   resolvePriceRange(nextValue, priceRange[1], priceBounds),
                 );
@@ -222,15 +271,12 @@ function ProductFiltersPanel({
             <Label htmlFor="max-price">
               {locale === "bn" ? "সর্বোচ্চ" : "Maximum"}
             </Label>
-            <Input
+            <CustomNumberInput
               id="max-price"
-              type="number"
-              inputMode="numeric"
               min={priceBounds.min}
               max={priceBounds.max}
               value={priceRange[1]}
-              onChange={(event) => {
-                const nextValue = parsePriceValue(event.target.value);
+              onChange={(nextValue) => {
                 onPriceRangeChange(
                   resolvePriceRange(priceRange[0], nextValue, priceBounds),
                 );
@@ -366,48 +412,52 @@ export function ProductsPageClient({
   }, [availableCategoryKeys, parsedSearchParams, priceBounds]);
 
   useEffect(() => {
-    const nextParams = new URLSearchParams(searchParamsString);
+    const timeoutId = setTimeout(() => {
+      const nextParams = new URLSearchParams(searchParamsString);
 
-    if (trimmedSearchQuery) {
-      nextParams.set("q", trimmedSearchQuery);
-    } else {
-      nextParams.delete("q");
-    }
+      if (trimmedSearchQuery) {
+        nextParams.set("q", trimmedSearchQuery);
+      } else {
+        nextParams.delete("q");
+      }
 
-    if (activeCategory !== "all") {
-      nextParams.set("category", activeCategory);
-    } else {
-      nextParams.delete("category");
-    }
+      if (activeCategory !== "all") {
+        nextParams.set("category", activeCategory);
+      } else {
+        nextParams.delete("category");
+      }
 
-    if (sortKey !== "featured") {
-      nextParams.set("sort", sortKey);
-    } else {
-      nextParams.delete("sort");
-    }
+      if (sortKey !== "featured") {
+        nextParams.set("sort", sortKey);
+      } else {
+        nextParams.delete("sort");
+      }
 
-    if (!areRangesEqual(priceRange, defaultPriceRange)) {
-      nextParams.set("minPrice", priceRange[0].toString());
-      nextParams.set("maxPrice", priceRange[1].toString());
-    } else {
-      nextParams.delete("minPrice");
-      nextParams.delete("maxPrice");
-    }
+      if (!areRangesEqual(priceRange, defaultPriceRange)) {
+        nextParams.set("minPrice", priceRange[0].toString());
+        nextParams.set("maxPrice", priceRange[1].toString());
+      } else {
+        nextParams.delete("minPrice");
+        nextParams.delete("maxPrice");
+      }
 
-    const nextQueryString = nextParams.toString();
+      const nextQueryString = nextParams.toString();
 
-    if (searchParamsString === nextQueryString) {
-      return;
-    }
+      if (searchParamsString === nextQueryString) {
+        return;
+      }
 
-    startTransition(() => {
-      router.replace(
-        nextQueryString ? `${pathname}?${nextQueryString}` : pathname,
-        {
-          scroll: false,
-        },
-      );
-    });
+      startTransition(() => {
+        router.replace(
+          nextQueryString ? `${pathname}?${nextQueryString}` : pathname,
+          {
+            scroll: false,
+          },
+        );
+      });
+    }, 400);
+
+    return () => clearTimeout(timeoutId);
   }, [
     activeCategory,
     defaultPriceRange,
@@ -505,15 +555,12 @@ export function ProductsPageClient({
   ].filter(Boolean) as string[];
 
   return (
-    <div className="container mx-auto min-w-0 px-4 py-10">
-      <div className="grid gap-8 md:grid-cols-[17rem,minmax(0,1fr)] xl:grid-cols-[18rem,minmax(0,1fr)]">
-        <aside className="hidden self-start md:block">
-          <div className="sticky top-24 space-y-6 rounded-3xl border border-border/70 bg-background/80 p-5 backdrop-blur supports-[backdrop-filter]:bg-background/65">
+    <div className="container mx-auto px-4 py-4">
+      <div className="flex flex-col gap-8 lg:flex-row">
+        <aside className="hidden w-full shrink-0 lg:block lg:w-[21rem] xl:w-[24rem]">
+          <div className="sticky top-4 max-h-[calc(100vh-8rem)] overflow-y-auto space-y-8 rounded-2xl border border-border/50 bg-background/95 p-6 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border/50 [&::-webkit-scrollbar]:w-1.5">
             <div className="space-y-2">
-              <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
-                {locale === "bn" ? "ফিল্টার" : "Filters"}
-              </p>
-              <h2 className="text-2xl font-semibold tracking-tight">
+              <h2 className="text-xl font-semibold tracking-tight">
                 {locale === "bn" ? "পণ্য বাছাই করুন" : "Refine products"}
               </h2>
               <p className="text-sm leading-6 text-muted-foreground">
@@ -537,7 +584,7 @@ export function ProductsPageClient({
           </div>
         </aside>
 
-        <div className="min-w-0 space-y-6">
+        <div className="min-w-0 flex-1 space-y-6">
           <div className="space-y-4">
             <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
               <div className="space-y-3">
@@ -560,7 +607,7 @@ export function ProductsPageClient({
                 <Button
                   type="button"
                   variant="outline"
-                  className="md:hidden"
+                  className="lg:hidden"
                   onClick={() => setMobileFiltersOpen(true)}
                 >
                   <SlidersHorizontal className="size-4" />

@@ -220,9 +220,9 @@ export function StorefrontHeader({
   };
 
   return (
-    <header className="sticky top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
       <div className="border-b">
-        <div className="relative container mx-auto flex items-center justify-between gap-2 px-4 py-3">
+        <div className="relative container mx-auto flex items-center justify-between gap-2 px-4 py-1">
           <Link href="/" className="flex min-w-0 items-center gap-2 md:gap-3">
             <Image
               src="/logo.png"

@@ -7,9 +7,7 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -113,13 +111,19 @@ export default function LoginPage() {
       <div className="mx-auto grid min-h-screen max-w-7xl gap-6 px-4 py-6 lg:grid-cols-[1.08fr,0.92fr]">
         <section className="flex items-center justify-center">
           <Card className="w-full max-w-xl border-border/70 shadow-sm">
-            <CardHeader className="space-y-4">
-              <div className="space-y-2">
-                <CardTitle className="text-3xl">
-                  {isSignIn
-                    ? "Continue your Roshal account"
-                    : "Create your Roshal account"}
-                </CardTitle>
+            <CardHeader className="space-y-4 pb-6">
+              <div className="flex flex-col items-center gap-2 pb-2 text-center">
+                <a
+                  href="/"
+                  className="flex flex-col items-center gap-2 font-medium"
+                >
+                  <div className="flex size-16 items-center justify-center rounded-xl bg-primary/5 p-2">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="/logo.png" alt="Roshal Organic" className="size-12 object-contain" />
+                  </div>
+                  <span className="sr-only">Roshal Organic</span>
+                </a>
+                <h1 className="text-2xl font-bold">Welcome to Roshal Organic</h1>
               </div>
 
               <Tabs
@@ -205,6 +209,18 @@ export default function LoginPage() {
                       : "Create customer account"}
                 </Button>
               </form>
+
+              <p className="pt-4 text-center text-sm text-muted-foreground">
+                By clicking continue, you agree to our{" "}
+                <a href="/terms" className="underline underline-offset-4 hover:text-primary">
+                  Terms of Service
+                </a>{" "}
+                and{" "}
+                <a href="/privacy" className="underline underline-offset-4 hover:text-primary">
+                  Privacy Policy
+                </a>
+                .
+              </p>
             </CardContent>
           </Card>
         </section>
