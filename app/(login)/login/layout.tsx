@@ -6,12 +6,16 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { getRoshalSessionUser } from "@/lib/store-auth";
 import {
   getRoshalNavigationPages,
+  getRoshalPages,
   getRoshalPaymentSettings,
-  getRoshalProducts,
   getRoshalSiteSettings,
 } from "@/lib/store-content";
 import { getRoshalLocale } from "@/lib/store-i18n";
-import { getLocalizedValue, localizedValue } from "@/lib/store-locale";
+import {
+  buildFooterCategoryLinks,
+  buildStorefrontTaxonomy,
+} from "@/lib/store-taxonomy";
+import { getRoshalTaxonomy } from "@/lib/store-taxonomy-content";
 import "../../globals.css";
 
 export const metadata: Metadata = {
@@ -24,98 +28,33 @@ export default async function LoginLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [locale, pages, siteSettings, sessionUser, products, paymentSettings] =
-    await Promise.all([
-      getRoshalLocale(),
-      getRoshalNavigationPages(),
-      getRoshalSiteSettings(),
-      getRoshalSessionUser(),
-      getRoshalProducts(),
-      getRoshalPaymentSettings(),
-    ]);
+  const [
+    locale,
+    allPages,
+    pages,
+    siteSettings,
+    sessionUser,
+    paymentSettings,
+    taxonomyBundle,
+  ] = await Promise.all([
+    getRoshalLocale(),
+    getRoshalPages(),
+    getRoshalNavigationPages(),
+    getRoshalSiteSettings(),
+    getRoshalSessionUser(),
+    getRoshalPaymentSettings(),
+    getRoshalTaxonomy(),
+  ]);
 
-  const curatedHeaderLinks = [
-    {
-      href: "/products",
-      label: getLocalizedValue(
-        locale,
-        localizedValue("সব পণ্য", "All Products"),
-      ),
-    },
-    {
-      href: "/products?category=vegetables",
-      label: getLocalizedValue(locale, localizedValue("সবজি", "Vegetables")),
-    },
-    {
-      href: "/products?category=honey",
-      label: getLocalizedValue(locale, localizedValue("মধু", "Honey")),
-    },
-    {
-      href: "/products?category=ghee",
-      label: getLocalizedValue(locale, localizedValue("ঘি", "Ghee")),
-    },
-    {
-      href: "/products?category=gur",
-      label: getLocalizedValue(locale, localizedValue("গুড়", "Jaggery")),
-    },
-    {
-      href: "/products?category=fruit",
-      label: getLocalizedValue(locale, localizedValue("ফল", "Fruits")),
-    },
-    {
-      href: "/products?category=oil",
-      label: getLocalizedValue(locale, localizedValue("তেল", "Oils")),
-    },
-    {
-      href: "/products?category=dairy",
-      label: getLocalizedValue(locale, localizedValue("দুগ্ধজাত", "Dairy")),
-    },
-    {
-      href: "/products?q=fresh",
-      label: getLocalizedValue(locale, localizedValue("তাজা পণ্য", "Fresh Picks")),
-    },
-    {
-      href: "/products?q=seasonal",
-      label: getLocalizedValue(
-        locale,
-        localizedValue("মৌসুমি পণ্য", "Seasonal Picks"),
-      ),
-    },
-    {
-      href: "/products?sort=price-low",
-      label: getLocalizedValue(locale, localizedValue("সেরা দামে", "Best Value")),
-    },
-    {
-      href: "/products?maxPrice=250",
-      label: getLocalizedValue(
-        locale,
-        localizedValue("২৫০ টাকার মধ্যে", "Under ৳250"),
-      ),
-    },
-    {
-      href: "/products?minPrice=400",
-      label: getLocalizedValue(locale, localizedValue("প্রিমিয়াম", "Premium")),
-    },
-  ];
-  const productCategoryLinks = products.map((product) => ({
-    href: `/products?category=${product.categoryKey}`,
-    label: getLocalizedValue(locale, product.categoryLabel),
-  }));
-  const categories = Array.from(
-    new Map(
-      [...curatedHeaderLinks, ...productCategoryLinks].map((link) => [
-        link.href,
-        link,
-      ]),
-    ).values(),
-  );
+  const taxonomy = buildStorefrontTaxonomy(taxonomyBundle);
+  const footerCategoryLinks = buildFooterCategoryLinks(taxonomyBundle);
 
   return (
     <div className="flex h-svh flex-col overflow-hidden bg-background text-foreground antialiased">
       <StorefrontHeader
         locale={locale}
         pages={pages}
-        categories={categories}
+        taxonomy={taxonomy}
         siteSettings={siteSettings}
         sessionUser={
           sessionUser
@@ -140,9 +79,10 @@ export default async function LoginLayout({
           </main>
           <StorefrontFooter
             locale={locale}
-            pages={pages}
+            pages={allPages}
             paymentOptions={paymentSettings.options}
             siteSettings={siteSettings}
+            categoryLinks={footerCategoryLinks}
           />
         </div>
       </ScrollArea>

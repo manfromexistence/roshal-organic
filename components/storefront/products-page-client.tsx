@@ -32,7 +32,16 @@ import {
 import { Slider } from "@/components/ui/slider";
 import { formatBdt } from "@/lib/store-format";
 import { getLocalizedValue } from "@/lib/store-locale";
-import type { RoshalLocale, RoshalProduct } from "@/lib/store-types";
+import {
+  getTaxonomyCategoryOptions,
+  getTaxonomySubcategoryOptions,
+  productMatchesTaxonomySelection,
+} from "@/lib/store-taxonomy";
+import type {
+  RoshalLocale,
+  RoshalProduct,
+  RoshalTaxonomyBundle,
+} from "@/lib/store-types";
 
 type ProductSortKey = "featured" | "price-low" | "price-high" | "name";
 
@@ -47,6 +56,13 @@ type CategoryOption = {
   count: number;
 };
 
+type SubcategoryOption = {
+  key: string;
+  categoryKey: string;
+  label: string;
+  count: number;
+};
+
 function normalizeSearchValue(value: string) {
   return value.trim().toLocaleLowerCase();
 }
@@ -57,7 +73,7 @@ function normalizeSortKey(value: string | null | undefined): ProductSortKey {
     : "featured";
 }
 
-function resolveCategoryKey(value: string, availableKeys: Set<string>) {
+function resolveOptionKey(value: string, availableKeys: Set<string>) {
   return value !== "all" && availableKeys.has(value) ? value : "all";
 }
 
@@ -121,18 +137,21 @@ function CustomNumberInput({
       >
         <Minus className="h-4 w-4" />
       </Button>
-      <input
+      <Input
         id={id}
         type="number"
         inputMode="numeric"
         value={value}
         min={min}
         max={max}
-        onChange={(e) => {
-          const val = parseInt(e.target.value, 10);
-          if (!Number.isNaN(val)) onChange(val);
+        onChange={(event) => {
+          const nextValue = Number.parseInt(event.target.value, 10);
+
+          if (!Number.isNaN(nextValue)) {
+            onChange(nextValue);
+          }
         }}
-        className="flex h-9 w-full min-w-0 rounded-none bg-transparent px-3 py-1 text-center text-sm shadow-none transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+        className="h-9 min-w-0 flex-1 rounded-none border-0 bg-transparent px-3 text-center text-sm shadow-none focus-visible:ring-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
       />
       <Button
         type="button"
@@ -155,6 +174,9 @@ function ProductFiltersPanel({
   categoryOptions,
   activeCategory,
   onCategoryChange,
+  subcategoryOptions,
+  activeSubcategory,
+  onSubcategoryChange,
   priceBounds,
   priceRange,
   onPriceRangeChange,
@@ -166,6 +188,9 @@ function ProductFiltersPanel({
   categoryOptions: CategoryOption[];
   activeCategory: string;
   onCategoryChange: (value: string) => void;
+  subcategoryOptions: SubcategoryOption[];
+  activeSubcategory: string;
+  onSubcategoryChange: (value: string) => void;
   priceBounds: PriceBounds;
   priceRange: [number, number];
   onPriceRangeChange: (value: [number, number]) => void;
@@ -222,6 +247,43 @@ function ProductFiltersPanel({
           ))}
         </div>
       </div>
+
+      {subcategoryOptions.length > 1 ? (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <Label>{locale === "bn" ? "সাবক্যাটাগরি" : "Subcategories"}</Label>
+            <span className="text-xs text-muted-foreground">
+              {subcategoryOptions.length - 1}{" "}
+              {locale === "bn" ? "অপশন" : "options"}
+            </span>
+          </div>
+          <div className="space-y-2">
+            {subcategoryOptions.map((subcategory) => (
+              <Button
+                key={subcategory.key}
+                type="button"
+                variant={
+                  activeSubcategory === subcategory.key ? "secondary" : "ghost"
+                }
+                className="w-full justify-between rounded-xl px-3"
+                onClick={() => onSubcategoryChange(subcategory.key)}
+              >
+                <span>{subcategory.label}</span>
+                <Badge
+                  variant={
+                    activeSubcategory === subcategory.key
+                      ? "default"
+                      : "outline"
+                  }
+                  className="rounded-full"
+                >
+                  {subcategory.count}
+                </Badge>
+              </Button>
+            ))}
+          </div>
+        </div>
+      ) : null}
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
@@ -301,16 +363,20 @@ function ProductFiltersPanel({
 export function ProductsPageClient({
   locale,
   products,
+  taxonomy,
   initialSearchQuery,
   initialCategory,
+  initialSubcategory,
   initialSortKey,
   initialMinPrice,
   initialMaxPrice,
 }: {
   locale: RoshalLocale;
   products: RoshalProduct[];
+  taxonomy: RoshalTaxonomyBundle;
   initialSearchQuery: string;
   initialCategory: string;
+  initialSubcategory: string;
   initialSortKey: ProductSortKey;
   initialMinPrice: number | null;
   initialMaxPrice: number | null;
@@ -323,27 +389,55 @@ export function ProductsPageClient({
     () => new URLSearchParams(searchParamsString),
     [searchParamsString],
   );
-  const categoryMap = useMemo(
+  const taxonomyCategories = taxonomy.categories;
+  const taxonomySubcategories = taxonomy.subcategories;
+  const categoryFilterOptions = useMemo(
     () =>
-      new Map(
-        products.map((product) => [
-          product.categoryKey,
-          getLocalizedValue(locale, product.categoryLabel),
-        ]),
+      getTaxonomyCategoryOptions(locale, taxonomyCategories, products).filter(
+        (category) => category.count > 0,
       ),
-    [locale, products],
+    [locale, products, taxonomyCategories],
   );
-  const categoryCounts = useMemo(
-    () =>
-      products.reduce<Record<string, number>>((counts, product) => {
-        counts[product.categoryKey] = (counts[product.categoryKey] ?? 0) + 1;
-        return counts;
-      }, {}),
-    [products],
+  const categoryOptions = useMemo<CategoryOption[]>(
+    () => [
+      {
+        key: "all",
+        label: locale === "bn" ? "সব ক্যাটাগরি" : "All categories",
+        count: products.length,
+      },
+      ...categoryFilterOptions,
+    ],
+    [categoryFilterOptions, locale, products.length],
   );
   const availableCategoryKeys = useMemo(
-    () => new Set(categoryMap.keys()),
-    [categoryMap],
+    () => new Set(categoryFilterOptions.map((category) => category.key)),
+    [categoryFilterOptions],
+  );
+  const resolvedInitialCategory = useMemo(
+    () => resolveOptionKey(initialCategory, availableCategoryKeys),
+    [availableCategoryKeys, initialCategory],
+  );
+  const initialSubcategoryOptions = useMemo(
+    () =>
+      getTaxonomySubcategoryOptions(
+        locale,
+        resolvedInitialCategory,
+        taxonomyCategories,
+        taxonomySubcategories,
+        products,
+      ).filter((subcategory) => subcategory.count > 0),
+    [
+      locale,
+      products,
+      resolvedInitialCategory,
+      taxonomyCategories,
+      taxonomySubcategories,
+    ],
+  );
+  const initialSubcategoryKeys = useMemo(
+    () =>
+      new Set(initialSubcategoryOptions.map((subcategory) => subcategory.key)),
+    [initialSubcategoryOptions],
   );
   const priceBounds = useMemo<PriceBounds>(() => {
     if (products.length === 0) {
@@ -356,24 +450,10 @@ export function ProductsPageClient({
       max: Math.max(...prices),
     };
   }, [products]);
-  const categoryOptions = useMemo<CategoryOption[]>(
-    () => [
-      {
-        key: "all",
-        label: locale === "bn" ? "সব ক্যাটাগরি" : "All categories",
-        count: products.length,
-      },
-      ...Array.from(categoryMap.entries()).map(([key, label]) => ({
-        key,
-        label,
-        count: categoryCounts[key] ?? 0,
-      })),
-    ],
-    [categoryCounts, categoryMap, locale, products.length],
-  );
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
-  const [activeCategory, setActiveCategory] = useState(
-    resolveCategoryKey(initialCategory, availableCategoryKeys),
+  const [activeCategory, setActiveCategory] = useState(resolvedInitialCategory);
+  const [activeSubcategory, setActiveSubcategory] = useState(() =>
+    resolveOptionKey(initialSubcategory, initialSubcategoryKeys),
   );
   const [sortKey, setSortKey] = useState<ProductSortKey>(initialSortKey);
   const [priceRange, setPriceRange] = useState<[number, number]>(() =>
@@ -387,12 +467,70 @@ export function ProductsPageClient({
     () => [priceBounds.min, priceBounds.max],
     [priceBounds.max, priceBounds.min],
   );
+  const subcategoryFilterOptions = useMemo(
+    () =>
+      getTaxonomySubcategoryOptions(
+        locale,
+        activeCategory,
+        taxonomyCategories,
+        taxonomySubcategories,
+        products,
+      ).filter((subcategory) => subcategory.count > 0),
+    [
+      activeCategory,
+      locale,
+      products,
+      taxonomyCategories,
+      taxonomySubcategories,
+    ],
+  );
+  const subcategoryOptions = useMemo<SubcategoryOption[]>(() => {
+    const categoryCount =
+      activeCategory === "all"
+        ? products.length
+        : products.filter((product) =>
+            productMatchesTaxonomySelection(
+              product,
+              taxonomyCategories,
+              taxonomySubcategories,
+              activeCategory,
+              "all",
+            ),
+          ).length;
 
+    return [
+      {
+        key: "all",
+        categoryKey: activeCategory,
+        label: locale === "bn" ? "সব সাবক্যাটাগরি" : "All subcategories",
+        count: categoryCount,
+      },
+      ...subcategoryFilterOptions,
+    ];
+  }, [
+    activeCategory,
+    locale,
+    products,
+    subcategoryFilterOptions,
+    taxonomyCategories,
+    taxonomySubcategories,
+  ]);
   useEffect(() => {
     const nextQuery = parsedSearchParams.get("q") || "";
-    const nextCategory = resolveCategoryKey(
+    const nextCategory = resolveOptionKey(
       parsedSearchParams.get("category") || "all",
       availableCategoryKeys,
+    );
+    const nextSubcategoryOptions = getTaxonomySubcategoryOptions(
+      locale,
+      nextCategory,
+      taxonomyCategories,
+      taxonomySubcategories,
+      products,
+    ).filter((subcategory) => subcategory.count > 0);
+    const nextSubcategory = resolveOptionKey(
+      parsedSearchParams.get("subcategory") || "all",
+      new Set(nextSubcategoryOptions.map((subcategory) => subcategory.key)),
     );
     const nextSortKey = normalizeSortKey(parsedSearchParams.get("sort"));
     const nextPriceRange = resolvePriceRange(
@@ -405,11 +543,22 @@ export function ProductsPageClient({
     setActiveCategory((current) =>
       current === nextCategory ? current : nextCategory,
     );
+    setActiveSubcategory((current) =>
+      current === nextSubcategory ? current : nextSubcategory,
+    );
     setSortKey((current) => (current === nextSortKey ? current : nextSortKey));
     setPriceRange((current) =>
       areRangesEqual(current, nextPriceRange) ? current : nextPriceRange,
     );
-  }, [availableCategoryKeys, parsedSearchParams, priceBounds]);
+  }, [
+    availableCategoryKeys,
+    locale,
+    parsedSearchParams,
+    priceBounds,
+    products,
+    taxonomyCategories,
+    taxonomySubcategories,
+  ]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -425,6 +574,12 @@ export function ProductsPageClient({
         nextParams.set("category", activeCategory);
       } else {
         nextParams.delete("category");
+      }
+
+      if (activeSubcategory !== "all") {
+        nextParams.set("subcategory", activeSubcategory);
+      } else {
+        nextParams.delete("subcategory");
       }
 
       if (sortKey !== "featured") {
@@ -460,6 +615,7 @@ export function ProductsPageClient({
     return () => clearTimeout(timeoutId);
   }, [
     activeCategory,
+    activeSubcategory,
     defaultPriceRange,
     pathname,
     priceRange,
@@ -472,10 +628,22 @@ export function ProductsPageClient({
   const activeCategoryLabel =
     categoryOptions.find((category) => category.key === activeCategory)
       ?.label || categoryOptions[0]?.label;
+  const activeSubcategoryLabel =
+    subcategoryOptions.find(
+      (subcategory) => subcategory.key === activeSubcategory,
+    )?.label || subcategoryOptions[0]?.label;
 
   const filteredProducts = products
     .filter((product) => {
-      if (activeCategory !== "all" && product.categoryKey !== activeCategory) {
+      if (
+        !productMatchesTaxonomySelection(
+          product,
+          taxonomyCategories,
+          taxonomySubcategories,
+          activeCategory,
+          activeSubcategory,
+        )
+      ) {
         return false;
       }
 
@@ -534,8 +702,31 @@ export function ProductsPageClient({
   const resetFilters = () => {
     setSearchQuery("");
     setActiveCategory("all");
+    setActiveSubcategory("all");
     setSortKey("featured");
     setPriceRange(defaultPriceRange);
+  };
+
+  const handleCategoryChange = (value: string) => {
+    setActiveCategory(value);
+
+    const nextAvailableSubcategoryKeys = new Set(
+      getTaxonomySubcategoryOptions(
+        locale,
+        value,
+        taxonomyCategories,
+        taxonomySubcategories,
+        products,
+      )
+        .filter((subcategory) => subcategory.count > 0)
+        .map((subcategory) => subcategory.key),
+    );
+
+    setActiveSubcategory((current) =>
+      current === "all" || nextAvailableSubcategoryKeys.has(current)
+        ? current
+        : "all",
+    );
   };
 
   const activeFilterBadges = [
@@ -549,6 +740,11 @@ export function ProductsPageClient({
         ? `ক্যাটাগরি: ${activeCategoryLabel}`
         : `Category: ${activeCategoryLabel}`
       : null,
+    activeSubcategory !== "all"
+      ? locale === "bn"
+        ? `সাবক্যাটাগরি: ${activeSubcategoryLabel}`
+        : `Subcategory: ${activeSubcategoryLabel}`
+      : null,
     !areRangesEqual(priceRange, defaultPriceRange)
       ? `${formatBdt(priceRange[0], locale)} - ${formatBdt(priceRange[1], locale)}`
       : null,
@@ -558,15 +754,15 @@ export function ProductsPageClient({
     <div className="container mx-auto px-4 py-26">
       <div className="flex flex-col gap-8 lg:flex-row">
         <aside className="hidden w-full shrink-0 lg:block lg:w-[21rem] xl:w-[24rem]">
-          <div className="sticky top-26 max-h-[calc(100vh-8rem)] overflow-y-auto space-y-8 rounded-2xl border border-border/50 bg-background/95 p-6 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border/50 [&::-webkit-scrollbar]:w-1.5">
+          <div className="sticky top-26 max-h-[calc(100vh-8rem)] space-y-8 overflow-y-auto rounded-2xl border border-border/50 bg-background/95 p-6 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border/50 [&::-webkit-scrollbar]:w-1.5">
             <div className="space-y-2">
               <h2 className="text-xl font-semibold tracking-tight">
                 {locale === "bn" ? "পণ্য বাছাই করুন" : "Refine products"}
               </h2>
               <p className="text-sm leading-6 text-muted-foreground">
                 {locale === "bn"
-                  ? "ক্যাটাগরি, সার্চ এবং দামের সীমা দিয়ে ফলাফল দ্রুত সংকুচিত করুন।"
-                  : "Narrow the catalog quickly with category, search, and price controls."}
+                  ? "ক্যাটাগরি, সাবক্যাটাগরি, সার্চ এবং দামের সীমা দিয়ে ফলাফল দ্রুত সংকুচিত করুন।"
+                  : "Narrow the catalog quickly with category, subcategory, search, and price controls."}
               </p>
             </div>
             <ProductFiltersPanel
@@ -575,7 +771,10 @@ export function ProductsPageClient({
               onSearchQueryChange={setSearchQuery}
               categoryOptions={categoryOptions}
               activeCategory={activeCategory}
-              onCategoryChange={setActiveCategory}
+              onCategoryChange={handleCategoryChange}
+              subcategoryOptions={subcategoryOptions}
+              activeSubcategory={activeSubcategory}
+              onSubcategoryChange={setActiveSubcategory}
               priceBounds={priceBounds}
               priceRange={priceRange}
               onPriceRangeChange={setPriceRange}
@@ -598,8 +797,8 @@ export function ProductsPageClient({
                 </h1>
                 <p className="max-w-3xl text-base leading-7 text-muted-foreground">
                   {locale === "bn"
-                    ? "মধু, ঘি, গুড়, তেল, ফল এবং সবজি মিলিয়ে পুরো লাইভ ক্যাটালগ এক জায়গায়।"
-                    : "Browse the live catalog across honey, ghee, jaggery, oils, fruits, and vegetables in one place."}
+                    ? "মধু, ঘি, গুড়, তেল, ফল, সবজি এবং অর্গানিক প্রয়োজনীয় সব পণ্য এখন এক ক্যাটালগে।"
+                    : "Browse the live catalog across honey, ghee, jaggery, oils, fruits, vegetables, and everyday organic essentials."}
                 </p>
               </div>
 
@@ -650,6 +849,13 @@ export function ProductsPageClient({
                   ? `${categoryOptions.length - 1}টি ক্যাটাগরি`
                   : `${categoryOptions.length - 1} categories`}
               </Badge>
+              {subcategoryOptions.length > 1 ? (
+                <Badge variant="outline" className="rounded-full px-3 py-1">
+                  {locale === "bn"
+                    ? `${subcategoryOptions.length - 1}টি সাবক্যাটাগরি`
+                    : `${subcategoryOptions.length - 1} subcategories`}
+                </Badge>
+              ) : null}
               <Badge variant="outline" className="rounded-full px-3 py-1">
                 {formatBdt(priceBounds.min, locale)} -{" "}
                 {formatBdt(priceBounds.max, locale)}
@@ -690,8 +896,8 @@ export function ProductsPageClient({
                 </h2>
                 <p className="text-sm leading-6 text-muted-foreground">
                   {locale === "bn"
-                    ? "সার্চ বা দামের সীমা পরিবর্তন করুন, অথবা সব ফিল্টার রিসেট করুন।"
-                    : "Adjust your search or price range, or reset all filters."}
+                    ? "সার্চ, ক্যাটাগরি বা দামের সীমা পরিবর্তন করুন, অথবা সব ফিল্টার রিসেট করুন।"
+                    : "Adjust your search, category, subcategory, or price range, or reset all filters."}
                 </p>
                 <Button type="button" variant="outline" onClick={resetFilters}>
                   {locale === "bn" ? "সব ফিল্টার রিসেট করুন" : "Reset all filters"}
@@ -720,8 +926,8 @@ export function ProductsPageClient({
             </SheetTitle>
             <SheetDescription>
               {locale === "bn"
-                ? "সার্চ, ক্যাটাগরি এবং দামের সীমা অনুযায়ী পণ্য ফিল্টার করুন।"
-                : "Filter products by search, category, and price range."}
+                ? "সার্চ, ক্যাটাগরি, সাবক্যাটাগরি এবং দামের সীমা অনুযায়ী পণ্য ফিল্টার করুন।"
+                : "Filter products by search, category, subcategory, and price range."}
             </SheetDescription>
           </SheetHeader>
           <div className="p-4">
@@ -731,7 +937,10 @@ export function ProductsPageClient({
               onSearchQueryChange={setSearchQuery}
               categoryOptions={categoryOptions}
               activeCategory={activeCategory}
-              onCategoryChange={setActiveCategory}
+              onCategoryChange={handleCategoryChange}
+              subcategoryOptions={subcategoryOptions}
+              activeSubcategory={activeSubcategory}
+              onSubcategoryChange={setActiveSubcategory}
               priceBounds={priceBounds}
               priceRange={priceRange}
               onPriceRangeChange={setPriceRange}

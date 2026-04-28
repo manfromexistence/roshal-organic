@@ -2,17 +2,23 @@ import { and, eq, gte, inArray, ne, sql } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import {
+  roshalCategories,
   roshalOrders,
   roshalPages,
   roshalPaymentSettings,
   roshalProducts,
   roshalSections,
   roshalSiteSettings,
+  roshalSubcategories,
   users,
 } from "@/lib/schema";
 import { getRoshalPaymentSettings } from "@/lib/store-content";
+import { defaultRoshalSiteSettings } from "@/lib/store-defaults";
+import {
+  normalizeRoshalDeliveryZones,
+  resolveRoshalDeliveryEstimate,
+} from "@/lib/store-delivery";
 import { safeJsonParse } from "@/lib/store-format";
-import { ROSHAL_STANDARD_SHIPPING_FEE } from "@/lib/store-orders";
 import {
   createRoshalGatewayCheckoutSession,
   hasRoshalGatewayIntegration,
@@ -26,7 +32,10 @@ import {
   normalizeRoshalRouteSlug,
   normalizeRoshalSectionKey,
 } from "@/lib/store-routes";
+import { ensureRoshalSiteSettingsSchema } from "@/lib/store-site-settings-schema";
+import { ensureRoshalTaxonomySchema } from "@/lib/store-taxonomy-schema";
 import type {
+  RoshalDeliveryZone,
   RoshalOrderItem,
   RoshalPaymentGatewayProvider,
   RoshalPaymentMethod,
@@ -61,6 +70,16 @@ type RoshalTransaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
 type RoshalDbClient = typeof db | RoshalTransaction;
 
 const ROSHAL_CANCELLED_STATUS = "cancelled";
+
+function normalizeSourceKeysInput(keys: string[], fallbackKey: string) {
+  const normalized = Array.from(
+    new Set(
+      keys.map((value) => normalizeRoshalRouteSlug(value)).filter(Boolean),
+    ),
+  );
+
+  return normalized.length > 0 ? normalized : [fallbackKey];
+}
 
 function getRoshalPaymentWorkflowState(
   option: Pick<RoshalPaymentOption, "key" | "mode" | "requiresProof">,
@@ -349,6 +368,18 @@ export class RoshalPageError extends Error {
   }
 }
 
+export class RoshalTaxonomyError extends Error {
+  code: string;
+  statusCode: number;
+
+  constructor(code: string, message: string, statusCode = 400) {
+    super(message);
+    this.name = "RoshalTaxonomyError";
+    this.code = code;
+    this.statusCode = statusCode;
+  }
+}
+
 export class RoshalSectionError extends Error {
   code: string;
   statusCode: number;
@@ -389,13 +420,20 @@ export interface UpsertRoshalSiteSettingsInput {
   primaryCtaHref: string;
   primaryCtaLabelBn: string;
   primaryCtaLabelEn: string;
+  deliveryZones: RoshalDeliveryZone[];
 }
 
 export async function upsertRoshalSiteSettings(
   input: UpsertRoshalSiteSettingsInput,
 ) {
+  await ensureRoshalSiteSettingsSchema();
+
   const id = input.id || "site-settings";
   const timestamp = new Date();
+  const deliveryZones = normalizeRoshalDeliveryZones(
+    input.deliveryZones,
+    defaultRoshalSiteSettings.deliveryZones,
+  );
 
   await db
     .insert(roshalSiteSettings)
@@ -415,6 +453,7 @@ export async function upsertRoshalSiteSettings(
       primaryCtaHref: input.primaryCtaHref,
       primaryCtaLabelBn: input.primaryCtaLabelBn,
       primaryCtaLabelEn: input.primaryCtaLabelEn,
+      deliveryZonesJson: JSON.stringify(deliveryZones),
       createdAt: timestamp,
       updatedAt: timestamp,
     })
@@ -435,6 +474,7 @@ export async function upsertRoshalSiteSettings(
         primaryCtaHref: input.primaryCtaHref,
         primaryCtaLabelBn: input.primaryCtaLabelBn,
         primaryCtaLabelEn: input.primaryCtaLabelEn,
+        deliveryZonesJson: JSON.stringify(deliveryZones),
         updatedAt: timestamp,
       },
     });
@@ -478,6 +518,196 @@ export async function upsertRoshalPaymentSettings(
         updatedAt: timestamp,
       },
     });
+}
+
+export interface UpsertRoshalCategoryInput {
+  id?: string;
+  key: string;
+  labelBn: string;
+  labelEn: string;
+  descriptionBn?: string | null;
+  descriptionEn?: string | null;
+  imageUrl?: string | null;
+  sourceKeys?: string[];
+  isEnabled: boolean;
+  showInNavigation: boolean;
+  showOnHomepage: boolean;
+  sortOrder: number;
+}
+
+export async function upsertRoshalCategory(input: UpsertRoshalCategoryInput) {
+  await ensureRoshalTaxonomySchema();
+
+  const id = input.id || nextId("category");
+  const timestamp = new Date();
+  const key = normalizeRoshalRouteSlug(input.key);
+
+  if (!key || !isValidRoshalRouteSlug(key)) {
+    throw new RoshalTaxonomyError(
+      "invalid-category-key",
+      "Category keys must use lowercase letters, numbers, and hyphens only.",
+    );
+  }
+
+  const [existingCategory] = await db
+    .select({
+      id: roshalCategories.id,
+    })
+    .from(roshalCategories)
+    .where(and(eq(roshalCategories.key, key), ne(roshalCategories.id, id)))
+    .limit(1);
+
+  if (existingCategory) {
+    throw new RoshalTaxonomyError(
+      "duplicate-category-key",
+      "Another category is already using this key.",
+    );
+  }
+
+  const sourceKeys = normalizeSourceKeysInput(input.sourceKeys || [], key);
+
+  await db
+    .insert(roshalCategories)
+    .values({
+      id,
+      key,
+      labelBn: input.labelBn,
+      labelEn: input.labelEn,
+      descriptionBn: toOptionalText(input.descriptionBn),
+      descriptionEn: toOptionalText(input.descriptionEn),
+      imageUrl: toOptionalText(input.imageUrl),
+      sourceKeysJson: JSON.stringify(sourceKeys),
+      isEnabled: input.isEnabled,
+      showInNavigation: input.showInNavigation,
+      showOnHomepage: input.showOnHomepage,
+      sortOrder: input.sortOrder,
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    })
+    .onConflictDoUpdate({
+      target: roshalCategories.id,
+      set: {
+        key,
+        labelBn: input.labelBn,
+        labelEn: input.labelEn,
+        descriptionBn: toOptionalText(input.descriptionBn),
+        descriptionEn: toOptionalText(input.descriptionEn),
+        imageUrl: toOptionalText(input.imageUrl),
+        sourceKeysJson: JSON.stringify(sourceKeys),
+        isEnabled: input.isEnabled,
+        showInNavigation: input.showInNavigation,
+        showOnHomepage: input.showOnHomepage,
+        sortOrder: input.sortOrder,
+        updatedAt: timestamp,
+      },
+    });
+
+  return id;
+}
+
+export interface UpsertRoshalSubcategoryInput {
+  id?: string;
+  categoryId: string;
+  key: string;
+  labelBn: string;
+  labelEn: string;
+  descriptionBn?: string | null;
+  descriptionEn?: string | null;
+  imageUrl?: string | null;
+  sourceKeys?: string[];
+  isEnabled: boolean;
+  showInNavigation: boolean;
+  sortOrder: number;
+}
+
+export async function upsertRoshalSubcategory(
+  input: UpsertRoshalSubcategoryInput,
+) {
+  await ensureRoshalTaxonomySchema();
+
+  const id = input.id || nextId("subcategory");
+  const timestamp = new Date();
+  const key = normalizeRoshalRouteSlug(input.key);
+
+  if (!key || !isValidRoshalRouteSlug(key)) {
+    throw new RoshalTaxonomyError(
+      "invalid-subcategory-key",
+      "Subcategory keys must use lowercase letters, numbers, and hyphens only.",
+    );
+  }
+
+  const [existingCategory] = await db
+    .select({
+      id: roshalCategories.id,
+    })
+    .from(roshalCategories)
+    .where(eq(roshalCategories.id, input.categoryId))
+    .limit(1);
+
+  if (!existingCategory) {
+    throw new RoshalTaxonomyError(
+      "category-not-found",
+      "The selected parent category could not be found.",
+      404,
+    );
+  }
+
+  const [existingSubcategory] = await db
+    .select({
+      id: roshalSubcategories.id,
+    })
+    .from(roshalSubcategories)
+    .where(
+      and(eq(roshalSubcategories.key, key), ne(roshalSubcategories.id, id)),
+    )
+    .limit(1);
+
+  if (existingSubcategory) {
+    throw new RoshalTaxonomyError(
+      "duplicate-subcategory-key",
+      "Another subcategory is already using this key.",
+    );
+  }
+
+  const sourceKeys = normalizeSourceKeysInput(input.sourceKeys || [], key);
+
+  await db
+    .insert(roshalSubcategories)
+    .values({
+      id,
+      categoryId: input.categoryId,
+      key,
+      labelBn: input.labelBn,
+      labelEn: input.labelEn,
+      descriptionBn: toOptionalText(input.descriptionBn),
+      descriptionEn: toOptionalText(input.descriptionEn),
+      imageUrl: toOptionalText(input.imageUrl),
+      sourceKeysJson: JSON.stringify(sourceKeys),
+      isEnabled: input.isEnabled,
+      showInNavigation: input.showInNavigation,
+      sortOrder: input.sortOrder,
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    })
+    .onConflictDoUpdate({
+      target: roshalSubcategories.id,
+      set: {
+        categoryId: input.categoryId,
+        key,
+        labelBn: input.labelBn,
+        labelEn: input.labelEn,
+        descriptionBn: toOptionalText(input.descriptionBn),
+        descriptionEn: toOptionalText(input.descriptionEn),
+        imageUrl: toOptionalText(input.imageUrl),
+        sourceKeysJson: JSON.stringify(sourceKeys),
+        isEnabled: input.isEnabled,
+        showInNavigation: input.showInNavigation,
+        sortOrder: input.sortOrder,
+        updatedAt: timestamp,
+      },
+    });
+
+  return id;
 }
 
 export interface UpsertRoshalPageInput {
@@ -1278,7 +1508,37 @@ export async function createValidatedRoshalOrder(
     (sum, item) => sum + item.price * item.quantity,
     0,
   );
-  const shippingFee = items.length > 0 ? ROSHAL_STANDARD_SHIPPING_FEE : 0;
+  await ensureRoshalSiteSettingsSchema();
+  let siteSettings: {
+    deliveryZonesJson: string | null;
+  } | null = null;
+
+  try {
+    const [siteSettingsRow] = await db
+      .select({
+        deliveryZonesJson: roshalSiteSettings.deliveryZonesJson,
+      })
+      .from(roshalSiteSettings)
+      .limit(1);
+
+    siteSettings = siteSettingsRow || null;
+  } catch {}
+
+  const deliveryZones = normalizeRoshalDeliveryZones(
+    safeJsonParse(
+      siteSettings?.deliveryZonesJson,
+      defaultRoshalSiteSettings.deliveryZones,
+    ),
+    defaultRoshalSiteSettings.deliveryZones,
+  );
+  const shippingFee = resolveRoshalDeliveryEstimate({
+    addressLine1: parsed.addressLine1,
+    addressLine2: parsed.addressLine2,
+    city: parsed.city,
+    postalCode: parsed.postalCode,
+    itemCount: items.length,
+    zones: deliveryZones,
+  }).fee;
   const paymentWorkflow = getRoshalPaymentWorkflowState(paymentOption);
   const total = subtotal + shippingFee;
 

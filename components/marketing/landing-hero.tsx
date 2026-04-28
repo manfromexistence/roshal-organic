@@ -1,10 +1,10 @@
 "use client";
 
-import { Sparkles } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 type Language = "bn" | "en";
 
@@ -40,78 +40,113 @@ export function LandingHero({
   }, [banners.length]);
 
   const currentBanner = banners[activeBanner] || banners[0];
+  const secondaryBanner =
+    banners[(activeBanner + 1) % banners.length] || currentBanner;
 
   if (!currentBanner) {
     return null;
   }
 
   return (
-    <section className="relative isolate overflow-hidden min-h-[46vh] lg:min-h-[52vh]">
-      <Image
-        key={currentBanner.image}
-        src={currentBanner.image}
-        alt={currentBanner.title[language]}
-        fill
-        priority
-        loading="eager"
-        className="object-cover"
-        sizes="100vw"
-      />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/35 to-black/10" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
-
-      <div className="relative flex min-h-[46vh] items-end md:min-h-[52vh]">
-        <div className="container mx-auto px-4 pb-14 pt-24 md:pb-14 md:pt-28">
-          <div className="max-w-3xl">
-            <h1 className="mb-4 text-3xl font-bold text-white md:text-5xl">
-              {currentBanner.title[language]}
-            </h1>
-            <p className="mb-6 max-w-2xl text-base text-white/90 md:text-xl">
-              {currentBanner.subtitle[language]}
-            </p>
-            <Link href={currentBanner.href || "/products"}>
-              <Button
-                size="lg"
-                variant="secondary"
-                className="text-base shadow-2xl transition-transform hover:scale-105 md:text-lg"
-              >
-                <Sparkles className="mr-2 h-5 w-5" />
-                {currentBanner.ctaLabel
-                  ? currentBanner.ctaLabel[language]
-                  : language === "bn"
-                    ? "এখনই কিনুন"
-                    : "Shop Now"}
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {banners.length > 1 ? (
-        <>
-          {/* Hero previous/next controls are intentionally hidden for now. */}
-
-          <div className="absolute inset-x-0 bottom-8 z-10">
-            <div className="container mx-auto flex items-center justify-center gap-2 px-4 md:justify-end">
-              {banners.map((banner, index) => (
+    <section className="w-full overflow-x-clip bg-background pb-10 pt-32 md:pb-12 md:pt-48">
+      <div className="container mx-auto space-y-5 px-4 sm:px-6 md:px-8">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-[1.45fr_0.85fr]">
+          <Card className="gap-0 overflow-hidden border-border/70 bg-card p-0 shadow-sm">
+            <CardContent className="relative min-h-[15rem] p-0 sm:min-h-[18rem] md:min-h-[24rem]">
+              <Image
+                key={currentBanner.image}
+                src={currentBanner.image}
+                alt={currentBanner.title[language]}
+                fill
+                priority
+                loading="eager"
+                className="rounded-sm object-cover"
+                sizes="(max-width: 1024px) 100vw, 68vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-background/92 via-background/60 to-transparent" />
+              <div className="relative flex min-h-[15rem] max-w-full flex-col justify-center gap-4 p-5 sm:min-h-[18rem] sm:p-6 md:min-h-[24rem] md:max-w-xl md:gap-5 md:p-10">
+                <div className="space-y-3">
+                  <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-5xl">
+                    {currentBanner.title[language]}
+                  </h1>
+                  <p className="max-w-full text-sm leading-6 text-foreground/80 sm:leading-7 md:text-lg">
+                    {currentBanner.subtitle[language]}
+                  </p>
+                </div>
                 <Button
-                  key={banner.image}
-                  type="button"
-                  aria-label={`Go to banner ${index + 1}`}
-                  onClick={() => setActiveBanner(index)}
-                  variant="ghost"
-                  size="icon"
-                  className={`h-2.5 min-h-0 rounded-full p-0 transition-all ${
-                    index === activeBanner
-                      ? "w-10 bg-primary"
-                      : "w-2.5 bg-white/55 hover:bg-white/80"
-                  }`}
-                />
-              ))}
-            </div>
+                  asChild
+                  size="lg"
+                  className="w-fit max-w-full rounded-full px-6"
+                >
+                  <Link href={currentBanner.href || "/products"}>
+                    {currentBanner.ctaLabel
+                      ? currentBanner.ctaLabel[language]
+                      : language === "bn"
+                        ? "এখনই কিনুন"
+                        : "Shop now"}
+                  </Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="gap-0 overflow-hidden border-border/70 bg-card p-0 shadow-sm">
+            <CardContent className="relative min-h-[14rem] p-0 sm:min-h-[17rem] md:min-h-[24rem]">
+              <Image
+                src={secondaryBanner.image}
+                alt={secondaryBanner.title[language]}
+                fill
+                className="rounded-sm object-cover"
+                sizes="(max-width: 1024px) 100vw, 32vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background/92 via-background/25 to-transparent" />
+              <div className="relative flex min-h-[14rem] flex-col justify-end gap-3 p-5 sm:min-h-[17rem] sm:p-6 md:min-h-[24rem] md:gap-4 md:p-8">
+                <div className="space-y-2">
+                  <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl md:text-3xl">
+                    {secondaryBanner.title[language]}
+                  </h2>
+                  <p className="max-w-full text-sm leading-6 text-foreground/80 sm:leading-7">
+                    {secondaryBanner.subtitle[language]}
+                  </p>
+                </div>
+                <Button
+                  asChild
+                  variant="secondary"
+                  className="w-fit rounded-full px-6"
+                >
+                  <Link href={secondaryBanner.href || "/products"}>
+                    {secondaryBanner.ctaLabel
+                      ? secondaryBanner.ctaLabel[language]
+                      : language === "bn"
+                        ? "বিস্তারিত দেখুন"
+                        : "Explore"}
+                  </Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {banners.length > 1 ? (
+          <div className="flex items-center justify-center gap-2">
+            {banners.map((banner, index) => (
+              <Button
+                key={banner.image}
+                type="button"
+                aria-label={`Go to banner ${index + 1}`}
+                onClick={() => setActiveBanner(index)}
+                variant="ghost"
+                size="icon"
+                className={`h-2.5 min-h-0 rounded-full p-0 transition-all ${
+                  index === activeBanner
+                    ? "w-10 bg-primary"
+                    : "w-2.5 bg-primary/30 hover:bg-primary/50"
+                }`}
+              />
+            ))}
           </div>
-        </>
-      ) : null}
+        ) : null}
+      </div>
     </section>
   );
 }

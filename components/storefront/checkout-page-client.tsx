@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { ImageUploadField } from "@/components/shared/image-upload-field";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,31 +17,108 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import { resolveImageUrl } from "@/lib/storage-utils";
+import {
+  getRoshalDeliveryMatchLabel,
+  getRoshalDeliveryZoneLabel,
+  resolveRoshalDeliveryEstimate,
+} from "@/lib/store-delivery";
 import { formatBdt } from "@/lib/store-format";
 import { getLocalizedValue } from "@/lib/store-locale";
-import {
-  getRoshalPaymentMethodLabel,
-  ROSHAL_STANDARD_SHIPPING_FEE,
-} from "@/lib/store-orders";
+import { getRoshalPaymentMethodLabel } from "@/lib/store-orders";
 import type {
+  RoshalDeliveryZone,
   RoshalLocale,
   RoshalPaymentGatewaySummary,
   RoshalPaymentMethod,
+  RoshalPaymentOption,
   RoshalPaymentSettings,
   RoshalProduct,
 } from "@/lib/store-types";
 import { useCartStore } from "@/store/cart-store";
 
+function getDefaultCheckoutPaymentMethod(
+  options: RoshalPaymentSettings["options"],
+): RoshalPaymentMethod {
+  const sortedOptions = [...options].sort(
+    (left, right) => left.sortOrder - right.sortOrder,
+  );
+
+  return (
+    sortedOptions.find(
+      (option) =>
+        option.enabled && (option.mode === "manual" || option.requiresProof),
+    )?.key ||
+    sortedOptions.find((option) => option.enabled)?.key ||
+    "bkash"
+  );
+}
+
+function getCheckoutPaymentModeLabel(
+  locale: RoshalLocale,
+  option: RoshalPaymentOption,
+) {
+  if (option.mode === "manual" || option.requiresProof) {
+    return locale === "bn" ? "অ্যাডমিন ভেরিফাই" : "Admin verify";
+  }
+
+  return locale === "bn" ? "অনলাইন পেমেন্ট" : "Online payment";
+}
+
+function getCheckoutPaymentSummary(
+  locale: RoshalLocale,
+  option: RoshalPaymentOption,
+  gatewayActive: boolean,
+) {
+  if (option.key === "bkash") {
+    return locale === "bn"
+      ? "বিকাশে পেমেন্ট করুন, ট্রানজ্যাকশন আইডি ও স্ক্রিনশট দিন, তারপর অ্যাডমিন টিম ভেরিফাই করে অর্ডার কনফার্ম করবে।"
+      : "Pay with bKash, submit the transaction ID and screenshot, and the admin team will verify the payment before confirming the order.";
+  }
+
+  if (option.key === "nagad") {
+    return locale === "bn"
+      ? "নগদে পেমেন্ট করুন, ট্রানজ্যাকশন আইডি ও স্ক্রিনশট দিন, তারপর অ্যাডমিন টিম ভেরিফাই করে অর্ডার কনফার্ম করবে।"
+      : "Pay with Nagad, submit the transaction ID and screenshot, and the admin team will verify the payment before confirming the order.";
+  }
+
+  if (option.key === "rocket") {
+    return locale === "bn"
+      ? "রকেটে পেমেন্ট করুন, ট্রানজ্যাকশন আইডি ও স্ক্রিনশট দিন, তারপর অ্যাডমিন টিম ভেরিফাই করে অর্ডার কনফার্ম করবে।"
+      : "Pay with Rocket, submit the transaction ID and screenshot, and the admin team will verify the payment before confirming the order.";
+  }
+
+  if (option.key === "card") {
+    return gatewayActive
+      ? locale === "bn"
+        ? "অর্ডার কনফার্ম করার পর নিরাপদ অনলাইন কার্ড পেমেন্টে নেওয়া হবে।"
+        : "After confirming the order, you will continue to secure online card payment."
+      : locale === "bn"
+        ? "কার্ড পেমেন্টের জন্য অর্ডার রিকোয়েস্ট দিন, এরপর টিম আপনার সাথে পেমেন্ট কনফার্ম করবে।"
+        : "Submit the order request for card payment and the team will confirm the payment flow with you.";
+  }
+
+  return gatewayActive
+    ? locale === "bn"
+      ? "অর্ডার কনফার্ম করার পর নিরাপদ অনলাইন পেমেন্টে নেওয়া হবে।"
+      : "After confirming the order, you will continue to secure online payment."
+    : locale === "bn"
+      ? "অর্ডার রিকোয়েস্ট দিন, এরপর টিম আপনার সাথে পেমেন্ট কনফার্ম করবে।"
+      : "Submit the order request and the team will confirm the payment flow with you.";
+}
+
 export function CheckoutPageClient({
+  deliveryZones,
   gatewaySummary,
   locale,
   paymentSettings,
   products,
   user,
 }: {
+  deliveryZones: RoshalDeliveryZone[];
   gatewaySummary: RoshalPaymentGatewaySummary;
   locale: RoshalLocale;
   paymentSettings: RoshalPaymentSettings;
@@ -71,7 +149,7 @@ export function CheckoutPageClient({
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [syncMessage, setSyncMessage] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<RoshalPaymentMethod>(
-    paymentOptions[0]?.key || "bkash",
+    getDefaultCheckoutPaymentMethod(paymentSettings.options),
   );
   const [formState, setFormState] = useState({
     customerName: user.name,
@@ -140,20 +218,27 @@ export function CheckoutPageClient({
       visibleItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
     [visibleItems],
   );
-  const shippingFee =
-    visibleItems.length > 0 ? ROSHAL_STANDARD_SHIPPING_FEE : 0;
+  const deliveryEstimate = useMemo(
+    () =>
+      resolveRoshalDeliveryEstimate({
+        addressLine1: formState.addressLine1,
+        addressLine2: formState.addressLine2,
+        city: formState.city,
+        postalCode: formState.postalCode,
+        itemCount: visibleItems.length,
+        zones: deliveryZones,
+      }),
+    [
+      deliveryZones,
+      formState.addressLine1,
+      formState.addressLine2,
+      formState.city,
+      formState.postalCode,
+      visibleItems.length,
+    ],
+  );
+  const shippingFee = deliveryEstimate.fee;
   const total = subtotal + shippingFee;
-
-  const gatewayModeMessage =
-    selectedOption?.mode !== "gateway"
-      ? null
-      : gatewayActiveForSelectedOption
-        ? locale === "bn"
-          ? "অর্ডার নিশ্চিত করার পর আপনাকে সিকিউর aamarPay চেকআউট পেজে নেওয়া হবে, যেখানে কার্ড, bKash, Nagad ও Rocket দিয়ে পেমেন্ট সম্পন্ন করতে পারবেন।"
-          : "After you confirm the order, you will be redirected to secure aamarPay checkout where cards, bKash, Nagad, Rocket, and Upay can be completed."
-        : locale === "bn"
-          ? "সিকিউর গেটওয়ে এখনো কনফিগার করা হয়নি। অর্ডার সাবমিট করলে অ্যাডমিন ফলো-আপ করে পেমেন্ট সম্পন্ন করবে।"
-          : "The secure gateway is not configured yet. Submit the order request and an admin will follow up manually.";
 
   const updateFormValue = (field: keyof typeof formState, value: string) => {
     setSubmitError(null);
@@ -281,320 +366,436 @@ export function CheckoutPageClient({
   };
 
   return (
-    <div className="container mx-auto grid min-w-0 gap-8 px-4 py-10 lg:grid-cols-[1fr,24rem]">
-      <div className="min-w-0 space-y-8">
-        {!isHydrated ? (
-          <Alert>
-            <AlertDescription>
+    <div className="container mx-auto space-y-8 px-4 py-10">
+      <div className="space-y-3">
+        <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
+          {locale === "bn" ? "নিরাপদ চেকআউট" : "Secure Checkout"}
+        </p>
+        <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+          <div className="space-y-2">
+            <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
               {locale === "bn"
-                ? "আপনার সংরক্ষিত কার্ট লোড হচ্ছে..."
-                : "Loading your saved cart..."}
-            </AlertDescription>
-          </Alert>
-        ) : null}
+                ? "ডেলিভারি ও পেমেন্ট সম্পন্ন করুন"
+                : "Complete delivery and payment"}
+            </h1>
+            <p className="max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
+              {locale === "bn"
+                ? "ঠিকানা, যোগাযোগ, পেমেন্ট অপশন, এবং প্রয়োজনে স্ক্রিনশট প্রুফ দিয়ে অর্ডার নিশ্চিত করুন।"
+                : "Confirm the order with your address, contact details, payment option, and proof screenshot when required."}
+            </p>
+          </div>
 
-        {syncMessage ? (
-          <Alert>
-            <AlertDescription>{syncMessage}</AlertDescription>
-          </Alert>
-        ) : null}
+          <div className="flex flex-wrap gap-2">
+            {paymentOptions.map((option) => (
+              <Badge
+                key={option.key}
+                variant="secondary"
+                className="rounded-full px-3 py-1"
+              >
+                {getLocalizedValue(locale, option.label)}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      </div>
 
-        {submitError ? (
-          <Alert variant="destructive">
-            <AlertDescription>{submitError}</AlertDescription>
-          </Alert>
-        ) : null}
+      {!isHydrated ? (
+        <Alert>
+          <AlertDescription>
+            {locale === "bn"
+              ? "আপনার সংরক্ষিত কার্ট লোড হচ্ছে..."
+              : "Loading your saved cart..."}
+          </AlertDescription>
+        </Alert>
+      ) : null}
 
-        <Card>
-          <CardHeader>
-            <CardTitle>
-              {locale === "bn" ? "ডেলিভারি তথ্য" : "Delivery details"}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Field
-              label={locale === "bn" ? "পূর্ণ নাম" : "Full name"}
-              value={formState.customerName}
-              onChange={(value) => updateFormValue("customerName", value)}
-            />
-            <Field
-              label={locale === "bn" ? "ফোন" : "Phone"}
-              value={formState.phone}
-              onChange={(value) => updateFormValue("phone", value)}
-            />
-            <Field
-              label={locale === "bn" ? "ইমেইল" : "Email"}
-              value={formState.email}
-              onChange={(value) => updateFormValue("email", value)}
-            />
-            <Field
-              label={locale === "bn" ? "ঠিকানা" : "Address"}
-              value={formState.addressLine1}
-              onChange={(value) => updateFormValue("addressLine1", value)}
-            />
-            <Field
-              label={locale === "bn" ? "অতিরিক্ত ঠিকানা" : "Address line 2"}
-              value={formState.addressLine2}
-              onChange={(value) => updateFormValue("addressLine2", value)}
-            />
-            <div className="grid gap-4 md:grid-cols-2">
+      {syncMessage ? (
+        <Alert>
+          <AlertDescription>{syncMessage}</AlertDescription>
+        </Alert>
+      ) : null}
+
+      {submitError ? (
+        <Alert variant="destructive">
+          <AlertDescription>{submitError}</AlertDescription>
+        </Alert>
+      ) : null}
+
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_24rem] xl:grid-cols-[minmax(0,1fr)_26rem]">
+        <div className="space-y-6">
+          <Card className="rounded-3xl border-border/70 shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-2xl">
+                {locale === "bn" ? "ডেলিভারি তথ্য" : "Delivery details"}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-4 md:grid-cols-2">
               <Field
-                label={locale === "bn" ? "শহর" : "City"}
-                value={formState.city}
-                onChange={(value) => updateFormValue("city", value)}
+                label={locale === "bn" ? "পূর্ণ নাম" : "Full name"}
+                value={formState.customerName}
+                onChange={(value) => updateFormValue("customerName", value)}
+              />
+              <Field
+                label={locale === "bn" ? "ফোন" : "Phone"}
+                value={formState.phone}
+                onChange={(value) => updateFormValue("phone", value)}
+              />
+              <Field
+                label={locale === "bn" ? "ইমেইল" : "Email"}
+                value={formState.email}
+                onChange={(value) => updateFormValue("email", value)}
               />
               <Field
                 label={locale === "bn" ? "পোস্ট কোড" : "Postal code"}
                 value={formState.postalCode}
                 onChange={(value) => updateFormValue("postalCode", value)}
               />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="notes">{locale === "bn" ? "নোট" : "Notes"}</Label>
-              <Textarea
-                id="notes"
-                value={formState.notes}
-                onChange={(event) =>
-                  updateFormValue("notes", event.target.value)
-                }
-                rows={4}
+              <div className="md:col-span-2">
+                <Field
+                  label={locale === "bn" ? "ঠিকানা" : "Address"}
+                  value={formState.addressLine1}
+                  onChange={(value) => updateFormValue("addressLine1", value)}
+                />
+              </div>
+              <div className="md:col-span-2">
+                <Field
+                  label={locale === "bn" ? "অতিরিক্ত ঠিকানা" : "Address line 2"}
+                  value={formState.addressLine2}
+                  onChange={(value) => updateFormValue("addressLine2", value)}
+                />
+              </div>
+              <Field
+                label={locale === "bn" ? "শহর" : "City"}
+                value={formState.city}
+                onChange={(value) => updateFormValue("city", value)}
               />
-            </div>
-          </CardContent>
-        </Card>
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="notes">
+                  {locale === "bn" ? "অর্ডার নোট" : "Order notes"}
+                </Label>
+                <Textarea
+                  id="notes"
+                  value={formState.notes}
+                  onChange={(event) =>
+                    updateFormValue("notes", event.target.value)
+                  }
+                  rows={4}
+                />
+              </div>
+            </CardContent>
+          </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>
-              {locale === "bn" ? "পেমেন্ট পদ্ধতি" : "Payment method"}
+          <Card className="rounded-3xl border-border/70 shadow-sm">
+            <CardHeader className="space-y-2">
+              <CardTitle className="text-2xl">
+                {locale === "bn" ? "পেমেন্ট পদ্ধতি" : "Payment method"}
+              </CardTitle>
+              <p className="text-sm leading-7 text-muted-foreground">
+                {locale === "bn"
+                  ? "যে পেমেন্ট অপশনটি সুবিধাজনক সেটি বেছে নিন এবং প্রয়োজন হলে প্রুফ আপলোড করুন।"
+                  : "Choose the payment option that fits best and upload proof when it is required."}
+              </p>
+            </CardHeader>
+
+            <CardContent className="space-y-6">
+              <RadioGroup
+                value={paymentMethod}
+                onValueChange={(value) => {
+                  setSubmitError(null);
+                  setPaymentMethod(value as RoshalPaymentMethod);
+                }}
+                className="grid gap-3"
+              >
+                {paymentOptions.map((option) => {
+                  const isSelected = option.key === paymentMethod;
+
+                  return (
+                    <Label
+                      key={option.key}
+                      htmlFor={option.key}
+                      className={`flex cursor-pointer items-start gap-4 rounded-2xl border p-4 transition-colors ${
+                        isSelected
+                          ? "border-primary/50 bg-primary/5"
+                          : "border-border/70 hover:bg-muted/20"
+                      }`}
+                    >
+                      <RadioGroupItem value={option.key} id={option.key} />
+                      <div className="space-y-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="font-medium text-foreground">
+                            {getLocalizedValue(locale, option.label)}
+                          </span>
+                          <Badge variant="outline" className="rounded-full">
+                            {getCheckoutPaymentModeLabel(locale, option)}
+                          </Badge>
+                        </div>
+                        <p className="text-sm leading-6 text-muted-foreground">
+                          {getCheckoutPaymentSummary(
+                            locale,
+                            option,
+                            Boolean(
+                              option.mode === "gateway" &&
+                                gatewaySummary.configured &&
+                                gatewaySummary.supportedMethods.includes(
+                                  option.key,
+                                ),
+                            ),
+                          )}
+                        </p>
+                      </div>
+                    </Label>
+                  );
+                })}
+              </RadioGroup>
+
+              {selectedOption ? (
+                <div className="space-y-5 rounded-3xl border border-border/70 bg-muted/20 p-5">
+                  <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_18rem]">
+                    <div className="space-y-4">
+                      <div className="space-y-2">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h3 className="text-lg font-semibold text-foreground">
+                            {getLocalizedValue(locale, selectedOption.label)}
+                          </h3>
+                          <Badge variant="secondary" className="rounded-full">
+                            {getCheckoutPaymentModeLabel(
+                              locale,
+                              selectedOption,
+                            )}
+                          </Badge>
+                        </div>
+                        <p className="text-sm leading-6 text-muted-foreground">
+                          {getCheckoutPaymentSummary(
+                            locale,
+                            selectedOption,
+                            gatewayActiveForSelectedOption,
+                          )}
+                        </p>
+                      </div>
+
+                      {selectedOption.accountNumber ? (
+                        <div className="rounded-2xl border border-border/60 bg-background p-4">
+                          <p className="text-sm text-muted-foreground">
+                            {locale === "bn" ? "পেমেন্ট নম্বর" : "Payment number"}
+                          </p>
+                          <p className="mt-1 text-lg font-semibold text-foreground">
+                            {selectedOption.accountNumber}
+                          </p>
+                        </div>
+                      ) : null}
+
+                      {selectedOption.mode === "gateway" &&
+                      !gatewayActiveForSelectedOption ? (
+                        <div className="rounded-2xl border border-border/60 bg-background p-4 text-sm leading-7 text-muted-foreground">
+                          {locale === "bn"
+                            ? "অর্ডার রিকোয়েস্ট সাবমিট করার পর টিম পেমেন্ট সম্পন্ন করার জন্য আপনার সাথে যোগাযোগ করবে।"
+                            : "After you submit the order request, the team will contact you to complete the payment."}
+                        </div>
+                      ) : null}
+                    </div>
+
+                    {selectedOption.guideImageUrl ? (
+                      <div className="space-y-2">
+                        <p className="text-sm font-medium text-foreground">
+                          {locale === "bn" ? "পেমেন্ট গাইড" : "Payment guide"}
+                        </p>
+                        <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border/60 bg-background">
+                          <Image
+                            src={resolveImageUrl(selectedOption.guideImageUrl)}
+                            alt={getLocalizedValue(
+                              locale,
+                              selectedOption.label,
+                            )}
+                            fill
+                            sizes="(max-width: 1024px) 100vw, 288px"
+                            className="object-cover"
+                          />
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+
+                  {shouldCapturePaymentDetails ? (
+                    <>
+                      <Separator />
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <Field
+                          label={
+                            locale === "bn" ? "ট্রানজ্যাকশন আইডি" : "Transaction ID"
+                          }
+                          value={formState.paymentReference}
+                          onChange={(value) =>
+                            updateFormValue("paymentReference", value)
+                          }
+                        />
+                        <Field
+                          label={
+                            locale === "bn"
+                              ? "যে নম্বর থেকে পেমেন্ট করেছেন"
+                              : "Sender number"
+                          }
+                          value={formState.paymentSender}
+                          onChange={(value) =>
+                            updateFormValue("paymentSender", value)
+                          }
+                        />
+                        <div className="md:col-span-2">
+                          <ImageUploadField
+                            label={
+                              locale === "bn"
+                                ? "পেমেন্ট স্ক্রিনশট"
+                                : "Payment proof screenshot"
+                            }
+                            helperText={
+                              locale === "bn"
+                                ? "নির্বাচিত পেমেন্টের স্ক্রিনশট বা কনফার্মেশন আপলোড করুন।"
+                                : "Upload the payment screenshot or confirmation for the selected method."
+                            }
+                            value={formState.paymentProofUrl}
+                            onChange={(value) =>
+                              updateFormValue("paymentProofUrl", value)
+                            }
+                          />
+                        </div>
+                      </div>
+                    </>
+                  ) : null}
+
+                  <p className="text-sm leading-7 text-muted-foreground">
+                    {locale === "bn"
+                      ? "পেমেন্ট প্রুফ জমা দিলে অ্যাডমিন টিম যাচাই করে অর্ডারের পরবর্তী আপডেট দেবে।"
+                      : "After you submit the payment proof, the admin team will verify it and share the next order update."}
+                  </p>
+                </div>
+              ) : null}
+            </CardContent>
+          </Card>
+        </div>
+
+        <Card className="h-fit rounded-3xl border-border/70 shadow-sm lg:sticky lg:top-28">
+          <CardHeader className="space-y-2">
+            <CardTitle className="text-2xl">
+              {locale === "bn" ? "অর্ডার সারাংশ" : "Order summary"}
             </CardTitle>
+            <p className="text-sm leading-7 text-muted-foreground">
+              {locale === "bn"
+                ? "কার্টে থাকা আইটেম, ডেলিভারি চার্জ, এবং মোট খরচ এখানে দেখুন।"
+                : "Review the cart items, delivery fee, and total order amount here."}
+            </p>
           </CardHeader>
-          <CardContent className="space-y-5">
-            <p className="text-sm text-muted-foreground">
-              {getLocalizedValue(locale, paymentSettings.manualReviewNotice)}
+
+          <CardContent className="space-y-4">
+            {visibleItems.map((item) => (
+              <div key={item.productId} className="flex gap-3">
+                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl border border-border/60 bg-muted/20">
+                  <Image
+                    src={item.image}
+                    alt={locale === "bn" ? item.name.bn : item.name.en}
+                    fill
+                    className="object-contain p-2"
+                    sizes="64px"
+                  />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="line-clamp-2 text-sm font-medium text-foreground">
+                    {locale === "bn" ? item.name.bn : item.name.en}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {locale === "bn" ? "পরিমাণ" : "Quantity"}: {item.quantity}
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-foreground">
+                    {formatBdt(item.price * item.quantity, locale)}
+                  </p>
+                </div>
+              </div>
+            ))}
+
+            <Separator />
+
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">
+                {locale === "bn" ? "সাবটোটাল" : "Subtotal"}
+              </span>
+              <span className="font-medium text-foreground">
+                {formatBdt(subtotal, locale)}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">
+                {locale === "bn" ? "ডেলিভারি" : "Delivery"}
+              </span>
+              <span className="font-medium text-foreground">
+                {formatBdt(shippingFee, locale)}
+              </span>
+            </div>
+
+            <p className="text-xs leading-5 text-muted-foreground">
+              {`${getRoshalDeliveryZoneLabel(locale, deliveryEstimate.zone)} • ${getLocalizedValue(locale, getRoshalDeliveryMatchLabel(deliveryEstimate.matchedBy))}`}
             </p>
 
-            <RadioGroup
-              value={paymentMethod}
-              onValueChange={(value) => {
-                setSubmitError(null);
-                setPaymentMethod(value as RoshalPaymentMethod);
-              }}
-              className="grid gap-3"
-            >
-              {paymentOptions.map((option) => (
-                <div
-                  key={option.key}
-                  className="flex items-center gap-3 rounded-xl border border-border/70 p-4"
-                >
-                  <RadioGroupItem value={option.key} id={option.key} />
-                  <div className="space-y-1">
-                    <Label htmlFor={option.key} className="font-medium">
-                      {getLocalizedValue(locale, option.label)}
-                    </Label>
-                    <p className="text-sm text-muted-foreground">
-                      {getLocalizedValue(locale, option.instructions)}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </RadioGroup>
-
             {selectedOption ? (
-              <div className="space-y-5 rounded-2xl border border-border/70 bg-muted/20 p-5">
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">
-                    {getLocalizedValue(locale, selectedOption.label)}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {getLocalizedValue(locale, selectedOption.instructions)}
-                  </p>
-                </div>
-
-                {selectedOption.accountNumber ? (
-                  <div className="grid gap-3 rounded-xl border border-border/60 bg-background p-4 text-sm md:grid-cols-2">
-                    <div>
-                      <p className="text-muted-foreground">
-                        {locale === "bn" ? "পেমেন্ট নম্বর" : "Payment number"}
-                      </p>
-                      <p className="font-medium">
-                        {selectedOption.accountNumber}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">
-                        {locale === "bn" ? "অ্যাকাউন্ট ধরন" : "Account type"}
-                      </p>
-                      <p className="font-medium">
-                        {selectedOption.accountType}
-                      </p>
-                    </div>
-                  </div>
-                ) : null}
-
-                {selectedOption.guideImageUrl ? (
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium">
-                      {locale === "bn"
-                        ? "পেমেন্ট গাইড স্ক্রিনশট"
-                        : "Payment guide screenshot"}
-                    </p>
-                    <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border/60 bg-background">
-                      <Image
-                        src={resolveImageUrl(selectedOption.guideImageUrl)}
-                        alt={getLocalizedValue(locale, selectedOption.label)}
-                        fill
-                        sizes="(max-width: 1024px) 100vw, 720px"
-                        className="object-cover"
-                      />
-                    </div>
-                  </div>
-                ) : null}
-
-                {selectedOption.mode === "gateway" ? (
-                  <div className="rounded-xl border border-border/60 bg-background p-4 text-sm text-muted-foreground">
-                    {gatewayModeMessage}
-                  </div>
-                ) : null}
-
-                {shouldCapturePaymentDetails ? (
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <Field
-                      label={
-                        locale === "bn" ? "ট্রানজ্যাকশন আইডি" : "Transaction ID"
-                      }
-                      value={formState.paymentReference}
-                      onChange={(value) =>
-                        updateFormValue("paymentReference", value)
-                      }
-                    />
-                    <Field
-                      label={
-                        locale === "bn"
-                          ? "যে নম্বর থেকে পেমেন্ট করেছেন"
-                          : "Sender number"
-                      }
-                      value={formState.paymentSender}
-                      onChange={(value) =>
-                        updateFormValue("paymentSender", value)
-                      }
-                    />
-                    <div className="md:col-span-2">
-                      <ImageUploadField
-                        label={
-                          locale === "bn"
-                            ? "পেমেন্ট স্ক্রিনশট"
-                            : "Payment proof screenshot"
-                        }
-                        helperText={
-                          locale === "bn"
-                            ? "নির্বাচিত পেমেন্টের স্ক্রিনশট বা কনফার্মেশন আপলোড করুন।"
-                            : "Upload the screenshot or confirmation for the selected payment."
-                        }
-                        value={formState.paymentProofUrl}
-                        onChange={(value) =>
-                          updateFormValue("paymentProofUrl", value)
-                        }
-                      />
-                    </div>
-                  </div>
-                ) : null}
-
-                <p className="text-sm text-muted-foreground">
-                  {getLocalizedValue(locale, paymentSettings.supportMessage)}
-                </p>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">
+                  {locale === "bn" ? "পেমেন্ট পদ্ধতি" : "Payment"}
+                </span>
+                <span className="font-medium text-foreground">
+                  {getLocalizedValue(
+                    locale,
+                    getRoshalPaymentMethodLabel(selectedOption.key),
+                  )}
+                </span>
               </div>
             ) : null}
           </CardContent>
-        </Card>
-      </div>
 
-      <Card className="h-fit lg:sticky lg:top-6">
-        <CardHeader>
-          <CardTitle>
-            {locale === "bn" ? "অর্ডার সারাংশ" : "Order summary"}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {visibleItems.map((item) => (
-            <div
-              key={item.productId}
-              className="flex items-center justify-between gap-3 text-sm"
+          <CardFooter className="flex flex-col gap-4">
+            <div className="flex w-full items-center justify-between">
+              <span className="text-lg font-semibold text-foreground">
+                {locale === "bn" ? "মোট" : "Total"}
+              </span>
+              <span className="text-2xl font-semibold text-primary">
+                {formatBdt(total, locale)}
+              </span>
+            </div>
+
+            <Button
+              className="w-full rounded-xl"
+              onClick={submitOrder}
+              disabled={
+                !isHydrated ||
+                isSubmitting ||
+                visibleItems.length === 0 ||
+                !selectedOption
+              }
             >
-              <span className="text-muted-foreground">
-                {locale === "bn" ? item.name.bn : item.name.en} x{" "}
-                {item.quantity}
-              </span>
-              <span>{formatBdt(item.price * item.quantity, locale)}</span>
-            </div>
-          ))}
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">
-              {locale === "bn" ? "সাবটোটাল" : "Subtotal"}
-            </span>
-            <span>{formatBdt(subtotal, locale)}</span>
-          </div>
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">
-              {locale === "bn" ? "ডেলিভারি" : "Delivery"}
-            </span>
-            <span>{formatBdt(shippingFee, locale)}</span>
-          </div>
-          {selectedOption ? (
-            <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">
-                {locale === "bn" ? "পেমেন্ট মাধ্যম" : "Payment"}
-              </span>
-              <span>
-                {getLocalizedValue(
-                  locale,
-                  getRoshalPaymentMethodLabel(selectedOption.key),
-                )}
-              </span>
-            </div>
-          ) : null}
-        </CardContent>
-        <CardFooter className="flex flex-col gap-4">
-          <div className="flex w-full items-center justify-between text-lg font-semibold">
-            <span>{locale === "bn" ? "মোট" : "Total"}</span>
-            <span className="text-primary">{formatBdt(total, locale)}</span>
-          </div>
-          <Button
-            className="w-full"
-            onClick={submitOrder}
-            disabled={
-              !isHydrated ||
-              isSubmitting ||
-              visibleItems.length === 0 ||
-              !selectedOption
-            }
-          >
-            {selectedOption?.mode === "gateway"
-              ? gatewayActiveForSelectedOption
-                ? isSubmitting
-                  ? locale === "bn"
-                    ? "সিকিউর পেমেন্টে নেওয়া হচ্ছে..."
-                    : "Redirecting to secure payment..."
-                  : locale === "bn"
-                    ? "সিকিউর পেমেন্টে এগিয়ে যান"
-                    : "Continue to secure payment"
+              {selectedOption?.mode === "gateway"
+                ? gatewayActiveForSelectedOption
+                  ? isSubmitting
+                    ? locale === "bn"
+                      ? "সিকিউর পেমেন্টে নেওয়া হচ্ছে..."
+                      : "Redirecting to secure payment..."
+                    : locale === "bn"
+                      ? "সিকিউর পেমেন্টে এগিয়ে যান"
+                      : "Continue to secure payment"
+                  : isSubmitting
+                    ? locale === "bn"
+                      ? "অর্ডার রিকোয়েস্ট পাঠানো হচ্ছে..."
+                      : "Submitting order request..."
+                    : locale === "bn"
+                      ? "অর্ডার রিকোয়েস্ট পাঠান"
+                      : "Submit order request"
                 : isSubmitting
                   ? locale === "bn"
-                    ? "অর্ডার অনুরোধ পাঠানো হচ্ছে..."
-                    : "Submitting order request..."
+                    ? "অর্ডার করা হচ্ছে..."
+                    : "Placing order..."
                   : locale === "bn"
-                    ? "অর্ডার অনুরোধ পাঠান"
-                    : "Submit order request"
-              : isSubmitting
-                ? locale === "bn"
-                  ? "অর্ডার করা হচ্ছে..."
-                  : "Placing order..."
-                : locale === "bn"
-                  ? "অর্ডার নিশ্চিত করুন"
-                  : "Confirm order"}
-          </Button>
-        </CardFooter>
-      </Card>
+                    ? "অর্ডার নিশ্চিত করুন"
+                    : "Confirm order"}
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
     </div>
   );
 }
@@ -606,14 +807,14 @@ function getCheckoutSyncMessage(
 ) {
   if (locale === "bn") {
     if (adjustedCount > 0 && removedCount > 0) {
-      return "চেকআউটের আগে লাইভ স্টকের সাথে মিলিয়ে কিছু পরিমাণ আপডেট করা হয়েছে এবং অনুপলভ্য পণ্য সরানো হয়েছে।";
+      return "চেকআউটের আগে লাইভ স্টকের সঙ্গে মিলিয়ে কিছু পরিমাণ আপডেট করা হয়েছে এবং অনুপলভ্য পণ্য সরানো হয়েছে।";
     }
 
     if (removedCount > 0) {
       return "চেকআউটের আগে অনুপলভ্য বা স্টক শেষ হওয়া পণ্য সরানো হয়েছে।";
     }
 
-    return "চেকআউটের আগে লাইভ স্টকের সাথে মিলিয়ে কিছু পরিমাণ আপডেট করা হয়েছে।";
+    return "চেকআউটের আগে লাইভ স্টকের সঙ্গে মিলিয়ে কিছু পরিমাণ আপডেট করা হয়েছে।";
   }
 
   if (adjustedCount > 0 && removedCount > 0) {

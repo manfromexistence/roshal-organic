@@ -10,15 +10,18 @@ import {
   RoshalPageError,
   RoshalProductError,
   RoshalSectionError,
+  RoshalTaxonomyError,
   RoshalUserRoleError,
   updateRoshalOrderStatus,
   updateRoshalUserProfile,
   updateRoshalUserRole,
+  upsertRoshalCategory,
   upsertRoshalPage,
   upsertRoshalPaymentSettings,
   upsertRoshalProduct,
   upsertRoshalSection,
   upsertRoshalSiteSettings,
+  upsertRoshalSubcategory,
 } from "@/lib/store-mutations";
 import { normalizeRoshalRouteSlug } from "@/lib/store-routes";
 import type { RoshalPaymentMethod } from "@/lib/store-types";
@@ -39,6 +42,14 @@ function numberValue(formData: FormData, key: string) {
 function boolValue(formData: FormData, key: string) {
   const value = formData.get(key);
   return value === "on" || value === "true" || value === "1";
+}
+
+function stringArrayValue(formData: FormData, key: string) {
+  return safeJsonParse<string[]>(textValue(formData, key), []).filter(Boolean);
+}
+
+function jsonValue<T>(formData: FormData, key: string, fallback: T) {
+  return safeJsonParse<T>(textValue(formData, key), fallback);
 }
 
 function buildPaymentOption(
@@ -103,12 +114,15 @@ export async function saveRoshalSiteSettings(formData: FormData) {
     primaryCtaHref: textValue(formData, "primaryCtaHref") || "/products",
     primaryCtaLabelBn: textValue(formData, "primaryCtaLabelBn"),
     primaryCtaLabelEn: textValue(formData, "primaryCtaLabelEn"),
+    deliveryZones: jsonValue(formData, "deliveryZonesJson", []),
   });
 
   finishAction("/dashboard/theme", formData, [
     "/",
     "/about",
     "/contact",
+    "/cart",
+    "/checkout",
     "/dashboard/theme",
   ]);
 }
@@ -136,6 +150,78 @@ export async function saveRoshalPaymentSettings(formData: FormData) {
     "/orders",
     "/dashboard/orders",
     "/dashboard/payments",
+  ]);
+}
+
+export async function saveRoshalCategory(formData: FormData) {
+  await requireRoshalAdmin();
+
+  const categoryId = textValue(formData, "id");
+
+  try {
+    await upsertRoshalCategory({
+      id: categoryId || undefined,
+      key: textValue(formData, "key"),
+      labelBn: textValue(formData, "labelBn"),
+      labelEn: textValue(formData, "labelEn"),
+      descriptionBn: optionalTextValue(formData, "descriptionBn"),
+      descriptionEn: optionalTextValue(formData, "descriptionEn"),
+      imageUrl: optionalTextValue(formData, "imageUrl"),
+      sourceKeys: stringArrayValue(formData, "sourceKeysJson"),
+      isEnabled: boolValue(formData, "isEnabled"),
+      showInNavigation: boolValue(formData, "showInNavigation"),
+      showOnHomepage: boolValue(formData, "showOnHomepage"),
+      sortOrder: numberValue(formData, "sortOrder"),
+    });
+  } catch (error) {
+    if (error instanceof RoshalTaxonomyError) {
+      redirect(
+        `/dashboard/categories?error=${encodeURIComponent(error.code)}&key=${encodeURIComponent(textValue(formData, "key"))}`,
+      );
+    }
+
+    throw error;
+  }
+
+  finishAction("/dashboard/categories", formData, [
+    "/",
+    "/products",
+    "/dashboard/categories",
+  ]);
+}
+
+export async function saveRoshalSubcategory(formData: FormData) {
+  await requireRoshalAdmin();
+
+  try {
+    await upsertRoshalSubcategory({
+      id: textValue(formData, "id") || undefined,
+      categoryId: textValue(formData, "categoryId"),
+      key: textValue(formData, "key"),
+      labelBn: textValue(formData, "labelBn"),
+      labelEn: textValue(formData, "labelEn"),
+      descriptionBn: optionalTextValue(formData, "descriptionBn"),
+      descriptionEn: optionalTextValue(formData, "descriptionEn"),
+      imageUrl: optionalTextValue(formData, "imageUrl"),
+      sourceKeys: stringArrayValue(formData, "sourceKeysJson"),
+      isEnabled: boolValue(formData, "isEnabled"),
+      showInNavigation: boolValue(formData, "showInNavigation"),
+      sortOrder: numberValue(formData, "sortOrder"),
+    });
+  } catch (error) {
+    if (error instanceof RoshalTaxonomyError) {
+      redirect(
+        `/dashboard/categories?error=${encodeURIComponent(error.code)}&subcategory=${encodeURIComponent(textValue(formData, "key"))}`,
+      );
+    }
+
+    throw error;
+  }
+
+  finishAction("/dashboard/categories", formData, [
+    "/",
+    "/products",
+    "/dashboard/categories",
   ]);
 }
 

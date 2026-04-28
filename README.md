@@ -5,9 +5,10 @@ Roshal Organic is a bilingual Bangla/English ecommerce CMS built on Next.js 16, 
 ## Current Surface
 
 - Storefront routes: `/`, `/about`, `/contact`, `/products`, `/products/[slug]`, `/cart`, `/checkout`, `/orders`, `/orders/[id]`, `/profile`
+- Default CMS marketing/support routes: `/company-information`, `/support-center`, `/how-to-order`, `/faq`, `/payment`, `/shipping`, `/happy-return`, `/refund-policy`, `/cancellation`, `/roshal-stories`, `/terms-and-conditions`, `/privacy-policy`, `/careers`, `/pre-order`
 - The live storefront shell at `/` now uses the transplanted landing/header/footer treatment from the former root-level `marketting` app
 - Custom CMS marketing routes: `/(marketing)/[slug]` for additional published pages created from the dashboard
-- Admin routes: `/dashboard`, `/dashboard/products`, `/dashboard/orders`, `/dashboard/payments`, `/dashboard/users`, `/dashboard/pages`, `/dashboard/theme`
+- Admin routes: `/dashboard`, `/dashboard/products`, `/dashboard/categories`, `/dashboard/orders`, `/dashboard/payments`, `/dashboard/users`, `/dashboard/pages`, `/dashboard/theme`
 - Auth roles: `admin`, `user`
 - Languages: Bangla and English
 - Payment options: `card`, `bkash`, `nagad`, `rocket`, `upay`
@@ -19,6 +20,7 @@ Roshal Organic is a bilingual Bangla/English ecommerce CMS built on Next.js 16, 
 - Cart and checkout now reconcile persisted cart items against the live published catalog, reducing stale-quantity checkout failures for returning users
 - Storefront product discovery: URL-synced search, sticky category/price sidebar filters, mobile filter sheet, and sort controls on `/products`
 - Shared scroll chrome: the storefront shell, horizontal category/footer rails, and reusable data tables now use the project `ScrollArea` scrollbar treatment instead of raw native overflow
+- Storefront responsiveness: the shared marketing shell, homepage carousels/shelves, and product-details layout are width-constrained for mobile and tablet storefront browsing instead of leaking horizontal overflow
 - Customer order history now includes search, status filtering, and summary metrics on `/orders`
 - Account UX: `/profile` now includes order metrics, recent orders, quick links back to cart/order history/admin, and a working storefront logout control
 - Customer order pages now show itemized line items, delivery details, proof screenshots, payment verification timestamps, and admin/tracking notes instead of only top-level status badges
@@ -37,8 +39,10 @@ Roshal Organic is a bilingual Bangla/English ecommerce CMS built on Next.js 16, 
 - User profile data and role assignment
 - Admin safety rails that prevent self-demotion/deactivation and protect the last active admin account from being removed accidentally
 - Marketing page content, sections, layouts, copy, images, and section JSON/style settings
+- Storefront taxonomy from `/dashboard/categories`, including category and subcategory creation that now drives header navigation, homepage category rails, footer "Shop By" links, and `/products` filters
 - Homepage landing composition through a dedicated control center that maps live section keys, supported `stylesJson` rules, and section visibility to the current storefront landing page
 - Creation of new marketing pages and new sections directly from the dashboard, including media uploads and live storefront links for published pages
+- Built-in support/information/policy pages such as Support Center, How to Order, FAQ, Payment, Shipping, Return/Refund, Stories, Terms, Privacy, Careers, and Pre-Order, all editable from the same dashboard page editor
 - Generic marketing-page sections now honor dashboard `stylesJson` product sourcing (`featured`, `all`, `reverse`, `limit`, `offset`) instead of falling back to a fixed featured-product slice
 - Safe fallback merging for the built-in home/about/contact CMS pages and sections, so partial dashboard edits do not wipe out the rest of the default storefront composition
 - Storefront brand settings such as CTA labels, hero layout, card style, spacing, and contact information

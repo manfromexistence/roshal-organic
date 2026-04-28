@@ -117,6 +117,7 @@ async function seedRoshalContent() {
     primaryCtaHref: defaultRoshalSiteSettings.primaryCtaHref,
     primaryCtaLabelBn: defaultRoshalSiteSettings.primaryCtaLabel.bn,
     primaryCtaLabelEn: defaultRoshalSiteSettings.primaryCtaLabel.en,
+    deliveryZones: defaultRoshalSiteSettings.deliveryZones,
   });
 
   await upsertRoshalPaymentSettings({

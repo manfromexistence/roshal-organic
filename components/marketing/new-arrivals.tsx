@@ -1,9 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { ScrollReveal } from "@/components/ui/scroll-reveal";
-import { ProductCard } from "./product-card";
+import { HomeProductShelf } from "@/components/marketing/home-product-shelf";
+import type { RoshalProduct } from "@/lib/store-types";
 
 type Language = "bn" | "en";
 
@@ -18,6 +16,7 @@ interface Product {
   reviews?: number;
   badge?: string;
   badgeVariant?: "default" | "secondary" | "destructive" | "outline";
+  cartProduct?: RoshalProduct;
 }
 
 interface NewArrivalsProps {
@@ -38,55 +37,25 @@ export function NewArrivals({
   description,
 }: NewArrivalsProps) {
   return (
-    <section className="bg-background py-16">
-      <div className="container mx-auto px-4">
-        <ScrollReveal>
-          <h2 className="mb-12 text-center text-3xl font-bold md:text-4xl">
-            {title
-              ? title[language]
-              : language === "bn"
-                ? "নতুন আগমন"
-                : "New Arrivals"}
-          </h2>
-          {description ? (
-            <p className="-mt-8 mb-12 text-center text-base text-muted-foreground">
-              {description[language]}
-            </p>
-          ) : null}
-        </ScrollReveal>
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
-          {products.slice(0, 4).map((product, index) => (
-            <ScrollReveal key={product.id} delay={index * 0.1} direction="up">
-              <ProductCard
-                id={product.id}
-                href={product.href}
-                image={product.image}
-                name={product.name}
-                price={product.price}
-                originalPrice={product.originalPrice}
-                rating={product.rating}
-                reviews={product.reviews}
-                badge={product.badge || "NEW"}
-                badgeVariant={product.badgeVariant || "secondary"}
-                language={language}
-              />
-            </ScrollReveal>
-          ))}
-        </div>
-        <ScrollReveal delay={0.5}>
-          <div className="mt-12 text-center">
-            <Link href={ctaHref || "/products"}>
-              <Button size="lg" variant="outline">
-                {ctaLabel
-                  ? ctaLabel[language]
-                  : language === "bn"
-                    ? "সব নতুন পণ্য দেখুন"
-                    : "View All New Arrivals"}
-              </Button>
-            </Link>
-          </div>
-        </ScrollReveal>
-      </div>
-    </section>
+    <HomeProductShelf
+      products={products.slice(0, 5)}
+      language={language}
+      title={
+        title
+          ? title[language]
+          : language === "bn"
+            ? "নতুন আগমন"
+            : "New Arrivals"
+      }
+      description={description?.[language]}
+      ctaHref={ctaHref || "/products"}
+      ctaLabel={
+        ctaLabel
+          ? ctaLabel[language]
+          : language === "bn"
+            ? "সব নতুন পণ্য দেখুন"
+            : "View all new arrivals"
+      }
+    />
   );
 }

@@ -1,3 +1,4 @@
+import { Eye } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { AddToCartButton } from "@/components/storefront/add-to-cart-button";
@@ -7,12 +8,30 @@ import { Button } from "@/components/ui/button";
 import {
   ImageCard,
   ImageCardContent,
+  ImageCardDescription,
   ImageCardFooter,
   ImageCardHeader,
+  ImageCardTitle,
 } from "@/components/ui/image-card";
 import { formatBdt } from "@/lib/store-format";
 import { getLocalizedValue } from "@/lib/store-locale";
 import type { RoshalLocale, RoshalProduct } from "@/lib/store-types";
+
+function resolveDiscountLabel(product: RoshalProduct, locale: RoshalLocale) {
+  if (!product.compareAtPrice || product.compareAtPrice <= product.price) {
+    return product.badge;
+  }
+
+  const discount = Math.round(
+    ((product.compareAtPrice - product.price) / product.compareAtPrice) * 100,
+  );
+
+  if (discount <= 0) {
+    return product.badge;
+  }
+
+  return locale === "bn" ? `সেভ ${discount}%` : `Save ${discount}%`;
+}
 
 export function RoshalProductCard({
   product,
@@ -23,62 +42,104 @@ export function RoshalProductCard({
 }) {
   const name = getLocalizedValue(locale, product.name);
   const summary = getLocalizedValue(locale, product.summary);
+  const categoryLabel = getLocalizedValue(locale, product.categoryLabel);
+  const badgeLabel = resolveDiscountLabel(product, locale);
 
   return (
-    <ImageCard className="flex h-full flex-col border-border/70 bg-card/90 transition-transform duration-200 hover:-translate-y-1">
-      <ImageCardHeader className="space-y-4 px-0">
-        <div className="relative aspect-[4/3] overflow-hidden rounded-xl border bg-muted">
-          <Image
-            src={product.heroImage}
-            alt={name}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, 33vw"
-          />
-        </div>
-        <div className="flex items-start justify-between gap-3 px-6">
-          <div>
-            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
-              {getLocalizedValue(locale, product.categoryLabel)}
-            </p>
-            <h3 className="text-lg font-semibold">{name}</h3>
-          </div>
-          <div className="flex items-center gap-2">
-            {product.badge ? (
-              <Badge variant="secondary">{product.badge}</Badge>
-            ) : null}
+    <ImageCard className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] border-border/80 bg-card shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary/25 hover:shadow-md">
+      <ImageCardHeader className="p-0">
+        <div className="relative">
+          <Link
+            href={`/products/${product.slug}`}
+            className="block rounded-t-[1.75rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          >
+            <div className="relative aspect-square overflow-hidden border-b border-border/70 bg-muted/35">
+              <Image
+                src={product.heroImage}
+                alt={name}
+                fill
+                className="object-contain transition-transform duration-300 group-hover:scale-105"
+                sizes="(max-width: 640px) 50vw, (max-width: 1280px) 25vw, 20vw"
+              />
+            </div>
+          </Link>
+
+          <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between p-3">
+            {badgeLabel ? (
+              <Badge className="pointer-events-auto rounded-md">
+                {badgeLabel}
+              </Badge>
+            ) : (
+              <span />
+            )}
+
             <FavoriteToggleButton
               productId={product.id}
               locale={locale}
-              className="h-9 w-9 rounded-full"
+              className="pointer-events-auto rounded-full border-border/70 bg-background/95 shadow-sm hover:bg-background"
+              variant="ghost"
             />
           </div>
         </div>
       </ImageCardHeader>
-      <ImageCardContent className="flex-1 space-y-4">
-        <p className="text-sm leading-6 text-muted-foreground">{summary}</p>
-        <div className="flex items-baseline gap-2">
-          <span className="text-xl font-semibold text-primary">
-            {formatBdt(product.price, locale)}
-          </span>
-          {product.compareAtPrice ? (
-            <span className="text-sm text-muted-foreground line-through">
-              {formatBdt(product.compareAtPrice, locale)}
-            </span>
-          ) : null}
+
+      <ImageCardContent className="flex flex-1 flex-col items-start gap-3 px-4 pb-4 pt-4 text-left">
+        <div className="w-full space-y-2">
+          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+            {categoryLabel}
+          </p>
+          <Link
+            href={`/products/${product.slug}`}
+            className="block w-full transition-colors hover:text-primary"
+          >
+            <ImageCardTitle className="line-clamp-2 text-lg leading-7 text-foreground">
+              {name}
+            </ImageCardTitle>
+          </Link>
+          <ImageCardDescription className="line-clamp-2 leading-6">
+            {summary}
+          </ImageCardDescription>
+        </div>
+
+        <div className="mt-auto flex w-full flex-col items-start gap-1.5">
+          <div className="space-y-1">
+            <p className="text-xl font-semibold text-primary">
+              {formatBdt(product.price, locale)}
+            </p>
+            {product.compareAtPrice ? (
+              <p className="text-sm text-muted-foreground line-through">
+                {formatBdt(product.compareAtPrice, locale)}
+              </p>
+            ) : null}
+          </div>
+
+          <div className="text-xs text-muted-foreground">
+            {product.inventory > 0
+              ? locale === "bn"
+                ? `${product.inventory} বাকি`
+                : `${product.inventory} left`
+              : locale === "bn"
+                ? "স্টক শেষ"
+                : "Out of stock"}
+          </div>
         </div>
       </ImageCardContent>
-      <ImageCardFooter className="flex flex-col gap-3 sm:flex-row">
-        <Button asChild variant="outline" className="w-full sm:w-auto">
-          <Link href={`/products/${product.slug}`}>
-            {locale === "bn" ? "বিস্তারিত" : "Details"}
-          </Link>
-        </Button>
-        <AddToCartButton
-          product={product}
-          locale={locale}
-          className="w-full sm:w-auto sm:flex-1"
-        />
+
+      <ImageCardFooter className="mt-auto px-0 pb-0 pt-0">
+        <div className="grid w-full gap-3 border-t border-border/70 px-4 pb-4 pt-4">
+          <Button asChild variant="outline" className="rounded-lg">
+            <Link href={`/products/${product.slug}`}>
+              <Eye className="size-4" />
+              {locale === "bn" ? "বিস্তারিত" : "Details"}
+            </Link>
+          </Button>
+
+          <AddToCartButton
+            product={product}
+            locale={locale}
+            className="w-full rounded-lg"
+          />
+        </div>
       </ImageCardFooter>
     </ImageCard>
   );

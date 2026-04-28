@@ -1,0 +1,1129 @@
+import { localizedValue } from "@/lib/store-locale";
+import type {
+  RoshalMarketingPage,
+  RoshalMarketingSection,
+} from "@/lib/store-types";
+
+export const defaultRoshalExtendedPages: RoshalMarketingPage[] = [
+  {
+    id: "page-company-information",
+    slug: "company-information",
+    navigationLabel: localizedValue("কোম্পানি তথ্য", "Company Information"),
+    title: localizedValue("কোম্পানি তথ্য", "Company Information"),
+    description: localizedValue(
+      "Roshal Organic-এর ব্যবসা, প্রতিশ্রুতি, যোগাযোগ এবং সাপোর্ট কাঠামো সম্পর্কে জানুন।",
+      "Learn more about Roshal Organic's business, commitments, contact channels, and support structure.",
+    ),
+    heroImage: "/brand-story.jpg",
+    status: "published",
+    showInNavigation: false,
+  },
+  {
+    id: "page-support-center",
+    slug: "support-center",
+    navigationLabel: localizedValue("সাপোর্ট সেন্টার", "Support Center"),
+    title: localizedValue("সাপোর্ট সেন্টার", "Support Center"),
+    description: localizedValue(
+      "অর্ডার, ডেলিভারি, পেমেন্ট বা অ্যাকাউন্ট-সংক্রান্ত সহায়তার জন্য আমাদের সাপোর্ট সেন্টারে আসুন।",
+      "Reach our support center for help with orders, deliveries, payments, or your account.",
+    ),
+    heroImage: "/newsletter.jpg",
+    status: "published",
+    showInNavigation: false,
+  },
+  {
+    id: "page-how-to-order",
+    slug: "how-to-order",
+    navigationLabel: localizedValue("কিভাবে অর্ডার করবেন", "How to Order"),
+    title: localizedValue("কিভাবে অর্ডার করবেন", "How to Order"),
+    description: localizedValue(
+      "পণ্য বাছাই থেকে চেকআউট এবং পেমেন্ট কনফার্মেশন পর্যন্ত পুরো অর্ডার প্রক্রিয়া বুঝে নিন।",
+      "Understand the full order flow from product selection to checkout and payment confirmation.",
+    ),
+    heroImage: "/special-offer.jpg",
+    status: "published",
+    showInNavigation: false,
+  },
+  {
+    id: "page-faq",
+    slug: "faq",
+    navigationLabel: localizedValue("প্রশ্নোত্তর", "FAQ"),
+    title: localizedValue("সাধারণ প্রশ্নোত্তর", "Frequently Asked Questions"),
+    description: localizedValue(
+      "অর্ডার, ডেলিভারি, রিটার্ন, পেমেন্ট এবং অ্যাকাউন্ট সংক্রান্ত সাধারণ প্রশ্নের উত্তর।",
+      "Answers to common questions about orders, delivery, returns, payments, and accounts.",
+    ),
+    heroImage: "/brand-story.jpg",
+    status: "published",
+    showInNavigation: false,
+  },
+  {
+    id: "page-payment",
+    slug: "payment",
+    navigationLabel: localizedValue("পেমেন্ট", "Payment"),
+    title: localizedValue("পেমেন্ট গাইড", "Payment Guide"),
+    description: localizedValue(
+      "কার্ড, bKash, Nagad, Rocket, Upay এবং ম্যানুয়াল ভেরিফিকেশন ফ্লো সম্পর্কে জানুন।",
+      "Understand card, bKash, Nagad, Rocket, Upay, and manual verification payment flows.",
+    ),
+    heroImage: "/oil-2.jpg",
+    status: "published",
+    showInNavigation: false,
+  },
+  {
+    id: "page-shipping",
+    slug: "shipping",
+    navigationLabel: localizedValue("শিপিং", "Shipping"),
+    title: localizedValue("শিপিং ও ডেলিভারি", "Shipping & Delivery"),
+    description: localizedValue(
+      "ডেলিভারি সময়, এলাকা, চার্জ এবং অর্ডার গ্রহণের নির্দেশনা দেখুন।",
+      "Review delivery timelines, coverage areas, charges, and order receiving guidance.",
+    ),
+    heroImage: "/special-offer.jpg",
+    status: "published",
+    showInNavigation: false,
+  },
+  {
+    id: "page-happy-return",
+    slug: "happy-return",
+    navigationLabel: localizedValue("হ্যাপি রিটার্ন", "Happy Return"),
+    title: localizedValue("হ্যাপি রিটার্ন", "Happy Return"),
+    description: localizedValue(
+      "ভুল, ক্ষতিগ্রস্ত বা অমিল পণ্য হলে কীভাবে দ্রুত রিটার্ন রিকোয়েস্ট করবেন তা জানুন।",
+      "Learn how to request a quick return if an item arrives damaged, incorrect, or mismatched.",
+    ),
+    heroImage: "/newsletter.jpg",
+    status: "published",
+    showInNavigation: false,
+  },
+  {
+    id: "page-refund-policy",
+    slug: "refund-policy",
+    navigationLabel: localizedValue("রিফান্ড নীতি", "Refund Policy"),
+    title: localizedValue("রিফান্ড নীতি", "Refund Policy"),
+    description: localizedValue(
+      "রিফান্ড অনুমোদন, যাচাই এবং রিফান্ড প্রসেসিং-এর ধাপগুলো দেখুন।",
+      "Review approval, verification, and processing steps for refunds.",
+    ),
+    heroImage: "/deal-3.jpg",
+    status: "published",
+    showInNavigation: false,
+  },
+  {
+    id: "page-cancellation",
+    slug: "cancellation",
+    navigationLabel: localizedValue("ক্যানসেলেশন", "Cancellation"),
+    title: localizedValue("অর্ডার ক্যানসেলেশন", "Order Cancellation"),
+    description: localizedValue(
+      "অর্ডার ডিসপ্যাচের আগে কীভাবে পরিবর্তন বা বাতিলের অনুরোধ করবেন তা জানুন।",
+      "Learn how to request changes or cancellation before an order is dispatched.",
+    ),
+    heroImage: "/newsletter.jpg",
+    status: "published",
+    showInNavigation: false,
+  },
+  {
+    id: "page-roshal-stories",
+    slug: "roshal-stories",
+    navigationLabel: localizedValue("রোশাল স্টোরিজ", "Roshal Stories"),
+    title: localizedValue("রোশাল স্টোরিজ", "Roshal Stories"),
+    description: localizedValue(
+      "ব্র্যান্ডের গল্প, সংগ্রহ, মৌসুমি ক্যাম্পেইন এবং গ্রাহকের আস্থার গল্পগুলো এখানে সাজান।",
+      "Share brand stories, sourcing highlights, seasonal campaigns, and customer trust signals here.",
+    ),
+    heroImage: "/brand-story.jpg",
+    status: "published",
+    showInNavigation: false,
+  },
+  {
+    id: "page-terms-and-conditions",
+    slug: "terms-and-conditions",
+    navigationLabel: localizedValue("শর্তাবলী", "Terms & Conditions"),
+    title: localizedValue("শর্তাবলী", "Terms & Conditions"),
+    description: localizedValue(
+      "অর্ডার, পেমেন্ট, ডেলিভারি, রিটার্ন এবং স্টোরফ্রন্ট ব্যবহারের নীতিগুলো এক জায়গায় রাখুন।",
+      "Keep order, payment, delivery, return, and storefront usage rules in one place.",
+    ),
+    heroImage: "/special-offer.jpg",
+    status: "published",
+    showInNavigation: false,
+  },
+  {
+    id: "page-privacy-policy",
+    slug: "privacy-policy",
+    navigationLabel: localizedValue("প্রাইভেসি পলিসি", "Privacy Policy"),
+    title: localizedValue("প্রাইভেসি পলিসি", "Privacy Policy"),
+    description: localizedValue(
+      "গ্রাহকের তথ্য কীভাবে সংগ্রহ, ব্যবহার, সংরক্ষণ এবং সুরক্ষিত রাখা হয় তা এখানে ব্যাখ্যা করুন।",
+      "Explain how customer data is collected, used, stored, and protected.",
+    ),
+    heroImage: "/newsletter.jpg",
+    status: "published",
+    showInNavigation: false,
+  },
+  {
+    id: "page-careers",
+    slug: "careers",
+    navigationLabel: localizedValue("ক্যারিয়ার", "Careers"),
+    title: localizedValue("রোশাল অর্গানিকে ক্যারিয়ার", "Careers at Roshal Organic"),
+    description: localizedValue(
+      "দল, কাজের ধরন, এবং ভবিষ্যৎ ভূমিকার জন্য কোথায় যোগাযোগ করতে হবে তা এখানে দেখান।",
+      "Outline the team, work style, and where future applicants should reach out.",
+    ),
+    heroImage: "/brand-story.jpg",
+    status: "published",
+    showInNavigation: false,
+  },
+  {
+    id: "page-pre-order",
+    slug: "pre-order",
+    navigationLabel: localizedValue("প্রি-অর্ডার", "Pre-Order"),
+    title: localizedValue("প্রি-অর্ডার গাইড", "Pre-Order Guide"),
+    description: localizedValue(
+      "প্রি-অর্ডার পণ্য, অগ্রিম পেমেন্ট, ডেলিভারি প্রত্যাশা এবং ক্যানসেলেশন নিয়ম এখানে রাখুন।",
+      "Keep pre-order product rules, advance payment, delivery expectations, and cancellation guidance here.",
+    ),
+    heroImage: "/special-offer.jpg",
+    status: "published",
+    showInNavigation: false,
+  },
+];
+
+export const defaultRoshalExtendedSections: RoshalMarketingSection[] = [
+  {
+    id: "section-home-brands",
+    pageId: "page-home",
+    sectionKey: "landing-brands",
+    type: "feature-grid",
+    sortOrder: 12,
+    layout: "grid",
+    variant: "default",
+    isEnabled: true,
+    eyebrow: localizedValue("", ""),
+    title: localizedValue("আমাদের ব্র্যান্ড", "Our Brands"),
+    body: localizedValue(
+      "Roshal Organic-এর স্টোরফ্রন্টে যেসব সিগনেচার লাইনের পণ্য আমরা সামনে আনতে চাই সেগুলো এখানে দেখান।",
+      "Highlight the signature brand lines you want to surface on the storefront.",
+    ),
+    ctaLabel: localizedValue("ব্র্যান্ডের গল্প", "Brand Story"),
+    ctaHref: "/about",
+    imageUrl: "",
+    items: [
+      {
+        title: localizedValue("Roshal Organic", "Roshal Organic"),
+        imageUrl: "/logo.png",
+        href: "/about",
+      },
+      {
+        title: localizedValue("খাঁটি মধু", "Signature Honey"),
+        imageUrl: "/honey.jpg",
+        href: "/products?category=honey",
+      },
+      {
+        title: localizedValue("প্রিমিয়াম ঘি", "Kitchen Ghee"),
+        imageUrl: "/ghee.jpg",
+        href: "/products?category=oil-ghee",
+      },
+      {
+        title: localizedValue("মৌসুমি খেজুর", "Premium Dates"),
+        imageUrl: "/dates.jpg",
+        href: "/products?category=jaggery-fruit",
+      },
+    ],
+    styles: {
+      source: "manual",
+    },
+  },
+  {
+    id: "section-home-testimonials",
+    pageId: "page-home",
+    sectionKey: "landing-testimonials",
+    type: "feature-grid",
+    sortOrder: 19,
+    layout: "grid",
+    variant: "muted",
+    isEnabled: true,
+    eyebrow: localizedValue("", ""),
+    title: localizedValue("গ্রাহকের অভিজ্ঞতা", "What Customers Say"),
+    body: localizedValue(
+      "গ্রাহকদের কাছ থেকে পাওয়া বাস্তব প্রতিক্রিয়া এখানে আপডেট করুন।",
+      "Update this section with real customer feedback and testimonials.",
+    ),
+    ctaLabel: localizedValue("", ""),
+    ctaHref: "",
+    imageUrl: "",
+    items: [
+      {
+        title: localizedValue("উদ্যোক্তা", "Entrepreneur"),
+        body: localizedValue(
+          "এই অভিজ্ঞতার জগতে আস্থার একটি প্রতিষ্ঠিত নাম রোশাল অর্গানিক।",
+          "Roshal Organic has become a dependable name in our household.",
+        ),
+        label: localizedValue("Fariha Akter Tumpa", "Fariha Akter Tumpa"),
+      },
+      {
+        title: localizedValue("সার্ভিস হোল্ডার", "Service Holder"),
+        body: localizedValue(
+          "বাড়ির জন্য ঘি কিনে বুঝলাম মানটা সত্যিই ভালো এবং নির্ভরযোগ্য।",
+          "Buying ghee for my family made the quality obvious and dependable.",
+        ),
+        label: localizedValue("Shahriar Khan Abir", "Shahriar Khan Abir"),
+      },
+      {
+        title: localizedValue("শিক্ষার্থী", "Student"),
+        body: localizedValue(
+          "বাজারের অনেক জায়গা থেকে কিনেছি, কিন্তু রোশালের পণ্যে ভরসা করা যায়।",
+          "I have tried many stores, but Roshal is one of the few I genuinely trust.",
+        ),
+        label: localizedValue("Ahmod Al Kamran", "Ahmod Al Kamran"),
+      },
+    ],
+    styles: {
+      source: "manual",
+    },
+  },
+  {
+    id: "section-company-information-overview",
+    pageId: "page-company-information",
+    sectionKey: "company-overview",
+    type: "feature-grid",
+    sortOrder: 0,
+    layout: "grid",
+    variant: "default",
+    isEnabled: true,
+    eyebrow: localizedValue("Roshal Organic", "Roshal Organic"),
+    title: localizedValue(
+      "আমাদের সম্পর্কে গুরুত্বপূর্ণ তথ্য",
+      "Important facts about us",
+    ),
+    body: localizedValue(
+      "ব্যবসার ধরন, সরবরাহ কাঠামো এবং গ্রাহক সহায়তার মূল স্তম্ভগুলো এখানে দেখান।",
+      "Show the core facts around the business, sourcing model, and customer support structure.",
+    ),
+    ctaLabel: localizedValue("যোগাযোগ করুন", "Contact Us"),
+    ctaHref: "/contact",
+    imageUrl: "",
+    items: [
+      {
+        title: localizedValue("খাঁটি ও অর্গানিক ফোকাস", "Pure and organic focus"),
+        body: localizedValue(
+          "আমাদের পণ্য তালিকার মূল ফোকাস খাঁটি, রাসায়নিকমুক্ত এবং বিশ্বস্ত খাদ্য।",
+          "Our catalog centers on pure, chemical-free, and trustworthy food products.",
+        ),
+      },
+      {
+        title: localizedValue("সরাসরি উৎস সংগ্রহ", "Direct source collection"),
+        body: localizedValue(
+          "দেশি কৃষক, উৎপাদক এবং প্রাকৃতিক উৎস থেকে পণ্য সংগ্রহ করা হয়।",
+          "Products are sourced from local farmers, producers, and natural sources.",
+        ),
+      },
+      {
+        title: localizedValue("দুই ভাষার সাপোর্ট", "Two-language support"),
+        body: localizedValue(
+          "Bangla এবং English – দুই ভাষাতেই মার্কেটিং ও চেকআউট অভিজ্ঞতা চালানো যায়।",
+          "The storefront and checkout flow support both Bangla and English.",
+        ),
+      },
+      {
+        title: localizedValue(
+          "ড্যাশবোর্ড-চালিত কনটেন্ট",
+          "Dashboard-managed content",
+        ),
+        body: localizedValue(
+          "মার্কেটিং পেজ, ক্যাটাগরি এবং সাপোর্ট কনটেন্ট ড্যাশবোর্ড থেকে আপডেট করা যায়।",
+          "Marketing pages, categories, and support content are updated from the dashboard.",
+        ),
+      },
+    ],
+    styles: {
+      columns: "4",
+    },
+  },
+  {
+    id: "section-company-information-contact",
+    pageId: "page-company-information",
+    sectionKey: "company-contact-cards",
+    type: "contact-cards",
+    sortOrder: 1,
+    layout: "grid",
+    variant: "muted",
+    isEnabled: true,
+    eyebrow: localizedValue("ব্যবসায়িক যোগাযোগ", "Business contact"),
+    title: localizedValue(
+      "যোগাযোগ ও অপারেশনাল তথ্য",
+      "Contact and operational details",
+    ),
+    body: localizedValue(
+      "ব্যবসায়িক যোগাযোগ, সাপোর্ট এবং অবস্থান সম্পর্কিত তথ্যগুলো এখানে রাখুন।",
+      "Keep business contact, support, and location details here.",
+    ),
+    ctaLabel: localizedValue("", ""),
+    ctaHref: "",
+    imageUrl: "",
+    items: [
+      {
+        label: localizedValue("অফিস লোকেশন", "Office location"),
+        title: localizedValue("ঢাকা, বাংলাদেশ", "Dhaka, Bangladesh"),
+      },
+      {
+        label: localizedValue("সাপোর্ট নম্বর", "Support phone"),
+        title: localizedValue("+880 1719-403627", "+880 1719-403627"),
+        href: "tel:+8801719403627",
+      },
+      {
+        label: localizedValue("সাপোর্ট ইমেইল", "Support email"),
+        title: localizedValue(
+          "info@roshalorganic.com",
+          "info@roshalorganic.com",
+        ),
+        href: "mailto:info@roshalorganic.com",
+      },
+      {
+        label: localizedValue("হোয়াটসঅ্যাপ", "WhatsApp"),
+        title: localizedValue("+880 1719-403627", "+880 1719-403627"),
+        href: "https://wa.me/8801719403627",
+      },
+    ],
+    styles: {
+      columns: "4",
+    },
+  },
+  {
+    id: "section-support-center-topics",
+    pageId: "page-support-center",
+    sectionKey: "support-topics",
+    type: "feature-grid",
+    sortOrder: 0,
+    layout: "grid",
+    variant: "default",
+    isEnabled: true,
+    eyebrow: localizedValue("সহায়তার ধরন", "Support topics"),
+    title: localizedValue("যে ধরনের সহায়তা আমরা দিই", "The help we provide"),
+    body: localizedValue(
+      "অর্ডার, ডেলিভারি, পেমেন্ট বা অ্যাকাউন্ট-সংক্রান্ত সহায়তার জন্য নিচের গাইডগুলো ব্যবহার করুন।",
+      "Use the guides below for help with orders, delivery, payments, or your account.",
+    ),
+    ctaLabel: localizedValue("FAQ দেখুন", "View FAQ"),
+    ctaHref: "/faq",
+    imageUrl: "",
+    items: [
+      {
+        title: localizedValue("অর্ডার সাপোর্ট", "Order support"),
+        body: localizedValue(
+          "অর্ডার কনফার্মেশন, সংশোধন, বাতিল বা ডেলিভারি আপডেটের জন্য।",
+          "For order confirmation, edits, cancellation, or delivery updates.",
+        ),
+      },
+      {
+        title: localizedValue("পেমেন্ট সাপোর্ট", "Payment support"),
+        body: localizedValue(
+          "কার্ড বা মোবাইল ওয়ালেট পেমেন্টের স্ট্যাটাস ও ম্যানুয়াল ভেরিফিকেশনের সহায়তা।",
+          "Help with card or mobile-wallet payment status and manual verification.",
+        ),
+      },
+      {
+        title: localizedValue("অ্যাকাউন্ট সহায়তা", "Account assistance"),
+        body: localizedValue(
+          "লগইন, প্রোফাইল, ভাষা বা অর্ডার হিস্ট্রি-সংক্রান্ত সহায়তা।",
+          "Help with login, profile, language, or order history questions.",
+        ),
+      },
+      {
+        title: localizedValue("রিটার্ন ও রিফান্ড", "Returns and refunds"),
+        body: localizedValue(
+          "ক্ষতিগ্রস্ত বা অমিল পণ্য হলে দ্রুত সাপোর্ট রুট জানুন।",
+          "Learn the right support path for damaged or mismatched items.",
+        ),
+      },
+    ],
+    styles: {
+      columns: "4",
+    },
+  },
+  {
+    id: "section-support-center-contacts",
+    pageId: "page-support-center",
+    sectionKey: "support-contact-cards",
+    type: "contact-cards",
+    sortOrder: 1,
+    layout: "grid",
+    variant: "muted",
+    isEnabled: true,
+    eyebrow: localizedValue("যোগাযোগ মাধ্যম", "Support channels"),
+    title: localizedValue("যেভাবে দ্রুত সাপোর্ট পাবেন", "How to reach us quickly"),
+    body: localizedValue(
+      "গ্রাহকের সবচেয়ে প্রয়োজনীয় যোগাযোগ মাধ্যমগুলো এখানে রাখুন।",
+      "Keep the most important customer-support channels here.",
+    ),
+    ctaLabel: localizedValue("", ""),
+    ctaHref: "",
+    imageUrl: "",
+    items: [
+      {
+        label: localizedValue("ফোন", "Phone"),
+        title: localizedValue("+880 1719-403627", "+880 1719-403627"),
+        href: "tel:+8801719403627",
+      },
+      {
+        label: localizedValue("ইমেইল", "Email"),
+        title: localizedValue(
+          "info@roshalorganic.com",
+          "info@roshalorganic.com",
+        ),
+        href: "mailto:info@roshalorganic.com",
+      },
+      {
+        label: localizedValue("হোয়াটসঅ্যাপ", "WhatsApp"),
+        title: localizedValue(
+          "লাইভ চ্যাট ও অর্ডার সাপোর্ট",
+          "Live chat and order support",
+        ),
+        href: "https://wa.me/8801719403627",
+      },
+      {
+        label: localizedValue("অর্ডার ট্র্যাকিং", "Order tracking"),
+        title: localizedValue(
+          "নিজে অর্ডারের স্ট্যাটাস দেখুন",
+          "Check order status yourself",
+        ),
+        href: "/orders",
+      },
+    ],
+    styles: {
+      columns: "4",
+    },
+  },
+  {
+    id: "section-how-to-order-steps",
+    pageId: "page-how-to-order",
+    sectionKey: "order-steps",
+    type: "feature-grid",
+    sortOrder: 0,
+    layout: "grid",
+    variant: "default",
+    isEnabled: true,
+    eyebrow: localizedValue("অর্ডার প্রসেস", "Order process"),
+    title: localizedValue("অর্ডার করার ধাপ", "Steps to place an order"),
+    body: localizedValue(
+      "Roshal Organic স্টোরফ্রন্টে অর্ডার করার সবচেয়ে সাধারণ ধাপগুলো এখানে দেখান।",
+      "Show the most common storefront ordering steps here.",
+    ),
+    ctaLabel: localizedValue("পণ্য দেখুন", "Browse products"),
+    ctaHref: "/products",
+    imageUrl: "",
+    items: [
+      {
+        title: localizedValue("১. পণ্য বাছাই", "1. Choose products"),
+        body: localizedValue(
+          "ক্যাটাগরি, সাবক্যাটাগরি, সার্চ এবং ফিল্টার ব্যবহার করে পণ্য বাছাই করুন।",
+          "Use categories, subcategories, search, and filters to pick your products.",
+        ),
+      },
+      {
+        title: localizedValue("২. কার্ট ও চেকআউট", "2. Cart and checkout"),
+        body: localizedValue(
+          "কার্টে পণ্য যোগ করে ঠিকানা, নোট এবং পেমেন্ট অপশনসহ চেকআউট সম্পন্ন করুন।",
+          "Add items to cart and complete checkout with address, notes, and a payment option.",
+        ),
+      },
+      {
+        title: localizedValue("৩. পেমেন্ট ও প্রুফ", "3. Payment and proof"),
+        body: localizedValue(
+          "ম্যানুয়াল পেমেন্ট হলে ট্রানজেকশন আইডি, সেন্ডার নম্বর এবং স্ক্রিনশট দিন।",
+          "For manual payment, submit the transaction ID, sender number, and screenshot.",
+        ),
+      },
+      {
+        title: localizedValue(
+          "৪. ভেরিফিকেশন ও ডেলিভারি",
+          "4. Verification and delivery",
+        ),
+        body: localizedValue(
+          "অ্যাডমিন ভেরিফিকেশনের পর অর্ডার প্রসেসিং ও ডেলিভারি ট্র্যাকিং শুরু হবে।",
+          "After admin verification, order processing and delivery tracking will begin.",
+        ),
+      },
+    ],
+    styles: {
+      columns: "4",
+    },
+  },
+  {
+    id: "section-faq-list",
+    pageId: "page-faq",
+    sectionKey: "faq-list",
+    type: "feature-grid",
+    sortOrder: 0,
+    layout: "grid",
+    variant: "default",
+    isEnabled: true,
+    eyebrow: localizedValue("প্রশ্নোত্তর", "FAQ"),
+    title: localizedValue("সাধারণ জিজ্ঞাসা", "Common questions"),
+    body: localizedValue(
+      "অর্ডার, পেমেন্ট, ডেলিভারি এবং রিটার্ন নিয়ে সবচেয়ে বেশি জিজ্ঞাসিত প্রশ্নগুলো এখানে রাখুন।",
+      "Keep the most frequently asked questions about orders, payments, delivery, and returns here.",
+    ),
+    ctaLabel: localizedValue("সাপোর্ট সেন্টার", "Support Center"),
+    ctaHref: "/support-center",
+    imageUrl: "",
+    items: [
+      {
+        title: localizedValue("কিভাবে অর্ডার করব?", "How do I place an order?"),
+        body: localizedValue(
+          "ওয়েবসাইট থেকে পণ্য বাছাই করে কার্টে যোগ করুন, তারপর চেকআউট সম্পন্ন করুন।",
+          "Pick products from the website, add them to cart, and complete checkout.",
+        ),
+      },
+      {
+        title: localizedValue(
+          "অর্ডার কীভাবে ট্র্যাক করব?",
+          "How do I track my order?",
+        ),
+        body: localizedValue(
+          "প্রোফাইল বা অর্ডার হিস্ট্রি থেকে নিজের অর্ডারের স্ট্যাটাস দেখতে পারবেন।",
+          "You can check your order status from your profile or order history.",
+        ),
+      },
+      {
+        title: localizedValue(
+          "কোন পেমেন্ট অপশন আছে?",
+          "Which payment methods are available?",
+        ),
+        body: localizedValue(
+          "কার্ড, bKash, Nagad, Rocket, Upay এবং ম্যানুয়াল ভেরিফিকেশন ফ্লো সমর্থিত।",
+          "Card, bKash, Nagad, Rocket, Upay, and manual verification flows are supported.",
+        ),
+      },
+      {
+        title: localizedValue(
+          "ডেলিভারি চার্জ কত?",
+          "What is the delivery charge?",
+        ),
+        body: localizedValue(
+          "ডেলিভারি চার্জ চেকআউট-এ দেখানো হবে এবং লোকেশনভেদে পরিবর্তিত হতে পারে।",
+          "The delivery charge is shown at checkout and may vary by location.",
+        ),
+      },
+      {
+        title: localizedValue("রিফান্ড কীভাবে পাব?", "How do I get a refund?"),
+        body: localizedValue(
+          "যাচাই-সাপেক্ষে অ্যাডমিন রিফান্ড অনুমোদন দিলে নির্ধারিত পদ্ধতিতে রিফান্ড প্রসেস হবে।",
+          "Once approved by the admin after review, the refund will be processed through the appropriate channel.",
+        ),
+      },
+      {
+        title: localizedValue(
+          "ভুল পণ্য এলে কী করব?",
+          "What if I receive the wrong item?",
+        ),
+        body: localizedValue(
+          "সাপোর্ট সেন্টারে যোগাযোগ করুন এবং দ্রুত রিটার্ন/রিপ্লেসমেন্ট রিকোয়েস্ট দিন।",
+          "Contact support and request a return or replacement as soon as possible.",
+        ),
+      },
+    ],
+    styles: {
+      columns: "3",
+    },
+  },
+  {
+    id: "section-payment-options",
+    pageId: "page-payment",
+    sectionKey: "payment-options",
+    type: "feature-grid",
+    sortOrder: 0,
+    layout: "grid",
+    variant: "default",
+    isEnabled: true,
+    eyebrow: localizedValue("চেকআউট পেমেন্ট", "Checkout payments"),
+    title: localizedValue("সমর্থিত পেমেন্ট ফ্লো", "Supported payment flows"),
+    body: localizedValue(
+      "লাইভ গেটওয়ে বা ম্যানুয়াল ভেরিফিকেশন – দুই ধরনের পেমেন্ট ফ্লোই স্টোরফ্রন্ট থেকে চালানো যায়।",
+      "Both live gateway and manual verification payment flows can run from the storefront.",
+    ),
+    ctaLabel: localizedValue("চেকআউট দেখুন", "Open checkout"),
+    ctaHref: "/checkout",
+    imageUrl: "",
+    items: [
+      {
+        title: localizedValue("কার্ড ও Upay গেটওয়ে", "Card and Upay gateway"),
+        body: localizedValue(
+          "গেটওয়ে মোড চালু থাকলে গ্রাহক নিরাপদ পেমেন্ট সেশনে রিডাইরেক্ট হবে।",
+          "When gateway mode is enabled, the customer is redirected to a secure payment session.",
+        ),
+      },
+      {
+        title: localizedValue(
+          "bKash / Nagad / Rocket",
+          "bKash / Nagad / Rocket",
+        ),
+        body: localizedValue(
+          "ম্যানুয়াল মোডে লেনদেনের প্রুফ, সেন্ডার নম্বর এবং ট্রানজেকশন আইডি সংরক্ষণ করা হয়।",
+          "In manual mode, payment proof, sender number, and transaction ID are collected and stored.",
+        ),
+      },
+      {
+        title: localizedValue(
+          "ড্যাশবোর্ড-কন্ট্রোলড অপশন",
+          "Dashboard-controlled options",
+        ),
+        body: localizedValue(
+          "কোন পেমেন্ট অপশন চালু থাকবে, কোনটি প্রুফ চাইবে – সব ড্যাশবোর্ড থেকে নিয়ন্ত্রিত।",
+          "Enabled methods and proof requirements are fully controlled from the dashboard.",
+        ),
+      },
+    ],
+    styles: {
+      columns: "3",
+    },
+  },
+  {
+    id: "section-shipping-guide",
+    pageId: "page-shipping",
+    sectionKey: "shipping-guide",
+    type: "feature-grid",
+    sortOrder: 0,
+    layout: "grid",
+    variant: "default",
+    isEnabled: true,
+    eyebrow: localizedValue("ডেলিভারি গাইড", "Delivery guide"),
+    title: localizedValue(
+      "শিপিং ও ডেলিভারি তথ্য",
+      "Shipping and delivery details",
+    ),
+    body: localizedValue(
+      "ডেলিভারি সময়, লোকেশন কভারেজ এবং অর্ডার রিসিভ করার নির্দেশনা এই ব্লকে রাখুন।",
+      "Keep delivery timelines, coverage, and receiving guidance in this block.",
+    ),
+    ctaLabel: localizedValue("অর্ডার ট্র্যাকিং", "Track orders"),
+    ctaHref: "/orders",
+    imageUrl: "",
+    items: [
+      {
+        title: localizedValue("নিয়মিত ডেলিভারি", "Standard delivery"),
+        body: localizedValue(
+          "সাধারণ অর্ডারগুলো যাচাইয়ের পর নির্ধারিত সময়ের মধ্যে ডেলিভারি করা হয়।",
+          "Standard orders are delivered within the expected window after verification.",
+        ),
+      },
+      {
+        title: localizedValue("অর্ডার যাচাই", "Order verification"),
+        body: localizedValue(
+          "ম্যানুয়াল পেমেন্টের ক্ষেত্রে অ্যাডমিন ভেরিফিকেশনের পর প্রক্রিয়া শুরু হয়।",
+          "Manual-payment orders begin processing after admin verification.",
+        ),
+      },
+      {
+        title: localizedValue("গ্রহণের সময়", "At delivery time"),
+        body: localizedValue(
+          "অর্ডার নেওয়ার সময় পণ্য, পরিমাণ এবং প্যাকেজিং মিলিয়ে নিন।",
+          "Check the item, quantity, and packaging condition when receiving the order.",
+        ),
+      },
+    ],
+    styles: {
+      columns: "3",
+    },
+  },
+  {
+    id: "section-happy-return-guide",
+    pageId: "page-happy-return",
+    sectionKey: "happy-return-guide",
+    type: "feature-grid",
+    sortOrder: 0,
+    layout: "grid",
+    variant: "default",
+    isEnabled: true,
+    eyebrow: localizedValue("রিটার্ন প্রক্রিয়া", "Return process"),
+    title: localizedValue("সহজ রিটার্ন ধাপ", "Simple return steps"),
+    body: localizedValue(
+      "ক্ষতিগ্রস্ত, ভুল বা অসম্পূর্ণ পণ্য এলে কীভাবে দ্রুত পদক্ষেপ নিতে হবে তা এখানে রাখুন।",
+      "Keep the quick steps for damaged, wrong, or incomplete item returns here.",
+    ),
+    ctaLabel: localizedValue("সাপোর্ট সেন্টার", "Support Center"),
+    ctaHref: "/support-center",
+    imageUrl: "",
+    items: [
+      {
+        title: localizedValue("১. সমস্যার প্রমাণ দিন", "1. Share the issue"),
+        body: localizedValue(
+          "অর্ডার নম্বর, ছবি এবং সমস্যার বিবরণ পাঠান।",
+          "Send the order number, images, and a short issue summary.",
+        ),
+      },
+      {
+        title: localizedValue("২. সাপোর্ট যাচাই", "2. Support review"),
+        body: localizedValue(
+          "সাপোর্ট টিম রেকর্ড দেখে দ্রুত সিদ্ধান্ত নেবে।",
+          "The support team reviews the record and responds quickly.",
+        ),
+      },
+      {
+        title: localizedValue(
+          "৩. রিটার্ন বা রিপ্লেসমেন্ট",
+          "3. Return or replacement",
+        ),
+        body: localizedValue(
+          "পরিস্থিতি অনুযায়ী রিটার্ন, রিপ্লেসমেন্ট বা ক্রেডিট সমাধান দেওয়া হবে।",
+          "A return, replacement, or credit resolution is provided based on the case.",
+        ),
+      },
+    ],
+    styles: {
+      columns: "3",
+    },
+  },
+  {
+    id: "section-refund-policy-guide",
+    pageId: "page-refund-policy",
+    sectionKey: "refund-policy-guide",
+    type: "feature-grid",
+    sortOrder: 0,
+    layout: "grid",
+    variant: "default",
+    isEnabled: true,
+    eyebrow: localizedValue("রিফান্ড গাইড", "Refund guide"),
+    title: localizedValue("রিফান্ড কিভাবে কাজ করে", "How refunds work"),
+    body: localizedValue(
+      "রিফান্ডের অনুমোদন, যাচাই এবং সম্পন্ন হওয়ার ধাপগুলো এই সেকশনে রাখুন।",
+      "Keep refund approval, verification, and completion steps in this section.",
+    ),
+    ctaLabel: localizedValue("রিটার্ন গাইড", "Return guide"),
+    ctaHref: "/happy-return",
+    imageUrl: "",
+    items: [
+      {
+        title: localizedValue("যোগ্যতার যাচাই", "Eligibility review"),
+        body: localizedValue(
+          "রিফান্ডের আগে অর্ডার অবস্থা, সমস্যার ধরন এবং প্রুফ যাচাই করা হবে।",
+          "Order status, issue type, and supporting proof are reviewed before refund approval.",
+        ),
+      },
+      {
+        title: localizedValue("অ্যাডমিন অনুমোদন", "Admin approval"),
+        body: localizedValue(
+          "যাচাই সম্পন্ন হলে অ্যাডমিন রিফান্ড স্ট্যাটাস আপডেট করতে পারবে।",
+          "Once review is complete, the admin can update the refund outcome.",
+        ),
+      },
+      {
+        title: localizedValue("রিফান্ড সম্পন্ন", "Refund completion"),
+        body: localizedValue(
+          "অনুমোদিত রিফান্ড গ্রাহকের সাথে সমন্বয় করে সম্পন্ন করা হবে।",
+          "Approved refunds are completed in coordination with the customer.",
+        ),
+      },
+    ],
+    styles: {
+      columns: "3",
+    },
+  },
+  {
+    id: "section-cancellation-guide",
+    pageId: "page-cancellation",
+    sectionKey: "cancellation-guide",
+    type: "feature-grid",
+    sortOrder: 0,
+    layout: "grid",
+    variant: "default",
+    isEnabled: true,
+    eyebrow: localizedValue("অর্ডার ক্যানসেলেশন", "Order cancellation"),
+    title: localizedValue("কিভাবে অর্ডার বাতিল করবেন", "How to cancel an order"),
+    body: localizedValue(
+      "অর্ডার ডিসপ্যাচের আগে কীভাবে পরিবর্তন বা বাতিলের অনুরোধ করবেন তা এই সেকশনে রাখুন।",
+      "Keep the process for requesting changes or cancellation before dispatch here.",
+    ),
+    ctaLabel: localizedValue("সাপোর্ট সেন্টার", "Support Center"),
+    ctaHref: "/support-center",
+    imageUrl: "",
+    items: [
+      {
+        title: localizedValue("ডিসপ্যাচের আগে অনুরোধ", "Request before dispatch"),
+        body: localizedValue(
+          "অর্ডার প্রসেসিং শুরু হওয়ার আগেই সাপোর্টে যোগাযোগ করলে দ্রুত সমাধান হবে।",
+          "Contact support before fulfillment starts for the fastest resolution.",
+        ),
+      },
+      {
+        title: localizedValue("পেমেন্ট-রিভিউ অর্ডার", "Payment-review orders"),
+        body: localizedValue(
+          "ম্যানুয়াল পেমেন্ট ভেরিফিকেশনের অপেক্ষায় থাকা অর্ডার তুলনামূলক সহজে সমন্বয় করা যায়।",
+          "Orders awaiting manual payment verification are usually easier to adjust.",
+        ),
+      },
+      {
+        title: localizedValue("ডিসপ্যাচের পর", "After dispatch"),
+        body: localizedValue(
+          "ডিসপ্যাচ সম্পন্ন হলে ক্যানসেলেশনের বদলে রিটার্ন বা রিসিভ-পরবর্তী সমাধান প্রযোজ্য হতে পারে।",
+          "Once dispatched, return or post-delivery resolution may apply instead of cancellation.",
+        ),
+      },
+    ],
+    styles: {
+      columns: "3",
+    },
+  },
+  {
+    id: "section-roshal-stories-highlights",
+    pageId: "page-roshal-stories",
+    sectionKey: "stories-highlights",
+    type: "feature-grid",
+    sortOrder: 0,
+    layout: "grid",
+    variant: "default",
+    isEnabled: true,
+    eyebrow: localizedValue("রোশাল স্টোরিজ", "Roshal Stories"),
+    title: localizedValue(
+      "ব্র্যান্ড, পণ্য এবং আস্থার গল্প",
+      "Stories behind the brand, products, and trust",
+    ),
+    body: localizedValue(
+      "এই পেজে সিজনাল ক্যাম্পেইন, সোর্সিং স্টোরি, গ্রাহকের আস্থা এবং ব্র্যান্ড আপডেটগুলোর ব্লক সাজান।",
+      "Use this page for seasonal campaigns, sourcing stories, customer trust highlights, and brand updates.",
+    ),
+    ctaLabel: localizedValue("আমাদের সম্পর্কে", "About Roshal"),
+    ctaHref: "/about",
+    imageUrl: "",
+    items: [
+      {
+        title: localizedValue("সোর্সিং স্টোরি", "Sourcing Story"),
+        body: localizedValue(
+          "দেশি কৃষক ও প্রাকৃতিক উৎস থেকে পণ্য সংগ্রহের গল্প এখানে তুলে ধরুন।",
+          "Highlight how products are collected from local farmers and natural sources.",
+        ),
+      },
+      {
+        title: localizedValue("সিজনাল ক্যাম্পেইন", "Seasonal Campaigns"),
+        body: localizedValue(
+          "ঋতুভিত্তিক ফল, মধু বা অফার ক্যাম্পেইনের গল্পগুলো এ সেকশনে আপডেট রাখুন।",
+          "Keep seasonal fruit, honey, or promotional campaign stories updated here.",
+        ),
+      },
+      {
+        title: localizedValue("গ্রাহকের আস্থা", "Customer Trust"),
+        body: localizedValue(
+          "যে প্রতিশ্রুতি ও মান নিয়ন্ত্রণ ব্র্যান্ডটিকে আলাদা করে তা এখানে দেখান।",
+          "Show the promises and quality controls that set the brand apart.",
+        ),
+      },
+      {
+        title: localizedValue("ব্র্যান্ড আপডেট", "Brand Updates"),
+        body: localizedValue(
+          "নতুন পণ্য, উদ্যোগ বা ব্র্যান্ডের নতুন দিকনির্দেশনা এখানে যোগ করুন।",
+          "Add new product launches, initiatives, or brand direction updates here.",
+        ),
+      },
+    ],
+    styles: {
+      columns: "4",
+    },
+  },
+  {
+    id: "section-terms-and-conditions-guide",
+    pageId: "page-terms-and-conditions",
+    sectionKey: "terms-guide",
+    type: "feature-grid",
+    sortOrder: 0,
+    layout: "grid",
+    variant: "default",
+    isEnabled: true,
+    eyebrow: localizedValue("স্টোর নীতিমালা", "Store policies"),
+    title: localizedValue("অর্ডার ও ব্যবহারের শর্তাবলী", "Order and usage terms"),
+    body: localizedValue(
+      "অর্ডার, পেমেন্ট, ডেলিভারি, রিটার্ন এবং অ্যাকাউন্ট ব্যবহারের মৌলিক নীতিগুলো এই পেজে রাখুন।",
+      "Keep the core rules around orders, payments, delivery, returns, and account usage on this page.",
+    ),
+    ctaLabel: localizedValue("সাপোর্ট সেন্টার", "Support Center"),
+    ctaHref: "/support-center",
+    imageUrl: "",
+    items: [
+      {
+        title: localizedValue("অর্ডার কনফার্মেশন", "Order confirmation"),
+        body: localizedValue(
+          "অর্ডার সাবমিটের পর ভেরিফিকেশন বা পেমেন্ট রিভিউ অনুযায়ী কনফার্মেশন সম্পন্ন হবে।",
+          "Order confirmation is completed after verification or payment review as needed.",
+        ),
+      },
+      {
+        title: localizedValue("পেমেন্ট শর্ত", "Payment terms"),
+        body: localizedValue(
+          "নির্বাচিত পেমেন্ট মোড অনুযায়ী প্রুফ, ট্রানজ্যাকশন আইডি বা গেটওয়ে কনফার্মেশন লাগতে পারে।",
+          "Proof, transaction ID, or gateway confirmation may be required based on the selected payment mode.",
+        ),
+      },
+      {
+        title: localizedValue("ডেলিভারি নিয়ম", "Delivery terms"),
+        body: localizedValue(
+          "লোকেশন, যাচাই এবং স্টক অনুযায়ী ডেলিভারি সময় পরিবর্তিত হতে পারে।",
+          "Delivery timing can vary based on location, verification, and stock availability.",
+        ),
+      },
+      {
+        title: localizedValue("রিটার্ন ও বাতিল", "Returns and cancellation"),
+        body: localizedValue(
+          "ডিসপ্যাচের আগে ক্যানসেলেশন সহজ, পরে রিটার্ন বা রিফান্ড নীতিমালা প্রযোজ্য হতে পারে।",
+          "Cancellation is easier before dispatch; after that, return or refund rules may apply.",
+        ),
+      },
+    ],
+    styles: {
+      columns: "4",
+    },
+  },
+  {
+    id: "section-privacy-policy-guide",
+    pageId: "page-privacy-policy",
+    sectionKey: "privacy-guide",
+    type: "feature-grid",
+    sortOrder: 0,
+    layout: "grid",
+    variant: "default",
+    isEnabled: true,
+    eyebrow: localizedValue("ডাটা প্রাইভেসি", "Data privacy"),
+    title: localizedValue(
+      "গ্রাহকের তথ্য কীভাবে ব্যবহৃত হয়",
+      "How customer data is handled",
+    ),
+    body: localizedValue(
+      "অর্ডার, সাপোর্ট, ভাষা পছন্দ, ডেলিভারি এবং পেমেন্ট যাচাইয়ের জন্য কোন তথ্য রাখা হয় তা এখানে দেখান।",
+      "Show what data is retained for orders, support, language preference, delivery, and payment verification.",
+    ),
+    ctaLabel: localizedValue("যোগাযোগ করুন", "Contact us"),
+    ctaHref: "/contact",
+    imageUrl: "",
+    items: [
+      {
+        title: localizedValue("সংগ্রহকৃত তথ্য", "Collected information"),
+        body: localizedValue(
+          "অর্ডার, প্রোফাইল, পেমেন্ট রেফারেন্স এবং ডেলিভারির জন্য প্রয়োজনীয় তথ্য সংগ্রহ করা হয়।",
+          "Order, profile, payment reference, and delivery information is collected as needed.",
+        ),
+      },
+      {
+        title: localizedValue("ব্যবহারের উদ্দেশ্য", "Usage purpose"),
+        body: localizedValue(
+          "অর্ডার সম্পন্ন করা, সাপোর্ট দেওয়া, পেমেন্ট যাচাই করা এবং ভাষা/অ্যাকাউন্ট অভিজ্ঞতা উন্নত করতে তথ্য ব্যবহৃত হয়।",
+          "Data is used to complete orders, provide support, verify payments, and improve account experience.",
+        ),
+      },
+      {
+        title: localizedValue("তথ্য সুরক্ষা", "Data protection"),
+        body: localizedValue(
+          "অ্যাকাউন্ট, অর্ডার এবং পেমেন্ট-সম্পর্কিত তথ্য সুরক্ষিতভাবে সংরক্ষণ করার প্রতিশ্রুতি এখানে উল্লেখ করুন।",
+          "Document the commitment to keep account, order, and payment-related data protected.",
+        ),
+      },
+      {
+        title: localizedValue("সহায়তার অনুরোধ", "Support requests"),
+        body: localizedValue(
+          "গ্রাহক চাইলে সাপোর্ট চ্যানেলের মাধ্যমে তথ্য আপডেট বা সংশোধনের অনুরোধ করতে পারেন।",
+          "Customers can request corrections or updates through the support channels when needed.",
+        ),
+      },
+    ],
+    styles: {
+      columns: "4",
+    },
+  },
+  {
+    id: "section-careers-overview",
+    pageId: "page-careers",
+    sectionKey: "careers-overview",
+    type: "feature-grid",
+    sortOrder: 0,
+    layout: "grid",
+    variant: "default",
+    isEnabled: true,
+    eyebrow: localizedValue("দল ও সংস্কৃতি", "Team and culture"),
+    title: localizedValue(
+      "রোশাল অর্গানিকের সঙ্গে কাজ করুন",
+      "Work with Roshal Organic",
+    ),
+    body: localizedValue(
+      "ভবিষ্যৎ টিম মেম্বারদের জন্য কাজের ধরন, অপারেশন, সাপোর্ট এবং মিশনের সারাংশ এখানে দিন।",
+      "Give future team members an overview of the mission, operations, support culture, and work style.",
+    ),
+    ctaLabel: localizedValue("যোগাযোগ করুন", "Contact us"),
+    ctaHref: "/contact",
+    imageUrl: "",
+    items: [
+      {
+        title: localizedValue("মিশন-চালিত কাজ", "Mission-driven work"),
+        body: localizedValue(
+          "খাঁটি ও স্বাস্থ্যসম্মত খাদ্য মানুষের ঘরে পৌঁছে দেওয়ার লক্ষ্য নিয়ে কাজ।",
+          "Work around the mission of delivering pure and healthy food to households.",
+        ),
+      },
+      {
+        title: localizedValue("অপারেশন ও সাপোর্ট", "Operations and support"),
+        body: localizedValue(
+          "স্টোরফ্রন্ট, ডেলিভারি, সাপোর্ট ও কনটেন্ট অপারেশনের সমন্বিত টিমওয়ার্ক এখানে তুলে ধরুন।",
+          "Highlight the teamwork behind storefront, delivery, support, and content operations.",
+        ),
+      },
+      {
+        title: localizedValue("বৃদ্ধির সুযোগ", "Growth opportunities"),
+        body: localizedValue(
+          "ব্র্যান্ড, ক্যাটালগ এবং গ্রাহক অভিজ্ঞতার সঙ্গে শেখা ও কাজের সুযোগের কথা এখানে লিখুন।",
+          "Outline learning and growth opportunities tied to brand, catalog, and customer experience work.",
+        ),
+      },
+      {
+        title: localizedValue("আবেদন প্রক্রিয়া", "Application flow"),
+        body: localizedValue(
+          "চাকরির জন্য কোথায় সিভি পাঠাতে হবে বা কিভাবে আগ্রহ জানাতে হবে তা এই ব্লকে আপডেট রাখুন।",
+          "Keep the application email or expression-of-interest flow updated in this block.",
+        ),
+      },
+    ],
+    styles: {
+      columns: "4",
+    },
+  },
+  {
+    id: "section-pre-order-guide",
+    pageId: "page-pre-order",
+    sectionKey: "pre-order-guide",
+    type: "feature-grid",
+    sortOrder: 0,
+    layout: "grid",
+    variant: "default",
+    isEnabled: true,
+    eyebrow: localizedValue("প্রি-অর্ডার", "Pre-order"),
+    title: localizedValue("প্রি-অর্ডার কীভাবে কাজ করে", "How pre-orders work"),
+    body: localizedValue(
+      "প্রি-অর্ডার পণ্য, অগ্রিম পেমেন্ট, আনুমানিক ডেলিভারি সময় এবং ক্যানসেলেশন নিয়ম এখানে স্পষ্ট করুন।",
+      "Clarify pre-order items, advance payment, estimated delivery timing, and cancellation rules here.",
+    ),
+    ctaLabel: localizedValue("পেমেন্ট গাইড", "Payment Guide"),
+    ctaHref: "/payment",
+    imageUrl: "",
+    items: [
+      {
+        title: localizedValue("প্রি-অর্ডার কী", "What is a pre-order?"),
+        body: localizedValue(
+          "যে পণ্য স্টকে আসার আগে বুকিং নেওয়া হয় বা সীমিত সরবরাহের জন্য আগাম নিশ্চিত করা হয়।",
+          "Items booked before they arrive in stock or confirmed early for limited supply.",
+        ),
+      },
+      {
+        title: localizedValue("অগ্রিম পেমেন্ট", "Advance payment"),
+        body: localizedValue(
+          "উচ্চমূল্য বা সীমিত পণ্যের ক্ষেত্রে আংশিক বা পূর্ণ অগ্রিম পেমেন্ট লাগতে পারে।",
+          "Partial or full advance payment may be required for limited or higher-value items.",
+        ),
+      },
+      {
+        title: localizedValue("ডেলিভারি ও বাতিল", "Delivery and cancellation"),
+        body: localizedValue(
+          "সাপ্লাই বা ডিসপ্যাচের আগে ক্যানসেলেশন নীতিমালা প্রযোজ্য, পরে আলাদা সাপোর্ট সমন্বয় লাগতে পারে।",
+          "Cancellation rules apply before supplier confirmation or dispatch; afterward, support coordination may be needed.",
+        ),
+      },
+    ],
+    styles: {
+      columns: "3",
+    },
+  },
+];

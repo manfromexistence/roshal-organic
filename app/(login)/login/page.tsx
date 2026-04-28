@@ -104,7 +104,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="mx-auto grid min-h-screen max-w-7xl gap-6 px-4 py-6 lg:grid-cols-[1.08fr,0.92fr]">
+      <div className="mx-auto grid min-h-screen max-w-7xl gap-6 px-4 py-6 lg:grid-cols-[1.08fr_0.92fr]">
         <section className="flex items-center justify-center">
           <Card className="w-full max-w-xl border-border/70 shadow-sm">
             <CardHeader className="space-y-4 pb-6">

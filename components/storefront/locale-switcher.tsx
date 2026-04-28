@@ -59,7 +59,7 @@ export function LocaleSwitcher({ locale }: { locale: RoshalLocale }) {
       data-pathname={pathname}
       title={toggleLabel}
     >
-        {currentLocale === "en" ? "BN" : "EN"}
+      {currentLocale === "en" ? "BN" : "EN"}
     </Button>
   );
 }

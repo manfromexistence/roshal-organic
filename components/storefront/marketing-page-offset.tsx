@@ -11,5 +11,5 @@ export function MarketingPageOffset({
   const pathname = usePathname();
   const needsHeaderOffset = pathname !== "/" && pathname !== "/products";
 
-  return <div className={cn(needsHeaderOffset && "pt-22")}>{children}</div>;
+  return <div className={cn(needsHeaderOffset && "pt-36")}>{children}</div>;
 }

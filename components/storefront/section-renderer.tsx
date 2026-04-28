@@ -129,7 +129,7 @@ function SectionContent({
       <div
         className={`grid items-center gap-8 rounded-[2rem] border border-border/60 bg-gradient-to-br from-background via-background to-muted/60 p-6 shadow-sm lg:p-10 ${
           siteSettings.heroLayout === "split"
-            ? "lg:grid-cols-[1.1fr,0.9fr]"
+            ? "lg:grid-cols-[1.1fr_0.9fr]"
             : "mx-auto max-w-4xl"
         }`}
       >

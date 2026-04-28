@@ -79,6 +79,7 @@ export const roshalSiteSettings = sqliteTable("roshal_site_settings", {
   primaryCtaHref: text("primary_cta_href").notNull().default("/products"),
   primaryCtaLabelBn: text("primary_cta_label_bn").notNull(),
   primaryCtaLabelEn: text("primary_cta_label_en").notNull(),
+  deliveryZonesJson: text("delivery_zones_json"),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
   updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
 });
@@ -135,6 +136,57 @@ export const roshalSections = sqliteTable("roshal_sections", {
   imageUrl: text("image_url"),
   itemsJson: text("items_json"),
   stylesJson: text("styles_json"),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+});
+
+export const roshalCategories = sqliteTable("roshal_categories", {
+  id: text("id").primaryKey(),
+  key: text("key").notNull().unique(),
+  labelBn: text("label_bn").notNull(),
+  labelEn: text("label_en").notNull(),
+  descriptionBn: text("description_bn"),
+  descriptionEn: text("description_en"),
+  imageUrl: text("image_url"),
+  sourceKeysJson: text("source_keys_json").notNull(),
+  isEnabled: integer("is_enabled", { mode: "boolean" }).notNull().default(true),
+  showInNavigation: integer("show_in_navigation", { mode: "boolean" })
+    .notNull()
+    .default(true),
+  showOnHomepage: integer("show_on_homepage", { mode: "boolean" })
+    .notNull()
+    .default(true),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+});
+
+export const roshalSubcategories = sqliteTable("roshal_subcategories", {
+  id: text("id").primaryKey(),
+  categoryId: text("category_id")
+    .notNull()
+    .references(() => roshalCategories.id, { onDelete: "cascade" }),
+  key: text("key").notNull().unique(),
+  labelBn: text("label_bn").notNull(),
+  labelEn: text("label_en").notNull(),
+  descriptionBn: text("description_bn"),
+  descriptionEn: text("description_en"),
+  imageUrl: text("image_url"),
+  sourceKeysJson: text("source_keys_json").notNull(),
+  isEnabled: integer("is_enabled", { mode: "boolean" }).notNull().default(true),
+  showInNavigation: integer("show_in_navigation", { mode: "boolean" })
+    .notNull()
+    .default(true),
+  sortOrder: integer("sort_order").notNull().default(0),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+});
+
+export const roshalTaxonomyMeta = sqliteTable("roshal_taxonomy_meta", {
+  id: text("id").primaryKey(),
+  defaultsSeeded: integer("defaults_seeded", { mode: "boolean" })
+    .notNull()
+    .default(false),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
   updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
 });

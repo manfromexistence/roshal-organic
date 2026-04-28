@@ -331,7 +331,7 @@ export function HomepageControlCenter({ locale }: HomepageControlCenterProps) {
           />
         </div>
 
-        <div className="grid gap-4 rounded-2xl border border-border/70 bg-muted/20 p-4 md:grid-cols-[1fr,auto] md:items-center">
+        <div className="grid gap-4 rounded-2xl border border-border/70 bg-muted/20 p-4 md:grid-cols-[1fr_auto] md:items-center">
           <div className="space-y-2">
             <p className="text-sm font-medium">{copy.liveModelTitle}</p>
             <p className="text-sm text-muted-foreground">
@@ -395,7 +395,7 @@ export function HomepageControlCenter({ locale }: HomepageControlCenterProps) {
           </div>
 
           <TabsContent value="sections" className="space-y-4">
-            <div className="grid gap-4 xl:grid-cols-[1.15fr,0.85fr]">
+            <div className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
               <div className="space-y-3">
                 {sections.length ? (
                   sections.map((section) => {

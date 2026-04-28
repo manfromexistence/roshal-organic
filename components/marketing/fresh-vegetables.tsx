@@ -1,11 +1,6 @@
-import { ShoppingCart } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
-import { AddToCartButton } from "@/components/storefront/add-to-cart-button";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { ImageCard, ImageCardContent } from "@/components/ui/image-card";
-import { ScrollReveal } from "@/components/ui/scroll-reveal";
+"use client";
+
+import { HomeProductShelf } from "@/components/marketing/home-product-shelf";
 import type { RoshalProduct } from "@/lib/store-types";
 
 interface FreshVegetablesProps {
@@ -15,7 +10,6 @@ interface FreshVegetablesProps {
   description?: { bn: string; en: string };
   ctaHref?: string;
   ctaLabel?: { bn: string; en: string };
-  badgeLabel?: { bn: string; en: string };
 }
 
 interface GridProduct {
@@ -33,19 +27,22 @@ interface GridProduct {
   cartProduct?: RoshalProduct;
 }
 
-const vegetableImages: GridProduct[] = Array.from({ length: 75 }, (_, i) => ({
-  id: i + 1,
-  image: `/vegetables/vegetable-${i + 1}.jpg`,
-  name: {
-    en: `Fresh Vegetable ${i + 1}`,
-    bn: `তাজা সবজি ${i + 1}`,
-  },
-  price: 60 + ((i * 17) % 160),
-  originalPrice: 180 + ((i * 23) % 170),
-  rating: (3.4 + ((i * 7) % 15) / 10).toFixed(1),
-  reviews: 20 + i * 13,
-  href: "/products",
-}));
+const fallbackProducts: GridProduct[] = Array.from(
+  { length: 10 },
+  (_, index) => ({
+    id: index + 1,
+    image: `/vegetables/vegetable-${index + 1}.jpg`,
+    name: {
+      en: `Fresh Vegetable ${index + 1}`,
+      bn: `তাজা সবজি ${index + 1}`,
+    },
+    price: `BDT ${60 + ((index * 17) % 160)}`,
+    originalPrice: `BDT ${180 + ((index * 23) % 170)}`,
+    rating: Number((3.4 + ((index * 7) % 15) / 10).toFixed(1)),
+    reviews: 20 + index * 13,
+    href: "/products?category=vegetables",
+  }),
+);
 
 export function FreshVegetables({
   language,
@@ -54,122 +51,45 @@ export function FreshVegetables({
   description,
   ctaHref,
   ctaLabel,
-  badgeLabel,
 }: FreshVegetablesProps) {
-  const displayProducts = (products?.length ? products : vegetableImages).slice(
-    0,
-    10,
-  );
+  const normalizedProducts = (
+    products?.length ? products : fallbackProducts
+  ).map((product) => ({
+    ...product,
+    price:
+      typeof product.price === "number"
+        ? `BDT ${product.price}`
+        : product.price,
+    originalPrice:
+      typeof product.originalPrice === "number"
+        ? `BDT ${product.originalPrice}`
+        : product.originalPrice,
+    rating:
+      typeof product.rating === "string"
+        ? Number.parseFloat(product.rating)
+        : product.rating,
+  }));
 
   return (
-    <section className="bg-background py-16">
-      <div className="container mx-auto px-4">
-        <ScrollReveal>
-          <h2 className="mb-4 text-center text-3xl font-bold md:text-4xl">
-            {title
-              ? title[language]
-              : language === "bn"
-                ? "তাজা সবজি"
-                : "Fresh Vegetables"}
-          </h2>
-          <p className="mx-auto mb-12 max-w-2xl text-center text-muted-foreground">
-            {description
-              ? description[language]
-              : language === "bn"
-                ? "আমাদের কাছে সেরা মানের তাজা সবজি পাবেন। সব সবজি অর্গানিক এবং প্রাকৃতিকভাবে জন্মানো।"
-                : "Get the freshest vegetables directly from local farmers. All organic and naturally grown."}
-          </p>
-        </ScrollReveal>
-
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {displayProducts.map((product, index) => (
-            <ScrollReveal key={product.id} delay={index * 0.02}>
-              <ImageCard className="!px-0 group overflow-hidden transition-shadow duration-300 hover:shadow-lg">
-                <ImageCardContent className="p-0">
-                  <div className="relative aspect-square overflow-hidden">
-                    <Image
-                      src={product.image}
-                      alt={product.name[language]}
-                      fill
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
-                      sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
-                    />
-                    <Badge className="absolute top-2 right-2 bg-primary text-primary-foreground">
-                      {badgeLabel
-                        ? badgeLabel[language]
-                        : language === "bn"
-                          ? "তাজা"
-                          : "FRESH"}
-                    </Badge>
-                  </div>
-                  <div className="p-3">
-                    <h3 className="mb-2 line-clamp-1 text-sm font-semibold">
-                      {product.name[language]}
-                    </h3>
-                    {product.rating ? (
-                      <div className="mb-2 flex items-center gap-1">
-                        <span className="text-xs text-primary">★</span>
-                        <span className="text-xs text-muted-foreground">
-                          {product.rating}
-                          {product.reviews ? ` (${product.reviews})` : ""}
-                        </span>
-                      </div>
-                    ) : null}
-                    <div className="mb-3 flex items-center justify-between">
-                      <div>
-                        <span className="text-lg font-bold">
-                          {typeof product.price === "number"
-                            ? `৳${product.price}`
-                            : product.price}
-                        </span>
-                        {product.originalPrice ? (
-                          <span className="ml-2 text-sm text-muted-foreground line-through">
-                            {typeof product.originalPrice === "number"
-                              ? `৳${product.originalPrice}`
-                              : product.originalPrice}
-                          </span>
-                        ) : null}
-                      </div>
-                    </div>
-                    {product.cartProduct ? (
-                      <AddToCartButton
-                        product={product.cartProduct}
-                        locale={language}
-                        className="w-full"
-                      />
-                    ) : (
-                      <Link href={product.href || "/products"}>
-                        <Button
-                          size="sm"
-                          className="w-full"
-                          variant="secondary"
-                        >
-                          <ShoppingCart className="mr-2 h-4 w-4" />
-                          {language === "bn" ? "কার্টে যোগ করুন" : "Add to Cart"}
-                        </Button>
-                      </Link>
-                    )}
-                  </div>
-                </ImageCardContent>
-              </ImageCard>
-            </ScrollReveal>
-          ))}
-        </div>
-
-        <ScrollReveal delay={0.5}>
-          <div className="mt-12 text-center">
-            <Link href={ctaHref || "/products"}>
-              <Button size="lg" variant="outline">
-                {ctaLabel
-                  ? ctaLabel[language]
-                  : language === "bn"
-                    ? "সব সবজি দেখুন"
-                    : "View All Vegetables"}
-              </Button>
-            </Link>
-          </div>
-        </ScrollReveal>
-      </div>
-    </section>
+    <HomeProductShelf
+      products={normalizedProducts.slice(0, 5)}
+      language={language}
+      title={
+        title
+          ? title[language]
+          : language === "bn"
+            ? "তাজা সবজি"
+            : "Fresh Vegetables"
+      }
+      description={description?.[language]}
+      ctaHref={ctaHref || "/products?category=vegetables"}
+      ctaLabel={
+        ctaLabel
+          ? ctaLabel[language]
+          : language === "bn"
+            ? "সব সবজি দেখুন"
+            : "View all vegetables"
+      }
+    />
   );
 }

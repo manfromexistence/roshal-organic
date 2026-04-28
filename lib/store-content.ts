@@ -16,11 +16,13 @@ import {
   defaultRoshalSections,
   defaultRoshalSiteSettings,
 } from "@/lib/store-defaults";
+import { normalizeRoshalDeliveryZones } from "@/lib/store-delivery";
 import { safeJsonParse } from "@/lib/store-format";
 import {
   normalizeRoshalAssetPath,
   normalizeRoshalProductMedia,
 } from "@/lib/store-media";
+import { ensureRoshalSiteSettingsSchema } from "@/lib/store-site-settings-schema";
 import type {
   RoshalDashboardSnapshot,
   RoshalMarketingPage,
@@ -349,11 +351,19 @@ function mapSiteSettings(
       bn: row.primaryCtaLabelBn,
       en: row.primaryCtaLabelEn,
     },
+    deliveryZones: normalizeRoshalDeliveryZones(
+      safeJsonParse(
+        row.deliveryZonesJson,
+        defaultRoshalSiteSettings.deliveryZones,
+      ),
+      defaultRoshalSiteSettings.deliveryZones,
+    ),
   };
 }
 
 export async function getRoshalSiteSettings() {
   try {
+    await ensureRoshalSiteSettingsSchema();
     const [settings] = await db.select().from(roshalSiteSettings).limit(1);
     return settings ? mapSiteSettings(settings) : defaultRoshalSiteSettings;
   } catch {

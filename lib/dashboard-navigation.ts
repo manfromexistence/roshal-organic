@@ -3,6 +3,7 @@ import type { RoshalMarketingPage } from "@/lib/store-types";
 export type DashboardNavIconKey =
   | "overview"
   | "products"
+  | "categories"
   | "orders"
   | "payments"
   | "users"
@@ -73,6 +74,12 @@ const primaryNavigationTemplate: DashboardNavItem[] = [
         keywords: ["create product", "add product"],
       },
     ],
+  },
+  {
+    title: "Categories",
+    url: "/dashboard/categories",
+    icon: "categories",
+    keywords: ["taxonomy", "subcategory", "navigation"],
   },
   {
     title: "Orders",

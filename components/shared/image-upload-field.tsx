@@ -10,15 +10,21 @@ import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
 
 export function ImageUploadField({
+  clearLabel = "Clear",
   label,
   helperText,
   name,
+  uploadLabel = "Upload",
+  uploadingLabel = "Uploading",
   value,
   onChange,
 }: {
+  clearLabel?: string;
   label: string;
   helperText?: string;
   name?: string;
+  uploadLabel?: string;
+  uploadingLabel?: string;
   value: string;
   onChange?: (value: string) => void;
 }) {
@@ -36,6 +42,25 @@ export function ImageUploadField({
     onChange?.(nextValue);
   };
 
+  const openFilePicker = () => {
+    const input = fileInputRef.current;
+
+    if (!input) {
+      return;
+    }
+
+    try {
+      input.click();
+      return;
+    } catch {}
+
+    if (typeof input.showPicker === "function") {
+      try {
+        input.showPicker();
+      } catch {}
+    }
+  };
+
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -48,11 +73,12 @@ export function ImageUploadField({
 
     try {
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("file", file, file.name);
 
       const response = await fetch("/api/upload/imgbb", {
         method: "POST",
         body: formData,
+        credentials: "same-origin",
       });
       const data = (await response.json()) as {
         error?: string;
@@ -106,17 +132,17 @@ export function ImageUploadField({
             type="button"
             variant="outline"
             disabled={isUploading}
-            onClick={() => fileInputRef.current?.click()}
+            onClick={openFilePicker}
           >
             {isUploading ? (
               <>
                 <Loader2 className="size-4 animate-spin" />
-                Uploading
+                {uploadingLabel}
               </>
             ) : (
               <>
                 <ImagePlus className="size-4" />
-                Upload
+                {uploadLabel}
               </>
             )}
           </Button>
@@ -127,7 +153,7 @@ export function ImageUploadField({
               onClick={() => updateValue("")}
             >
               <Trash2 className="size-4" />
-              Clear
+              {clearLabel}
             </Button>
           ) : null}
         </div>

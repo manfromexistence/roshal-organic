@@ -33,7 +33,7 @@ export function RoshalMarketingPageView({
       {!hasPrimaryHero ? (
         <section className="py-10 md:py-14">
           <div className="container mx-auto px-4">
-            <div className="grid items-center gap-8 rounded-[2rem] border border-border/60 bg-gradient-to-br from-background via-background to-muted/50 p-6 shadow-sm lg:grid-cols-[1.05fr,0.95fr] lg:p-10">
+            <div className="grid items-center gap-8 rounded-[2rem] border border-border/60 bg-gradient-to-br from-background via-background to-muted/50 p-6 shadow-sm lg:grid-cols-[1.05fr_0.95fr] lg:p-10">
               <div className="space-y-5">
                 <p className="text-xs uppercase tracking-[0.24em] text-primary">
                   {getLocalizedValue(locale, page.navigationLabel)}

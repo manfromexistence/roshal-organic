@@ -41,7 +41,7 @@ export function DealCard({
           alt={title[language]}
           width={400}
           height={300}
-          className="h-full w-full object-cover"
+          className="h-full w-full rounded-sm object-cover"
         />
         <Badge
           className="absolute top-4 right-4 px-3 py-1 text-base"

@@ -56,7 +56,7 @@ export function ProductCard({
           alt={name[language]}
           width={300}
           height={200}
-          className="h-full w-full object-cover"
+          className="h-full w-full rounded-sm object-cover"
         />
         {badge ? (
           <Badge className="absolute top-2 right-2" variant={badgeVariant}>

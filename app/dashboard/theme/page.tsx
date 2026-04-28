@@ -1,4 +1,5 @@
 import { saveRoshalSiteSettings } from "@/actions/admin";
+import { DashboardDeliveryZonesEditor } from "@/components/dashboard/delivery-zones-editor";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -124,6 +125,13 @@ export default async function DashboardThemePage() {
                   { value: "comfortable", label: "comfortable" },
                   { value: "spacious", label: "spacious" },
                 ]}
+              />
+            </div>
+            <div className="md:col-span-2">
+              <DashboardDeliveryZonesEditor
+                locale={locale}
+                name="deliveryZonesJson"
+                value={siteSettings.deliveryZones}
               />
             </div>
             <div className="md:col-span-2">

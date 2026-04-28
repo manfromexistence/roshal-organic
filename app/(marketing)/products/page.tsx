@@ -3,6 +3,7 @@ import { ProductsPageClient } from "@/components/storefront/products-page-client
 import { getRoshalProducts } from "@/lib/store-content";
 import { getRoshalLocale } from "@/lib/store-i18n";
 import { buildRoshalMetadata } from "@/lib/store-seo";
+import { getRoshalTaxonomy } from "@/lib/store-taxonomy-content";
 
 export const metadata: Metadata = buildRoshalMetadata({
   title: "Products",
@@ -32,25 +33,29 @@ export default async function ProductsPage({
   searchParams?: Promise<{
     q?: string;
     category?: string;
+    subcategory?: string;
     sort?: string;
     minPrice?: string;
     maxPrice?: string;
   }>;
 }) {
   const resolvedSearchParams = searchParams ? await searchParams : {};
-  const [locale, products] = await Promise.all([
+  const [locale, products, taxonomy] = await Promise.all([
     getRoshalLocale(),
     getRoshalProducts(),
+    getRoshalTaxonomy(),
   ]);
 
   return (
     <ProductsPageClient
       locale={locale}
       products={products}
+      taxonomy={taxonomy}
       initialCategory={resolvedSearchParams.category || "all"}
       initialMaxPrice={resolvePriceValue(resolvedSearchParams.maxPrice)}
       initialMinPrice={resolvePriceValue(resolvedSearchParams.minPrice)}
       initialSearchQuery={resolvedSearchParams.q || ""}
+      initialSubcategory={resolvedSearchParams.subcategory || "all"}
       initialSortKey={resolveSortValue(resolvedSearchParams.sort)}
     />
   );

@@ -51,7 +51,7 @@ export default async function RootLayout({
         </Script>
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
+          defaultTheme="light"
           enableSystem={false}
           disableTransitionOnChange
           storageKey={NEXT_THEME_STORAGE_KEY}

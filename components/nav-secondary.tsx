@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   type LucideIcon,
   Package,
+  Shapes,
   ShoppingCart,
   Users,
 } from "lucide-react";
@@ -39,6 +40,7 @@ interface NavSecondaryItem {
 const NAV_ICONS: Record<DashboardNavIconKey, LucideIcon> = {
   overview: LayoutDashboard,
   products: Package,
+  categories: Shapes,
   orders: ShoppingCart,
   payments: CreditCard,
   users: Users,

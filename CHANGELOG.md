@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Added ImageCardImage component to image-card.tsx with Next.js Image optimization, lazy loading, and hover scale effects for consistent image handling across cards
+- Added Unsplash people image support to testimonials with fallback to Avatar component when no image is provided
+- Added responsive grid layout to marketing footer with sm:grid-cols-2 lg:grid-cols-4 for better mobile/tablet breakpoints
+- Added responsive payment partners grid layout with grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 for better logo distribution across screen sizes
+
+### Changed
+- Fixed marketing homepage padding issues by updating container padding from `px-4` to responsive `px-4 sm:px-6 md:px-8` across all marketing sections (Featured Categories, Top Sellers, Special Offers, Product Shelf, Brands, Hero)
+- Fixed carousel navigation button positioning in home-category-strip.tsx with responsive spacing (left-2 sm:left-4 md:left-6) to prevent buttons from being too close to content edges
+- Added a denser default storefront taxonomy bundle with nine ecommerce-style categories and at least five dashboard-manageable subcategories per category, so the navigation/header/homepage have a richer fallback catalog even before admins customize anything
+- Added a structured dashboard delivery-zone editor to the storefront settings page, backed by persisted site settings so admins can manage city, postal-code, and address-keyword delivery matches without editing raw JSON
+- Added dashboard-managed storefront taxonomy controls at `/dashboard/categories`, including category and subcategory creation/editing that now powers the header navigation menu, homepage category strip, footer "Shop By" links, and `/products` category/subcategory filters
+- Added a fuller Ghore-Bazar-style default CMS page set for Roshal marketing and support content, covering Company Information, Support Center, How to Order, FAQ, Payment, Shipping, Happy Return, Refund Policy, Cancellation, Roshal Stories, Terms & Conditions, Privacy Policy, Careers, and Pre-Order
 - Added a structured shadcn JSON field editor for Roshal CMS sections and product arrays/objects, replacing raw dashboard blob editing for marketing items/styles, galleries, and localized feature lists
 - Added the Roshal Organic storefront with bilingual Bangla/English marketing and ecommerce routes for home, about, contact, products, product details, cart, checkout, orders, order tracking, and user profile
 - Added the transplanted marketing-shell mobile bottom navigation to the active storefront after moving the old landing experience into the root app
@@ -69,6 +81,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added dynamic title fetching to PageBreadcrumb component - now detects ID segments and fetches entity names from database
 
 ### Changed
+- Changed the desktop storefront sub-header to use tighter `rounded-sm` shadcn navigation-menu surfaces, allow category wrapping, and open wider subcategory panels so the expanded taxonomy remains readable without overflow
+- Changed the active image-first product cards and homepage shelf cards to keep the flush top media while moving the copy, pricing, and footer actions onto a cleaner left-aligned content rhythm instead of the previous over-centered layout
+- Changed the desktop storefront sub-header to use shadcn `NavigationMenu` category triggers with vertical subcategory dropdown items instead of the previous flat link rail
+- Changed the public checkout payment messaging so wallet methods like bKash, Nagad, and Rocket now clearly present the admin-verification flow without leftover gateway/dev-facing wording
+- Changed the active image-first product listings to use the shared `image-card` layout so top media sits flush without root padding while the text and action areas keep the spacing
+- Changed storefront cart and checkout totals to use location-based delivery-zone estimates instead of the old flat delivery charge, and surfaced the active zone and match label in each order summary
+- Changed the desktop storefront sub-header from category dropdown triggers into a direct subcategory navigation rail, keeping the top public navigation focused on actionable ecommerce links instead of descriptive flyout copy
+- Changed the default dark storefront tokens so cards, muted panels, sidebar surfaces, and primary buttons now keep readable foreground contrast against the Roshal green accent instead of leaving dark-mode text washed out
+- Changed the active storefront product-card family to use edge-to-edge media, centered copy, tighter badge spacing, and cleaner footer alignment across the homepage shelves, top-selling grid, catalog cards, and product-detail gallery
+- Changed the marketing storefront shell to constrain the Radix `ScrollArea` viewport child to full width, eliminating the remaining horizontal overflow on the active public routes while keeping the shared custom scrollbar treatment
+- Changed the landing hero, homepage category/brand/testimonial carousels, and home product shelves to use safer mobile-first widths, tighter card spacing, and narrower breakpoint behavior for more stable storefront responsiveness
+- Changed the marketing header to hide the large taxonomy navigation rail below `lg`, keep the search rail inside `min-w-0` bounds, and cap taxonomy flyout width against the viewport
+- Changed the product-details page to use explicit single-column mobile grid defaults, zero-gap media cards, tighter gallery spacing, and wrapping tab triggers so narrow screens no longer clip the content rail
+- Changed the storefront footer so its Information and Support groups now resolve against the expanded live CMS page set instead of a smaller hardcoded page list
+- Changed the shared marketing/dashboard shell wiring so the page editor, login layout, footer links, and storefront taxonomy all read from the same merged CMS + taxonomy source
 - Changed the locale toggle again so the visible pill shows the next language to switch to (`BN` while English is active, `EN` while Bangla is active) while preserving the English-first default
 - Changed the locale persistence key so old Bangla-first cookies no longer override the new English-first default, and aligned the header button label back to the active `EN`/`BN` language
 - Changed the locale button label to show the next language (`BN` when English is active, `EN` when Bangla is active), and adjusted the header chrome again with a slightly taller bar plus a smaller logo container
@@ -204,6 +231,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All linting errors and warnings resolved across the codebase
 
 ### Fixed
+- Fixed the live storefront card padding regression on catalog/home product cards by moving image-first media into the header section and keeping the spacing only around the textual content and CTA region
+- Fixed the public checkout payment-proof flow so the shared ImgBB upload field now uses the same stable file-picker behavior as the dashboard, includes same-origin requests, and immediately previews uploaded or pasted proof images on the storefront checkout form
+- Fixed dark-mode readability on the active storefront by restoring light foreground values on primary, accent, card, popover, and sidebar surfaces, and rotated the persisted theme-state key so stale local template colors no longer override the repaired defaults
+- Fixed the active homepage, catalog, and product-detail cards so image-first layouts no longer waste space with mixed container padding, and centered the content/actions where the previous spacing made the cards feel uneven
 - Fixed the landing hero controls by hiding the previous/next arrow buttons while keeping the banner rotation and pagination dots active
 - Fixed the remaining homepage and product-detail LCP image warnings by marking live marketing hero images and product hero imagery as eager priority assets where they render above the fold
 - Fixed the ImgBB upload route to validate missing, empty, or oversized files, preserve the uploaded filename, and return the real ImgBB image id plus display URL instead of guessing them from the response URL

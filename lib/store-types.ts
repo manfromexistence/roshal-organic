@@ -52,6 +52,50 @@ export interface RoshalMarketingPage {
   showInNavigation: boolean;
 }
 
+export interface RoshalStoreCategory {
+  id: string;
+  key: string;
+  label: LocalizedValue;
+  description: LocalizedValue;
+  imageUrl: string;
+  sourceKeys: string[];
+  isEnabled: boolean;
+  showInNavigation: boolean;
+  showOnHomepage: boolean;
+  sortOrder: number;
+}
+
+export interface RoshalStoreSubcategory {
+  id: string;
+  categoryId: string;
+  categoryKey: string;
+  key: string;
+  label: LocalizedValue;
+  description: LocalizedValue;
+  imageUrl: string;
+  sourceKeys: string[];
+  isEnabled: boolean;
+  showInNavigation: boolean;
+  sortOrder: number;
+}
+
+export interface RoshalTaxonomyBundle {
+  categories: RoshalStoreCategory[];
+  subcategories: RoshalStoreSubcategory[];
+}
+
+export interface RoshalDeliveryZone {
+  id: string;
+  label: LocalizedValue;
+  fee: number;
+  cityPatterns: string[];
+  postalCodes: string[];
+  addressKeywords: string[];
+  isEnabled: boolean;
+  isDefault: boolean;
+  sortOrder: number;
+}
+
 export interface RoshalSiteSettings {
   id: string;
   brandName: string;
@@ -65,6 +109,7 @@ export interface RoshalSiteSettings {
   sectionSpacing: string;
   primaryCtaHref: string;
   primaryCtaLabel: LocalizedValue;
+  deliveryZones: RoshalDeliveryZone[];
 }
 
 export interface RoshalPaymentOption {

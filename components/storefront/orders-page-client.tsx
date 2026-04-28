@@ -129,7 +129,7 @@ export function OrdersPageClient({
             />
           </div>
 
-          <div className="grid gap-3 lg:grid-cols-[1fr,14rem]">
+          <div className="grid gap-3 lg:grid-cols-[1fr_14rem]">
             <div className="relative">
               <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input

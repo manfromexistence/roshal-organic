@@ -1,5 +1,9 @@
 import { vegetableProducts } from "@/data/vegetable-products";
 import { localizedValue } from "@/lib/store-locale";
+import {
+  defaultRoshalExtendedPages,
+  defaultRoshalExtendedSections,
+} from "@/lib/store-marketing-defaults";
 import type {
   RoshalMarketingPage,
   RoshalMarketingSection,
@@ -23,6 +27,47 @@ export const defaultRoshalSiteSettings: RoshalSiteSettings = {
   sectionSpacing: "comfortable",
   primaryCtaHref: "/products",
   primaryCtaLabel: localizedValue("এখনই অর্ডার করুন", "Order now"),
+  deliveryZones: [
+    {
+      id: "delivery-inside-dhaka",
+      label: localizedValue("ঢাকার ভিতরে", "Inside Dhaka"),
+      fee: 60,
+      cityPatterns: ["dhaka", "ঢাকা"],
+      postalCodes: [],
+      addressKeywords: ["dhaka", "ঢাকা", "uttara", "banani", "mirpur"],
+      isEnabled: true,
+      isDefault: true,
+      sortOrder: 0,
+    },
+    {
+      id: "delivery-nearby",
+      label: localizedValue("ঢাকার আশেপাশে", "Nearby districts"),
+      fee: 100,
+      cityPatterns: [
+        "gazipur",
+        "নারায়ণগঞ্জ",
+        "narayanganj",
+        "savar",
+        "keraniganj",
+      ],
+      postalCodes: [],
+      addressKeywords: ["gazipur", "narayanganj", "savar", "keraniganj"],
+      isEnabled: true,
+      isDefault: false,
+      sortOrder: 1,
+    },
+    {
+      id: "delivery-nationwide",
+      label: localizedValue("সারা বাংলাদেশ", "Nationwide"),
+      fee: 130,
+      cityPatterns: [],
+      postalCodes: [],
+      addressKeywords: [],
+      isEnabled: true,
+      isDefault: false,
+      sortOrder: 2,
+    },
+  ],
 };
 
 export const defaultRoshalPages: RoshalMarketingPage[] = [
@@ -35,7 +80,7 @@ export const defaultRoshalPages: RoshalMarketingPage[] = [
       "প্রাকৃতিক ও স্বাস্থ্যসম্মত খাদ্যের নির্ভরযোগ্য ঘর।",
       "A trusted home for natural and healthy foods.",
     ),
-    heroImage: "/honey.jpg",
+    heroImage: "/special-offer.jpg",
     status: "published",
     showInNavigation: true,
   },
@@ -65,6 +110,7 @@ export const defaultRoshalPages: RoshalMarketingPage[] = [
     status: "published",
     showInNavigation: true,
   },
+  ...defaultRoshalExtendedPages,
 ];
 
 export const defaultRoshalSections: RoshalMarketingSection[] = [
@@ -88,7 +134,7 @@ export const defaultRoshalSections: RoshalMarketingSection[] = [
     ),
     ctaLabel: localizedValue("পণ্য দেখুন", "Browse products"),
     ctaHref: "/products",
-    imageUrl: "/honey-2.jpg",
+    imageUrl: "/special-offer.jpg",
     items: [],
     styles: {
       highlight: "warm",
@@ -217,22 +263,22 @@ export const defaultRoshalSections: RoshalMarketingSection[] = [
     items: [
       {
         title: localizedValue("তেল ও ঘি", "Oil & Ghee"),
-        imageUrl: "/ghee.jpg",
+        imageUrl: "/oil-2.jpg",
         href: "/products?category=ghee",
       },
       {
         title: localizedValue("অর্গানিক", "Organic"),
-        imageUrl: "/honey.jpg",
+        imageUrl: "/organic-vegetables.jpg",
         href: "/products",
       },
       {
         title: localizedValue("মধু", "Honey"),
-        imageUrl: "/honey.jpg",
+        imageUrl: "/deal-3.jpg",
         href: "/products?category=honey",
       },
       {
         title: localizedValue("খেজুর", "Dates"),
-        imageUrl: "/dates.jpg",
+        imageUrl: "/fruits.jpg",
         href: "/products?category=gur",
       },
       {
@@ -242,17 +288,17 @@ export const defaultRoshalSections: RoshalMarketingSection[] = [
       },
       {
         title: localizedValue("বাদাম ও বীজ", "Nuts & Seeds"),
-        imageUrl: "/nuts.jpg",
+        imageUrl: "/dates-2.jpg",
         href: "/products",
       },
       {
         title: localizedValue("পানীয়", "Beverage"),
-        imageUrl: "/beverage.jpg",
+        imageUrl: "/tea.jpg",
         href: "/products",
       },
       {
         title: localizedValue("চাল", "Rice"),
-        imageUrl: "/rice.jpg",
+        imageUrl: "/rice-bowl.jpg",
         href: "/products",
       },
     ],
@@ -327,7 +373,7 @@ export const defaultRoshalSections: RoshalMarketingSection[] = [
       {
         title: localizedValue("মধু বান্ডেল অফার", "Honey Bundle Offer"),
         body: localizedValue("৩টি মধু কিনে ১টি ফ্রি", "Buy 3 Get 1 Free"),
-        imageUrl: "/honey.jpg",
+        imageUrl: "/deal-3.jpg",
         href: "/products/pure-honey",
         value: "25% OFF",
         label: localizedValue("অফারটি দেখুন", "View Offer"),
@@ -335,7 +381,7 @@ export const defaultRoshalSections: RoshalMarketingSection[] = [
       {
         title: localizedValue("ঘি বান্ডেল অফার", "Ghee Bundle Offer"),
         body: localizedValue("২টি ঘি কিনে ১০% ছাড়", "Buy 2 Get 10% Off"),
-        imageUrl: "/ghee.jpg",
+        imageUrl: "/oil-2.jpg",
         href: "/products/organic-ghee",
         value: "10% OFF",
         label: localizedValue("অফারটি দেখুন", "View Offer"),
@@ -585,6 +631,7 @@ export const defaultRoshalSections: RoshalMarketingSection[] = [
       columns: "2",
     },
   },
+  ...defaultRoshalExtendedSections,
 ];
 
 export const defaultRoshalProducts: RoshalProduct[] = [
@@ -607,8 +654,8 @@ export const defaultRoshalProducts: RoshalProduct[] = [
     compareAtPrice: 520,
     inventory: 18,
     badge: "bestseller",
-    heroImage: "/honey-2.jpg",
-    gallery: ["/honey-2.jpg", "/honey.jpg"],
+    heroImage: "/deal-3.jpg",
+    gallery: ["/deal-3.jpg", "/walnuts.jpg"],
     features: [
       localizedValue("১০০% খাঁটি", "100% pure"),
       localizedValue("কেমিক্যালমুক্ত", "Chemical-free"),
@@ -637,8 +684,8 @@ export const defaultRoshalProducts: RoshalProduct[] = [
     compareAtPrice: 880,
     inventory: 9,
     badge: "premium",
-    heroImage: "/ghee-2.jpg",
-    gallery: ["/ghee-2.jpg", "/ghee.jpg"],
+    heroImage: "/oil-2.jpg",
+    gallery: ["/oil-2.jpg", "/olive-oil.jpg"],
     features: [
       localizedValue("ঐতিহ্যবাহী প্রস্তুতি", "Traditional preparation"),
       localizedValue("গভীর স্বাদ", "Rich flavor"),
@@ -667,8 +714,8 @@ export const defaultRoshalProducts: RoshalProduct[] = [
     compareAtPrice: 330,
     inventory: 24,
     badge: "seasonal",
-    heroImage: "/dates.jpg",
-    gallery: ["/dates.jpg", "/dates-2.jpg"],
+    heroImage: "/fruits.jpg",
+    gallery: ["/fruits.jpg", "/mango-2.jpg"],
     features: [
       localizedValue("ঋতুভিত্তিক সংগ্রহ", "Seasonally sourced"),
       localizedValue("খাঁটি স্বাদ", "Authentic taste"),
