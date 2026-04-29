@@ -29,7 +29,7 @@ export function HomeBrandStrip({ brands }: { brands: BrandItem[] }) {
             className="basis-[88%] pl-3 min-[420px]:basis-[72%] sm:basis-1/2 md:pl-4 lg:basis-1/4"
           >
             <Link href={brand.href} className="block h-full">
-              <Card className="h-full border-border/70 bg-card shadow-sm">
+              <Card className="h-full border-border/70 bg-card shadow-sm hover:bg-accent">
                 <CardContent className="flex h-24 items-center justify-center p-4 sm:h-28 sm:p-6">
                   <Image
                     src={brand.image}

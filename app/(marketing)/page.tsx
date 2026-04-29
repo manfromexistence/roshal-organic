@@ -768,7 +768,7 @@ export default async function LandingPage() {
                 key={`${stat.number}-${stat.label.en}`}
                 delay={index * 0.08}
               >
-                <Card className="border-border/70 bg-card shadow-sm">
+                <Card className="border-border/70 bg-card shadow-sm hover:bg-accent">
                   <CardContent className="space-y-2 p-5 text-center md:p-6">
                     <p className="text-2xl font-semibold text-primary md:text-4xl">
                       {stat.number}

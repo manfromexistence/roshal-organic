@@ -42,6 +42,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { authClient } from "@/lib/auth-client";
 import { getLocalizedValue } from "@/lib/store-locale";
 import type { StorefrontTaxonomyGroup } from "@/lib/store-taxonomy";
@@ -406,7 +407,7 @@ export function StorefrontHeader({
         </div>
       </div>
 
-      <div className="hidden border-b border-border/50 bg-primary text-primary-foreground lg:block">
+      <div className="hidden sticky top-[4.5rem] border-b border-border/50 bg-primary text-primary-foreground lg:block z-40">
         <div className="container mx-auto px-4">
           <NavigationMenu viewport={false} className="max-w-none justify-start">
             <NavigationMenuList className="w-full flex-wrap justify-start gap-1.5 py-2">
@@ -482,7 +483,8 @@ export function StorefrontHeader({
                 : "Browse quick navigation, language, category, and account actions."}
             </SheetDescription>
           </SheetHeader>
-          <div className="space-y-6">
+          <ScrollArea className="h-full pr-4">
+            <div className="space-y-6 pb-6">
             <div className="flex items-center justify-between">
               <span className="text-lg font-semibold">
                 {locale === "bn" ? "দ্রুত নেভিগেশন" : "Quick navigation"}
@@ -600,6 +602,7 @@ export function StorefrontHeader({
               </div>
             )}
           </div>
+          </ScrollArea>
         </SheetContent>
       </Sheet>
     </header>

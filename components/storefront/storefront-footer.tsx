@@ -318,7 +318,7 @@ export function StorefrontFooter({
                     alt={logo.alt}
                     width={132}
                     height={42}
-                    className="h-8 w-auto object-contain opacity-85 sm:h-10"
+                    className="rounded-md h-8 w-auto object-contain opacity-85 sm:h-10"
                   />
                 </div>
               ))}
