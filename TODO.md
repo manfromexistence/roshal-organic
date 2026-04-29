@@ -4,6 +4,9 @@
 - [ ] 2026-04-29 23:40 Apply the first client-delivery punch-list across the storefront and dashboard: scroll-aware top bar, simplified footer/contact info, lighter homepage sections, compact checkout/delivery controls, richer signup, public track-order, and stronger category/subcategory dashboard controls.
 
 ## Completed
+- [x] 2026-04-30 02:11 Reworked the storefront checkout page around a denser mobile-friendly delivery/payment layout, added trust/support blocks plus customer comments, and kept the rest of the marketing UI unchanged.
+- [x] 2026-04-30 02:11 Fixed the shared toast styling so checkout/location/manual-payment messages render with readable text and proper theme-backed surfaces instead of the earlier transparent look.
+- [x] 2026-04-30 02:11 Completed a live browser-plugin checkout audit: created a real bKash manual-review order, verified the admin dashboard can mark it paid with review notes, confirmed the customer order history reflects the paid state, and verified that denied geolocation shows a readable permission toast.
 - [x] 2026-04-30 00:38 Reworked the storefront locale control into a persistent BN/EN switch, moved the desktop language picker into the `More` dropdown, tightened the main header height, and reduced fixed-page header offset to match.
 - [x] 2026-04-30 00:38 Retinted the desktop category rail with the primary color, centered the sub-header category items vertically, and re-verified that the live storefront header still resolves category/subcategory links from the dashboard taxonomy editor.
 - [x] 2026-04-30 00:12 Simplified the homepage shelves, normalized the public footer/contact/WhatsApp details to the latest client-provided contact info, and kept those values synchronized with legacy site-settings rows.

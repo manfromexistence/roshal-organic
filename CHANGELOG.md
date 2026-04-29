@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Added CMS-backed checkout support and testimonial data wiring so the public checkout page can reuse dashboard-managed customer comments and storefront support details without hardcoding that content into the component
 - Added a shared Motion-based marketing animation layer for the CMS-rendered pages, so About, Contact, and the richer support/privacy pages now pick up scroll reveal and restrained hover polish without changing the storefront layout structure
 - Added localized editor guidance for the core marketing/support CMS pages, so `/dashboard/pages/[id]` now shows page-specific editing summaries and tips for About, Contact, Support Center, Payment, Shipping, FAQ, Privacy Policy, and Terms & Conditions
 - Added richer default CMS sections for the public About, Contact, Support Center, Payment, Shipping, Privacy Policy, FAQ, and Terms & Conditions pages, including story, feature-grid, and contact-card blocks that give those routes more professional content out of the box
@@ -18,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added responsive payment partners grid layout with grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 for better logo distribution across screen sizes
 
 ### Changed
+- Changed the storefront checkout page to use a denser mobile-friendly delivery and payment layout with trust highlights, manual-verification guidance, support actions, and customer comments inspired by the requested Bangladeshi ecommerce checkout pattern while leaving the rest of the marketing UI untouched
 - Changed the desktop storefront sub-header dropdowns to escape the category rail correctly by making the non-viewport navigation-menu content overflow visible and raising the rail stacking context above the marketing pages
 - Changed the storefront and dashboard dark-mode contrast tuning so muted/support text, compact nav labels, tab triggers, and avatar fallback surfaces remain readable against the current dark palette
 - Changed the active catalog product cards to use a brighter theme-derived dark-mode price treatment, fixing the low-contrast price text in the storefront catalog
@@ -252,6 +254,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All linting errors and warnings resolved across the codebase
 
 ### Fixed
+- Fixed the shared Roshal toast styling so checkout validation, geolocation-permission, and upload/payment feedback now render on visible theme-backed surfaces with readable foreground text in both light and dark mode
+- Fixed the live wallet-review checkout audit path by verifying and hardening a real storefront flow: customer order creation, admin dashboard payment confirmation, and customer order-history reflection of the updated paid state and review notes
 - Fixed the live storefront card padding regression on catalog/home product cards by moving image-first media into the header section and keeping the spacing only around the textual content and CTA region
 - Fixed the public checkout payment-proof flow so the shared ImgBB upload field now uses the same stable file-picker behavior as the dashboard, includes same-origin requests, and immediately previews uploaded or pasted proof images on the storefront checkout form
 - Fixed dark-mode readability on the active storefront by restoring light foreground values on primary, accent, card, popover, and sidebar surfaces, and rotated the persisted theme-state key so stale local template colors no longer override the repaired defaults
