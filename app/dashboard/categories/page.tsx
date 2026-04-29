@@ -1,4 +1,9 @@
-import { saveRoshalCategory, saveRoshalSubcategory } from "@/actions/admin";
+import {
+  removeRoshalCategory,
+  removeRoshalSubcategory,
+  saveRoshalCategory,
+  saveRoshalSubcategory,
+} from "@/actions/admin";
 import {
   DashboardBarChartCard,
   DashboardPieChartCard,
@@ -310,6 +315,13 @@ export default async function DashboardCategoriesPage({
                   />
                 </form>
 
+                <form action={removeRoshalCategory}>
+                  <input type="hidden" name="id" value={category.id} />
+                  <Button type="submit" variant="destructive">
+                    {locale === "bn" ? "ক্যাটাগরি ডিলিট করুন" : "Delete category"}
+                  </Button>
+                </form>
+
                 <div className="space-y-4 rounded-2xl border border-border/70 bg-muted/10 p-4">
                   <div className="space-y-1">
                     <h2 className="text-lg font-semibold">
@@ -366,6 +378,18 @@ export default async function DashboardCategoriesPage({
                                   : "Save subcategory"
                               }
                             />
+                          </form>
+                          <form action={removeRoshalSubcategory} className="mt-4">
+                            <input
+                              type="hidden"
+                              name="id"
+                              value={subcategory.id}
+                            />
+                            <Button type="submit" variant="destructive">
+                              {locale === "bn"
+                                ? "সাবক্যাটাগরি ডিলিট করুন"
+                                : "Delete subcategory"}
+                            </Button>
                           </form>
                         </CardContent>
                       </Card>

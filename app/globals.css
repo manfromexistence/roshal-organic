@@ -148,6 +148,32 @@
   * {
     @apply border-border outline-ring/50;
   }
+
+  html {
+    scrollbar-color:
+      color-mix(in oklch, var(--foreground) 28%, var(--primary))
+      color-mix(in oklch, var(--background) 88%, var(--primary) 12%);
+    scrollbar-width: thin;
+  }
+
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  html::-webkit-scrollbar-track,
+  body::-webkit-scrollbar-track {
+    background: color-mix(in oklch, var(--background) 88%, var(--primary) 12%);
+  }
+
+  html::-webkit-scrollbar-thumb,
+  body::-webkit-scrollbar-thumb {
+    background: color-mix(in oklch, var(--foreground) 28%, var(--primary));
+    border-radius: 999px;
+    border: 2px solid
+      color-mix(in oklch, var(--background) 88%, var(--primary) 12%);
+  }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -169,6 +195,14 @@
 }
 
 @layer components {
+  .storefront-shell {
+    background-color: color-mix(
+      in oklch,
+      var(--background) 90%,
+      var(--primary) 10%
+    );
+  }
+
   .dark .themed-avatar-fallback {
     background-color: color-mix(in oklch, var(--card) 58%, var(--primary) 42%);
     color: var(--foreground);

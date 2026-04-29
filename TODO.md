@@ -1,5 +1,8 @@
 # Project Tasks
 
+## In Progress
+- [ ] 2026-04-29 23:40 Apply the first client-delivery punch-list across the storefront and dashboard: scroll-aware top bar, simplified footer/contact info, lighter homepage sections, compact checkout/delivery controls, richer signup, public track-order, and stronger category/subcategory dashboard controls.
+
 ## Completed
 - [x] 2026-04-29 22:28 Restored the desktop storefront sub-header dropdown visibility by removing the clipping overflow and raising the non-viewport navigation-menu stacking context.
 - [x] 2026-04-29 22:28 Restarted the local dev server and verified on the homepage that the `Oil & Ghee` submenu opens visibly above the category rail again.

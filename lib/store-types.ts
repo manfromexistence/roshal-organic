@@ -103,6 +103,7 @@ export interface RoshalSiteSettings {
   contactPhone: string;
   contactEmail: string;
   whatsappPhone: string;
+  facebookUrl: string;
   address: LocalizedValue;
   heroLayout: string;
   cardStyle: string;

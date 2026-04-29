@@ -8,7 +8,7 @@ function ImageCard({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card"
       className={cn(
-        "flex min-w-0 flex-col gap-0 rounded-2xl border border-border/70 bg-card text-card-foreground shadow-sm",
+        "flex min-w-0 flex-col gap-0 rounded-md border border-border/70 bg-card text-card-foreground shadow-sm",
         className,
       )}
       {...props}
@@ -72,7 +72,7 @@ function ImageCardContent({
   return (
     <div
       data-slot="card-content"
-      className={cn("min-w-0 px-6", className)}
+      className={cn("min-w-0 px-4", className)}
       {...props}
     />
   );
@@ -82,10 +82,7 @@ function ImageCardFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card-footer"
-      className={cn(
-        "flex min-w-0 items-center px-6 [.border-t]:pt-6",
-        className,
-      )}
+      className={cn("flex min-w-0 items-center px-4 [.border-t]:pt-4", className)}
       {...props}
     />
   );

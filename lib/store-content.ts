@@ -339,6 +339,7 @@ function mapSiteSettings(
     contactPhone: row.contactPhone || "",
     contactEmail: row.contactEmail || "",
     whatsappPhone: row.whatsappPhone || "",
+    facebookUrl: row.facebookUrl || "",
     address: {
       bn: row.addressBn || "",
       en: row.addressEn || "",
@@ -583,6 +584,39 @@ export async function getRoshalOrderById(id: string) {
       .limit(1);
 
     return order ? mapOrder(order) : null;
+  } catch {
+    return null;
+  }
+}
+
+function normalizeLookupPhone(value: string) {
+  return value.replace(/\D/g, "");
+}
+
+export async function getRoshalOrderByLookup(
+  orderNumber: string,
+  phone: string,
+) {
+  try {
+    const [order] = await db
+      .select()
+      .from(roshalOrders)
+      .where(eq(roshalOrders.orderNumber, orderNumber.trim().toUpperCase()))
+      .limit(1);
+
+    if (!order) {
+      return null;
+    }
+
+    const normalizedLookupPhone = normalizeLookupPhone(phone);
+
+    if (!normalizedLookupPhone) {
+      return null;
+    }
+
+    return normalizeLookupPhone(order.phone) === normalizedLookupPhone
+      ? mapOrder(order)
+      : null;
   } catch {
     return null;
   }

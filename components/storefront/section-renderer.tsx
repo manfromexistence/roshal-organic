@@ -77,6 +77,87 @@ function resolveSectionColumns(section: RoshalMarketingSection) {
   return columnsMap["4"];
 }
 
+function resolveContactCardValue(
+  locale: RoshalLocale,
+  siteSettings: RoshalSiteSettings,
+  label: string,
+  fallback: string,
+) {
+  const normalizedLabel = label.trim().toLowerCase();
+
+  if (normalizedLabel.includes("phone") || normalizedLabel.includes("ফোন")) {
+    return siteSettings.contactPhone || fallback;
+  }
+
+  if (normalizedLabel.includes("email") || normalizedLabel.includes("ইমেইল")) {
+    return siteSettings.contactEmail || fallback;
+  }
+
+  if (
+    normalizedLabel.includes("address") ||
+    normalizedLabel.includes("ঠিকানা") ||
+    normalizedLabel.includes("location") ||
+    normalizedLabel.includes("লোকেশন")
+  ) {
+    return getLocalizedValue(locale, siteSettings.address) || fallback;
+  }
+
+  if (
+    normalizedLabel.includes("whatsapp") ||
+    normalizedLabel.includes("হোয়াটসঅ্যাপ") ||
+    normalizedLabel.includes("হোয়াটসআপ")
+  ) {
+    return siteSettings.whatsappPhone || fallback;
+  }
+
+  if (
+    normalizedLabel.includes("facebook") ||
+    normalizedLabel.includes("ফেসবুক")
+  ) {
+    return siteSettings.facebookUrl || fallback;
+  }
+
+  return fallback;
+}
+
+function resolveContactCardHref(
+  siteSettings: RoshalSiteSettings,
+  label: string,
+  fallback: string,
+) {
+  const normalizedLabel = label.trim().toLowerCase();
+
+  if (normalizedLabel.includes("phone") || normalizedLabel.includes("ফোন")) {
+    return siteSettings.contactPhone
+      ? `tel:${siteSettings.contactPhone.replace(/\s+/g, "")}`
+      : fallback;
+  }
+
+  if (normalizedLabel.includes("email") || normalizedLabel.includes("ইমেইল")) {
+    return siteSettings.contactEmail
+      ? `mailto:${siteSettings.contactEmail}`
+      : fallback;
+  }
+
+  if (
+    normalizedLabel.includes("whatsapp") ||
+    normalizedLabel.includes("হোয়াটসঅ্যাপ") ||
+    normalizedLabel.includes("হোয়াটসআপ")
+  ) {
+    const whatsappDigits = siteSettings.whatsappPhone.replace(/\D/g, "");
+    return whatsappDigits ? `https://wa.me/${whatsappDigits}` : fallback;
+  }
+
+  if (
+    normalizedLabel.includes("facebook") ||
+    normalizedLabel.includes("ফেসবুক")
+  ) {
+    return siteSettings.facebookUrl || fallback;
+  }
+
+  return fallback;
+}
+
 export function RoshalSectionRenderer({
   sections,
   locale,
@@ -319,14 +400,39 @@ function SectionContent({
   }
 
   if (section.type === "contact-cards") {
+    const contactCtaHref = (() => {
+      if (section.ctaHref) {
+        return section.ctaHref;
+      }
+
+      const whatsappDigits = siteSettings.whatsappPhone.replace(/\D/g, "");
+      return whatsappDigits ? `https://wa.me/${whatsappDigits}` : "/contact";
+    })();
+
     return (
       <div className="space-y-8">
         <SectionHeading eyebrow={eyebrow} title={title} body={body} />
         <div className={`grid gap-4 ${sectionColumns}`}>
           {section.items.map((item, index) => {
             const itemLabel = resolveLocalizedItemValue(locale, item.label);
-            const itemTitle = resolveLocalizedItemValue(locale, item.title);
+            const itemTitle = resolveContactCardValue(
+              locale,
+              siteSettings,
+              itemLabel,
+              resolveLocalizedItemValue(locale, item.title),
+            );
+            const itemValue = resolveContactCardValue(
+              locale,
+              siteSettings,
+              itemLabel,
+              item.value || "",
+            );
             const itemBody = resolveLocalizedItemValue(locale, item.body);
+            const itemHref = resolveContactCardHref(
+              siteSettings,
+              itemLabel,
+              item.href || "",
+            );
 
             return (
               <MarketingHoverSurface
@@ -334,7 +440,7 @@ function SectionContent({
                 delay={index * 0.04}
               >
                 <Card className="border-border/60 bg-card/95 shadow-sm transition-colors duration-200 hover:border-primary/25 dark:hover:bg-card">
-                  <CardContent className="space-y-3 p-6">
+                  <CardContent className="space-y-3 p-5">
                     {itemLabel ? (
                       <p className="text-sm font-medium text-muted-foreground">
                         {itemLabel}
@@ -343,8 +449,8 @@ function SectionContent({
                     {itemTitle ? (
                       <p className="text-lg font-semibold">{itemTitle}</p>
                     ) : null}
-                    {item.value ? (
-                      <p className="text-lg font-semibold">{item.value}</p>
+                    {itemValue ? (
+                      <p className="text-lg font-semibold">{itemValue}</p>
                     ) : null}
                     {itemBody ? (
                       <p className="text-sm leading-6 text-muted-foreground">

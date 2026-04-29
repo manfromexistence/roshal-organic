@@ -9,6 +9,7 @@ const siteSettingsStatements = [
     contact_phone TEXT,
     contact_email TEXT,
     whatsapp_phone TEXT,
+    facebook_url TEXT,
     address_bn TEXT,
     address_en TEXT,
     hero_layout TEXT NOT NULL DEFAULT 'split',
@@ -22,6 +23,7 @@ const siteSettingsStatements = [
     updated_at INTEGER NOT NULL
   )`,
   `ALTER TABLE roshal_site_settings ADD COLUMN delivery_zones_json TEXT`,
+  `ALTER TABLE roshal_site_settings ADD COLUMN facebook_url TEXT`,
 ];
 
 let ensurePromise: Promise<void> | null = null;

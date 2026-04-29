@@ -164,6 +164,11 @@ export default async function DashboardThemePage() {
               defaultValue={siteSettings.whatsappPhone}
             />
             <Field
+              name="facebookUrl"
+              label="Facebook URL"
+              defaultValue={siteSettings.facebookUrl}
+            />
+            <Field
               name="addressBn"
               label="Address (BN)"
               defaultValue={siteSettings.address.bn}

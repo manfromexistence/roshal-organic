@@ -73,3 +73,37 @@ My name is essencefromexistence disguise made up name of mine and I am currently
 
 ----------------------------------------------------------------------------------------------------------------------
 
+S.L	Headline	Details of query	Link	Developer Comment	Status	
+1	Language	Language change toggle modern kora dorkar. design Demo >>	Demo			
+2	Top Menu (Category)	"1. Top bar a Language toggle option visible thakbe. 
+2. Dropdown Menu gulao Mobile a visible thakbe ager moto.
+3. Top bar pc te vanish hoye jabe scroll down korar somoy (tobe Category menu visible thakbe ghorerbazar er moto).
+4. Top bar smoothly visible hobe scroll up korar somoy. "				
+3	Top Menu (Category)	"1. Top Menu er moddhe mouse niye gele Sub menu gula card venge jasse. Simply ghorer bazar er moto sub menu list akare asbe.
+2. Mobile view teo Category gula Menu er moto kore dekhabe, jemon age silo."				
+4	Search bar & Banner	"1. Mobile view te Uporer search bar dorkar nei, pc te ok.
+2. Right side banner 1 banner (right) fix thakbe ghorerbazar er moto).
+3. Mobile a 2ta Banner space dorkar nei, PC te ok."	ss			
+5	Logo	"Logo onek small dekhasse, tai clear bojha jassena. Logo er niche BG Shape onujai logo onk small. Visible korar jonno Shape size thik rekhei logo size increase korte hobe. Ghorer Bazar er logo clear dekha jay, serokom.
+আর লোগোর সার্কেল থাকার জন্য সমস্যা মনে করলে লোগো ফোল্ডারে সার্কেল বাদেও লোগো রাখা আছে, সেটাও ইউজ করা যেতে পারে। "	Logo Link			
+6	Scroll Bar	Right Side er scrool bar ta dekhai jassena white white mishe gese jonno.				
+7	Web BG/Card color	Full web BG or Card color হালকা সবুজ রাখলে দেখতে ভাল লাগবে। 				
+8	Featured Category	Style & card size Ghorerbazar er moto korle valo lagbe. all cards alignment Center.				
+9	Login page	Same like ghorerbazar (tobe tader bam side er OTP login section thakbena).				
+10	Sign Up	Fileds: Full Name, Mobile, Email (Optional), Adress, District (Auto dropdown), Thana (auto dropdown), Password (Minimum any 6 digit).				
+11	HOME	Home er moddhe Products er card Hight onek beshi hoye gese dekhei bojha jasse. a jonno PC te 1 screen a full card dekhai jayna.	Card view			
+12	HOME	"Home theke kisu section remove korte hobe (jemon: Fresh Picks, Organic Products, Today’s best picks). 
+karon onek section thakar karone site user friendly r thaksena, complex r products mixed hoye gese."				
+13	HOME	নিচের দিকে কাস্টমার কমেন্ট এর কার্ড ও স্পেস অনেক বেশি হয়ে পুরো স্ক্রিন ভড়ে যায়। ছোট করতে হবে দেখেই বোঝা যাচ্ছে। 	Screenshot			
+14	Footer	"1. Footer onk boro o beshi jinis hoye gese. small & simple korle valo lagbe.
+2. Footer a Payment methods section dorkar nei. Remove."				
+15	Chat	Floating Action-Chat with us system Add korte hobe, jekhane whatsApp link kora thakbe.				
+16	All Contact info	"Mobile: 01805-767300 (WhatsApp also)
+Office Address: Mohammadpur, Dhaka, Bangladesh
+Email: roshalorganic@gmail.com
+Fb: www.facebook.com/roshalorganic"				
+17	Track Order	Login sarao track order korte parbe public.				
+18	Payment	"1. User order deoar somoy Payment method select korbe Ghorerbazar system a, bortomane card space beshi khay.
+2. Home Delivery naki Office delivery ta Redial system a jekono 1 ta select kora jabe."				
+
+----------------------------------------------------------------------------------------------------------------------

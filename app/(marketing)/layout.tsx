@@ -3,6 +3,7 @@ import { MarketingPageOffset } from "@/components/storefront/marketing-page-offs
 import { StorefrontBottomNavigation } from "@/components/storefront/storefront-bottom-navigation";
 import { StorefrontFooter } from "@/components/storefront/storefront-footer";
 import { StorefrontHeader } from "@/components/storefront/storefront-header";
+import { WhatsAppFloatingButton } from "@/components/storefront/whatsapp-floating-button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getRoshalSessionUser } from "@/lib/store-auth";
 import {
@@ -68,6 +69,15 @@ export default async function MarketingLayout({
               }
             : null
         }
+      />
+
+      <WhatsAppFloatingButton
+        href={
+          siteSettings.whatsappPhone.replace(/\D/g, "")
+            ? `https://wa.me/${siteSettings.whatsappPhone.replace(/\D/g, "")}`
+            : "/contact"
+        }
+        label={locale === "bn" ? "চ্যাট করুন" : "Chat with us"}
       />
 
       <ScrollArea

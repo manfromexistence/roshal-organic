@@ -6,6 +6,8 @@ import { requireRoshalAdmin, requireRoshalUser } from "@/lib/store-auth";
 import { safeJsonParse } from "@/lib/store-format";
 import {
   createValidatedRoshalOrder,
+  deleteRoshalCategory,
+  deleteRoshalSubcategory,
   RoshalOrderStatusError,
   RoshalPageError,
   RoshalProductError,
@@ -106,6 +108,7 @@ export async function saveRoshalSiteSettings(formData: FormData) {
     contactPhone: optionalTextValue(formData, "contactPhone"),
     contactEmail: optionalTextValue(formData, "contactEmail"),
     whatsappPhone: optionalTextValue(formData, "whatsappPhone"),
+    facebookUrl: optionalTextValue(formData, "facebookUrl"),
     addressBn: optionalTextValue(formData, "addressBn"),
     addressEn: optionalTextValue(formData, "addressEn"),
     heroLayout: textValue(formData, "heroLayout") || "split",
@@ -217,6 +220,30 @@ export async function saveRoshalSubcategory(formData: FormData) {
 
     throw error;
   }
+
+  finishAction("/dashboard/categories", formData, [
+    "/",
+    "/products",
+    "/dashboard/categories",
+  ]);
+}
+
+export async function removeRoshalCategory(formData: FormData) {
+  await requireRoshalAdmin();
+
+  await deleteRoshalCategory(textValue(formData, "id"));
+
+  finishAction("/dashboard/categories", formData, [
+    "/",
+    "/products",
+    "/dashboard/categories",
+  ]);
+}
+
+export async function removeRoshalSubcategory(formData: FormData) {
+  await requireRoshalAdmin();
+
+  await deleteRoshalSubcategory(textValue(formData, "id"));
 
   finishAction("/dashboard/categories", formData, [
     "/",

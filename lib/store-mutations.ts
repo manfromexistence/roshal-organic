@@ -412,6 +412,7 @@ export interface UpsertRoshalSiteSettingsInput {
   contactPhone?: string | null;
   contactEmail?: string | null;
   whatsappPhone?: string | null;
+  facebookUrl?: string | null;
   addressBn?: string | null;
   addressEn?: string | null;
   heroLayout: string;
@@ -445,6 +446,7 @@ export async function upsertRoshalSiteSettings(
       contactPhone: toOptionalText(input.contactPhone),
       contactEmail: toOptionalText(input.contactEmail),
       whatsappPhone: toOptionalText(input.whatsappPhone),
+      facebookUrl: toOptionalText(input.facebookUrl),
       addressBn: toOptionalText(input.addressBn),
       addressEn: toOptionalText(input.addressEn),
       heroLayout: input.heroLayout,
@@ -466,6 +468,7 @@ export async function upsertRoshalSiteSettings(
         contactPhone: toOptionalText(input.contactPhone),
         contactEmail: toOptionalText(input.contactEmail),
         whatsappPhone: toOptionalText(input.whatsappPhone),
+        facebookUrl: toOptionalText(input.facebookUrl),
         addressBn: toOptionalText(input.addressBn),
         addressEn: toOptionalText(input.addressEn),
         heroLayout: input.heroLayout,
@@ -708,6 +711,18 @@ export async function upsertRoshalSubcategory(
     });
 
   return id;
+}
+
+export async function deleteRoshalCategory(id: string) {
+  await ensureRoshalTaxonomySchema();
+
+  await db.delete(roshalCategories).where(eq(roshalCategories.id, id));
+}
+
+export async function deleteRoshalSubcategory(id: string) {
+  await ensureRoshalTaxonomySchema();
+
+  await db.delete(roshalSubcategories).where(eq(roshalSubcategories.id, id));
 }
 
 export interface UpsertRoshalPageInput {

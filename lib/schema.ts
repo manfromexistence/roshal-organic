@@ -71,6 +71,7 @@ export const roshalSiteSettings = sqliteTable("roshal_site_settings", {
   contactPhone: text("contact_phone"),
   contactEmail: text("contact_email"),
   whatsappPhone: text("whatsapp_phone"),
+  facebookUrl: text("facebook_url"),
   addressBn: text("address_bn"),
   addressEn: text("address_en"),
   heroLayout: text("hero_layout").notNull().default("split"),
