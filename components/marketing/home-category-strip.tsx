@@ -43,8 +43,8 @@ export function HomeCategoryStrip({
           >
             <Link href={category.href} className="block h-full">
               <Card className="h-full border-border/70 bg-card shadow-sm transition-transform duration-200 hover:bg-accent">
-                <CardContent className="flex flex-col items-center gap-4 p-4 text-center">
-                  <div className="relative flex h-18 w-18 items-center justify-center overflow-hidden rounded-2xl bg-muted/60 ring-1 ring-border/60">
+                <CardContent className="flex flex-col items-center gap-4 text-center">
+                  <div className="relative flex size-16 items-center justify-center overflow-hidden rounded-2xl">
                     <Image
                       src={category.image}
                       alt={category.name[language]}

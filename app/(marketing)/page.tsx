@@ -316,7 +316,7 @@ function buildCategories(
   return [
     {
       key: "fallback-oil-ghee",
-      name: localizedValue("তেল ও ঘি", "Oil & Ghee"),
+      name: localizedValue("তেল ও ঘি", "Oil & Gheefasd"),
       image: "/ghee.jpg",
       href: "/products?category=oil-ghee",
     },
@@ -596,7 +596,7 @@ export default async function LandingPage() {
   const testimonialsDescription = sectionDescription(testimonialsSection);
 
   return (
-    <div className="flex w-full min-w-0 flex-col overflow-hidden">
+    <div className="mt-6 flex w-full min-w-0 flex-col overflow-hidden">
       <LandingHero banners={heroBanners} language={language} />
 
       <section className="bg-background py-12 md:py-16">

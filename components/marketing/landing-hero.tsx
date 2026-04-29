@@ -52,7 +52,7 @@ export function LandingHero({
       <div className="container mx-auto space-y-5 px-4 sm:px-6 md:px-8">
         <div className="grid grid-cols-1 gap-5 md:grid-cols-[1.45fr_0.85fr]">
           <Card className="gap-0 overflow-hidden border-border/70 bg-card p-0 shadow-sm">
-            <CardContent className="relative min-h-[8rem] p-0 sm:min-h-[12rem] md:min-h-[15rem]">
+            <CardContent className="min-h-[250px] relative p-0 sm:min-h-[12rem] md:min-h-[15rem]">
               <Image
                 key={currentBanner.image}
                 src={currentBanner.image}
@@ -91,7 +91,7 @@ export function LandingHero({
           </Card>
 
           <Card className="gap-0 overflow-hidden border-border/70 bg-card p-0 shadow-sm">
-            <CardContent className="relative min-h-[8rem] p-0 sm:min-h-[12rem] md:min-h-[15rem]">
+            <CardContent className="relative min-h-[250px] p-0 sm:min-h-[12rem] md:min-h-[15rem]">
               <Image
                 src={secondaryBanner.image}
                 alt={secondaryBanner.title[language]}
