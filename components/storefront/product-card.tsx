@@ -103,7 +103,7 @@ export function RoshalProductCard({
 
         <div className="mt-auto flex w-full flex-col items-start gap-1.5">
           <div className="space-y-1">
-            <p className="text-xl font-semibold text-primary">
+            <p className="price-emphasis text-xl font-semibold text-primary dark:[color:color-mix(in_oklch,var(--foreground)_68%,var(--primary))]">
               {formatBdt(product.price, locale)}
             </p>
             {product.compareAtPrice ? (

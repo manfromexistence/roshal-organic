@@ -102,7 +102,9 @@ export function AppSidebar({
                   />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
-                  <span className="truncate font-semibold">Roshal Organic</span>
+                  <span className="font-wordmark truncate text-[0.98rem]">
+                    Roshal Organic
+                  </span>
                   {/* <span className="truncate text-xs">Storefront CMS</span> */}
                 </div>
               </Link>

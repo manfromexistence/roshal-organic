@@ -52,7 +52,7 @@ export default async function MarketingLayout({
   const footerCategoryLinks = buildFooterCategoryLinks(taxonomyBundle);
 
   return (
-    <div className="flex h-svh min-w-0 flex-col overflow-hidden bg-background text-foreground antialiased">
+    <div className="storefront-shell flex h-svh min-w-0 flex-col overflow-hidden bg-background text-foreground antialiased">
       <StorefrontHeader
         locale={locale}
         pages={pages}

@@ -1,5 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
+import {
+  MarketingMediaSurface,
+  MarketingReveal,
+} from "@/components/storefront/marketing-motion";
 import { RoshalSectionRenderer } from "@/components/storefront/section-renderer";
 import { Button } from "@/components/ui/button";
 import { getLocalizedValue } from "@/lib/store-locale";
@@ -33,9 +37,9 @@ export function RoshalMarketingPageView({
       {!hasPrimaryHero ? (
         <section className="py-10 md:py-14">
           <div className="container mx-auto px-4">
-            <div className="grid items-center gap-8 rounded-[2rem] border border-border/60 bg-gradient-to-br from-background via-background to-muted/50 p-6 shadow-sm lg:grid-cols-[1.05fr_0.95fr] lg:p-10">
+            <MarketingReveal className="grid items-center gap-8 rounded-[2rem] border border-border/60 bg-gradient-to-br from-background via-background to-muted/50 p-6 shadow-sm lg:grid-cols-[1.05fr_0.95fr] lg:p-10">
               <div className="space-y-5">
-                <p className="text-xs uppercase tracking-[0.24em] text-primary">
+                <p className="text-xs uppercase tracking-[0.24em] text-primary dark:[color:color-mix(in_oklch,var(--foreground)_68%,var(--primary))]">
                   {getLocalizedValue(locale, page.navigationLabel)}
                 </p>
                 <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-foreground md:text-5xl">
@@ -47,12 +51,21 @@ export function RoshalMarketingPageView({
                   </p>
                 ) : null}
                 <div className="flex flex-wrap gap-3">
-                  <Button asChild size="lg">
+                  <Button
+                    asChild
+                    size="lg"
+                    className="transition-transform duration-200 hover:-translate-y-0.5"
+                  >
                     <Link href={siteSettings.primaryCtaHref}>
                       {getLocalizedValue(locale, siteSettings.primaryCtaLabel)}
                     </Link>
                   </Button>
-                  <Button asChild variant="outline" size="lg">
+                  <Button
+                    asChild
+                    variant="outline"
+                    size="lg"
+                    className="transition-colors duration-200 hover:border-primary/40 hover:bg-primary/5"
+                  >
                     <Link href="/contact">
                       {locale === "bn" ? "যোগাযোগ করুন" : "Contact us"}
                     </Link>
@@ -60,7 +73,7 @@ export function RoshalMarketingPageView({
                 </div>
               </div>
               {page.heroImage ? (
-                <div className="relative min-h-80 overflow-hidden rounded-[1.5rem] border bg-muted">
+                <MarketingMediaSurface className="relative min-h-80 overflow-hidden rounded-[1.5rem] border bg-muted">
                   <Image
                     src={page.heroImage}
                     alt={getLocalizedValue(locale, page.title)}
@@ -70,9 +83,9 @@ export function RoshalMarketingPageView({
                     className="object-cover"
                     sizes="(max-width: 1024px) 100vw, 45vw"
                   />
-                </div>
+                </MarketingMediaSurface>
               ) : null}
-            </div>
+            </MarketingReveal>
           </div>
         </section>
       ) : null}

@@ -1,4 +1,9 @@
 import { saveRoshalPaymentSettings } from "@/actions/admin";
+import {
+  DashboardBarChartCard,
+  DashboardPieChartCard,
+} from "@/components/dashboard/dashboard-chart-card";
+import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
 import { ImageUploadField } from "@/components/shared/image-upload-field";
@@ -48,6 +53,58 @@ export default async function DashboardPaymentsPage() {
       sortOrder: paymentMethodOrder.indexOf(key),
     };
 
+  const enabledCount = paymentSettings.options.filter(
+    (option) => option.enabled,
+  ).length;
+  const gatewayModeCount = paymentSettings.options.filter(
+    (option) => option.enabled && option.mode === "gateway",
+  ).length;
+  const proofRequiredCount = paymentSettings.options.filter(
+    (option) => option.enabled && option.requiresProof,
+  ).length;
+  const optionStateData = [
+    {
+      key: "enabled",
+      label: locale === "bn" ? "চালু" : "Enabled",
+      value: enabledCount,
+    },
+    {
+      key: "disabled",
+      label: locale === "bn" ? "বন্ধ" : "Disabled",
+      value: paymentSettings.options.length - enabledCount,
+    },
+  ];
+  const modeData = [
+    {
+      key: "manual",
+      label: locale === "bn" ? "ম্যানুয়াল" : "Manual",
+      value: paymentSettings.options.filter(
+        (option) => option.mode === "manual",
+      ).length,
+    },
+    {
+      key: "gateway",
+      label: locale === "bn" ? "গেটওয়ে" : "Gateway",
+      value: paymentSettings.options.filter(
+        (option) => option.mode === "gateway",
+      ).length,
+    },
+  ];
+  const proofData = [
+    {
+      key: "requires-proof",
+      label: locale === "bn" ? "প্রুফ লাগে" : "Proof required",
+      value: paymentSettings.options.filter((option) => option.requiresProof)
+        .length,
+    },
+    {
+      key: "no-proof",
+      label: locale === "bn" ? "প্রুফ লাগে না" : "No proof",
+      value: paymentSettings.options.filter((option) => !option.requiresProof)
+        .length,
+    },
+  ];
+
   return (
     <div className="min-w-0 space-y-6 p-4 md:p-6">
       <div className="min-w-0 space-y-2">
@@ -57,6 +114,59 @@ export default async function DashboardPaymentsPage() {
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
           {locale === "bn" ? "পেমেন্ট অপশন ও গাইড" : "Payment options and guides"}
         </h1>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-3">
+        <DashboardMetricCard
+          title={locale === "bn" ? "চালু অপশন" : "Enabled options"}
+          value={enabledCount}
+        />
+        <DashboardMetricCard
+          title={locale === "bn" ? "গেটওয়ে মোড" : "Gateway modes"}
+          value={gatewayModeCount}
+        />
+        <DashboardMetricCard
+          title={locale === "bn" ? "প্রুফ প্রয়োজন" : "Proof required"}
+          value={proofRequiredCount}
+        />
+      </div>
+
+      <div className="grid gap-6 xl:grid-cols-2">
+        <DashboardPieChartCard
+          title={
+            locale === "bn"
+              ? "পেমেন্ট অপশন অ্যাভেইলেবিলিটি"
+              : "Payment option availability"
+          }
+          description={
+            locale === "bn"
+              ? "ড্যাশবোর্ডে কনফিগার করা অপশনগুলোর মধ্যে কোনগুলো লাইভ আছে।"
+              : "Which configured payment options are currently live for customers."
+          }
+          totalLabel={locale === "bn" ? "অপশন" : "Options"}
+          data={optionStateData}
+        />
+        <DashboardBarChartCard
+          title={locale === "bn" ? "মোড ডিস্ট্রিবিউশন" : "Mode distribution"}
+          description={
+            locale === "bn"
+              ? "ম্যানুয়াল ভেরিফিকেশন বনাম গেটওয়ে মোডের অনুপাত।"
+              : "The balance between manual verification and gateway-managed payment modes."
+          }
+          totalLabel={locale === "bn" ? "মোড" : "Modes"}
+          data={modeData}
+        />
+        <DashboardBarChartCard
+          title={locale === "bn" ? "প্রুফ নীতি" : "Proof policy"}
+          description={
+            locale === "bn"
+              ? "কোন পেমেন্ট চ্যানেলে প্রমাণপত্র চাইছেন তা দ্রুত বোঝা যায়।"
+              : "Quickly see which payment channels require customer proof."
+          }
+          totalLabel={locale === "bn" ? "নীতি" : "Policy"}
+          data={proofData}
+          className="xl:col-span-2"
+        />
       </div>
 
       <form action={saveRoshalPaymentSettings} className="min-w-0 space-y-6">

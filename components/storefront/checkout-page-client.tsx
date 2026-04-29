@@ -1,8 +1,10 @@
 "use client";
 
+import { Loader2, LocateFixed } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import type { HTMLAttributes, HTMLInputTypeAttribute } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { ImageUploadField } from "@/components/shared/image-upload-field";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -39,6 +41,114 @@ import type {
   RoshalProduct,
 } from "@/lib/store-types";
 import { useCartStore } from "@/store/cart-store";
+
+interface RoshalReverseGeocodeResponse {
+  display_name?: string;
+  address?: {
+    house_number?: string;
+    road?: string;
+    suburb?: string;
+    neighbourhood?: string;
+    quarter?: string;
+    village?: string;
+    town?: string;
+    city?: string;
+    municipality?: string;
+    county?: string;
+    state_district?: string;
+    state?: string;
+    postcode?: string;
+  };
+}
+
+function getCurrentBrowserPosition() {
+  return new Promise<GeolocationPosition>((resolve, reject) => {
+    if (!navigator.geolocation) {
+      reject(new Error("Geolocation is not supported by this browser."));
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(resolve, reject, {
+      enableHighAccuracy: true,
+      timeout: 12000,
+      maximumAge: 5 * 60 * 1000,
+    });
+  });
+}
+
+function joinUniqueValues(values: Array<string | undefined>) {
+  const seen = new Set<string>();
+
+  return values
+    .map((value) => value?.trim())
+    .filter((value): value is string => Boolean(value))
+    .filter((value) => {
+      const normalized = value.toLowerCase();
+
+      if (seen.has(normalized)) {
+        return false;
+      }
+
+      seen.add(normalized);
+      return true;
+    });
+}
+
+async function reverseGeocodeCurrentLocation(
+  locale: RoshalLocale,
+  latitude: number,
+  longitude: number,
+) {
+  const url = new URL("https://nominatim.openstreetmap.org/reverse");
+  url.searchParams.set("format", "jsonv2");
+  url.searchParams.set("addressdetails", "1");
+  url.searchParams.set("zoom", "18");
+  url.searchParams.set("lat", String(latitude));
+  url.searchParams.set("lon", String(longitude));
+
+  const response = await fetch(url.toString(), {
+    headers: {
+      Accept: "application/json",
+      "Accept-Language": locale === "bn" ? "bn,en" : "en,bn",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Could not reverse geocode the current location.");
+  }
+
+  const payload = (await response.json()) as RoshalReverseGeocodeResponse;
+  const address = payload.address || {};
+  const city =
+    address.city ||
+    address.town ||
+    address.municipality ||
+    address.county ||
+    address.state_district ||
+    address.state ||
+    "";
+  const addressLine1 =
+    joinUniqueValues([
+      [address.house_number, address.road].filter(Boolean).join(" ").trim(),
+      address.road,
+      address.neighbourhood,
+      address.suburb,
+      payload.display_name?.split(",")[0],
+    ])[0] || "";
+  const addressLine2 = joinUniqueValues([
+    address.suburb,
+    address.neighbourhood,
+    address.quarter,
+    address.village,
+  ]).join(", ");
+
+  return {
+    addressLine1,
+    addressLine2,
+    city,
+    postalCode: address.postcode || "",
+  };
+}
 
 function getDefaultCheckoutPaymentMethod(
   options: RoshalPaymentSettings["options"],
@@ -146,6 +256,7 @@ export function CheckoutPageClient({
   );
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLocating, setIsLocating] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [syncMessage, setSyncMessage] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<RoshalPaymentMethod>(
@@ -243,6 +354,67 @@ export function CheckoutPageClient({
   const updateFormValue = (field: keyof typeof formState, value: string) => {
     setSubmitError(null);
     setFormState((state) => ({ ...state, [field]: value }));
+  };
+
+  const useCurrentLocation = async () => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    setSubmitError(null);
+    setIsLocating(true);
+
+    try {
+      const position = await getCurrentBrowserPosition();
+      const resolvedAddress = await reverseGeocodeCurrentLocation(
+        locale,
+        position.coords.latitude,
+        position.coords.longitude,
+      );
+
+      setFormState((state) => ({
+        ...state,
+        addressLine1: resolvedAddress.addressLine1 || state.addressLine1,
+        addressLine2: resolvedAddress.addressLine2 || state.addressLine2,
+        city: resolvedAddress.city || state.city,
+        postalCode: resolvedAddress.postalCode || state.postalCode,
+      }));
+
+      toast({
+        title:
+          locale === "bn"
+            ? "বর্তমান লোকেশন ব্যবহার করা হয়েছে"
+            : "Current location applied",
+        description:
+          locale === "bn"
+            ? "ডেলিভারি ঠিকানা, শহর, এবং পোস্ট কোড আপডেট করা হয়েছে।"
+            : "The delivery address, city, and postal code have been updated.",
+      });
+    } catch (error) {
+      console.error("Current location autofill failed:", error);
+
+      const message =
+        error &&
+        typeof error === "object" &&
+        "code" in error &&
+        typeof error.code === "number"
+          ? error.code === 1
+            ? locale === "bn"
+              ? "লোকেশন পারমিশন দেওয়া হয়নি। ব্রাউজার থেকে লোকেশন অনুমতি দিন।"
+              : "Location permission was denied. Please allow location access in the browser."
+            : locale === "bn"
+              ? "বর্তমান লোকেশন পাওয়া যায়নি। আবার চেষ্টা করুন।"
+              : "Could not determine the current location. Please try again."
+          : error instanceof Error
+            ? error.message
+            : locale === "bn"
+              ? "বর্তমান লোকেশন পাওয়া যায়নি।"
+              : "Could not determine the current location.";
+
+      showCheckoutError(message);
+    } finally {
+      setIsLocating(false);
+    }
   };
 
   const showCheckoutError = (message: string) => {
@@ -424,37 +596,78 @@ export function CheckoutPageClient({
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_24rem] xl:grid-cols-[minmax(0,1fr)_26rem]">
         <div className="space-y-6">
           <Card className="rounded-3xl border-border/70 shadow-sm">
-            <CardHeader>
-              <CardTitle className="text-2xl">
-                {locale === "bn" ? "ডেলিভারি তথ্য" : "Delivery details"}
-              </CardTitle>
+            <CardHeader className="gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div className="space-y-1.5">
+                <CardTitle className="text-2xl">
+                  {locale === "bn" ? "ডেলিভারি তথ্য" : "Delivery details"}
+                </CardTitle>
+                <p className="text-sm leading-6 text-muted-foreground">
+                  {locale === "bn"
+                    ? "à¦¬à§à¦°à¦¾à¦‰à¦œà¦¾à¦° à¦…à¦Ÿà§‹à¦«à¦¿à¦² à¦¬à§à¦¯à¦¬à¦¹à¦¾à¦° à¦•à¦°à§à¦¨ à¦…à¦¥à¦¬à¦¾ à¦¬à¦°à§à¦¤à¦®à¦¾à¦¨ à¦²à§‹à¦•à§‡à¦¶à¦¨ à¦†à¦¨à§‡ à¦ à¦¿à¦•à¦¾à¦¨à¦¾ à¦“ à¦¶à¦¹à¦° à¦¦à§à¦°à§à¦¤ à¦ªà§‚à¦°à¦£ à¦•à¦°à§à¦¨à¥¤"
+                    : "Use browser autofill or pull your current location to quickly fill the address, city, and postal code."}
+                </p>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="w-full shrink-0 sm:w-auto"
+                onClick={useCurrentLocation}
+                disabled={isLocating}
+              >
+                {isLocating ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin" />
+                    {locale === "bn"
+                      ? "à¦²à§‹à¦•à§‡à¦¶à¦¨ à¦†à¦¨à¦¾ à¦¹à¦šà§à¦›à§‡..."
+                      : "Locating..."}
+                  </>
+                ) : (
+                  <>
+                    <LocateFixed className="size-4" />
+                    {locale === "bn"
+                      ? "à¦¬à¦°à§à¦¤à¦®à¦¾à¦¨ à¦²à§‹à¦•à§‡à¦¶à¦¨ à¦¬à§à¦¯à¦¬à¦¹à¦¾à¦° à¦•à¦°à§à¦¨"
+                      : "Use current location"}
+                  </>
+                )}
+              </Button>
             </CardHeader>
             <CardContent className="grid gap-4 md:grid-cols-2">
               <Field
                 label={locale === "bn" ? "পূর্ণ নাম" : "Full name"}
                 value={formState.customerName}
                 onChange={(value) => updateFormValue("customerName", value)}
+                autoComplete="name"
               />
               <Field
                 label={locale === "bn" ? "ফোন" : "Phone"}
                 value={formState.phone}
                 onChange={(value) => updateFormValue("phone", value)}
+                autoComplete="tel"
+                inputMode="tel"
+                type="tel"
               />
               <Field
                 label={locale === "bn" ? "ইমেইল" : "Email"}
                 value={formState.email}
                 onChange={(value) => updateFormValue("email", value)}
+                autoComplete="email"
+                inputMode="email"
+                type="email"
               />
               <Field
                 label={locale === "bn" ? "পোস্ট কোড" : "Postal code"}
                 value={formState.postalCode}
                 onChange={(value) => updateFormValue("postalCode", value)}
+                autoComplete="postal-code"
+                inputMode="numeric"
               />
               <div className="md:col-span-2">
                 <Field
                   label={locale === "bn" ? "ঠিকানা" : "Address"}
                   value={formState.addressLine1}
                   onChange={(value) => updateFormValue("addressLine1", value)}
+                  autoComplete="address-line1"
                 />
               </div>
               <div className="md:col-span-2">
@@ -462,12 +675,14 @@ export function CheckoutPageClient({
                   label={locale === "bn" ? "অতিরিক্ত ঠিকানা" : "Address line 2"}
                   value={formState.addressLine2}
                   onChange={(value) => updateFormValue("addressLine2", value)}
+                  autoComplete="address-line2"
                 />
               </div>
               <Field
                 label={locale === "bn" ? "শহর" : "City"}
                 value={formState.city}
                 onChange={(value) => updateFormValue("city", value)}
+                autoComplete="address-level2"
               />
               <div className="space-y-2 md:col-span-2">
                 <Label htmlFor="notes">
@@ -832,15 +1047,30 @@ function Field({
   label,
   value,
   onChange,
+  autoComplete,
+  inputMode,
+  type = "text",
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
+  autoComplete?: string;
+  inputMode?: HTMLAttributes<HTMLInputElement>["inputMode"];
+  type?: HTMLInputTypeAttribute;
 }) {
+  const inputId = useId();
+
   return (
     <div className="space-y-2">
-      <Label>{label}</Label>
-      <Input value={value} onChange={(event) => onChange(event.target.value)} />
+      <Label htmlFor={inputId}>{label}</Label>
+      <Input
+        id={inputId}
+        type={type}
+        value={value}
+        autoComplete={autoComplete}
+        inputMode={inputMode}
+        onChange={(event) => onChange(event.target.value)}
+      />
     </div>
   );
 }

@@ -8,12 +8,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Added a shared Motion-based marketing animation layer for the CMS-rendered pages, so About, Contact, and the richer support/privacy pages now pick up scroll reveal and restrained hover polish without changing the storefront layout structure
+- Added localized editor guidance for the core marketing/support CMS pages, so `/dashboard/pages/[id]` now shows page-specific editing summaries and tips for About, Contact, Support Center, Payment, Shipping, FAQ, Privacy Policy, and Terms & Conditions
+- Added richer default CMS sections for the public About, Contact, Support Center, Payment, Shipping, Privacy Policy, FAQ, and Terms & Conditions pages, including story, feature-grid, and contact-card blocks that give those routes more professional content out of the box
+- Added a local Playwright Chromium bundle under `F:\DevCaches\ms-playwright` for browser-based verification without depending on the blocked WindowsApps Codex runtime path
 - Added ImageCardImage component to image-card.tsx with Next.js Image optimization, lazy loading, and hover scale effects for consistent image handling across cards
 - Added Unsplash people image support to testimonials with fallback to Avatar component when no image is provided
 - Added responsive grid layout to marketing footer with sm:grid-cols-2 lg:grid-cols-4 for better mobile/tablet breakpoints
 - Added responsive payment partners grid layout with grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 for better logo distribution across screen sizes
 
 ### Changed
+- Changed the desktop storefront sub-header dropdowns to escape the category rail correctly by making the non-viewport navigation-menu content overflow visible and raising the rail stacking context above the marketing pages
+- Changed the storefront and dashboard dark-mode contrast tuning so muted/support text, compact nav labels, tab triggers, and avatar fallback surfaces remain readable against the current dark palette
+- Changed the active catalog product cards to use a brighter theme-derived dark-mode price treatment, fixing the low-contrast price text in the storefront catalog
+- Changed the logged-in storefront and dashboard avatar fallbacks to use explicit dark-mode foreground/background classes instead of inheriting a too-dark primary text treatment
+- Changed the active storefront and dashboard brand text to use the JetBrains Mono-based logo font treatment, replacing the earlier cursive experiment while keeping the same branding surfaces
+- Changed the desktop marketing taxonomy rail to stay on a single row by capping the visible category count and moving overflow groups into a `More` navigation menu with their subcategories
+- Changed the CMS-rendered hero/story/feature/contact sections to use animated reveal and hover-safe theme surfaces, improving the About/Contact/support page feel in both light and dark mode
+- Changed the section renderer so marketing `story`, `feature-grid`, and `contact-cards` blocks now respect section-level content and configured column counts instead of being silently overridden by page fallbacks or fixed grid assumptions
+- Changed the page editor helper copy to clarify the relationship between page-level cover media and section-level hero/story images, reducing confusion when admins update marketing page imagery from the dashboard
 - Fixed marketing homepage padding issues by updating container padding from `px-4` to responsive `px-4 sm:px-6 md:px-8` across all marketing sections (Featured Categories, Top Sellers, Special Offers, Product Shelf, Brands, Hero)
 - Fixed carousel navigation button positioning in home-category-strip.tsx with responsive spacing (left-2 sm:left-4 md:left-6) to prevent buttons from being too close to content edges
 - Added a denser default storefront taxonomy bundle with nine ecommerce-style categories and at least five dashboard-manageable subcategories per category, so the navigation/header/homepage have a richer fallback catalog even before admins customize anything
@@ -81,6 +94,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added dynamic title fetching to PageBreadcrumb component - now detects ID segments and fetches entity names from database
 
 ### Changed
+- Changed the marketing header brand text to use a dedicated cursive wordmark font utility so the storefront name reads more like a logo without introducing a hardcoded external font dependency
+- Changed the Roshal site-settings schema bootstrapper to inspect nested libsql error causes, so repeated `delivery_zones_json` migration attempts no longer break checkout order creation after the column already exists
 - Changed the desktop storefront sub-header to use tighter `rounded-sm` shadcn navigation-menu surfaces, allow category wrapping, and open wider subcategory panels so the expanded taxonomy remains readable without overflow
 - Changed the active image-first product cards and homepage shelf cards to keep the flush top media while moving the copy, pricing, and footer actions onto a cleaner left-aligned content rhythm instead of the previous over-centered layout
 - Changed the desktop storefront sub-header to use shadcn `NavigationMenu` category triggers with vertical subcategory dropdown items instead of the previous flat link rail

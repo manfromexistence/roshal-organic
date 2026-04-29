@@ -189,6 +189,489 @@ export const defaultRoshalExtendedPages: RoshalMarketingPage[] = [
   },
 ];
 
+const defaultRoshalExtendedPageEnhancements: RoshalMarketingSection[] = [
+  {
+    id: "section-support-center-resolution-flow",
+    pageId: "page-support-center",
+    sectionKey: "support-resolution-flow",
+    type: "feature-grid",
+    sortOrder: 2,
+    layout: "grid",
+    variant: "default",
+    isEnabled: true,
+    eyebrow: localizedValue("রেজোলিউশন ফ্লো", "Resolution flow"),
+    title: localizedValue(
+      "সাপোর্ট রিকোয়েস্ট কীভাবে সমাধান হয়",
+      "How a support request gets resolved",
+    ),
+    body: localizedValue(
+      "গ্রাহক যেন বুঝতে পারেন একটি support issue submit করার পর কী কী ধাপ হয়।",
+      "Show customers exactly what happens after they submit a support issue.",
+    ),
+    ctaLabel: localizedValue("Contact page", "Contact page"),
+    ctaHref: "/contact",
+    imageUrl: "",
+    items: [
+      {
+        title: localizedValue("১. issue record", "1. Issue recorded"),
+        body: localizedValue(
+          "অর্ডার নম্বর, সমস্যা, payment proof বা receiving note সংগ্রহ করা হয়।",
+          "The order number, issue summary, payment proof, or receiving note is collected first.",
+        ),
+      },
+      {
+        title: localizedValue("২. টিম রিভিউ", "2. Team review"),
+        body: localizedValue(
+          "support, payment review বা delivery coordination – যে টিম দরকার তারা case দেখে।",
+          "Support, payment review, or delivery coordination teams review the case together when needed.",
+        ),
+      },
+      {
+        title: localizedValue("৩. সমাধান বা আপডেট", "3. Resolution or update"),
+        body: localizedValue(
+          "গ্রাহককে next step, replacement, refund, cancellation বা tracking update জানানো হয়।",
+          "The customer receives the next step, replacement, refund, cancellation, or tracking update.",
+        ),
+      },
+    ],
+    styles: {
+      columns: "3",
+    },
+  },
+  {
+    id: "section-support-center-service-story",
+    pageId: "page-support-center",
+    sectionKey: "support-service-story",
+    type: "story",
+    sortOrder: 0,
+    layout: "split",
+    variant: "muted",
+    isEnabled: true,
+    eyebrow: localizedValue("গ্রাহকসেবা", "Customer care"),
+    title: localizedValue(
+      "একটি জায়গা থেকে order, payment, delivery এবং returns coordination",
+      "One support surface for orders, payments, delivery, and returns",
+    ),
+    body: localizedValue(
+      "Roshal Organic support experience এমনভাবে সাজানো যে checkout-এর পরে customer journey ভেঙে না গিয়ে একটানা থাকে। তাই অর্ডার স্ট্যাটাস, wallet proof review, delivery follow-up এবং return discussion আলাদা আলাদা টিমে আটকে না থেকে একটি coordinated flow-তে কাজ করে।",
+      "The Roshal Organic support experience is designed so the post-checkout journey stays continuous. Order status, wallet-proof review, delivery follow-up, and return discussions are coordinated instead of feeling split across disconnected teams.",
+    ),
+    ctaLabel: localizedValue("Order Tracking", "Order Tracking"),
+    ctaHref: "/orders",
+    imageUrl: "/healthy-food.jpg",
+    items: [],
+    styles: {
+      emphasis: "editorial",
+    },
+  },
+  {
+    id: "section-faq-escalation-routes",
+    pageId: "page-faq",
+    sectionKey: "faq-escalation-routes",
+    type: "contact-cards",
+    sortOrder: 1,
+    layout: "grid",
+    variant: "muted",
+    isEnabled: true,
+    eyebrow: localizedValue("পরবর্তী ধাপ", "Still need help?"),
+    title: localizedValue(
+      "উত্তর না পেলে যে রাস্তাগুলো ব্যবহার করবেন",
+      "Where to go when the FAQ is not enough",
+    ),
+    body: localizedValue(
+      "self-service page-এর পরে support escalation path স্পষ্ট রাখুন।",
+      "Keep the escalation path clear after the self-service guidance ends.",
+    ),
+    ctaLabel: localizedValue("Support Center", "Support Center"),
+    ctaHref: "/support-center",
+    imageUrl: "",
+    items: [
+      {
+        label: localizedValue("Payment", "Payment"),
+        title: localizedValue("Payment Guide", "Payment Guide"),
+        body: localizedValue(
+          "wallet proof, transaction ID, admin verification বা gateway flow বুঝতে।",
+          "For wallet proof, transaction ID, admin verification, or gateway guidance.",
+        ),
+        href: "/payment",
+      },
+      {
+        label: localizedValue("Shipping", "Shipping"),
+        title: localizedValue("Shipping & Delivery", "Shipping & Delivery"),
+        body: localizedValue(
+          "delivery fee, location coverage, dispatch timing বা receiving note-এর জন্য।",
+          "For delivery fees, coverage, dispatch timing, or receiving guidance.",
+        ),
+        href: "/shipping",
+      },
+      {
+        label: localizedValue("Returns", "Returns"),
+        title: localizedValue("Happy Return", "Happy Return"),
+        body: localizedValue(
+          "damaged, wrong, incomplete বা mismatched item issue-এর জন্য।",
+          "For damaged, wrong, incomplete, or mismatched item cases.",
+        ),
+        href: "/happy-return",
+      },
+      {
+        label: localizedValue("Live Support", "Live Support"),
+        title: localizedValue("Contact Us", "Contact Us"),
+        body: localizedValue(
+          "যদি issue order-specific হয়, phone/WhatsApp/email route ব্যবহার করুন।",
+          "Use phone, WhatsApp, or email when the issue is specific to a live order.",
+        ),
+        href: "/contact",
+      },
+    ],
+    styles: {
+      columns: "2",
+    },
+  },
+  {
+    id: "section-payment-proof-checklist",
+    pageId: "page-payment",
+    sectionKey: "payment-proof-checklist",
+    type: "contact-cards",
+    sortOrder: 1,
+    layout: "grid",
+    variant: "soft",
+    isEnabled: true,
+    eyebrow: localizedValue("ম্যানুয়াল ভেরিফিকেশন", "Manual verification"),
+    title: localizedValue(
+      "wallet payment দিলে কী কী প্রস্তুত রাখবেন",
+      "What to keep ready for wallet-payment verification",
+    ),
+    body: localizedValue(
+      "bKash, Nagad বা Rocket payment-এর ক্ষেত্রে admin review দ্রুত করতে প্রয়োজনীয় তথ্যগুলো আলাদা করে দেখান।",
+      "Show the exact details customers should keep ready for faster admin review on bKash, Nagad, or Rocket payments.",
+    ),
+    ctaLabel: localizedValue("Checkout", "Checkout"),
+    ctaHref: "/checkout",
+    imageUrl: "",
+    items: [
+      {
+        label: localizedValue("Transaction ID", "Transaction ID"),
+        title: localizedValue("Reference required", "Reference required"),
+        body: localizedValue(
+          "লেনদেনের unique transaction ID বা reference number দিন।",
+          "Provide the unique transaction ID or wallet reference number.",
+        ),
+      },
+      {
+        label: localizedValue("Sender number", "Sender number"),
+        title: localizedValue("Used wallet number", "Used wallet number"),
+        body: localizedValue(
+          "যে নম্বর থেকে payment করা হয়েছে সেটি পরিষ্কারভাবে লিখুন।",
+          "Share the number from which the payment was sent.",
+        ),
+      },
+      {
+        label: localizedValue("Screenshot", "Screenshot"),
+        title: localizedValue("Payment proof", "Payment proof"),
+        body: localizedValue(
+          "confirmation screen বা transaction history screenshot আপলোড করুন।",
+          "Upload the confirmation screen or a screenshot from the transaction history.",
+        ),
+      },
+      {
+        label: localizedValue("Order number", "Order number"),
+        title: localizedValue("Match the order", "Match the order"),
+        body: localizedValue(
+          "payment proof যেন সঠিক order-এর সঙ্গে review করা যায় সেই তথ্য দিন।",
+          "Include enough detail so the proof can be matched to the correct order.",
+        ),
+      },
+    ],
+    styles: {
+      columns: "2",
+    },
+  },
+  {
+    id: "section-payment-review-steps",
+    pageId: "page-payment",
+    sectionKey: "payment-review-steps",
+    type: "feature-grid",
+    sortOrder: 2,
+    layout: "grid",
+    variant: "default",
+    isEnabled: true,
+    eyebrow: localizedValue("রিভিউ ধাপ", "Review steps"),
+    title: localizedValue(
+      "ম্যানুয়াল payment submit করার পর কী হয়",
+      "What happens after a manual payment is submitted",
+    ),
+    body: localizedValue(
+      "checkout experience-এর পরে verification flow স্পষ্ট করে দিন।",
+      "Clarify the verification flow that begins right after checkout.",
+    ),
+    ctaLabel: localizedValue("Support Center", "Support Center"),
+    ctaHref: "/support-center",
+    imageUrl: "",
+    items: [
+      {
+        title: localizedValue("অর্ডার তৈরি", "Order created"),
+        body: localizedValue(
+          "customer order submit করলে payment-review status-এ order সংরক্ষণ হয়।",
+          "After checkout, the order is saved in payment-review status.",
+        ),
+      },
+      {
+        title: localizedValue("অ্যাডমিন যাচাই", "Admin verification"),
+        body: localizedValue(
+          "dashboard থেকে proof, sender number, amount এবং order data মিলিয়ে দেখা হয়।",
+          "The admin reviews the proof, sender number, amount, and order details from the dashboard.",
+        ),
+      },
+      {
+        title: localizedValue("কনফার্মেশন", "Confirmation"),
+        body: localizedValue(
+          "যাচাই শেষ হলে order paid বা processing অবস্থায় এগোয়।",
+          "Once verified, the order moves forward as paid or processing.",
+        ),
+      },
+    ],
+    styles: {
+      columns: "3",
+    },
+  },
+  {
+    id: "section-shipping-zone-overview",
+    pageId: "page-shipping",
+    sectionKey: "shipping-zone-overview",
+    type: "contact-cards",
+    sortOrder: 1,
+    layout: "grid",
+    variant: "soft",
+    isEnabled: true,
+    eyebrow: localizedValue("ডেলিভারি জোন", "Delivery zones"),
+    title: localizedValue(
+      "লোকেশনভিত্তিক ডেলিভারি চার্জ",
+      "Location-based delivery fees",
+    ),
+    body: localizedValue(
+      "ড্যাশবোর্ড থেকে zone update করা যায়, তাই এখানে client-facing summary দেখান।",
+      "These zones are dashboard-managed, so use this page to show the client-facing summary.",
+    ),
+    ctaLabel: localizedValue("Checkout", "Checkout"),
+    ctaHref: "/checkout",
+    imageUrl: "",
+    items: [
+      {
+        label: localizedValue("Inside Dhaka", "Inside Dhaka"),
+        title: localizedValue("ঢাকার ভেতরে", "Within Dhaka"),
+        value: "BDT 60",
+        body: localizedValue(
+          "শহরের ভেতরের delivery-এর জন্য দ্রুততম standard charge।",
+          "The standard fee for the fastest inner-city delivery zone.",
+        ),
+      },
+      {
+        label: localizedValue("Nearby Districts", "Nearby Districts"),
+        title: localizedValue("আশেপাশের জেলা", "Nearby districts"),
+        value: "BDT 100",
+        body: localizedValue(
+          "Gazipur, Narayanganj, Savar বা কাছাকাছি coverage-এর জন্য।",
+          "For Gazipur, Narayanganj, Savar, and nearby district coverage.",
+        ),
+      },
+      {
+        label: localizedValue("Nationwide", "Nationwide"),
+        title: localizedValue("সারা বাংলাদেশ", "Nationwide"),
+        value: "BDT 130",
+        body: localizedValue(
+          "বাকী দেশের delivery request-এর জন্য default nationwide fee।",
+          "The default nationwide fee for delivery requests across the country.",
+        ),
+      },
+    ],
+    styles: {
+      columns: "3",
+    },
+  },
+  {
+    id: "section-shipping-process-story",
+    pageId: "page-shipping",
+    sectionKey: "shipping-process-story",
+    type: "story",
+    sortOrder: 0,
+    layout: "split",
+    variant: "muted",
+    isEnabled: true,
+    eyebrow: localizedValue("ডিসপ্যাচ থেকে রিসিভ", "Dispatch to delivery"),
+    title: localizedValue(
+      "যাচাই, প্যাকেজিং এবং লোকেশন মিলিয়ে ডেলিভারি সমন্বয় করা হয়",
+      "Delivery is coordinated around verification, packaging, and location matching",
+    ),
+    body: localizedValue(
+      "Roshal Organic checkout-এর পরে address match, payment review, stock confirmation এবং delivery zone অনুযায়ী dispatch planning করে। এজন্য delivery timing location ও payment status-এর ওপর নির্ভর করে পরিবর্তিত হতে পারে।",
+      "After checkout, Roshal Organic coordinates address matching, payment review, stock confirmation, and dispatch planning based on the delivery zone. That means delivery timing can shift based on location and payment status.",
+    ),
+    ctaLabel: localizedValue("Track orders", "Track orders"),
+    ctaHref: "/orders",
+    imageUrl: "/packaging.jpg",
+    items: [],
+    styles: {
+      emphasis: "balanced",
+    },
+  },
+  {
+    id: "section-terms-responsibilities",
+    pageId: "page-terms-and-conditions",
+    sectionKey: "terms-responsibilities",
+    type: "feature-grid",
+    sortOrder: 1,
+    layout: "grid",
+    variant: "muted",
+    isEnabled: true,
+    eyebrow: localizedValue("ব্যবহারের নিয়ম", "Usage responsibilities"),
+    title: localizedValue(
+      "গ্রাহক ও স্টোরফ্রন্ট ব্যবহারের মৌলিক দায়িত্ব",
+      "Core customer and storefront responsibilities",
+    ),
+    body: localizedValue(
+      "পলিসির পাশাপাশি সহজে পড়া যায় এমন responsibility blocks রাখুন।",
+      "Keep the policy readable by summarizing responsibilities in practical blocks.",
+    ),
+    ctaLabel: localizedValue("Privacy Policy", "Privacy Policy"),
+    ctaHref: "/privacy-policy",
+    imageUrl: "",
+    items: [
+      {
+        title: localizedValue("সঠিক তথ্য দিন", "Provide accurate details"),
+        body: localizedValue(
+          "customer name, phone, address এবং payment reference সঠিক হওয়া জরুরি।",
+          "Customer name, phone, address, and payment references should be accurate.",
+        ),
+      },
+      {
+        title: localizedValue("রিসিভের সময় যাচাই", "Check at delivery"),
+        body: localizedValue(
+          "পণ্য, quantity এবং packaging issue থাকলে ডেলিভারির সময়ই জানানো ভালো।",
+          "It is best to raise product, quantity, or packaging issues when receiving the order.",
+        ),
+      },
+      {
+        title: localizedValue("ওয়ালেট proof", "Wallet proof"),
+        body: localizedValue(
+          "ম্যানুয়াল wallet payment-এর ক্ষেত্রে screenshot ও transaction ID জমা দিতে হবে।",
+          "Manual wallet payments require a screenshot and transaction ID.",
+        ),
+      },
+      {
+        title: localizedValue("সাপোর্টের সঙ্গে সমন্বয়", "Coordinate with support"),
+        body: localizedValue(
+          "order-specific সমস্যা হলে dashboard status-এর পাশাপাশি support channel ব্যবহার করুন।",
+          "For order-specific issues, use support channels in addition to checking dashboard status.",
+        ),
+      },
+    ],
+    styles: {
+      columns: "2",
+    },
+  },
+  {
+    id: "section-privacy-rights",
+    pageId: "page-privacy-policy",
+    sectionKey: "privacy-rights",
+    type: "contact-cards",
+    sortOrder: 2,
+    layout: "grid",
+    variant: "soft",
+    isEnabled: true,
+    eyebrow: localizedValue("ডাটা-সংক্রান্ত অনুরোধ", "Data requests"),
+    title: localizedValue(
+      "তথ্য-সংক্রান্ত বিষয়ে কোথায় যোগাযোগ করবেন",
+      "Where to send privacy-related requests",
+    ),
+    body: localizedValue(
+      "গ্রাহক যেন বুঝতে পারেন profile data, order record বা language preference বিষয়ে কাকে জানাতে হবে।",
+      "Make it clear where customers should reach out about profile data, order records, or language preferences.",
+    ),
+    ctaLabel: localizedValue("Contact page", "Contact page"),
+    ctaHref: "/contact",
+    imageUrl: "",
+    items: [
+      {
+        label: localizedValue("Profile updates", "Profile updates"),
+        title: localizedValue(
+          "Account and profile corrections",
+          "Account and profile corrections",
+        ),
+        body: localizedValue(
+          "নাম, ফোন, email বা address correction-এর জন্য support-এ যোগাযোগ করুন।",
+          "Contact support for name, phone, email, or address corrections.",
+        ),
+        href: "/contact",
+      },
+      {
+        label: localizedValue("Order records", "Order records"),
+        title: localizedValue(
+          "Order-history clarification",
+          "Order-history clarification",
+        ),
+        body: localizedValue(
+          "পূর্বের order record, payment note বা delivery issue-র বিষয়ে প্রশ্ন থাকলে support team দেখবে।",
+          "The support team can help with past order records, payment notes, or delivery issues.",
+        ),
+        href: "/support-center",
+      },
+      {
+        label: localizedValue("Language preference", "Language preference"),
+        title: localizedValue(
+          "Bangla / English experience",
+          "Bangla / English experience",
+        ),
+        body: localizedValue(
+          "স্টোরফ্রন্ট ভাষা বা communication preference-এর feedback-ও নেওয়া হয়।",
+          "Feedback about storefront language and communication preference is also accepted.",
+        ),
+        href: "/contact",
+      },
+      {
+        label: localizedValue("Support email", "Support email"),
+        title: localizedValue(
+          "info@roshalorganic.com",
+          "info@roshalorganic.com",
+        ),
+        body: localizedValue(
+          "গোপনীয়তা বা data-related request লিখিতভাবে পাঠাতে চাইলে email ব্যবহার করুন।",
+          "Use email for written privacy or data-related requests.",
+        ),
+        href: "mailto:info@roshalorganic.com",
+      },
+    ],
+    styles: {
+      columns: "2",
+    },
+  },
+  {
+    id: "section-privacy-security-story",
+    pageId: "page-privacy-policy",
+    sectionKey: "privacy-security-story",
+    type: "story",
+    sortOrder: 0,
+    layout: "split",
+    variant: "muted",
+    isEnabled: true,
+    eyebrow: localizedValue("সুরক্ষা প্রতিশ্রুতি", "Security commitment"),
+    title: localizedValue(
+      "অর্ডার ও payment-related তথ্যকে সীমিত ব্যবহার ও সুরক্ষার মধ্যে রাখা হয়",
+      "Order and payment-related data is kept within a limited and protected workflow",
+    ),
+    body: localizedValue(
+      "Roshal Organic storefront, checkout এবং admin review flow-এ শুধু প্রয়োজনীয় order, address, payment reference এবং support history ব্যবহার করা হয়। manual verification proof কেবল order confirmation বা dispute resolution-এর প্রয়োজনেই দেখা হয়।",
+      "Across the storefront, checkout, and admin-review flow, Roshal Organic uses only the order, address, payment reference, and support history needed to complete the purchase. Manual-verification proof is reviewed only for order confirmation or dispute resolution.",
+    ),
+    ctaLabel: localizedValue("Support Center", "Support Center"),
+    ctaHref: "/support-center",
+    imageUrl: "/packaging.jpg",
+    items: [],
+    styles: {
+      emphasis: "editorial",
+    },
+  },
+];
+
 export const defaultRoshalExtendedSections: RoshalMarketingSection[] = [
   {
     id: "section-home-brands",
@@ -394,7 +877,7 @@ export const defaultRoshalExtendedSections: RoshalMarketingSection[] = [
     pageId: "page-support-center",
     sectionKey: "support-topics",
     type: "feature-grid",
-    sortOrder: 0,
+    sortOrder: 1,
     layout: "grid",
     variant: "default",
     isEnabled: true,
@@ -446,7 +929,7 @@ export const defaultRoshalExtendedSections: RoshalMarketingSection[] = [
     pageId: "page-support-center",
     sectionKey: "support-contact-cards",
     type: "contact-cards",
-    sortOrder: 1,
+    sortOrder: 3,
     layout: "grid",
     variant: "muted",
     isEnabled: true,
@@ -683,7 +1166,7 @@ export const defaultRoshalExtendedSections: RoshalMarketingSection[] = [
     pageId: "page-shipping",
     sectionKey: "shipping-guide",
     type: "feature-grid",
-    sortOrder: 0,
+    sortOrder: 2,
     layout: "grid",
     variant: "default",
     isEnabled: true,
@@ -976,7 +1459,7 @@ export const defaultRoshalExtendedSections: RoshalMarketingSection[] = [
     pageId: "page-privacy-policy",
     sectionKey: "privacy-guide",
     type: "feature-grid",
-    sortOrder: 0,
+    sortOrder: 1,
     layout: "grid",
     variant: "default",
     isEnabled: true,
@@ -1126,4 +1609,5 @@ export const defaultRoshalExtendedSections: RoshalMarketingSection[] = [
       columns: "3",
     },
   },
+  ...defaultRoshalExtendedPageEnhancements,
 ];

@@ -101,7 +101,7 @@ function AvatarDropdown({
           className="h-8 w-8 rounded-full p-0"
         >
           <Avatar className="h-8 w-8 cursor-pointer transition-opacity hover:opacity-80">
-            <AvatarFallback className="bg-primary/10 font-medium text-primary">
+            <AvatarFallback className="themed-avatar-fallback border border-border/60 bg-primary/10 font-medium text-primary dark:border-border/70 dark:bg-[color:color-mix(in_oklch,var(--card)_58%,var(--primary)_42%)] dark:text-foreground">
               {fallback}
             </AvatarFallback>
           </Avatar>
@@ -115,7 +115,7 @@ function AvatarDropdown({
         <DropdownMenuLabel className="p-0 font-normal">
           <div className="flex items-center gap-2 px-1 py-1.5">
             <Avatar className="h-8 w-8">
-              <AvatarFallback className="bg-primary/10 font-medium text-primary">
+              <AvatarFallback className="themed-avatar-fallback border border-border/60 bg-primary/10 font-medium text-primary dark:border-border/70 dark:bg-[color:color-mix(in_oklch,var(--card)_58%,var(--primary)_42%)] dark:text-foreground">
                 {fallback}
               </AvatarFallback>
             </Avatar>

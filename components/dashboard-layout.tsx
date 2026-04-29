@@ -96,7 +96,7 @@ export function DashboardLayout({
           }
         }
       />
-      <SidebarInset className="relative flex h-svh min-h-0 flex-col overflow-hidden">
+      <SidebarInset className="dashboard-admin-surface relative flex h-svh min-h-0 flex-col overflow-hidden">
         <SiteHeader user={user} />
         <ScrollArea
           type="always"

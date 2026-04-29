@@ -601,24 +601,22 @@ export default async function LandingPage() {
 
       <section className="bg-background py-12 md:py-16">
         <div className="container mx-auto space-y-8 px-4 sm:px-6 md:px-8">
-          <ScrollReveal>
-            <div className="space-y-3 text-center">
-              <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
-                {getLocalizedValue(
-                  language,
-                  sectionTitle(
-                    categoriesSection,
-                    localizedValue("বিশেষ ক্যাটাগরি", "Featured Categories"),
-                  ),
-                )}
-              </h2>
-              {categoriesDescription ? (
-                <p className="mx-auto max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
-                  {getLocalizedValue(language, categoriesDescription)}
-                </p>
-              ) : null}
-            </div>
-          </ScrollReveal>
+          <div className="space-y-3 text-center">
+            <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
+              {getLocalizedValue(
+                language,
+                sectionTitle(
+                  categoriesSection,
+                  localizedValue("বিশেষ ক্যাটাগরি", "Featured Categories"),
+                ),
+              )}
+            </h2>
+            {categoriesDescription ? (
+              <p className="mx-auto max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
+                {getLocalizedValue(language, categoriesDescription)}
+              </p>
+            ) : null}
+          </div>
 
           <HomeCategoryStrip categories={categories} language={language} />
         </div>

@@ -35,6 +35,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Sheet,
   SheetContent,
@@ -42,7 +43,6 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { authClient } from "@/lib/auth-client";
 import { getLocalizedValue } from "@/lib/store-locale";
 import type { StorefrontTaxonomyGroup } from "@/lib/store-taxonomy";
@@ -113,6 +113,11 @@ export function StorefrontHeader({
   ];
   const activeCategory = searchParams.get("category") || "all";
   const activeSubcategory = searchParams.get("subcategory") || "all";
+  const visibleDesktopTaxonomy = taxonomy.slice(0, 6);
+  const overflowDesktopTaxonomy = taxonomy.slice(6);
+  const overflowCategoryKeys = new Set(
+    overflowDesktopTaxonomy.map((group) => group.key),
+  );
 
   useEffect(() => {
     setIsHydrated(true);
@@ -175,7 +180,7 @@ export function StorefrontHeader({
               />
             </div>
             <div className="hidden min-w-0 sm:block">
-              <span className="block truncate text-lg font-bold text-foreground">
+              <span className="font-wordmark block truncate text-[1.45rem] text-foreground sm:text-[1.55rem]">
                 {siteSettings.brandName}
               </span>
             </div>
@@ -230,8 +235,8 @@ export function StorefrontHeader({
                 className="h-auto flex-col gap-1 rounded-xl px-3 py-2 text-xs"
               >
                 <Link href="/profile">
-                  <Avatar className="size-6">
-                    <AvatarFallback className="bg-primary/10 text-primary">
+                  <Avatar className="size-6 ring-1 ring-border/70">
+                    <AvatarFallback className="themed-avatar-fallback border border-border/60 bg-primary/10 text-primary dark:border-border/70 dark:bg-[color:color-mix(in_oklch,var(--card)_58%,var(--primary)_42%)] dark:text-foreground">
                       {sessionUser.name.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
@@ -407,14 +412,17 @@ export function StorefrontHeader({
         </div>
       </div>
 
-      <div className="hidden sticky top-[4.5rem] border-b border-border/50 bg-primary text-primary-foreground lg:block z-40">
+      <div className="sticky top-[4.5rem] z-[55] hidden overflow-visible border-b border-border/50 bg-primary text-primary-foreground lg:block">
         <div className="container mx-auto px-4">
-          <NavigationMenu viewport={false} className="max-w-none justify-start">
-            <NavigationMenuList className="w-full flex-wrap justify-start gap-1.5 py-2">
-              {taxonomy.map((group) => {
+          <NavigationMenu
+            viewport={false}
+            className="max-w-none justify-start overflow-visible"
+          >
+            <NavigationMenuList className="w-full flex-nowrap justify-start gap-1.5 overflow-visible py-2">
+              {visibleDesktopTaxonomy.map((group) => {
                 if (group.children.length === 0) {
                   return (
-                    <NavigationMenuItem key={group.key}>
+                    <NavigationMenuItem key={group.key} className="shrink-0">
                       <NavigationMenuLink
                         asChild
                         active={
@@ -422,7 +430,7 @@ export function StorefrontHeader({
                           activeCategory === group.key &&
                           activeSubcategory === "all"
                         }
-                        className="rounded-sm bg-transparent px-3 py-2 text-sm font-medium text-primary-foreground/90 hover:bg-primary-foreground/10 hover:text-primary-foreground focus:bg-primary-foreground/10 focus:text-primary-foreground data-[active=true]:bg-primary-foreground/14 data-[active=true]:text-primary-foreground"
+                        className="rounded-sm bg-transparent px-3 py-2 text-sm font-medium whitespace-nowrap text-primary-foreground/90 hover:bg-primary-foreground/12 hover:text-primary-foreground focus:bg-primary-foreground/12 focus:text-primary-foreground data-[active=true]:bg-primary-foreground/16 data-[active=true]:text-primary-foreground"
                       >
                         <Link href={group.href}>
                           {getLocalizedValue(locale, group.label)}
@@ -432,15 +440,14 @@ export function StorefrontHeader({
                   );
                 }
 
-                const triggerActive =
-                  pathname === "/products" && activeCategory === group.key;
+                const triggerActive = pathname === "/products" && activeCategory === group.key;
 
                 return (
-                  <NavigationMenuItem key={group.key}>
-                    <NavigationMenuTrigger className="h-10 rounded-sm bg-transparent px-3 text-sm font-medium text-primary-foreground/90 hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground">
+                  <NavigationMenuItem key={group.key} className="shrink-0">
+                    <NavigationMenuTrigger className="h-10 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-primary-foreground/90 hover:bg-primary-foreground/12 hover:text-primary-foreground focus:bg-primary-foreground/12 focus:text-foreground data-[state=open]:bg-primary-foreground/16 data-[state=open]:text-foreground">
                       {getLocalizedValue(locale, group.label)}
                     </NavigationMenuTrigger>
-                    <NavigationMenuContent className="min-w-[22rem] rounded-sm border border-border/70 bg-background p-3 shadow-xl">
+                    <NavigationMenuContent className="min-w-[26rem] rounded-sm border border-border/70 bg-background p-3 shadow-xl">
                       <div className="grid gap-1">
                         {group.children.map((child) => (
                           <NavigationMenuLink
@@ -451,7 +458,7 @@ export function StorefrontHeader({
                               activeCategory === group.key &&
                               activeSubcategory === child.key
                             }
-                            className="rounded-sm px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-muted/45 hover:text-primary data-[active=true]:bg-primary/10 data-[active=true]:text-primary"
+                            className="hover: rounded-sm px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-muted hover:text-muted-foreground data-[active=true]:bg-primary/10 data-[active=true]:text-primary"
                           >
                             <Link href={child.href}>
                               {getLocalizedValue(locale, child.label)}
@@ -466,6 +473,56 @@ export function StorefrontHeader({
                   </NavigationMenuItem>
                 );
               })}
+
+              {overflowDesktopTaxonomy.length > 0 ? (
+                <NavigationMenuItem className="shrink-0">
+                  <NavigationMenuTrigger
+                    className={`h-10 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap ${
+                      pathname === "/products" &&
+                      overflowCategoryKeys.has(activeCategory)
+                        ? "bg-primary-foreground/16 text-primary-foreground"
+                        : "text-primary-foreground/90 hover:bg-primary-foreground/12 hover:text-primary-foreground focus:bg-primary-foreground/12 focus:text-primary-foreground data-[state=open]:bg-primary-foreground/16 data-[state=open]:text-primary-foreground"
+                    }`}
+                  >
+                    {locale === "bn" ? "আরও" : "More"}
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent className="min-w-[34rem] max-w-[calc(100vw-8rem)] rounded-sm border border-border/70 bg-background p-4 shadow-xl">
+                    <div className="grid gap-4 md:grid-cols-2">
+                      {overflowDesktopTaxonomy.map((group) => (
+                        <div
+                          key={group.key}
+                          className="rounded-sm border border-border/60 bg-muted/20 p-3"
+                        >
+                          <Link
+                            href={group.href}
+                            className="block text-sm font-semibold text-foreground transition-colors hover:text-primary"
+                          >
+                            {getLocalizedValue(locale, group.label)}
+                          </Link>
+                          <div className="mt-3 grid gap-1.5">
+                            {group.children.map((child) => (
+                              <NavigationMenuLink
+                                key={child.key}
+                                asChild
+                                active={
+                                  pathname === "/products" &&
+                                  activeCategory === group.key &&
+                                  activeSubcategory === child.key
+                                }
+                                className="rounded-sm px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-background hover:text-primary data-[active=true]:bg-primary/10 data-[active=true]:text-primary"
+                              >
+                                <Link href={child.href}>
+                                  {getLocalizedValue(locale, child.label)}
+                                </Link>
+                              </NavigationMenuLink>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+              ) : null}
             </NavigationMenuList>
           </NavigationMenu>
         </div>
@@ -485,126 +542,129 @@ export function StorefrontHeader({
           </SheetHeader>
           <ScrollArea className="h-full pr-4">
             <div className="space-y-6 pb-6">
-            <div className="flex items-center justify-between">
-              <span className="text-lg font-semibold">
-                {locale === "bn" ? "দ্রুত নেভিগেশন" : "Quick navigation"}
-              </span>
-              <LocaleSwitcher locale={locale} />
-            </div>
-
-            <div className="flex items-center justify-between rounded-2xl border border-border/60 bg-muted/30 p-4">
-              <StorefrontThemeToggle />
-              <div className="text-xs text-muted-foreground">
-                {locale === "bn" ? "থিম টগল করুন" : "Toggle theme"}
+              <div className="flex items-center justify-between">
+                <span className="text-lg font-semibold">
+                  {locale === "bn" ? "দ্রুত নেভিগেশন" : "Quick navigation"}
+                </span>
+                <LocaleSwitcher locale={locale} />
               </div>
-            </div>
 
-            <div className="grid gap-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`rounded-xl border px-4 py-3 text-sm font-medium transition-colors ${
-                    pathname === link.href
-                      ? "border-primary/40 bg-primary/10 text-primary"
-                      : "border-border/60 hover:bg-muted/40"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-
-            <div className="space-y-3">
-              {taxonomy.map((group) => (
-                <div
-                  key={group.key}
-                  className="rounded-2xl border border-border/60 bg-card p-4"
-                >
-                  <Link
-                    href={group.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block text-sm font-semibold text-foreground"
-                  >
-                    {getLocalizedValue(locale, group.label)}
-                  </Link>
-                  <div className="mt-3 grid gap-2">
-                    {group.children.map((child) => (
-                      <Link
-                        key={child.key}
-                        href={child.href}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="rounded-xl bg-muted/35 px-3 py-2 text-sm text-muted-foreground"
-                      >
-                        {getLocalizedValue(locale, child.label)}
-                      </Link>
-                    ))}
-                  </div>
+              <div className="flex items-center justify-between rounded-2xl border border-border/60 bg-muted/30 p-4">
+                <StorefrontThemeToggle />
+                <div className="text-xs text-muted-foreground">
+                  {locale === "bn" ? "থিম টগল করুন" : "Toggle theme"}
                 </div>
-              ))}
-            </div>
+              </div>
 
-            {sessionUser ? (
               <div className="grid gap-2">
-                <Button asChild variant="outline" className="justify-start">
+                {navLinks.map((link) => (
                   <Link
-                    href="/profile"
+                    key={link.href}
+                    href={link.href}
                     onClick={() => setMobileMenuOpen(false)}
+                    className={`rounded-xl border px-4 py-3 text-sm font-medium transition-colors ${
+                      pathname === link.href
+                        ? "border-primary/40 bg-primary/10 text-primary"
+                        : "border-border/60 hover:bg-muted/40"
+                    }`}
                   >
-                    {locale === "bn" ? "প্রোফাইল" : "Profile"}
+                    {link.label}
                   </Link>
-                </Button>
-                <Button asChild variant="outline" className="justify-start">
-                  <Link
-                    href="/favorites"
-                    onClick={() => setMobileMenuOpen(false)}
+                ))}
+              </div>
+
+              <div className="space-y-3">
+                {taxonomy.map((group) => (
+                  <div
+                    key={group.key}
+                    className="rounded-2xl border border-border/60 bg-card p-4"
                   >
-                    {locale === "bn" ? "পছন্দের তালিকা" : "Wishlist"}
-                  </Link>
-                </Button>
-                {sessionUser.role === "admin" ? (
-                  <Button asChild className="justify-start">
                     <Link
-                      href="/dashboard"
+                      href={group.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block text-sm font-semibold text-foreground"
+                    >
+                      {getLocalizedValue(locale, group.label)}
+                    </Link>
+                    <div className="mt-3 grid gap-2">
+                      {group.children.map((child) => (
+                        <Link
+                          key={child.key}
+                          href={child.href}
+                          onClick={() => setMobileMenuOpen(false)}
+                          className="rounded-xl bg-muted/35 px-3 py-2 text-sm text-muted-foreground"
+                        >
+                          {getLocalizedValue(locale, child.label)}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {sessionUser ? (
+                <div className="grid gap-2">
+                  <Button asChild variant="outline" className="justify-start">
+                    <Link
+                      href="/profile"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      {locale === "bn" ? "ড্যাশবোর্ড" : "Dashboard"}
+                      {locale === "bn" ? "প্রোফাইল" : "Profile"}
                     </Link>
                   </Button>
-                ) : null}
-                <Button
-                  variant="outline"
-                  onClick={handleLogout}
-                  disabled={isLoggingOut}
-                >
-                  {isLoggingOut
-                    ? locale === "bn"
-                      ? "লগআউট হচ্ছে..."
-                      : "Logging out..."
-                    : locale === "bn"
-                      ? "লগআউট"
-                      : "Logout"}
-                </Button>
-              </div>
-            ) : (
-              <div className="grid gap-2">
-                <Button asChild variant="outline">
-                  <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                    {locale === "bn" ? "লগইন" : "Login"}
-                  </Link>
-                </Button>
-                <Button asChild>
-                  <Link
-                    href="/login?mode=signup"
-                    onClick={() => setMobileMenuOpen(false)}
+                  <Button asChild variant="outline" className="justify-start">
+                    <Link
+                      href="/favorites"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {locale === "bn" ? "পছন্দের তালিকা" : "Wishlist"}
+                    </Link>
+                  </Button>
+                  {sessionUser.role === "admin" ? (
+                    <Button asChild className="justify-start">
+                      <Link
+                        href="/dashboard"
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        {locale === "bn" ? "ড্যাশবোর্ড" : "Dashboard"}
+                      </Link>
+                    </Button>
+                  ) : null}
+                  <Button
+                    variant="outline"
+                    onClick={handleLogout}
+                    disabled={isLoggingOut}
                   >
-                    {locale === "bn" ? "সাইন আপ" : "Sign Up"}
-                  </Link>
-                </Button>
-              </div>
-            )}
-          </div>
+                    {isLoggingOut
+                      ? locale === "bn"
+                        ? "লগআউট হচ্ছে..."
+                        : "Logging out..."
+                      : locale === "bn"
+                        ? "লগআউট"
+                        : "Logout"}
+                  </Button>
+                </div>
+              ) : (
+                <div className="grid gap-2">
+                  <Button asChild variant="outline">
+                    <Link
+                      href="/login"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {locale === "bn" ? "লগইন" : "Login"}
+                    </Link>
+                  </Button>
+                  <Button asChild>
+                    <Link
+                      href="/login?mode=signup"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {locale === "bn" ? "সাইন আপ" : "Sign Up"}
+                    </Link>
+                  </Button>
+                </div>
+              )}
+            </div>
           </ScrollArea>
         </SheetContent>
       </Sheet>

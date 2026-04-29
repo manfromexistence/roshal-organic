@@ -1,4 +1,8 @@
 import { saveRoshalCategory, saveRoshalSubcategory } from "@/actions/admin";
+import {
+  DashboardBarChartCard,
+  DashboardPieChartCard,
+} from "@/components/dashboard/dashboard-chart-card";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
 import { DashboardFormCheckboxGroup } from "@/components/dashboard/form-checkbox-group";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
@@ -65,6 +69,46 @@ export default async function DashboardCategoriesPage({
     resolvedSearchParams.key,
     resolvedSearchParams.subcategory,
   );
+  const enabledCategoryCount = taxonomy.categories.filter(
+    (category) => category.isEnabled,
+  ).length;
+  const visibleInNavigationCount = taxonomy.categories.filter(
+    (category) => category.showInNavigation && category.isEnabled,
+  ).length;
+  const visibleOnHomeCount = taxonomy.categories.filter(
+    (category) => category.showOnHomepage && category.isEnabled,
+  ).length;
+  const categoryVisibilityData = [
+    {
+      key: "nav",
+      label: locale === "bn" ? "নেভিগেশনে" : "In navigation",
+      value: visibleInNavigationCount,
+    },
+    {
+      key: "home",
+      label: locale === "bn" ? "হোমপেজে" : "On homepage",
+      value: visibleOnHomeCount,
+    },
+    {
+      key: "disabled",
+      label: locale === "bn" ? "বন্ধ" : "Disabled",
+      value: taxonomy.categories.length - enabledCategoryCount,
+    },
+  ];
+  const subcategoryDepthData = taxonomy.categories.map((category) => ({
+    key: category.key,
+    label: getLocalizedValue(locale, category.label),
+    value: taxonomy.subcategories.filter(
+      (subcategory) => subcategory.categoryId === category.id,
+    ).length,
+  }));
+  const productCoverageData = taxonomy.categories.map((category) => ({
+    key: category.key,
+    label: getLocalizedValue(locale, category.label),
+    value: products.filter((product) =>
+      productMatchesCategory(product, category),
+    ).length,
+  }));
 
   return (
     <div className="space-y-6 p-4 md:p-6">
@@ -132,6 +176,40 @@ export default async function DashboardCategoriesPage({
               ? "হোমপেজের ফিচার্ড ক্যাটাগরি স্ট্রিপে দেখানো আইটেম"
               : "Items currently surfaced in the homepage category strip"
           }
+        />
+      </div>
+
+      <div className="grid gap-6 xl:grid-cols-2">
+        <DashboardPieChartCard
+          title={locale === "bn" ? "ক্যাটাগরি ভিজিবিলিটি" : "Category visibility"}
+          description={
+            locale === "bn"
+              ? "স্টোরফ্রন্ট নেভিগেশন, হোমপেজ, এবং নিষ্ক্রিয় ক্যাটাগরির দ্রুত চিত্র।"
+              : "A quick read on navigation, homepage, and disabled category states."
+          }
+          totalLabel={locale === "bn" ? "ক্যাটাগরি" : "Categories"}
+          data={categoryVisibilityData}
+        />
+        <DashboardBarChartCard
+          title={locale === "bn" ? "সাবক্যাটাগরি গভীরতা" : "Subcategory depth"}
+          description={
+            locale === "bn"
+              ? "প্রতি ক্যাটাগরির নিচে কতগুলো সাবক্যাটাগরি আছে।"
+              : "How deep each category currently goes in the storefront taxonomy."
+          }
+          totalLabel={locale === "bn" ? "সাবক্যাটাগরি" : "Subcategories"}
+          data={subcategoryDepthData}
+        />
+        <DashboardBarChartCard
+          title={locale === "bn" ? "প্রোডাক্ট কভারেজ" : "Product coverage"}
+          description={
+            locale === "bn"
+              ? "কোন ক্যাটাগরিতে কতগুলো প্রোডাক্ট মিলে পড়ছে তা ট্র্যাক করুন।"
+              : "Track how many products currently resolve into each category."
+          }
+          totalLabel={locale === "bn" ? "প্রোডাক্ট" : "Products"}
+          data={productCoverageData}
+          className="xl:col-span-2"
         />
       </div>
 

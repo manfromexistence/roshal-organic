@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
   getRoshalHomeSectionGuide,
+  getRoshalMarketingPageGuide,
   roshalHomeSectionGuides,
 } from "@/lib/cms-guides";
 import { requireRoshalAdmin } from "@/lib/store-auth";
@@ -82,6 +83,7 @@ export default async function DashboardPageEditorRoute({
 
   const sections = await getRoshalSectionsForPage(page.id);
   const storefrontPath = storefrontPathFromSlug(page.slug);
+  const pageGuide = getRoshalMarketingPageGuide(page.slug);
   const errorMessage = getPageEditorErrorMessage(
     locale,
     resolvedSearchParams.error,
@@ -142,8 +144,8 @@ export default async function DashboardPageEditorRoute({
                 }
                 helperText={
                   locale === "bn"
-                    ? "এই ইমেজটি এই মার্কেটিং পেজের প্রাইমারি হিরো বা কভার হিসেবে ব্যবহার হবে।"
-                    : "This image powers the primary hero or cover for this marketing page."
+                    ? "hero/story সেকশন নিজের image দিলে সেটি আগে দেখানো হবে। না হলে এই page-level image fallback cover হিসেবে কাজ করবে।"
+                    : "Hero or story sections can override this with their own image. Otherwise, this page-level image is used as the fallback cover."
                 }
                 value={page.heroImage || ""}
               />
@@ -229,6 +231,31 @@ export default async function DashboardPageEditorRoute({
                 </p>
               </div>
             ))}
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {page.slug !== "home" && pageGuide ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              {getLocalizedGuideText(locale, pageGuide.label)}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm leading-6 text-muted-foreground">
+              {getLocalizedGuideText(locale, pageGuide.summary)}
+            </p>
+            <div className="grid gap-3 md:grid-cols-3">
+              {pageGuide.editingTips.map((tip, index) => (
+                <div
+                  key={`${pageGuide.slug}-tip-${index}`}
+                  className="rounded-md border border-border/70 bg-muted/20 p-4 text-sm leading-6 text-muted-foreground"
+                >
+                  {getLocalizedGuideText(locale, tip)}
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
       ) : null}
@@ -435,8 +462,8 @@ function SectionFields({
           label={locale === "bn" ? "সেকশন ইমেজ" : "Section image"}
           helperText={
             locale === "bn"
-              ? "hero, story বা ভিজ্যুয়াল কনটেন্ট সেকশনের জন্য ব্যবহার করুন।"
-              : "Use this for hero, story, or other visual sections."
+              ? "hero/story সেকশনে image থাকলে এটি page cover-কে override করবে। অন্যান্য ভিজ্যুয়াল সেকশনের জন্যও এটি ব্যবহার করুন।"
+              : "For hero or story sections, this image overrides the page cover. Use it for other visual sections as well."
           }
           value={defaults.imageUrl}
         />
@@ -519,6 +546,13 @@ function SectionFields({
       </div>
     </>
   );
+}
+
+function getLocalizedGuideText(
+  locale: "bn" | "en",
+  value: { bn: string; en: string },
+) {
+  return locale === "bn" ? value.bn : value.en;
 }
 
 function Field({

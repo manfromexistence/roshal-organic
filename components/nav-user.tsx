@@ -69,7 +69,7 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarFallback className="rounded-lg bg-primary/10 font-medium text-primary">
+                <AvatarFallback className="themed-avatar-fallback rounded-lg border border-border/60 bg-primary/10 font-medium text-primary dark:border-border/70 dark:bg-[color:color-mix(in_oklch,var(--card)_58%,var(--primary)_42%)] dark:text-foreground">
                   {fallback}
                 </AvatarFallback>
               </Avatar>
@@ -91,7 +91,7 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-3 px-2 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarFallback className="rounded-lg bg-primary/10 font-medium text-primary">
+                  <AvatarFallback className="themed-avatar-fallback rounded-lg border border-border/60 bg-primary/10 font-medium text-primary dark:border-border/70 dark:bg-[color:color-mix(in_oklch,var(--card)_58%,var(--primary)_42%)] dark:text-foreground">
                     {fallback}
                   </AvatarFallback>
                 </Avatar>

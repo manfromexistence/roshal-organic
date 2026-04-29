@@ -1,5 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
+import {
+  MarketingHoverSurface,
+  MarketingMediaSurface,
+  MarketingReveal,
+} from "@/components/storefront/marketing-motion";
 import { RoshalProductCard } from "@/components/storefront/product-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,6 +23,13 @@ const spacingMap: Record<string, string> = {
   compact: "py-10",
   comfortable: "py-16",
   spacious: "py-24",
+};
+
+const columnsMap: Record<string, string> = {
+  "2": "grid-cols-1 md:grid-cols-2",
+  "3": "grid-cols-1 md:grid-cols-2 xl:grid-cols-3",
+  "4": "grid-cols-1 sm:grid-cols-2 xl:grid-cols-4",
+  "5": "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5",
 };
 
 function parseLimit(value: string | undefined, fallback: number) {
@@ -51,6 +63,18 @@ function resolveLocalizedItemValue(
   value?: LocalizedValue | null,
 ) {
   return value ? getLocalizedValue(locale, value) : "";
+}
+
+function resolveSectionColumns(section: RoshalMarketingSection) {
+  if (section.styles.columns && columnsMap[section.styles.columns]) {
+    return columnsMap[section.styles.columns];
+  }
+
+  if (section.layout === "split") {
+    return columnsMap["2"];
+  }
+
+  return columnsMap["4"];
 }
 
 export function RoshalSectionRenderer({
@@ -120,13 +144,14 @@ function SectionContent({
   const pageTitle = page ? getLocalizedValue(locale, page.title) : "";
   const pageBody = page ? getLocalizedValue(locale, page.description) : "";
   const heroEyebrow = eyebrow || pageEyebrow;
-  const heroTitle = pageTitle || title;
-  const heroBody = pageBody || body;
-  const heroImage = page?.heroImage || section.imageUrl;
+  const heroTitle = title || pageTitle;
+  const heroBody = body || pageBody;
+  const heroImage = section.imageUrl || page?.heroImage;
+  const sectionColumns = resolveSectionColumns(section);
 
   if (section.type === "hero" || section.type === "story") {
     return (
-      <div
+      <MarketingReveal
         className={`grid items-center gap-8 rounded-[2rem] border border-border/60 bg-gradient-to-br from-background via-background to-muted/60 p-6 shadow-sm lg:p-10 ${
           siteSettings.heroLayout === "split"
             ? "lg:grid-cols-[1.1fr_0.9fr]"
@@ -135,7 +160,7 @@ function SectionContent({
       >
         <div className="space-y-5">
           {heroEyebrow ? (
-            <p className="text-xs uppercase tracking-[0.24em] text-primary">
+            <p className="text-xs uppercase tracking-[0.24em] text-primary dark:[color:color-mix(in_oklch,var(--foreground)_68%,var(--primary))]">
               {heroEyebrow}
             </p>
           ) : null}
@@ -146,13 +171,22 @@ function SectionContent({
             {heroBody}
           </p>
           <div className="flex flex-wrap gap-3">
-            <Button asChild size="lg">
+            <Button
+              asChild
+              size="lg"
+              className="transition-transform duration-200 hover:-translate-y-0.5"
+            >
               <Link href={section.ctaHref || siteSettings.primaryCtaHref}>
                 {ctaLabel ||
                   getLocalizedValue(locale, siteSettings.primaryCtaLabel)}
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg">
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              className="transition-colors duration-200 hover:border-primary/40 hover:bg-primary/5"
+            >
               <Link href="/contact">
                 {locale === "bn" ? "যোগাযোগ করুন" : "Contact us"}
               </Link>
@@ -160,7 +194,7 @@ function SectionContent({
           </div>
         </div>
         {heroImage ? (
-          <div className="relative min-h-80 overflow-hidden rounded-[1.5rem] border bg-muted">
+          <MarketingMediaSurface className="relative min-h-80 overflow-hidden rounded-[1.5rem] border bg-muted">
             <Image
               src={heroImage}
               alt={heroTitle}
@@ -170,9 +204,9 @@ function SectionContent({
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 45vw"
             />
-          </div>
+          </MarketingMediaSurface>
         ) : null}
-      </div>
+      </MarketingReveal>
     );
   }
 
@@ -180,62 +214,75 @@ function SectionContent({
     return (
       <div className="space-y-8">
         <SectionHeading eyebrow={eyebrow} title={title} body={body} />
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div className={`grid gap-4 ${sectionColumns}`}>
           {section.items.map((item, index) => {
             const itemTitle = resolveLocalizedItemValue(locale, item.title);
             const itemBody = resolveLocalizedItemValue(locale, item.body);
             const itemLabel = resolveLocalizedItemValue(locale, item.label);
 
             return (
-              <Card
+              <MarketingHoverSurface
                 key={`${section.id}-${index}`}
-                className="overflow-hidden border-border/60 bg-card/90"
+                delay={index * 0.04}
               >
-                {item.imageUrl ? (
-                  <div className="relative aspect-[4/3] overflow-hidden bg-muted">
-                    <Image
-                      src={item.imageUrl}
-                      alt={itemTitle || itemLabel || title}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 768px) 100vw, 25vw"
-                    />
-                  </div>
-                ) : null}
-                <CardContent className="space-y-3 p-6">
-                  {itemLabel ? (
-                    <Badge variant="secondary">{itemLabel}</Badge>
+                <Card className="overflow-hidden border-border/60 bg-card/95 shadow-sm transition-colors duration-200 hover:border-primary/25 dark:hover:bg-card">
+                  {item.imageUrl ? (
+                    <MarketingMediaSurface className="relative aspect-[4/3] overflow-hidden bg-muted">
+                      <Image
+                        src={item.imageUrl}
+                        alt={itemTitle || itemLabel || title}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, 25vw"
+                      />
+                    </MarketingMediaSurface>
                   ) : null}
-                  {itemTitle ? (
-                    <h3 className="text-lg font-semibold">{itemTitle}</h3>
-                  ) : null}
-                  {itemBody ? (
-                    <p className="text-sm leading-6 text-muted-foreground">
-                      {itemBody}
-                    </p>
-                  ) : null}
-                  {item.value ? (
-                    <p className="text-lg font-semibold text-primary">
-                      {item.value}
-                    </p>
-                  ) : null}
-                  {item.href ? (
-                    <Button asChild variant="outline" size="sm">
-                      <Link href={item.href}>
-                        {itemLabel ||
-                          (locale === "bn" ? "বিস্তারিত" : "Learn more")}
-                      </Link>
-                    </Button>
-                  ) : null}
-                </CardContent>
-              </Card>
+                  <CardContent className="space-y-3 p-6">
+                    {itemLabel ? (
+                      <Badge variant="secondary">{itemLabel}</Badge>
+                    ) : null}
+                    {itemTitle ? (
+                      <h3 className="text-lg font-semibold">{itemTitle}</h3>
+                    ) : null}
+                    {itemBody ? (
+                      <p className="text-sm leading-6 text-muted-foreground">
+                        {itemBody}
+                      </p>
+                    ) : null}
+                    {item.value ? (
+                      <p className="text-lg font-semibold text-primary">
+                        {item.value}
+                      </p>
+                    ) : null}
+                    {item.href ? (
+                      <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        className="transition-colors duration-200 hover:border-primary/40 hover:bg-primary/5"
+                      >
+                        <Link href={item.href}>
+                          {itemLabel ||
+                            (locale === "bn" ? "বিস্তারিত" : "Learn more")}
+                        </Link>
+                      </Button>
+                    ) : null}
+                  </CardContent>
+                </Card>
+              </MarketingHoverSurface>
             );
           })}
         </div>
         {ctaLabel ? (
-          <Button asChild variant="outline">
-            <Link href={section.ctaHref}>{ctaLabel}</Link>
-          </Button>
+          <MarketingReveal delay={0.08}>
+            <Button
+              asChild
+              variant="outline"
+              className="transition-colors duration-200 hover:border-primary/40 hover:bg-primary/5"
+            >
+              <Link href={section.ctaHref}>{ctaLabel}</Link>
+            </Button>
+          </MarketingReveal>
         ) : null}
       </div>
     );
@@ -247,7 +294,7 @@ function SectionContent({
     return (
       <div className="space-y-8">
         <SectionHeading eyebrow={eyebrow} title={title} body={body} />
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <MarketingReveal className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {sectionProducts.map((product) => (
             <RoshalProductCard
               key={product.id}
@@ -255,11 +302,17 @@ function SectionContent({
               locale={locale}
             />
           ))}
-        </div>
+        </MarketingReveal>
         {ctaLabel ? (
-          <Button asChild variant="outline">
-            <Link href={section.ctaHref || "/products"}>{ctaLabel}</Link>
-          </Button>
+          <MarketingReveal delay={0.08}>
+            <Button
+              asChild
+              variant="outline"
+              className="transition-colors duration-200 hover:border-primary/40 hover:bg-primary/5"
+            >
+              <Link href={section.ctaHref || "/products"}>{ctaLabel}</Link>
+            </Button>
+          </MarketingReveal>
         ) : null}
       </div>
     );
@@ -269,50 +322,63 @@ function SectionContent({
     return (
       <div className="space-y-8">
         <SectionHeading eyebrow={eyebrow} title={title} body={body} />
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div className={`grid gap-4 ${sectionColumns}`}>
           {section.items.map((item, index) => {
             const itemLabel = resolveLocalizedItemValue(locale, item.label);
             const itemTitle = resolveLocalizedItemValue(locale, item.title);
             const itemBody = resolveLocalizedItemValue(locale, item.body);
 
             return (
-              <Card
+              <MarketingHoverSurface
                 key={`${section.id}-${index}`}
-                className="border-border/60 bg-card/90"
+                delay={index * 0.04}
               >
-                <CardContent className="space-y-3 p-6">
-                  {itemLabel ? (
-                    <p className="text-sm font-medium text-muted-foreground">
-                      {itemLabel}
-                    </p>
-                  ) : null}
-                  {itemTitle ? (
-                    <p className="text-lg font-semibold">{itemTitle}</p>
-                  ) : null}
-                  {item.value ? (
-                    <p className="text-lg font-semibold">{item.value}</p>
-                  ) : null}
-                  {itemBody ? (
-                    <p className="text-sm leading-6 text-muted-foreground">
-                      {itemBody}
-                    </p>
-                  ) : null}
-                  {item.href ? (
-                    <Button asChild variant="outline" size="sm">
-                      <Link href={item.href}>
-                        {itemLabel || (locale === "bn" ? "খুলুন" : "Open")}
-                      </Link>
-                    </Button>
-                  ) : null}
-                </CardContent>
-              </Card>
+                <Card className="border-border/60 bg-card/95 shadow-sm transition-colors duration-200 hover:border-primary/25 dark:hover:bg-card">
+                  <CardContent className="space-y-3 p-6">
+                    {itemLabel ? (
+                      <p className="text-sm font-medium text-muted-foreground">
+                        {itemLabel}
+                      </p>
+                    ) : null}
+                    {itemTitle ? (
+                      <p className="text-lg font-semibold">{itemTitle}</p>
+                    ) : null}
+                    {item.value ? (
+                      <p className="text-lg font-semibold">{item.value}</p>
+                    ) : null}
+                    {itemBody ? (
+                      <p className="text-sm leading-6 text-muted-foreground">
+                        {itemBody}
+                      </p>
+                    ) : null}
+                    {item.href ? (
+                      <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        className="transition-colors duration-200 hover:border-primary/40 hover:bg-primary/5"
+                      >
+                        <Link href={item.href}>
+                          {itemLabel || (locale === "bn" ? "খুলুন" : "Open")}
+                        </Link>
+                      </Button>
+                    ) : null}
+                  </CardContent>
+                </Card>
+              </MarketingHoverSurface>
             );
           })}
         </div>
         {ctaLabel ? (
-          <Button asChild size="lg">
-            <Link href={section.ctaHref}>{ctaLabel}</Link>
-          </Button>
+          <MarketingReveal delay={0.08}>
+            <Button
+              asChild
+              size="lg"
+              className="transition-transform duration-200 hover:-translate-y-0.5"
+            >
+              <Link href={section.ctaHref}>{ctaLabel}</Link>
+            </Button>
+          </MarketingReveal>
         ) : null}
       </div>
     );
@@ -331,9 +397,9 @@ function SectionHeading({
   body: string;
 }) {
   return (
-    <div className="max-w-3xl space-y-3">
+    <MarketingReveal className="max-w-3xl space-y-3">
       {eyebrow ? (
-        <p className="text-xs uppercase tracking-[0.24em] text-primary">
+        <p className="text-xs uppercase tracking-[0.24em] text-primary dark:[color:color-mix(in_oklch,var(--foreground)_68%,var(--primary))]">
           {eyebrow}
         </p>
       ) : null}
@@ -343,6 +409,6 @@ function SectionHeading({
       {body ? (
         <p className="text-base leading-7 text-muted-foreground">{body}</p>
       ) : null}
-    </div>
+    </MarketingReveal>
   );
 }

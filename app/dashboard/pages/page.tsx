@@ -1,4 +1,9 @@
 import { saveRoshalPage } from "@/actions/admin";
+import {
+  DashboardBarChartCard,
+  DashboardPieChartCard,
+} from "@/components/dashboard/dashboard-chart-card";
+import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
 import { HomepageControlCenter } from "@/components/dashboard/homepage-control-center";
@@ -35,6 +40,34 @@ export default async function DashboardPagesPage({
     resolvedSearchParams.error,
     resolvedSearchParams.slug,
   );
+  const publishedCount = pages.filter(
+    (page) => page.status === "published",
+  ).length;
+  const navigationCount = pages.filter((page) => page.showInNavigation).length;
+  const pageStatusData = [
+    {
+      key: "published",
+      label: locale === "bn" ? "প্রকাশিত" : "Published",
+      value: publishedCount,
+    },
+    {
+      key: "draft",
+      label: locale === "bn" ? "ড্রাফট" : "Draft",
+      value: pages.length - publishedCount,
+    },
+  ];
+  const navigationData = [
+    {
+      key: "visible",
+      label: locale === "bn" ? "নেভিগেশনে আছে" : "Visible in nav",
+      value: navigationCount,
+    },
+    {
+      key: "hidden",
+      label: locale === "bn" ? "নেভিগেশনে লুকানো" : "Hidden from nav",
+      value: pages.length - navigationCount,
+    },
+  ];
 
   return (
     <div className="min-w-0 space-y-6 p-4 md:p-6">
@@ -52,6 +85,46 @@ export default async function DashboardPagesPage({
           <AlertDescription>{errorMessage}</AlertDescription>
         </Alert>
       ) : null}
+
+      <div className="grid gap-4 md:grid-cols-3">
+        <DashboardMetricCard
+          title={locale === "bn" ? "মোট পেজ" : "Total pages"}
+          value={pages.length}
+        />
+        <DashboardMetricCard
+          title={locale === "bn" ? "প্রকাশিত" : "Published"}
+          value={publishedCount}
+        />
+        <DashboardMetricCard
+          title={locale === "bn" ? "নেভিগেশনে" : "In navigation"}
+          value={navigationCount}
+        />
+      </div>
+
+      <div className="grid gap-6 xl:grid-cols-2">
+        <DashboardPieChartCard
+          title={locale === "bn" ? "পেজ স্ট্যাটাস" : "Page status"}
+          description={
+            locale === "bn"
+              ? "পাবলিক মার্কেটিং পেজগুলোর প্রকাশ অবস্থা।"
+              : "Publication health across the public marketing pages."
+          }
+          totalLabel={locale === "bn" ? "পেজ" : "Pages"}
+          data={pageStatusData}
+        />
+        <DashboardBarChartCard
+          title={
+            locale === "bn" ? "নেভিগেশন ভিজিবিলিটি" : "Navigation visibility"
+          }
+          description={
+            locale === "bn"
+              ? "কোন পেজগুলো হেডার ও ফুটারে উঠে আসছে তার দ্রুত ভিউ।"
+              : "A quick view of what is being surfaced in header and footer navigation."
+          }
+          totalLabel={locale === "bn" ? "নেভ" : "Nav"}
+          data={navigationData}
+        />
+      </div>
 
       <HomepageControlCenter locale={locale} />
 

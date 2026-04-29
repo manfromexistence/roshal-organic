@@ -82,7 +82,7 @@ export function HomeTestimonialCarousel({
             key={testimonial.key}
             className="basis-[92%] pl-4 md:basis-1/2 md:pl-6 lg:basis-1/3"
           >
-            <Card className="h-full border-border/70 bg-card shadow-sm">
+            <Card className="h-full border-border/70 bg-card shadow-sm hover:bg-accent">
               <CardContent className="flex h-full flex-col justify-between gap-5 p-5 md:gap-6 md:p-6">
                 <div className="space-y-4">
                   <div className="inline-flex rounded-full bg-primary/10 p-2 text-primary">

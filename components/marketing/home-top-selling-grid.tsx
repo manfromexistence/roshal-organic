@@ -35,9 +35,9 @@ function TopSellingCard({
 }) {
   return (
     <ImageCard className="group overflow-hidden rounded-[2rem] border-border/80 bg-card shadow-sm transition-all duration-200 hover:border-primary/25 hover:shadow-md">
-      <div className="grid grid-cols-1 gap-0 md:grid-cols-[12rem_1fr]">
+      <div className="grid grid-cols-1 gap-0 md:grid-cols-[0.92fr_1.08fr]">
         <ImageCardHeader className="p-0">
-          <div className="relative aspect-[4/3] overflow-hidden border-b border-border/70 bg-muted/35 md:h-full md:min-h-[15rem] md:border-r md:border-b-0">
+          <div className="relative aspect-[4/3] overflow-hidden border-b border-border/70 bg-muted/35 md:h-full md:min-h-[18rem] md:border-r md:border-b-0">
             <Image
               src={product.image}
               alt={product.name[language]}
@@ -70,7 +70,7 @@ function TopSellingCard({
             </div>
           </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:justify-center md:justify-start">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center md:justify-start">
             {product.cartProduct ? (
               <AddToCartButton
                 product={product.cartProduct}
@@ -119,7 +119,7 @@ export function HomeTopSellingGrid({
       <div className="container mx-auto space-y-8 px-4 sm:px-6 md:px-8">
         <HomeSectionHeading title={title} description={description} centered />
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
           {products.map((product) => (
             <TopSellingCard
               key={String(product.id)}

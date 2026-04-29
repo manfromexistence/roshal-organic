@@ -26,12 +26,30 @@ const siteSettingsStatements = [
 
 let ensurePromise: Promise<void> | null = null;
 
+function collectErrorMessages(error: unknown) {
+  const messages: string[] = [];
+  let current: unknown = error;
+
+  while (current) {
+    if (current instanceof Error) {
+      messages.push(current.message);
+      current = "cause" in current ? current.cause : null;
+      continue;
+    }
+
+    messages.push(String(current));
+    break;
+  }
+
+  return messages.join(" | ").toLowerCase();
+}
+
 async function runStatements() {
   for (const statement of siteSettingsStatements) {
     try {
       await db.run(statement);
     } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
+      const message = collectErrorMessages(error);
 
       if (
         statement.startsWith("ALTER TABLE") &&

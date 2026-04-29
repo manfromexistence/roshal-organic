@@ -7,6 +7,9 @@
 :root {
   --font-roshal-sans:
     "Hind Siliguri", "Noto Sans Bengali", "Segoe UI", system-ui, sans-serif;
+  --font-roshal-wordmark:
+    "Segoe Script", "Lucida Handwriting", "Brush Script MT", "Snell Roundhand",
+    cursive;
   --font-roshal-mono:
     "JetBrains Mono", "Roboto Mono", "Fira Code", ui-monospace, SFMono-Regular,
     Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -153,6 +156,51 @@
   ::selection {
     background-color: var(--primary);
     color: var(--primary-foreground);
+  }
+}
+
+@layer utilities {
+  .font-wordmark {
+    font-family: var(--font-roshal-mono);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 1;
+  }
+}
+
+@layer components {
+  .dark .themed-avatar-fallback {
+    background-color: color-mix(in oklch, var(--card) 58%, var(--primary) 42%);
+    color: var(--foreground);
+    border: 1px solid color-mix(in oklch, var(--border) 70%, var(--primary) 30%);
+  }
+
+  .dark .storefront-shell .text-muted-foreground {
+    color: color-mix(in oklch, var(--foreground) 78%, var(--muted-foreground));
+  }
+
+  .dark .storefront-shell .text-primary.text-primary {
+    color: color-mix(in oklch, var(--foreground) 68%, var(--primary));
+  }
+
+  .dark .storefront-shell [data-slot="card-description"] {
+    color: color-mix(in oklch, var(--foreground) 74%, var(--muted-foreground));
+  }
+
+  .dark .storefront-shell .price-emphasis.text-primary {
+    color: color-mix(in oklch, var(--foreground) 68%, var(--primary));
+  }
+
+  .dark .dashboard-admin-surface .text-muted-foreground {
+    color: color-mix(in oklch, var(--foreground) 78%, var(--muted-foreground));
+  }
+
+  .dark .dashboard-admin-surface .text-primary.text-primary {
+    color: color-mix(in oklch, var(--foreground) 68%, var(--primary));
+  }
+
+  .dark .dashboard-admin-surface [data-slot="card-description"] {
+    color: color-mix(in oklch, var(--foreground) 74%, var(--muted-foreground));
   }
 }
 

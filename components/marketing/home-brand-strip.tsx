@@ -37,7 +37,7 @@ export function HomeBrandStrip({ brands }: { brands: BrandItem[] }) {
                       alt={brand.name}
                       width={220}
                       height={72}
-                      className="h-full w-auto object-cover"
+                      className="h-full w-auto object-cover rounded-md"
                     />
                   </div>
                 </CardContent>

@@ -113,6 +113,237 @@ export const defaultRoshalPages: RoshalMarketingPage[] = [
   ...defaultRoshalExtendedPages,
 ];
 
+const defaultRoshalCorePageEnhancements: RoshalMarketingSection[] = [
+  {
+    id: "section-about-sourcing-story",
+    pageId: "page-about",
+    sectionKey: "sourcing-story",
+    type: "story",
+    sortOrder: 2,
+    layout: "split",
+    variant: "muted",
+    isEnabled: true,
+    eyebrow: localizedValue("সংগ্রহের গল্প", "How we source"),
+    title: localizedValue(
+      "খামার, মৌচাক ও স্থানীয় উৎপাদক থেকে যত্নে সংগ্রহ",
+      "Carefully sourced from farms, beekeepers, and local producers",
+    ),
+    body: localizedValue(
+      "Roshal Organic পণ্যের মূল শক্তি হলো নির্ভরযোগ্য উৎস। মৌসুমি ফল, খাঁটি মধু, ঘি, তেল এবং রান্নাঘরের প্রয়োজনীয় পণ্য আমরা এমন অংশীদারদের কাছ থেকে সংগ্রহ করি যাদের সঙ্গে মান, সততা এবং নিয়মিত যোগাযোগ বজায় রাখা যায়।",
+      "Roshal Organic is built on dependable sourcing. From seasonal fruits and pure honey to ghee, oils, and kitchen essentials, we work with partners we can trust for quality, consistency, and honest communication.",
+    ),
+    ctaLabel: localizedValue("Company Information", "Company Information"),
+    ctaHref: "/company-information",
+    imageUrl: "/farming.jpg",
+    items: [],
+    styles: {
+      emphasis: "editorial",
+    },
+  },
+  {
+    id: "section-about-quality-standards",
+    pageId: "page-about",
+    sectionKey: "quality-standards",
+    type: "feature-grid",
+    sortOrder: 3,
+    layout: "grid",
+    variant: "default",
+    isEnabled: true,
+    eyebrow: localizedValue("মান নিয়ন্ত্রণ", "Quality standards"),
+    title: localizedValue(
+      "আমরা যে কারণে পণ্যের মানে কঠোর",
+      "Why we stay strict about product quality",
+    ),
+    body: localizedValue(
+      "প্রতিটি পণ্য গ্রাহকের টেবিলে পৌঁছানোর আগে কয়েকটি বাস্তব যাচাইয়ের ভেতর দিয়ে যায়।",
+      "Every product goes through a few practical checkpoints before it reaches a customer table.",
+    ),
+    ctaLabel: localizedValue("যোগাযোগ করুন", "Contact us"),
+    ctaHref: "/contact",
+    imageUrl: "",
+    items: [
+      {
+        title: localizedValue("ট্রেসেবল সোর্সিং", "Traceable sourcing"),
+        body: localizedValue(
+          "পণ্যের উৎস, উৎপাদক এবং মৌসুমি প্রেক্ষাপট জানা থাকে।",
+          "We keep the source, producer, and seasonal context visible wherever possible.",
+        ),
+      },
+      {
+        title: localizedValue("সতর্ক বাছাই", "Careful selection"),
+        body: localizedValue(
+          "ক্যাটালগে তোলার আগে গুণগত মান, ব্যবহারযোগ্যতা এবং গ্রাহক প্রত্যাশা বিবেচনা করা হয়।",
+          "Quality, usability, and customer expectations are reviewed before a product is listed.",
+        ),
+      },
+      {
+        title: localizedValue("পরিষ্কার প্যাকেজিং", "Clean packaging"),
+        body: localizedValue(
+          "পণ্য, পরিমাণ এবং ডেলিভারি উপযোগিতা মিলিয়ে প্যাকেজিং প্রস্তুত করা হয়।",
+          "Packaging is prepared to match the product, quantity, and delivery conditions.",
+        ),
+      },
+      {
+        title: localizedValue("দ্রুত সাপোর্ট", "Responsive support"),
+        body: localizedValue(
+          "অর্ডার, পেমেন্ট, ডেলিভারি বা রিটার্ন বিষয়ে দ্রুত ফলো-আপ দেওয়া হয়।",
+          "Fast follow-up is available for orders, payments, delivery, or returns.",
+        ),
+      },
+    ],
+    styles: {
+      columns: "2",
+    },
+  },
+  {
+    id: "section-contact-help-topics",
+    pageId: "page-contact",
+    sectionKey: "contact-help-topics",
+    type: "feature-grid",
+    sortOrder: 2,
+    layout: "grid",
+    variant: "default",
+    isEnabled: true,
+    eyebrow: localizedValue("সাহায্যের ধরণ", "Ways we can help"),
+    title: localizedValue(
+      "কোন বিষয়ে যোগাযোগ করবেন",
+      "What you can contact us about",
+    ),
+    body: localizedValue(
+      "একই যোগাযোগ পেজ থেকে retail order, wholesale, delivery follow-up এবং custom sourcing request হ্যান্ডেল করা যায়।",
+      "The same contact page can route retail orders, wholesale requests, delivery follow-up, and custom sourcing inquiries.",
+    ),
+    ctaLabel: localizedValue("সাপোর্ট সেন্টার", "Support Center"),
+    ctaHref: "/support-center",
+    imageUrl: "",
+    items: [
+      {
+        title: localizedValue("রিটেইল অর্ডার", "Retail orders"),
+        body: localizedValue(
+          "পণ্য নির্বাচন, অর্ডার প্লেসমেন্ট, পরিবর্তন বা কনফার্মেশন সংক্রান্ত প্রশ্নের জন্য।",
+          "For product selection, order placement, changes, or order confirmation questions.",
+        ),
+      },
+      {
+        title: localizedValue("পাইকারি ও B2B", "Wholesale and B2B"),
+        body: localizedValue(
+          "দোকান, রিসেলার, কর্পোরেট gifting বা পুনরাবৃত্ত bulk requirement-এর জন্য।",
+          "For retailers, resellers, corporate gifting, or repeat bulk requirements.",
+        ),
+      },
+      {
+        title: localizedValue("ডেলিভারি ফলো-আপ", "Delivery follow-up"),
+        body: localizedValue(
+          "ডেলিভারি এলাকা, সময়, status update বা receiving issue-এর জন্য।",
+          "For delivery-area, timing, status-update, or receiving-condition questions.",
+        ),
+      },
+      {
+        title: localizedValue("বিশেষ সংগ্রহ অনুরোধ", "Custom sourcing"),
+        body: localizedValue(
+          "মৌসুমি, limited-stock বা ক্যাটালগের বাইরে sourcing request জানাতে পারবেন।",
+          "Use this route to ask about seasonal, limited-stock, or off-catalog sourcing requests.",
+        ),
+      },
+    ],
+    styles: {
+      columns: "2",
+    },
+  },
+  {
+    id: "section-contact-service-promise",
+    pageId: "page-contact",
+    sectionKey: "service-promise",
+    type: "story",
+    sortOrder: 0,
+    layout: "split",
+    variant: "muted",
+    isEnabled: true,
+    eyebrow: localizedValue("সার্ভিস স্ট্যান্ডার্ড", "Service standards"),
+    title: localizedValue(
+      "দ্রুত উত্তর, পরিষ্কার নির্দেশনা, এবং মানুষের মতো সাপোর্ট",
+      "Fast replies, clear guidance, and human support",
+    ),
+    body: localizedValue(
+      "Roshal Organic-এর যোগাযোগ ফ্লো এমনভাবে সাজানো যে অর্ডার, পেমেন্ট বা ডেলিভারি-সংক্রান্ত প্রশ্নে গ্রাহককে বারবার একই তথ্য দিতে না হয়। প্রয়োজন হলে support team অর্ডার রিভিউ, payment verification এবং delivery coordination একসঙ্গে দেখে।",
+      "Roshal Organic is structured so customers do not have to repeat themselves across order, payment, or delivery conversations. When needed, the support team can coordinate order review, payment verification, and delivery updates together.",
+    ),
+    ctaLabel: localizedValue("অর্ডার ট্র্যাক করুন", "Track your order"),
+    ctaHref: "/orders",
+    imageUrl: "/packaging.jpg",
+    items: [],
+    styles: {
+      emphasis: "balanced",
+    },
+  },
+  {
+    id: "section-contact-response-commitments",
+    pageId: "page-contact",
+    sectionKey: "response-commitments",
+    type: "contact-cards",
+    sortOrder: 3,
+    layout: "grid",
+    variant: "soft",
+    isEnabled: true,
+    eyebrow: localizedValue("দ্রুত পথ", "Quick routes"),
+    title: localizedValue(
+      "যে যোগাযোগ পথটি আপনার জন্য সবচেয়ে উপযোগী",
+      "Choose the contact route that fits your need",
+    ),
+    body: localizedValue(
+      "প্রয়োজন অনুযায়ী sales, support, tracking বা WhatsApp conversation আলাদা করে দেখাতে পারবেন।",
+      "Separate sales, support, tracking, and WhatsApp routes so customers can pick the right path immediately.",
+    ),
+    ctaLabel: localizedValue("Payment Guide", "Payment Guide"),
+    ctaHref: "/payment",
+    imageUrl: "",
+    items: [
+      {
+        label: localizedValue("Order support", "Order support"),
+        title: localizedValue("+880 1719-403627", "+880 1719-403627"),
+        body: localizedValue(
+          "অর্ডার কনফার্মেশন, edit, cancellation বা delivery follow-up-এর জন্য।",
+          "For order confirmation, edits, cancellation, or delivery follow-up.",
+        ),
+        href: "tel:+8801719403627",
+      },
+      {
+        label: localizedValue("WhatsApp", "WhatsApp"),
+        title: localizedValue("Live chat support", "Live chat support"),
+        body: localizedValue(
+          "দ্রুত screenshot, payment proof বা short support message শেয়ার করার জন্য।",
+          "Best for sharing screenshots, payment proof, or a quick support message.",
+        ),
+        href: "https://wa.me/8801719403627",
+      },
+      {
+        label: localizedValue("Wholesale", "Wholesale"),
+        title: localizedValue(
+          "info@roshalorganic.com",
+          "info@roshalorganic.com",
+        ),
+        body: localizedValue(
+          "পাইকারি, retail partnership, gifting বা repeat supply discussion-এর জন্য।",
+          "For wholesale, retail partnership, gifting, or repeat supply discussions.",
+        ),
+        href: "mailto:info@roshalorganic.com",
+      },
+      {
+        label: localizedValue("Order Tracking", "Order Tracking"),
+        title: localizedValue("নিজে status দেখুন", "Check status yourself"),
+        body: localizedValue(
+          "লগইন করা গ্রাহক profile ও order history থেকে live status দেখতে পারবেন।",
+          "Signed-in customers can check live status from profile and order history.",
+        ),
+        href: "/orders",
+      },
+    ],
+    styles: {
+      columns: "2",
+    },
+  },
+];
+
 export const defaultRoshalSections: RoshalMarketingSection[] = [
   {
     id: "section-home-hero",
@@ -593,7 +824,7 @@ export const defaultRoshalSections: RoshalMarketingSection[] = [
     pageId: "page-contact",
     sectionKey: "details",
     type: "contact-cards",
-    sortOrder: 0,
+    sortOrder: 1,
     layout: "grid",
     variant: "default",
     isEnabled: true,
@@ -631,6 +862,7 @@ export const defaultRoshalSections: RoshalMarketingSection[] = [
       columns: "2",
     },
   },
+  ...defaultRoshalCorePageEnhancements,
   ...defaultRoshalExtendedSections,
 ];
 

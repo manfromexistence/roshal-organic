@@ -1,19 +1,82 @@
 import Link from "next/link";
-import { OverviewChart } from "@/components/dashboard/overview-chart";
+import {
+  DashboardBarChartCard,
+  DashboardPieChartCard,
+} from "@/components/dashboard/dashboard-chart-card";
+import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireRoshalAdmin } from "@/lib/store-auth";
-import { getRoshalDashboardSnapshot } from "@/lib/store-content";
+import {
+  getAllRoshalProducts,
+  getRoshalDashboardSnapshot,
+  getRoshalOrders,
+  getRoshalPages,
+  getRoshalUsers,
+} from "@/lib/store-content";
 import { formatBdt, formatOrderDate } from "@/lib/store-format";
 import { getRoshalLocale } from "@/lib/store-i18n";
+import { getLocalizedValue } from "@/lib/store-locale";
 import { getRoshalOrderStatusLabel } from "@/lib/store-orders";
 
 export default async function DashboardHomePage() {
-  const [locale, snapshot] = await Promise.all([
+  const [locale, snapshot, products, orders, pages, users] = await Promise.all([
     getRoshalLocale(),
     getRoshalDashboardSnapshot(),
+    getAllRoshalProducts(),
+    getRoshalOrders(),
+    getRoshalPages(),
+    getRoshalUsers(),
     requireRoshalAdmin(),
   ]);
+
+  const orderStatusData = [
+    "pending",
+    "payment-review",
+    "confirmed",
+    "processing",
+    "shipped",
+    "delivered",
+    "cancelled",
+  ].map((status) => ({
+    key: status,
+    label: getLocalizedValue(locale, getRoshalOrderStatusLabel(status)),
+    value: orders.filter((order) => order.status === status).length,
+  }));
+  const publicationData = [
+    {
+      key: "published",
+      label: locale === "bn" ? "প্রকাশিত" : "Published",
+      value: products.filter((product) => product.isPublished).length,
+    },
+    {
+      key: "draft",
+      label: locale === "bn" ? "ড্রাফট" : "Draft",
+      value: products.filter((product) => !product.isPublished).length,
+    },
+    {
+      key: "featured",
+      label: locale === "bn" ? "ফিচারড" : "Featured",
+      value: products.filter((product) => product.isFeatured).length,
+    },
+  ];
+  const audienceData = [
+    {
+      key: "admin",
+      label: locale === "bn" ? "অ্যাডমিন" : "Admins",
+      value: users.filter((user) => user.role === "admin").length,
+    },
+    {
+      key: "user",
+      label: locale === "bn" ? "গ্রাহক" : "Customers",
+      value: users.filter((user) => user.role !== "admin").length,
+    },
+    {
+      key: "navigation",
+      label: locale === "bn" ? "নেভ পেজ" : "Nav pages",
+      value: pages.filter((page) => page.showInNavigation).length,
+    },
+  ];
 
   return (
     <div className="min-w-0 space-y-6 p-4 md:p-6">
@@ -43,34 +106,92 @@ export default async function DashboardHomePage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-        <MetricCard
+        <DashboardMetricCard
           title={locale === "bn" ? "মোট পণ্য" : "Products"}
           value={snapshot.productCount}
+          hint={locale === "bn" ? "লাইভ ক্যাটালগ গুনতি" : "Live catalog count"}
         />
-        <MetricCard
+        <DashboardMetricCard
           title={locale === "bn" ? "লো স্টক" : "Low stock"}
           value={snapshot.lowStockProductCount}
+          hint={
+            locale === "bn"
+              ? "অবিলম্বে রিস্টক দরকার"
+              : "Items that need restocking soon"
+          }
         />
-        <MetricCard
+        <DashboardMetricCard
           title={locale === "bn" ? "স্টক শেষ" : "Out of stock"}
           value={snapshot.outOfStockProductCount}
+          hint={
+            locale === "bn"
+              ? "স্টোরফ্রন্টে ঝুঁকিপূর্ণ SKU"
+              : "SKUs currently unavailable on the storefront"
+          }
         />
-        <MetricCard
+        <DashboardMetricCard
           title={locale === "bn" ? "চলমান অর্ডার" : "Pending orders"}
           value={snapshot.pendingOrderCount}
+          hint={
+            locale === "bn"
+              ? "রিভিউ বা ফুলফিলমেন্টে আছে"
+              : "Still in review or fulfillment"
+          }
         />
-        <MetricCard
+        <DashboardMetricCard
           title={locale === "bn" ? "ব্যবহারকারী" : "Users"}
           value={snapshot.userCount}
+          hint={
+            locale === "bn"
+              ? "অ্যাডমিন ও কাস্টমার মিলিয়ে"
+              : "Admins and customers combined"
+          }
         />
-        <MetricCard
+        <DashboardMetricCard
           title={locale === "bn" ? "মার্কেটিং পেজ" : "Marketing pages"}
           value={snapshot.marketingPageCount}
+          hint={
+            locale === "bn"
+              ? "CMS থেকে চালিত পাবলিক পেজ"
+              : "Public pages managed through the CMS"
+          }
         />
       </div>
 
-      <div className="grid gap-6">
-        <OverviewChart />
+      <div className="grid gap-6 xl:grid-cols-2">
+        <DashboardBarChartCard
+          title={locale === "bn" ? "অর্ডার ফানেল" : "Order funnel"}
+          description={
+            locale === "bn"
+              ? "লাইভ অর্ডার স্ট্যাটাস বণ্টন এখন সরাসরি স্টোরফ্রন্ট অর্ডার ফ্লো থেকে আসছে।"
+              : "Live order-status distribution pulled directly from the storefront order flow."
+          }
+          totalLabel={locale === "bn" ? "মোট অর্ডার" : "Total orders"}
+          data={orderStatusData}
+          className="xl:col-span-2"
+        />
+        <DashboardPieChartCard
+          title={locale === "bn" ? "ক্যাটালগ প্রকাশ অবস্থা" : "Catalog publication"}
+          description={
+            locale === "bn"
+              ? "প্রকাশিত, ড্রাফট, এবং ফিচারড পণ্যের দ্রুত স্বাস্থ্য-সিগন্যাল।"
+              : "A quick health signal for published, draft, and featured products."
+          }
+          totalLabel={locale === "bn" ? "পণ্য" : "Products"}
+          data={publicationData}
+        />
+        <DashboardPieChartCard
+          title={
+            locale === "bn" ? "অডিয়েন্স ও নেভিগেশন" : "Audience and navigation"
+          }
+          description={
+            locale === "bn"
+              ? "অ্যাডমিন, গ্রাহক, এবং নেভিগেশনে প্রকাশিত পেজের অনুপাত।"
+              : "The split between admins, customers, and pages surfaced in navigation."
+          }
+          totalLabel={locale === "bn" ? "সক্রিয়" : "Active"}
+          data={audienceData}
+        />
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
@@ -89,11 +210,11 @@ export default async function DashboardHomePage() {
             {snapshot.recentOrders.map((order) => (
               <div
                 key={order.id}
-                className="flex flex-col gap-2 rounded-xl border border-border/70 p-4 md:flex-row md:items-center md:justify-between"
+                className="flex flex-col gap-2 rounded-md border border-border/70 bg-muted/10 p-4 md:flex-row md:items-center md:justify-between"
               >
                 <div>
                   <p className="font-medium">{order.orderNumber}</p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-foreground/68 dark:text-foreground/78">
                     {order.customerName} ·{" "}
                     {formatOrderDate(order.createdAt, locale)}
                   </p>
@@ -102,7 +223,7 @@ export default async function DashboardHomePage() {
                   <p className="font-semibold text-primary">
                     {formatBdt(order.total, locale)}
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-foreground/68 dark:text-foreground/78">
                     {locale === "bn"
                       ? getRoshalOrderStatusLabel(order.status).bn
                       : getRoshalOrderStatusLabel(order.status).en}
@@ -128,13 +249,13 @@ export default async function DashboardHomePage() {
             {snapshot.featuredProducts.map((product) => (
               <div
                 key={product.id}
-                className="flex items-center justify-between gap-3 rounded-xl border border-border/70 p-4"
+                className="flex items-center justify-between gap-3 rounded-md border border-border/70 bg-muted/10 p-4"
               >
                 <div>
                   <p className="font-medium">
                     {locale === "bn" ? product.name.bn : product.name.en}
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-foreground/68 dark:text-foreground/78">
                     {locale === "bn"
                       ? product.categoryLabel.bn
                       : product.categoryLabel.en}
@@ -149,20 +270,5 @@ export default async function DashboardHomePage() {
         </Card>
       </div>
     </div>
-  );
-}
-
-function MetricCard({ title, value }: { title: string; value: number }) {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-sm font-medium text-muted-foreground">
-          {title}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className="text-3xl font-semibold tracking-tight">{value}</p>
-      </CardContent>
-    </Card>
   );
 }
