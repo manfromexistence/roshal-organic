@@ -210,7 +210,7 @@ export function StorefrontHeader({
       <header className="fixed inset-x-0 top-0 z-[60] bg-background/95 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/88">
         <div
           className={cn(
-            "h-17 border-b border-border/60 transition-transform duration-300 ease-out lg:will-change-transform",
+            "h-15 lg:h-17 border-b border-border/60 transition-transform duration-300 ease-out lg:will-change-transform",
             hideDesktopTopBar && "lg:-translate-y-[calc(100%+1px)]",
           )}
         >

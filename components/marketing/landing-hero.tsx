@@ -48,7 +48,7 @@ export function LandingHero({
   }
 
   return (
-    <section className="w-full overflow-x-clip bg-background pb-2 pt-22 pt-32">
+    <section className="w-full overflow-x-clip bg-background pb-2 pt-22 lg:pt-32">
       <div className="container mx-auto space-y-5 px-4 sm:px-6 md:px-8">
         <div className="grid grid-cols-1 gap-5 md:grid-cols-[1.45fr_0.85fr]">
           <Card className="gap-0 overflow-hidden rounded-md border-border/70 bg-card p-0 shadow-sm">

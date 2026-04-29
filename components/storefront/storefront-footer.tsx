@@ -90,14 +90,14 @@ export function StorefrontFooter({
                   alt={siteSettings.brandName}
                   width={42}
                   height={42}
-                  className="h-9 w-auto object-contain dark:hidden"
+                  className="h-9 w-auto object-contain dark:hidden rounded-md"
                 />
                 <Image
                   src="/logo-light.png"
                   alt={siteSettings.brandName}
                   width={42}
                   height={42}
-                  className="hidden h-9 w-auto object-contain dark:block"
+                  className="hidden h-9 w-auto object-contain dark:block rounded-md"
                 />
               </div>
               <div className="space-y-1">

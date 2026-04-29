@@ -751,10 +751,10 @@ export function ProductsPageClient({
   ].filter(Boolean) as string[];
 
   return (
-    <div className="container mx-auto px-4 py-44">
+    <div className="container mx-auto px-4 pt-24 lg:pt-32">
       <div className="flex flex-col gap-8 lg:flex-row">
         <aside className="hidden w-full shrink-0 lg:block lg:w-[21rem] xl:w-[24rem]">
-          <div className="sticky top-26 max-h-[calc(100vh-8rem)] space-y-8 overflow-y-auto rounded-2xl border border-border/50 bg-background/95 p-6 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border/50 [&::-webkit-scrollbar]:w-1.5">
+          <div className="sticky top-32 max-h-[calc(100vh-8rem)] space-y-8 overflow-y-auto rounded-2xl border border-border/50 bg-background/95 p-6 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/60 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border/50 [&::-webkit-scrollbar]:w-1.5">
             <div className="space-y-2">
               <h2 className="text-xl font-semibold tracking-tight">
                 {locale === "bn" ? "পণ্য বাছাই করুন" : "Refine products"}
