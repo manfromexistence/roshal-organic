@@ -35,7 +35,7 @@ function TopSellingCard({
 }) {
   return (
     <ImageCard className="group overflow-hidden rounded-md border-border/80 bg-card shadow-sm transition-all duration-200 hover:border-primary/25 hover:shadow-md">
-      <div className="grid grid-cols-1 gap-0 md:grid-cols-[1.02fr_0.98fr]">
+      <div className="grid gap-0 sm:grid-cols-[1.02fr_0.98fr]">
         <ImageCardHeader className="p-0">
           <div className="relative aspect-[4/4] overflow-hidden border-b border-border/70 bg-muted/35 md:h-full md:min-h-[15rem] md:border-r md:border-b-0">
             <Image
@@ -119,7 +119,7 @@ export function HomeTopSellingGrid({
       <div className="container mx-auto space-y-8 px-4 sm:px-6 md:px-8">
         <HomeSectionHeading title={title} description={description} centered />
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="grid grid-cols-2 gap-6 lg:grid-cols-2">
           {products.map((product) => (
             <TopSellingCard
               key={String(product.id)}

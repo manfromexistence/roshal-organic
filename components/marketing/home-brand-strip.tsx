@@ -20,13 +20,13 @@ export function HomeBrandStrip({ brands }: { brands: BrandItem[] }) {
   return (
     <Carousel
       opts={{ align: "start", dragFree: true, loop: brands.length > 4 }}
-      className="max-w-full overflow-x-clip px-4 sm:px-10 md:px-14"
+      className="max-w-full overflow-x-clip px-4 md:px-14"
     >
       <CarouselContent className="-ml-3 md:-ml-4">
         {brands.map((brand) => (
           <CarouselItem
             key={brand.key}
-            className="basis-[88%] pl-3 min-[420px]:basis-[72%] sm:basis-1/2 md:pl-4 lg:basis-1/4"
+            className="basis-[35%] pl-3 min-[420px]:basis-[30%] sm:basis-1/2 md:pl-4 lg:basis-1/4"
           >
             <Link href={brand.href} className="block h-full">
               <Card className="h-full rounded-md border-border/70 bg-card shadow-sm hover:bg-accent/60">

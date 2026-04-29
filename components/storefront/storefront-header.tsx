@@ -483,7 +483,7 @@ export function StorefrontHeader({
                   >
                     <NavigationMenuTrigger
                       className={cn(
-                        "h-10 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-background dark:text-foreground hover:bg-primary/10 hover:text-foreground focus:bg-primary/10 focus:text-foreground data-[state=open]:bg-primary/12 data-[state=open]:text-primary",
+                        "h-10 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-background dark:text-foreground hover:bg-primary/10 hover:text-foreground focus:bg-primary/10 focus:text-bg-red-500 data-[state=open]:bg-primary/12 data-[state=open]:text-muted-foreground",
                         triggerActive && "bg-primary/12 text-background",
                       )}
                     >
@@ -517,7 +517,7 @@ export function StorefrontHeader({
                 <NavigationMenuItem className="flex shrink-0 items-center">
                   <NavigationMenuTrigger
                     className={cn(
-                      "h-10 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-background dark:text-foreground hover:bg-primary/10 hover:text-foreground focus:bg-primary/10 focus:text-foreground data-[state=open]:bg-primary/12 data-[state=open]:text-primary",
+                      "h-10 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-background dark:text-foreground hover:bg-primary/10 hover:text-foreground focus:bg-primary/10 focus:text-foreground data-[state=open]:bg-primary/12 data-[state=open]:text-foreground",
                       pathname === "/products" &&
                         overflowCategoryKeys.has(activeCategory) &&
                         "bg-primary/12 text-primary",

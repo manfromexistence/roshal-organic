@@ -135,7 +135,7 @@ export function HomeProductShelf({
           ctaLabel={ctaLabel}
         />
 
-        <div className="grid grid-cols-1 gap-4 min-[520px]:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
+        <div className="grid grid-cols-2 gap-4 min-[520px]:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
           {products.map((product) => (
             <ShelfProductCard
               key={String(product.id)}

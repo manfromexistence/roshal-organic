@@ -45,7 +45,7 @@ export function SpecialOffers({
           description={description?.[language]}
         />
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="grid grid-cols-2 gap-6 lg:grid-cols-2">
           {deals.slice(0, 2).map((deal) => (
             <Card
               key={`${deal.title.en}-${deal.image}`}

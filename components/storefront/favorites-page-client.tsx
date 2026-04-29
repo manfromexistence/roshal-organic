@@ -176,7 +176,7 @@ export function FavoritesPageClient({
               ? `${filteredProducts.length}টি সংরক্ষিত পণ্য পাওয়া গেছে`
               : `${filteredProducts.length} saved products found`}
           </p>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {filteredProducts.map((product) => (
               <RoshalProductCard
                 key={product.id}
