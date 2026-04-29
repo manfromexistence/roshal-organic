@@ -45,7 +45,9 @@ export default async function TrackOrderPage({
           {locale === "bn" ? "পাবলিক ট্র্যাক অর্ডার" : "Public track order"}
         </p>
         <h1 className="text-4xl font-semibold tracking-tight">
-          {locale === "bn" ? "লগইন ছাড়াই অর্ডার ট্র্যাক করুন" : "Track an order without login"}
+          {locale === "bn"
+            ? "লগইন ছাড়াই অর্ডার ট্র্যাক করুন"
+            : "Track an order without login"}
         </h1>
         <p className="max-w-3xl text-sm leading-7 text-muted-foreground">
           {locale === "bn"
@@ -112,13 +114,17 @@ export default async function TrackOrderPage({
             <CardHeader className="space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <CardTitle className="text-2xl">{order.orderNumber}</CardTitle>
+                  <CardTitle className="text-2xl">
+                    {order.orderNumber}
+                  </CardTitle>
                   <p className="text-sm text-muted-foreground">
                     {formatOrderDate(order.createdAt, locale)}
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant={getRoshalOrderStatusBadgeVariant(order.status)}>
+                  <Badge
+                    variant={getRoshalOrderStatusBadgeVariant(order.status)}
+                  >
                     {locale === "bn"
                       ? getRoshalOrderStatusLabel(order.status).bn
                       : getRoshalOrderStatusLabel(order.status).en}
@@ -245,7 +251,11 @@ function InfoRow({
   return (
     <div className="flex items-start justify-between gap-4">
       <span className="text-muted-foreground">{label}</span>
-      <span className={emphasize ? "text-right font-semibold" : "text-right font-medium"}>
+      <span
+        className={
+          emphasize ? "text-right font-semibold" : "text-right font-medium"
+        }
+      >
         {value}
       </span>
     </div>

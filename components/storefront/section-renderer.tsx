@@ -9,6 +9,7 @@ import { RoshalProductCard } from "@/components/storefront/product-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { getWhatsAppHref } from "@/lib/store-contact";
 import { getLocalizedValue } from "@/lib/store-locale";
 import type {
   LocalizedValue,
@@ -123,34 +124,34 @@ function resolveContactCardValue(
 function resolveContactCardHref(
   siteSettings: RoshalSiteSettings,
   label: string,
-  fallback: string,
+  fallback?: string,
 ) {
   const normalizedLabel = label.trim().toLowerCase();
-
-  if (normalizedLabel.includes("phone") || normalizedLabel.includes("ফোন")) {
-    return siteSettings.contactPhone
-      ? `tel:${siteSettings.contactPhone.replace(/\s+/g, "")}`
-      : fallback;
+  if (
+    normalizedLabel.includes("phone") ||
+    normalizedLabel.includes("à¦«à§‹à¦¨")
+  ) {
+    return `tel:${siteSettings.contactPhone}`;
   }
 
-  if (normalizedLabel.includes("email") || normalizedLabel.includes("ইমেইল")) {
-    return siteSettings.contactEmail
-      ? `mailto:${siteSettings.contactEmail}`
-      : fallback;
+  if (
+    normalizedLabel.includes("email") ||
+    normalizedLabel.includes("à¦‡à¦®à§‡à¦‡à¦²")
+  ) {
+    return `mailto:${siteSettings.contactEmail}`;
   }
 
   if (
     normalizedLabel.includes("whatsapp") ||
-    normalizedLabel.includes("হোয়াটসঅ্যাপ") ||
-    normalizedLabel.includes("হোয়াটসআপ")
+    normalizedLabel.includes("à¦¹à§‹à¦¯à¦¼à¦¾à¦Ÿà¦¸à¦…à§à¦¯à¦¾à¦ª") ||
+    normalizedLabel.includes("à¦¹à§‹à¦¯à¦¼à¦¾à¦Ÿà¦¸à¦†à¦ª")
   ) {
-    const whatsappDigits = siteSettings.whatsappPhone.replace(/\D/g, "");
-    return whatsappDigits ? `https://wa.me/${whatsappDigits}` : fallback;
+    return getWhatsAppHref(siteSettings.whatsappPhone) || fallback;
   }
 
   if (
     normalizedLabel.includes("facebook") ||
-    normalizedLabel.includes("ফেসবুক")
+    normalizedLabel.includes("à¦«à§‡à¦¸à¦¬à§à¦•")
   ) {
     return siteSettings.facebookUrl || fallback;
   }
@@ -400,14 +401,9 @@ function SectionContent({
   }
 
   if (section.type === "contact-cards") {
-    const contactCtaHref = (() => {
-      if (section.ctaHref) {
-        return section.ctaHref;
-      }
-
-      const whatsappDigits = siteSettings.whatsappPhone.replace(/\D/g, "");
-      return whatsappDigits ? `https://wa.me/${whatsappDigits}` : "/contact";
-    })();
+    const resolvedCtaHref = ctaLabel
+      ? resolveContactCardHref(siteSettings, ctaLabel, section.ctaHref)
+      : section.ctaHref;
 
     return (
       <div className="space-y-8">
@@ -431,7 +427,7 @@ function SectionContent({
             const itemHref = resolveContactCardHref(
               siteSettings,
               itemLabel,
-              item.href || "",
+              item.href,
             );
 
             return (
@@ -446,7 +442,7 @@ function SectionContent({
                         {itemLabel}
                       </p>
                     ) : null}
-                    {itemTitle ? (
+                    {itemTitle && itemTitle !== itemValue ? (
                       <p className="text-lg font-semibold">{itemTitle}</p>
                     ) : null}
                     {itemValue ? (
@@ -457,14 +453,14 @@ function SectionContent({
                         {itemBody}
                       </p>
                     ) : null}
-                    {item.href ? (
+                    {itemHref ? (
                       <Button
                         asChild
                         variant="outline"
                         size="sm"
                         className="transition-colors duration-200 hover:border-primary/40 hover:bg-primary/5"
                       >
-                        <Link href={item.href}>
+                        <Link href={itemHref}>
                           {itemLabel || (locale === "bn" ? "খুলুন" : "Open")}
                         </Link>
                       </Button>
@@ -475,14 +471,14 @@ function SectionContent({
             );
           })}
         </div>
-        {ctaLabel ? (
+        {ctaLabel && resolvedCtaHref ? (
           <MarketingReveal delay={0.08}>
             <Button
               asChild
               size="lg"
               className="transition-transform duration-200 hover:-translate-y-0.5"
             >
-              <Link href={section.ctaHref}>{ctaLabel}</Link>
+              <Link href={resolvedCtaHref}>{ctaLabel}</Link>
             </Button>
           </MarketingReveal>
         ) : null}

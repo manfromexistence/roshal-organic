@@ -4,6 +4,11 @@
 - [ ] 2026-04-29 23:40 Apply the first client-delivery punch-list across the storefront and dashboard: scroll-aware top bar, simplified footer/contact info, lighter homepage sections, compact checkout/delivery controls, richer signup, public track-order, and stronger category/subcategory dashboard controls.
 
 ## Completed
+- [x] 2026-04-30 00:38 Reworked the storefront locale control into a persistent BN/EN switch, moved the desktop language picker into the `More` dropdown, tightened the main header height, and reduced fixed-page header offset to match.
+- [x] 2026-04-30 00:38 Retinted the desktop category rail with the primary color, centered the sub-header category items vertically, and re-verified that the live storefront header still resolves category/subcategory links from the dashboard taxonomy editor.
+- [x] 2026-04-30 00:12 Simplified the homepage shelves, normalized the public footer/contact/WhatsApp details to the latest client-provided contact info, and kept those values synchronized with legacy site-settings rows.
+- [x] 2026-04-30 00:12 Reworked the customer login/signup flow with Bangladesh-specific profile fields, mobile-first signup, and safer default-address handling for first client delivery.
+- [x] 2026-04-30 00:12 Added compact checkout delivery-type controls and location-based delivery-zone UX while preserving proof upload and admin-verification payment flows.
 - [x] 2026-04-29 22:28 Restored the desktop storefront sub-header dropdown visibility by removing the clipping overflow and raising the non-viewport navigation-menu stacking context.
 - [x] 2026-04-29 22:28 Restarted the local dev server and verified on the homepage that the `Oil & Ghee` submenu opens visibly above the category rail again.
 - [x] 2026-04-29 22:02 Completed a browser-led dark-mode contrast audit across storefront, login, product catalog, and dashboard shells, then fixed the shared visibility regressions.

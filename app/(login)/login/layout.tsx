@@ -7,7 +7,6 @@ import { getRoshalSessionUser } from "@/lib/store-auth";
 import {
   getRoshalNavigationPages,
   getRoshalPages,
-  getRoshalPaymentSettings,
   getRoshalSiteSettings,
 } from "@/lib/store-content";
 import { getRoshalLocale } from "@/lib/store-i18n";
@@ -28,23 +27,15 @@ export default async function LoginLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [
-    locale,
-    allPages,
-    pages,
-    siteSettings,
-    sessionUser,
-    paymentSettings,
-    taxonomyBundle,
-  ] = await Promise.all([
-    getRoshalLocale(),
-    getRoshalPages(),
-    getRoshalNavigationPages(),
-    getRoshalSiteSettings(),
-    getRoshalSessionUser(),
-    getRoshalPaymentSettings(),
-    getRoshalTaxonomy(),
-  ]);
+  const [locale, allPages, pages, siteSettings, sessionUser, taxonomyBundle] =
+    await Promise.all([
+      getRoshalLocale(),
+      getRoshalPages(),
+      getRoshalNavigationPages(),
+      getRoshalSiteSettings(),
+      getRoshalSessionUser(),
+      getRoshalTaxonomy(),
+    ]);
 
   const taxonomy = buildStorefrontTaxonomy(taxonomyBundle);
   const footerCategoryLinks = buildFooterCategoryLinks(taxonomyBundle);
@@ -80,7 +71,6 @@ export default async function LoginLayout({
           <StorefrontFooter
             locale={locale}
             pages={allPages}
-            paymentOptions={paymentSettings.options}
             siteSettings={siteSettings}
             categoryLinks={footerCategoryLinks}
           />

@@ -309,7 +309,7 @@ const defaultRoshalCorePageEnhancements: RoshalMarketingSection[] = [
           "অর্ডার কনফার্মেশন, edit, cancellation বা delivery follow-up-এর জন্য।",
           "For order confirmation, edits, cancellation, or delivery follow-up.",
         ),
-        href: "tel:+8801719403627",
+        href: "tel:+8801805767300",
       },
       {
         label: localizedValue("WhatsApp", "WhatsApp"),
@@ -318,7 +318,7 @@ const defaultRoshalCorePageEnhancements: RoshalMarketingSection[] = [
           "দ্রুত screenshot, payment proof বা short support message শেয়ার করার জন্য।",
           "Best for sharing screenshots, payment proof, or a quick support message.",
         ),
-        href: "https://wa.me/8801719403627",
+        href: "https://wa.me/8801805767300",
       },
       {
         label: localizedValue("Wholesale", "Wholesale"),
@@ -842,7 +842,7 @@ export const defaultRoshalSections: RoshalMarketingSection[] = [
       "We respond quickly over calls, email, and WhatsApp.",
     ),
     ctaLabel: localizedValue("হোয়াটসঅ্যাপ করুন", "Message on WhatsApp"),
-    ctaHref: "https://wa.me/8801719403627",
+    ctaHref: "https://wa.me/8801805767300",
     imageUrl: "",
     items: [
       {

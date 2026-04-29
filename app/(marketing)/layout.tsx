@@ -6,10 +6,10 @@ import { StorefrontHeader } from "@/components/storefront/storefront-header";
 import { WhatsAppFloatingButton } from "@/components/storefront/whatsapp-floating-button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { getRoshalSessionUser } from "@/lib/store-auth";
+import { getWhatsAppHref } from "@/lib/store-contact";
 import {
   getRoshalNavigationPages,
   getRoshalPages,
-  getRoshalPaymentSettings,
   getRoshalSiteSettings,
 } from "@/lib/store-content";
 import { getRoshalLocale } from "@/lib/store-i18n";
@@ -31,23 +31,15 @@ export default async function MarketingLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [
-    locale,
-    allPages,
-    pages,
-    siteSettings,
-    sessionUser,
-    paymentSettings,
-    taxonomyBundle,
-  ] = await Promise.all([
-    getRoshalLocale(),
-    getRoshalPages(),
-    getRoshalNavigationPages(),
-    getRoshalSiteSettings(),
-    getRoshalSessionUser(),
-    getRoshalPaymentSettings(),
-    getRoshalTaxonomy(),
-  ]);
+  const [locale, allPages, pages, siteSettings, sessionUser, taxonomyBundle] =
+    await Promise.all([
+      getRoshalLocale(),
+      getRoshalPages(),
+      getRoshalNavigationPages(),
+      getRoshalSiteSettings(),
+      getRoshalSessionUser(),
+      getRoshalTaxonomy(),
+    ]);
 
   const taxonomy = buildStorefrontTaxonomy(taxonomyBundle);
   const footerCategoryLinks = buildFooterCategoryLinks(taxonomyBundle);
@@ -72,11 +64,7 @@ export default async function MarketingLayout({
       />
 
       <WhatsAppFloatingButton
-        href={
-          siteSettings.whatsappPhone.replace(/\D/g, "")
-            ? `https://wa.me/${siteSettings.whatsappPhone.replace(/\D/g, "")}`
-            : "/contact"
-        }
+        href={getWhatsAppHref(siteSettings.whatsappPhone) || "/contact"}
         label={locale === "bn" ? "চ্যাট করুন" : "Chat with us"}
       />
 
@@ -94,7 +82,6 @@ export default async function MarketingLayout({
           <StorefrontFooter
             locale={locale}
             pages={allPages}
-            paymentOptions={paymentSettings.options}
             siteSettings={siteSettings}
             categoryLinks={footerCategoryLinks}
           />

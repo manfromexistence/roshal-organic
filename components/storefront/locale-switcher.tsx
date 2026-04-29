@@ -1,14 +1,20 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { ROSHAL_LOCALE_COOKIE } from "@/lib/store-locale";
 import type { RoshalLocale } from "@/lib/store-types";
+import { cn } from "@/lib/utils";
 
-export function LocaleSwitcher({ locale }: { locale: RoshalLocale }) {
+export function LocaleSwitcher({
+  locale,
+  className,
+}: {
+  locale: RoshalLocale;
+  className?: string;
+}) {
   const router = useRouter();
-  const pathname = usePathname();
   const [currentLocale, setCurrentLocale] = useState<RoshalLocale>(locale);
 
   useEffect(() => {
@@ -20,12 +26,7 @@ export function LocaleSwitcher({ locale }: { locale: RoshalLocale }) {
     document.documentElement.lang = currentLocale;
   }, [currentLocale]);
 
-  const toggleLabel =
-    currentLocale === "bn" ? "Switch to English" : "বাংলায় পরিবর্তন করুন";
-
-  const toggleLocale = async () => {
-    const nextLocale = currentLocale === "bn" ? "en" : "bn";
-
+  const persistLocale = async (nextLocale: RoshalLocale) => {
     setCurrentLocale(nextLocale);
     localStorage.setItem("language", nextLocale);
     document.documentElement.lang = nextLocale;
@@ -51,15 +52,36 @@ export function LocaleSwitcher({ locale }: { locale: RoshalLocale }) {
   };
 
   return (
-    <Button
-      variant="outline"
-      onClick={toggleLocale}
-      aria-label={toggleLabel}
-      className="relative h-10 min-w-14 shrink-0"
-      data-pathname={pathname}
-      title={toggleLabel}
+    <ToggleGroup
+      type="single"
+      value={currentLocale}
+      onValueChange={(value) => {
+        if (!value || value === currentLocale) {
+          return;
+        }
+
+        void persistLocale(value as RoshalLocale);
+      }}
+      aria-label="Language switch"
+      className={cn(
+        "h-9 shrink-0 rounded-full bg-card/90 shadow-sm p-0 overflow-hidden",
+        className,
+      )}
     >
-      {currentLocale === "en" ? "BN" : "EN"}
-    </Button>
+      <ToggleGroupItem
+        value="bn"
+        aria-label="Switch language to Bangla"
+        className="min-w-[2.7rem] rounded-full px-2.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground data-[state=on]:bg-primary data-[state=on]:text-primary-foreground hover:text-foreground"
+      >
+        BN
+      </ToggleGroupItem>
+      <ToggleGroupItem
+        value="en"
+        aria-label="Switch language to English"
+        className="min-w-[2.7rem] rounded-full px-2.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground data-[state=on]:bg-primary data-[state=on]:text-primary-foreground hover:text-foreground"
+      >
+        EN
+      </ToggleGroupItem>
+    </ToggleGroup>
   );
 }

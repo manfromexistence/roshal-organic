@@ -329,6 +329,31 @@ function mapPaymentSettings(
 function mapSiteSettings(
   row: typeof roshalSiteSettings.$inferSelect,
 ): RoshalSiteSettings {
+  const normalizedContactPhone =
+    row.contactPhone === "+880 1719-403627" ||
+    row.contactPhone === "01719-403627" ||
+    row.contactPhone === "01719403627"
+      ? defaultRoshalSiteSettings.contactPhone
+      : row.contactPhone || defaultRoshalSiteSettings.contactPhone;
+  const normalizedContactEmail =
+    row.contactEmail === "info@roshalorganic.com"
+      ? defaultRoshalSiteSettings.contactEmail
+      : row.contactEmail || defaultRoshalSiteSettings.contactEmail;
+  const normalizedWhatsappPhone =
+    row.whatsappPhone === "+880 1719-403627" ||
+    row.whatsappPhone === "01719-403627" ||
+    row.whatsappPhone === "01719403627"
+      ? defaultRoshalSiteSettings.whatsappPhone
+      : row.whatsappPhone || defaultRoshalSiteSettings.whatsappPhone;
+  const normalizedAddressBn =
+    row.addressBn === "ঢাকা, বাংলাদেশ"
+      ? defaultRoshalSiteSettings.address.bn
+      : row.addressBn || defaultRoshalSiteSettings.address.bn;
+  const normalizedAddressEn =
+    row.addressEn === "Dhaka, Bangladesh"
+      ? defaultRoshalSiteSettings.address.en
+      : row.addressEn || defaultRoshalSiteSettings.address.en;
+
   return {
     id: row.id,
     brandName: row.brandName,
@@ -336,13 +361,13 @@ function mapSiteSettings(
       bn: row.taglineBn,
       en: row.taglineEn,
     },
-    contactPhone: row.contactPhone || "",
-    contactEmail: row.contactEmail || "",
-    whatsappPhone: row.whatsappPhone || "",
-    facebookUrl: row.facebookUrl || "",
+    contactPhone: normalizedContactPhone,
+    contactEmail: normalizedContactEmail,
+    whatsappPhone: normalizedWhatsappPhone,
+    facebookUrl: row.facebookUrl || defaultRoshalSiteSettings.facebookUrl,
     address: {
-      bn: row.addressBn || "",
-      en: row.addressEn || "",
+      bn: normalizedAddressBn,
+      en: normalizedAddressEn,
     },
     heroLayout: row.heroLayout,
     cardStyle: row.cardStyle,

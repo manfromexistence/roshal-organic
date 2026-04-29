@@ -82,29 +82,29 @@ export function HomeTestimonialCarousel({
             key={testimonial.key}
             className="basis-[92%] pl-4 md:basis-1/2 md:pl-6 lg:basis-1/3"
           >
-            <Card className="h-full border-border/70 bg-card shadow-sm hover:bg-accent">
-              <CardContent className="flex h-full flex-col justify-between gap-5 p-5 md:gap-6 md:p-6">
+            <Card className="h-full rounded-md border-border/70 bg-card shadow-sm hover:bg-accent/60">
+              <CardContent className="flex h-full flex-col justify-between gap-4 p-4 md:gap-5 md:p-5">
                 <div className="space-y-4">
-                  <div className="inline-flex rounded-full bg-primary/10 p-2 text-primary">
-                    <Quote className="size-5" />
+                  <div className="inline-flex rounded-md bg-primary/10 p-2 text-primary">
+                    <Quote className="size-4" />
                   </div>
-                  <p className="text-sm leading-7 text-muted-foreground md:text-base">
+                  <p className="line-clamp-4 text-sm leading-6 text-muted-foreground">
                     {testimonial.quote[language]}
                   </p>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="relative size-12 overflow-hidden rounded-full">
+                  <div className="relative size-10 overflow-hidden rounded-full">
                     {testimonial.image ? (
                       <Image
                         src={testimonial.image}
                         alt={testimonial.name}
                         fill
                         className="object-cover"
-                        sizes="48px"
+                        sizes="40px"
                       />
                     ) : (
-                      <Avatar className="size-12">
+                      <Avatar className="size-10">
                         <AvatarFallback className="bg-primary/10 text-primary">
                           {testimonial.name
                             .split(" ")
@@ -117,8 +117,8 @@ export function HomeTestimonialCarousel({
                     )}
                   </div>
                   <div>
-                    <p className="font-medium">{testimonial.name}</p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm font-medium">{testimonial.name}</p>
+                    <p className="text-xs text-muted-foreground">
                       {testimonial.role[language]}
                     </p>
                   </div>

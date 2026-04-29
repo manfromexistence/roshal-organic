@@ -46,12 +46,12 @@ export function RoshalProductCard({
   const badgeLabel = resolveDiscountLabel(product, locale);
 
   return (
-    <ImageCard className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] border-border/80 bg-card shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary/25 hover:shadow-md">
+    <ImageCard className="group flex h-full flex-col overflow-hidden rounded-md border-border/80 bg-card shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary/25 hover:shadow-md">
       <ImageCardHeader className="p-0">
         <div className="relative">
           <Link
             href={`/products/${product.slug}`}
-            className="block rounded-t-[1.75rem] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="block rounded-t-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <div className="relative aspect-square overflow-hidden border-b border-border/70 bg-muted/35">
               <Image
@@ -83,7 +83,7 @@ export function RoshalProductCard({
         </div>
       </ImageCardHeader>
 
-      <ImageCardContent className="flex flex-1 flex-col items-start gap-3 px-4 pb-4 pt-4 text-left">
+      <ImageCardContent className="flex flex-1 flex-col items-start gap-2.5 px-3.5 pb-3.5 pt-3.5 text-left">
         <div className="w-full space-y-2">
           <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
             {categoryLabel}
@@ -126,8 +126,8 @@ export function RoshalProductCard({
       </ImageCardContent>
 
       <ImageCardFooter className="mt-auto px-0 pb-0 pt-0">
-        <div className="grid w-full gap-3 border-t border-border/70 px-4 pb-4 pt-4">
-          <Button asChild variant="outline" className="rounded-lg">
+        <div className="grid w-full gap-2.5 border-t border-border/70 px-3.5 pb-3.5 pt-3.5">
+          <Button asChild variant="outline" className="rounded-md">
             <Link href={`/products/${product.slug}`}>
               <Eye className="size-4" />
               {locale === "bn" ? "বিস্তারিত" : "Details"}
@@ -137,7 +137,7 @@ export function RoshalProductCard({
           <AddToCartButton
             product={product}
             locale={locale}
-            className="w-full rounded-lg"
+            className="w-full rounded-md"
           />
         </div>
       </ImageCardFooter>

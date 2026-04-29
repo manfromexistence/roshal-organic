@@ -1,85 +1,40 @@
-import { Mail, MapPin, MessageCircle, Phone, ShieldCheck } from "lucide-react";
+import { Globe, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { getWhatsAppHref } from "@/lib/store-contact";
 import { getLocalizedValue, localizedValue } from "@/lib/store-locale";
 import type { StorefrontFooterCategoryLink } from "@/lib/store-taxonomy";
 import type {
   RoshalLocale,
   RoshalMarketingPage,
-  RoshalPaymentOption,
   RoshalSiteSettings,
 } from "@/lib/store-types";
-
-const partnerLogos = [
-  { src: "/logos/bkash-com.png", alt: "bKash" },
-  { src: "/logos/nagad-com-bd.png", alt: "Nagad" },
-  { src: "/logos/bracbank-com.png", alt: "BRAC Bank" },
-  { src: "/logos/sonali-bank-com.png", alt: "Sonali Bank" },
-  { src: "/logos/janatabank-bd-com.png", alt: "Janata Bank" },
-  { src: "/logos/bdpost-gov-bd.png", alt: "BD Post" },
-  { src: "/logos/btrc-gov-bd.png", alt: "BTRC" },
-  { src: "/logos/grameen-com.png", alt: "Grameen" },
-  { src: "/logos/beximco-com.png", alt: "Beximco" },
-  { src: "/logos/pran-rfl-com.png", alt: "PRAN-RFL" },
-  { src: "/logos/partexstar-com.png", alt: "Partex Star" },
-  { src: "/logos/mohammadi-group-com.png", alt: "Mohammadi Group" },
-];
 
 const infoPageSlugs = [
   "about",
   "contact",
   "company-information",
-  "roshal-stories",
-  "terms-and-conditions",
   "privacy-policy",
-  "careers",
+  "terms-and-conditions",
 ] as const;
 
 const supportLinkConfig = [
   {
-    href: "/orders",
-    fallbackLabel: localizedValue("অর্ডার ট্র্যাকিং", "Order Tracking"),
+    href: "/track-order",
+    fallbackLabel: localizedValue("অর্ডার ট্র্যাকিং", "Track order"),
   },
   {
     slug: "support-center",
-    fallbackLabel: localizedValue("সাপোর্ট সেন্টার", "Support Center"),
-  },
-  {
-    slug: "how-to-order",
-    fallbackLabel: localizedValue("কিভাবে অর্ডার করবেন", "How to Order"),
-  },
-  {
-    slug: "payment",
-    fallbackLabel: localizedValue("পেমেন্ট", "Payment"),
-  },
-  {
-    slug: "shipping",
-    fallbackLabel: localizedValue("শিপিং", "Shipping"),
+    fallbackLabel: localizedValue("সাপোর্ট সেন্টার", "Support center"),
   },
   {
     slug: "faq",
     fallbackLabel: localizedValue("প্রশ্নোত্তর", "FAQ"),
   },
   {
-    slug: "pre-order",
-    fallbackLabel: localizedValue("প্রি-অর্ডার", "Pre-Order"),
-  },
-] as const;
-
-const policyLinkConfig = [
-  {
-    slug: "happy-return",
-    fallbackLabel: localizedValue("হ্যাপি রিটার্ন", "Happy Return"),
-  },
-  {
-    slug: "refund-policy",
-    fallbackLabel: localizedValue("রিফান্ড নীতি", "Refund Policy"),
-  },
-  {
-    slug: "cancellation",
-    fallbackLabel: localizedValue("ক্যানসেলেশন", "Cancellation"),
+    slug: "shipping",
+    fallbackLabel: localizedValue("ডেলিভারি", "Delivery"),
   },
 ] as const;
 
@@ -98,33 +53,20 @@ function resolvePageLink(
   };
 }
 
-function resolveStaticLink(item: {
-  href: string;
-  fallbackLabel: ReturnType<typeof localizedValue>;
-}) {
-  return {
-    href: item.href,
-    label: item.fallbackLabel,
-  };
-}
-
 export function StorefrontFooter({
   locale,
   pages,
-  paymentOptions,
   siteSettings,
   categoryLinks,
 }: {
   locale: RoshalLocale;
   pages: RoshalMarketingPage[];
-  paymentOptions: RoshalPaymentOption[];
   siteSettings: RoshalSiteSettings;
   categoryLinks: StorefrontFooterCategoryLink[];
 }) {
-  const whatsappDigits = siteSettings.whatsappPhone.replace(/\D/g, "");
-  const whatsappHref = whatsappDigits
-    ? `https://wa.me/${whatsappDigits}`
-    : `tel:${siteSettings.contactPhone}`;
+  const whatsappHref =
+    getWhatsAppHref(siteSettings.whatsappPhone) ||
+    `tel:${siteSettings.contactPhone}`;
   const informationalPages = infoPageSlugs
     .map((slug) =>
       pages.find((page) => page.slug === slug && page.status === "published"),
@@ -133,80 +75,93 @@ export function StorefrontFooter({
   const supportLinks = supportLinkConfig.map((item) =>
     "slug" in item
       ? resolvePageLink(pages, item.slug, item.fallbackLabel)
-      : resolveStaticLink(item),
+      : { href: item.href, label: item.fallbackLabel },
   );
-  const policyLinks = policyLinkConfig.map((item) =>
-    resolvePageLink(pages, item.slug, item.fallbackLabel),
-  );
-  const enabledPayments = paymentOptions
-    .filter((option) => option.enabled)
-    .sort((left, right) => left.sortOrder - right.sortOrder);
 
   return (
-    <footer className="border-t border-border/60 bg-background">
-      <div className="container mx-auto space-y-8 px-4 py-8 sm:py-12 md:py-16">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[1.35fr_1fr_1fr_1fr_1fr]">
-          <div className="space-y-4 sm:space-y-6">
+    <footer className="border-t border-border/60 bg-card/70">
+      <div className="container mx-auto space-y-6 px-4 py-8 sm:px-6 md:px-8">
+        <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr_0.8fr_0.9fr]">
+          <div className="space-y-4">
             <Link href="/" className="inline-flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-border/70 bg-card shadow-sm sm:h-14 sm:w-14 sm:rounded-2xl">
+              <div className="flex h-11 w-11 items-center justify-center rounded-md border border-border/70 bg-background shadow-sm">
                 <Image
                   src="/logo.png"
                   alt={siteSettings.brandName}
                   width={42}
                   height={42}
-                  className="h-8 w-auto object-cover sm:h-10"
+                  className="h-9 w-auto object-contain dark:hidden"
+                />
+                <Image
+                  src="/logo-light.png"
+                  alt={siteSettings.brandName}
+                  width={42}
+                  height={42}
+                  className="hidden h-9 w-auto object-contain dark:block"
                 />
               </div>
-              <div>
-                <p className="text-lg font-bold text-foreground sm:text-xl">
+              <div className="space-y-1">
+                <p className="font-wordmark text-xl text-foreground">
                   {siteSettings.brandName}
                 </p>
-                <p className="text-xs text-muted-foreground sm:text-sm">
+                <p className="text-sm text-muted-foreground">
                   {getLocalizedValue(locale, siteSettings.tagline)}
                 </p>
               </div>
             </Link>
 
-            <p className="max-w-sm text-xs leading-6 text-muted-foreground sm:text-sm sm:leading-7">
+            <p className="max-w-sm text-sm leading-6 text-muted-foreground">
               {locale === "bn"
-                ? "প্রাকৃতিক মধু, তেল, ঘি, গুড়, ফল এবং বিশ্বস্ত অর্গানিক প্রয়োজনীয় সব পণ্য এখন এক জায়গায়।"
-                : "Natural honey, oils, ghee, jaggery, fruit, and trusted organic essentials in one storefront."}
+                ? "খাঁটি মধু, ঘি, তেল, গুড়, ফল এবং দৈনন্দিন অর্গানিক প্রয়োজনীয় পণ্য এখন এক জায়গায়।"
+                : "Pure honey, ghee, oils, jaggery, fruit, and trusted organic essentials in one storefront."}
             </p>
 
-            <div className="space-y-2 text-xs text-muted-foreground sm:space-y-3 sm:text-sm">
+            <div className="space-y-2 text-sm text-muted-foreground">
               <Link
                 href={`tel:${siteSettings.contactPhone}`}
-                className="flex items-center gap-2 sm:gap-3 transition-colors hover:text-primary"
+                className="flex items-center gap-2 transition-colors hover:text-primary"
               >
-                <Phone className="size-3.5 sm:size-4" />
+                <Phone className="size-4" />
                 <span>{siteSettings.contactPhone}</span>
               </Link>
               <Link
                 href={`mailto:${siteSettings.contactEmail}`}
-                className="flex items-center gap-2 sm:gap-3 transition-colors hover:text-primary"
+                className="flex items-center gap-2 transition-colors hover:text-primary"
               >
-                <Mail className="size-3.5 sm:size-4" />
+                <Mail className="size-4" />
                 <span>{siteSettings.contactEmail}</span>
               </Link>
-              <div className="flex items-start gap-2 sm:gap-3">
-                <MapPin className="mt-0.5 size-3.5 shrink-0 sm:size-4" />
+              <div className="flex items-start gap-2">
+                <MapPin className="mt-0.5 size-4 shrink-0" />
                 <span>{getLocalizedValue(locale, siteSettings.address)}</span>
               </div>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
               <Link
                 href={whatsappHref}
-                className="flex items-center gap-2 sm:gap-3 transition-colors hover:text-primary"
+                className="inline-flex items-center gap-2 rounded-sm border border-border/70 bg-background px-3 py-2 text-sm transition-colors hover:border-primary/30 hover:text-primary"
               >
-                <MessageCircle className="size-3.5 sm:size-4" />
-                <span>{siteSettings.whatsappPhone}</span>
+                <MessageCircle className="size-4" />
+                {locale === "bn" ? "হোয়াটসঅ্যাপ" : "WhatsApp"}
               </Link>
+              {siteSettings.facebookUrl ? (
+                <Link
+                  href={siteSettings.facebookUrl}
+                  className="inline-flex items-center gap-2 rounded-sm border border-border/70 bg-background px-3 py-2 text-sm transition-colors hover:border-primary/30 hover:text-primary"
+                >
+                  <Globe className="size-4" />
+                  Facebook
+                </Link>
+              ) : null}
             </div>
           </div>
 
           <div className="space-y-3">
-            <h3 className="text-base font-semibold text-foreground sm:text-lg">
+            <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-foreground/80">
               {locale === "bn" ? "তথ্য" : "Information"}
             </h3>
-            <div className="space-y-2 text-xs text-muted-foreground sm:space-y-3 sm:text-sm">
+            <div className="space-y-2 text-sm text-muted-foreground">
               {informationalPages.map((page) => (
                 <Link
                   key={page.id}
@@ -220,11 +175,11 @@ export function StorefrontFooter({
           </div>
 
           <div className="space-y-3">
-            <h3 className="text-base font-semibold text-foreground sm:text-lg">
-              {locale === "bn" ? "ক্যাটাগরি" : "Shop By"}
+            <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-foreground/80">
+              {locale === "bn" ? "ক্যাটাগরি" : "Categories"}
             </h3>
-            <div className="space-y-2 text-xs text-muted-foreground sm:space-y-3 sm:text-sm">
-              {categoryLinks.map((link) => (
+            <div className="space-y-2 text-sm text-muted-foreground">
+              {categoryLinks.slice(0, 6).map((link) => (
                 <Link
                   key={link.key}
                   href={link.href}
@@ -237,10 +192,10 @@ export function StorefrontFooter({
           </div>
 
           <div className="space-y-3">
-            <h3 className="text-base font-semibold text-foreground sm:text-lg">
+            <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-foreground/80">
               {locale === "bn" ? "সাপোর্ট" : "Support"}
             </h3>
-            <div className="space-y-2 text-xs text-muted-foreground sm:space-y-3 sm:text-sm">
+            <div className="space-y-2 text-sm text-muted-foreground">
               {supportLinks.map((link) => (
                 <Link
                   key={link.href}
@@ -252,88 +207,16 @@ export function StorefrontFooter({
               ))}
             </div>
           </div>
-
-          <div className="space-y-3">
-            <h3 className="text-base font-semibold text-foreground sm:text-lg">
-              {locale === "bn" ? "গ্রাহক নীতি" : "Consumer Policy"}
-            </h3>
-            <div className="space-y-2 text-xs text-muted-foreground sm:space-y-3 sm:text-sm">
-              {policyLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="block transition-colors hover:text-primary"
-                >
-                  {getLocalizedValue(locale, link.label)}
-                </Link>
-              ))}
-            </div>
-          </div>
         </div>
 
         <Separator />
 
-        <div className="grid gap-6 sm:gap-8 lg:grid-cols-[1fr_1.4fr] lg:items-start">
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="size-4 text-primary" />
-              <h3 className="text-sm font-semibold text-foreground sm:text-base">
-                {locale === "bn"
-                  ? "সক্রিয় পেমেন্ট অপশন"
-                  : "Active payment options"}
-              </h3>
-            </div>
-            <div className="flex flex-wrap gap-1.5 sm:gap-2">
-              {enabledPayments.map((option) => (
-                <Badge
-                  key={option.key}
-                  variant="secondary"
-                  className="rounded-full px-2 py-0.5 text-xs sm:px-3 sm:py-1 sm:text-sm"
-                >
-                  {getLocalizedValue(locale, option.label)}
-                </Badge>
-              ))}
-            </div>
-            <p className="text-xs leading-6 text-muted-foreground sm:text-sm sm:leading-7">
-              {locale === "bn"
-                ? "ম্যানুয়াল ভেরিফিকেশন এবং সিকিউর গেটওয়ে – দুই ধরনের পেমেন্ট ফ্লোই এই স্টোরফ্রন্টে সমর্থিত।"
-                : "Manual verification and secure gateway payment paths are both supported for checkout."}
-            </p>
-          </div>
-
-          <div className="space-y-3">
-            <h3 className="text-sm font-semibold text-foreground sm:text-base">
-              {locale === "bn"
-                ? "পেমেন্ট পার্টনার ও বিশ্বস্ত প্রতিষ্ঠান"
-                : "Payment Partners & Trusted Companies"}
-            </h3>
-            <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 sm:gap-3 lg:grid-cols-6 xl:grid-cols-4">
-              {partnerLogos.map((logo) => (
-                <div
-                  key={logo.src}
-                  className="flex h-16 items-center justify-center rounded-xl border border-border/70 bg-card px-2 shadow-sm sm:h-20 sm:rounded-2xl sm:px-4"
-                >
-                  <Image
-                    src={logo.src}
-                    alt={logo.alt}
-                    width={132}
-                    height={42}
-                    className="rounded-md h-8 w-auto object-cover opacity-85 sm:h-10"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <Separator />
-
-        <div className="flex flex-col gap-3 text-center text-xs text-muted-foreground sm:flex-row sm:text-sm md:items-center md:justify-between md:text-left">
+        <div className="flex flex-col gap-2 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>
             © 2026 {siteSettings.brandName}.{" "}
             {locale === "bn" ? "সর্বস্ব সংরক্ষিত।" : "All rights reserved."}
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:justify-end sm:gap-4">
+          <div className="flex flex-wrap gap-3">
             <Link
               href="/products"
               className="transition-colors hover:text-primary"
@@ -341,10 +224,10 @@ export function StorefrontFooter({
               {locale === "bn" ? "পণ্যসমূহ" : "Products"}
             </Link>
             <Link
-              href="/orders"
+              href="/track-order"
               className="transition-colors hover:text-primary"
             >
-              {locale === "bn" ? "অর্ডার ট্র্যাকিং" : "Order Tracking"}
+              {locale === "bn" ? "ট্র্যাক অর্ডার" : "Track order"}
             </Link>
             <Link
               href="/contact"

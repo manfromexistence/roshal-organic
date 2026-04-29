@@ -94,6 +94,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added dynamic title fetching to PageBreadcrumb component - now detects ID segments and fetches entity names from database
 
 ### Changed
+- Changed the storefront locale switch into a persistent BN/EN segmented control, moved the desktop language picker into the `More` dropdown, tightened the main header height, and reduced the fixed-page marketing offset so the shorter header still clears page content correctly
+- Changed the desktop storefront category rail to use a primary-tinted translucent background and explicitly center the category/subcategory items vertically while keeping the existing shadcn navigation-menu dropdown structure
+- Changed the homepage again for first client delivery by removing the extra mixed product sections and keeping a leaner set of core hero/category/shelf/testimonial blocks
+- Changed the public footer, contact cards, floating WhatsApp CTA, and legacy persisted site-settings normalization so the live storefront consistently shows the new client-provided phone, email, address, and WhatsApp link
+- Changed the public login/signup flow to use a more ecommerce-friendly customer form with Bangladesh district/thana fields, optional email, mobile-first signup, and safer default-address storage
+- Changed the storefront checkout to support home-vs-office delivery selection, append delivery type to saved notes, and surface the matched delivery-zone label and charge more clearly in the order summary
 - Changed the marketing header brand text to use a dedicated cursive wordmark font utility so the storefront name reads more like a logo without introducing a hardcoded external font dependency
 - Changed the Roshal site-settings schema bootstrapper to inspect nested libsql error causes, so repeated `delivery_zones_json` migration attempts no longer break checkout order creation after the column already exists
 - Changed the desktop storefront sub-header to use tighter `rounded-sm` shadcn navigation-menu surfaces, allow category wrapping, and open wider subcategory panels so the expanded taxonomy remains readable without overflow

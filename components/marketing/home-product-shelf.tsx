@@ -39,7 +39,7 @@ function ShelfProductCard({
   language: Language;
 }) {
   return (
-    <ImageCard className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] border-border/80 bg-card shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary/25 hover:shadow-md">
+    <ImageCard className="group flex h-full flex-col overflow-hidden rounded-md border-border/80 bg-card shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary/25 hover:shadow-md">
       <ImageCardHeader className="p-0">
         <div className="relative aspect-square overflow-hidden border-b border-border/70 bg-muted/35">
           <Image
@@ -60,9 +60,9 @@ function ShelfProductCard({
         </div>
       </ImageCardHeader>
 
-      <ImageCardContent className="flex flex-1 flex-col items-start gap-3 px-4 pb-4 pt-4 text-left">
+      <ImageCardContent className="flex flex-1 flex-col items-start gap-2.5 px-3.5 pb-3.5 pt-3.5 text-left">
         <div className="w-full space-y-2">
-          <ImageCardTitle className="line-clamp-2 text-base leading-6 text-foreground">
+          <ImageCardTitle className="line-clamp-2 text-[0.98rem] leading-6 text-foreground">
             {product.name[language]}
           </ImageCardTitle>
           <div className="flex flex-wrap items-center gap-2 text-sm">

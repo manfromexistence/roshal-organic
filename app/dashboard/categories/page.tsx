@@ -379,7 +379,10 @@ export default async function DashboardCategoriesPage({
                               }
                             />
                           </form>
-                          <form action={removeRoshalSubcategory} className="mt-4">
+                          <form
+                            action={removeRoshalSubcategory}
+                            className="mt-4"
+                          >
                             <input
                               type="hidden"
                               name="id"

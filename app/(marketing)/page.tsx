@@ -1,5 +1,4 @@
 import { FeaturedProducts } from "@/components/marketing/featured-products";
-import { FreshVegetables } from "@/components/marketing/fresh-vegetables";
 import { HomeBrandStrip } from "@/components/marketing/home-brand-strip";
 import { HomeCategoryStrip } from "@/components/marketing/home-category-strip";
 import { HomeTestimonialCarousel } from "@/components/marketing/home-testimonial-carousel";
@@ -8,11 +7,8 @@ import {
   type LandingHeroBanner,
 } from "@/components/marketing/landing-hero";
 import { NewArrivals } from "@/components/marketing/new-arrivals";
-import { OrganicProducts } from "@/components/marketing/organic-products";
-import { SeasonalProducts } from "@/components/marketing/seasonal-products";
 import { SpecialOffers } from "@/components/marketing/special-offers";
 import { TopSellers } from "@/components/marketing/top-sellers";
-import { Card, CardContent } from "@/components/ui/card";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import {
   getRoshalPageBundle,
@@ -64,11 +60,6 @@ interface LandingBrand {
   href: string;
 }
 
-interface LandingStat {
-  number: string;
-  label: LocalizedValue;
-}
-
 interface LandingTestimonial {
   key: string;
   quote: LocalizedValue;
@@ -79,10 +70,10 @@ interface LandingTestimonial {
 
 const fallbackBanners: LandingHeroBanner[] = [
   {
-    title: localizedValue("তাজা সবজির সমাহার", "Fresh market essentials"),
+    title: localizedValue("আজকের সেরা পছন্দ", "Fresh market essentials"),
     subtitle: localizedValue(
-      "সরাসরি কৃষকের কাছ থেকে নিরাপদ ও খাঁটি পণ্য।",
-      "Safe and authentic products sourced directly from growers.",
+      "মধু, ঘি, গুড়, আম এবং রান্নাঘরের প্রয়োজনীয় খাঁটি পণ্য।",
+      "Pure honey, ghee, jaggery, fruit, and trusted kitchen essentials.",
     ),
     image: "/special-offer.jpg",
     href: "/products",
@@ -91,18 +82,15 @@ const fallbackBanners: LandingHeroBanner[] = [
   {
     title: localizedValue("খাঁটি মধু ও ঘি", "Pure honey and ghee"),
     subtitle: localizedValue(
-      "পরিবারের জন্য প্রতিদিনের স্বাস্থ্যকর পছন্দ।",
-      "Everyday healthy staples for your family.",
+      "পরিবারের জন্য প্রতিদিনের স্বাস্থ্যকর ও বিশ্বস্ত পছন্দ।",
+      "Everyday healthy staples you can trust for your family.",
     ),
     image: "/brand-story.jpg",
     href: "/products?category=honey",
     ctaLabel: localizedValue("বিস্তারিত দেখুন", "Explore"),
   },
   {
-    title: localizedValue(
-      "ঋতুভিত্তিক ফল ও বাজার",
-      "Seasonal fruits and market picks",
-    ),
+    title: localizedValue("মৌসুমি ফল ও বাজার", "Seasonal fruits and market picks"),
     subtitle: localizedValue(
       "মৌসুমের সেরা সংগ্রহ এখন এক জায়গায়।",
       "The best of the season, collected in one storefront.",
@@ -153,26 +141,7 @@ const fallbackBrands: LandingBrand[] = [
     key: "seasonal-dates",
     name: "Premium Dates",
     image: "/dates.jpg",
-    href: "/products?category=jaggery-fruit",
-  },
-];
-
-const fallbackStats: LandingStat[] = [
-  {
-    number: "10K+",
-    label: localizedValue("সন্তুষ্ট গ্রাহক", "Happy customers"),
-  },
-  {
-    number: "150+",
-    label: localizedValue("দৈনিক অর্ডার", "Daily orders"),
-  },
-  {
-    number: "50+",
-    label: localizedValue("ক্যাটাগরি", "Categories"),
-  },
-  {
-    number: "99%",
-    label: localizedValue("খাঁটি মান", "Quality confidence"),
+    href: "/products?category=fruits-dates",
   },
 ];
 
@@ -316,7 +285,7 @@ function buildCategories(
   return [
     {
       key: "fallback-oil-ghee",
-      name: localizedValue("তেল ও ঘি", "Oil & Gheefasd"),
+      name: localizedValue("তেল ও ঘি", "Oil & Ghee"),
       image: "/ghee.jpg",
       href: "/products?category=oil-ghee",
     },
@@ -327,16 +296,16 @@ function buildCategories(
       href: "/products?category=honey",
     },
     {
-      key: "fallback-fruit",
-      name: localizedValue("ফল ও গুড়", "Fruit & Jaggery"),
+      key: "fallback-fruits-dates",
+      name: localizedValue("ফল ও খেজুর", "Fruits & Dates"),
       image: "/mango-2.jpg",
-      href: "/products?category=jaggery-fruit",
+      href: "/products?category=fruits-dates",
     },
     {
       key: "fallback-dairy",
       name: localizedValue("দুগ্ধজাত", "Dairy"),
       image: "/yogurt-2.jpg",
-      href: "/products?category=dairy",
+      href: "/products?category=dairy-breakfast",
     },
   ];
 }
@@ -476,20 +445,6 @@ function buildTestimonials(section: RoshalMarketingSection | undefined) {
   return fallbackTestimonials;
 }
 
-function buildStats(section: RoshalMarketingSection | undefined) {
-  if (section?.items.length) {
-    return section.items.map((item, index) => ({
-      number: item.value || fallbackStats[index % fallbackStats.length].number,
-      label:
-        item.label ||
-        item.title ||
-        fallbackStats[index % fallbackStats.length].label,
-    }));
-  }
-
-  return fallbackStats;
-}
-
 function sectionTitle(
   section: RoshalMarketingSection | undefined,
   fallback: LocalizedValue,
@@ -546,10 +501,6 @@ export default async function LandingPage() {
   const brandsSection = sectionsByKey.get("landing-brands");
   const newArrivalsSection = sectionsByKey.get("landing-new-arrivals");
   const specialOffersSection = sectionsByKey.get("landing-special-offers");
-  const freshSection = sectionsByKey.get("landing-fresh-picks");
-  const organicSection = sectionsByKey.get("landing-organic-picks");
-  const seasonalSection = sectionsByKey.get("landing-seasonal-picks");
-  const statsSection = sectionsByKey.get("landing-stats");
   const testimonialsSection = sectionsByKey.get("landing-testimonials");
 
   const heroBanners = buildHeroBanners(
@@ -571,18 +522,6 @@ export default async function LandingPage() {
     source: "reverse",
     limit: 8,
   }).map((product, index) => toMarketingProduct(product, language, index + 8));
-  const freshCards = selectProducts(products, freshSection, {
-    source: "all",
-    limit: 10,
-  }).map((product, index) => toMarketingProduct(product, language, index + 12));
-  const organicCards = selectProducts(products, organicSection, {
-    source: "featured",
-    limit: 10,
-  }).map((product, index) => toMarketingProduct(product, language, index + 24));
-  const seasonalCards = selectProducts(products, seasonalSection, {
-    source: "reverse",
-    limit: 10,
-  }).map((product, index) => toMarketingProduct(product, language, index + 36));
   const deals = buildDeals(
     specialOffersSection,
     siteSettings.primaryCtaHref,
@@ -590,13 +529,12 @@ export default async function LandingPage() {
   );
   const brands = buildBrands(brandsSection, language);
   const testimonials = buildTestimonials(testimonialsSection);
-  const stats = buildStats(statsSection);
   const categoriesDescription = sectionDescription(categoriesSection);
   const brandsDescription = sectionDescription(brandsSection);
   const testimonialsDescription = sectionDescription(testimonialsSection);
 
   return (
-    <div className="mt-6 flex w-full min-w-0 flex-col overflow-hidden">
+    <div className="flex w-full min-w-0 flex-col overflow-hidden">
       <LandingHero banners={heroBanners} language={language} />
 
       <section className="bg-background py-12 md:py-16">
@@ -684,51 +622,6 @@ export default async function LandingPage() {
         description={sectionDescription(specialOffersSection)}
       />
 
-      <FreshVegetables
-        language={language}
-        products={freshCards}
-        title={sectionTitle(
-          freshSection,
-          localizedValue("দৈনিক বাজার", "Daily Market Picks"),
-        )}
-        description={sectionDescription(freshSection)}
-        ctaHref={sectionCtaHref(freshSection, "/products")}
-        ctaLabel={sectionCtaLabel(
-          freshSection,
-          localizedValue("সব বাজার দেখুন", "View all market picks"),
-        )}
-      />
-
-      <OrganicProducts
-        language={language}
-        products={organicCards}
-        title={sectionTitle(
-          organicSection,
-          localizedValue("অর্গানিক পণ্য", "Organic Certified"),
-        )}
-        description={sectionDescription(organicSection)}
-        ctaHref={sectionCtaHref(organicSection, "/products")}
-        ctaLabel={sectionCtaLabel(
-          organicSection,
-          localizedValue("সব অর্গানিক পণ্য দেখুন", "View all organic items"),
-        )}
-      />
-
-      <SeasonalProducts
-        language={language}
-        products={seasonalCards}
-        title={sectionTitle(
-          seasonalSection,
-          localizedValue("মৌসুমি পছন্দ", "Premium Picks"),
-        )}
-        description={sectionDescription(seasonalSection)}
-        ctaHref={sectionCtaHref(seasonalSection, "/products")}
-        ctaLabel={sectionCtaLabel(
-          seasonalSection,
-          localizedValue("সব প্রিমিয়াম পণ্য দেখুন", "View all premium picks"),
-        )}
-      />
-
       <FeaturedProducts
         products={featuredCards}
         language={language}
@@ -744,47 +637,9 @@ export default async function LandingPage() {
         )}
       />
 
-      <section className="bg-muted/25 py-12 md:py-16">
-        <div className="container mx-auto space-y-8 px-4">
-          <ScrollReveal>
-            <div className="space-y-3 text-center">
-              <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
-                {getLocalizedValue(
-                  language,
-                  sectionTitle(
-                    statsSection,
-                    localizedValue("আমাদের পরিসংখ্যান", "Our Numbers"),
-                  ),
-                )}
-              </h2>
-            </div>
-          </ScrollReveal>
-
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4 md:gap-6">
-            {stats.map((stat, index) => (
-              <ScrollReveal
-                key={`${stat.number}-${stat.label.en}`}
-                delay={index * 0.08}
-              >
-                <Card className="border-border/70 bg-card shadow-sm hover:bg-accent">
-                  <CardContent className="space-y-2 p-5 text-center md:p-6">
-                    <p className="text-2xl font-semibold text-primary md:text-4xl">
-                      {stat.number}
-                    </p>
-                    <p className="text-xs leading-6 text-muted-foreground md:text-sm">
-                      {getLocalizedValue(language, stat.label)}
-                    </p>
-                  </CardContent>
-                </Card>
-              </ScrollReveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {testimonials.length > 0 ? (
         <section className="bg-background py-12 md:py-16">
-          <div className="container mx-auto space-y-8 px-4">
+          <div className="container mx-auto space-y-8 px-4 sm:px-6 md:px-8">
             <ScrollReveal>
               <div className="space-y-3 text-center">
                 <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">

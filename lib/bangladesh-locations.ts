@@ -41,17 +41,35 @@ export const bangladeshDistrictOptions: BangladeshDistrictOption[] = [
   {
     value: "cumilla",
     label: "Cumilla",
-    thanas: ["Cumilla Sadar", "Daudkandi", "Muradnagar", "Burichang", "Chauddagram"],
+    thanas: [
+      "Cumilla Sadar",
+      "Daudkandi",
+      "Muradnagar",
+      "Burichang",
+      "Chauddagram",
+    ],
   },
   {
     value: "sylhet",
     label: "Sylhet",
-    thanas: ["Sylhet Sadar", "Beanibazar", "Golapganj", "Companiganj", "Balaganj"],
+    thanas: [
+      "Sylhet Sadar",
+      "Beanibazar",
+      "Golapganj",
+      "Companiganj",
+      "Balaganj",
+    ],
   },
   {
     value: "khulna",
     label: "Khulna",
-    thanas: ["Khulna Sadar", "Sonadanga", "Dumuria", "Batiaghata", "Paikgachha"],
+    thanas: [
+      "Khulna Sadar",
+      "Sonadanga",
+      "Dumuria",
+      "Batiaghata",
+      "Paikgachha",
+    ],
   },
   {
     value: "rajshahi",
@@ -66,12 +84,24 @@ export const bangladeshDistrictOptions: BangladeshDistrictOption[] = [
   {
     value: "rangpur",
     label: "Rangpur",
-    thanas: ["Rangpur Sadar", "Gangachara", "Mithapukur", "Pirgachha", "Taraganj"],
+    thanas: [
+      "Rangpur Sadar",
+      "Gangachara",
+      "Mithapukur",
+      "Pirgachha",
+      "Taraganj",
+    ],
   },
   {
     value: "mymensingh",
     label: "Mymensingh",
-    thanas: ["Mymensingh Sadar", "Trishal", "Bhaluka", "Muktagachha", "Gauripur"],
+    thanas: [
+      "Mymensingh Sadar",
+      "Trishal",
+      "Bhaluka",
+      "Muktagachha",
+      "Gauripur",
+    ],
   },
   {
     value: "bogura",

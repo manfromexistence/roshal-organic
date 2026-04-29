@@ -262,6 +262,7 @@ export function CheckoutPageClient({
   const [paymentMethod, setPaymentMethod] = useState<RoshalPaymentMethod>(
     getDefaultCheckoutPaymentMethod(paymentSettings.options),
   );
+  const [deliveryType, setDeliveryType] = useState<"home" | "office">("home");
   const [formState, setFormState] = useState({
     customerName: user.name,
     phone: user.phone,
@@ -507,6 +508,9 @@ export function CheckoutPageClient({
         },
         body: JSON.stringify({
           ...formState,
+          notes: [formState.notes.trim(), `Delivery type: ${deliveryType}`]
+            .filter(Boolean)
+            .join(" | "),
           paymentMethod,
           items: visibleItems,
         }),
@@ -595,7 +599,7 @@ export function CheckoutPageClient({
 
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_24rem] xl:grid-cols-[minmax(0,1fr)_26rem]">
         <div className="space-y-6">
-          <Card className="rounded-3xl border-border/70 shadow-sm">
+          <Card className="rounded-md border-border/70 shadow-sm">
             <CardHeader className="gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div className="space-y-1.5">
                 <CardTitle className="text-2xl">
@@ -685,6 +689,60 @@ export function CheckoutPageClient({
                 autoComplete="address-level2"
               />
               <div className="space-y-2 md:col-span-2">
+                <Label>
+                  {locale === "bn" ? "ডেলিভারি ধরন" : "Delivery type"}
+                </Label>
+                <RadioGroup
+                  value={deliveryType}
+                  onValueChange={(value) => {
+                    setSubmitError(null);
+                    setDeliveryType(value === "office" ? "office" : "home");
+                  }}
+                  className="grid gap-3 sm:grid-cols-2"
+                >
+                  <Label
+                    htmlFor="delivery-home"
+                    className={`flex cursor-pointer items-start gap-3 rounded-sm border p-3 transition-colors ${
+                      deliveryType === "home"
+                        ? "border-primary/40 bg-primary/5"
+                        : "border-border/70 hover:bg-muted/20"
+                    }`}
+                  >
+                    <RadioGroupItem value="home" id="delivery-home" />
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium text-foreground">
+                        {locale === "bn" ? "হোম ডেলিভারি" : "Home delivery"}
+                      </p>
+                      <p className="text-xs leading-5 text-muted-foreground">
+                        {locale === "bn"
+                          ? "বাড়ির ঠিকানায় ডেলিভারি দিন।"
+                          : "Deliver to your home address."}
+                      </p>
+                    </div>
+                  </Label>
+                  <Label
+                    htmlFor="delivery-office"
+                    className={`flex cursor-pointer items-start gap-3 rounded-sm border p-3 transition-colors ${
+                      deliveryType === "office"
+                        ? "border-primary/40 bg-primary/5"
+                        : "border-border/70 hover:bg-muted/20"
+                    }`}
+                  >
+                    <RadioGroupItem value="office" id="delivery-office" />
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium text-foreground">
+                        {locale === "bn" ? "অফিস ডেলিভারি" : "Office delivery"}
+                      </p>
+                      <p className="text-xs leading-5 text-muted-foreground">
+                        {locale === "bn"
+                          ? "অফিস বা কর্মস্থলের ঠিকানায় ডেলিভারি দিন।"
+                          : "Deliver to your office or workplace."}
+                      </p>
+                    </div>
+                  </Label>
+                </RadioGroup>
+              </div>
+              <div className="space-y-2 md:col-span-2">
                 <Label htmlFor="notes">
                   {locale === "bn" ? "অর্ডার নোট" : "Order notes"}
                 </Label>
@@ -700,7 +758,7 @@ export function CheckoutPageClient({
             </CardContent>
           </Card>
 
-          <Card className="rounded-3xl border-border/70 shadow-sm">
+          <Card className="rounded-md border-border/70 shadow-sm">
             <CardHeader className="space-y-2">
               <CardTitle className="text-2xl">
                 {locale === "bn" ? "পেমেন্ট পদ্ধতি" : "Payment method"}
@@ -719,7 +777,7 @@ export function CheckoutPageClient({
                   setSubmitError(null);
                   setPaymentMethod(value as RoshalPaymentMethod);
                 }}
-                className="grid gap-3"
+                className="grid gap-3 sm:grid-cols-2"
               >
                 {paymentOptions.map((option) => {
                   const isSelected = option.key === paymentMethod;
@@ -728,7 +786,7 @@ export function CheckoutPageClient({
                     <Label
                       key={option.key}
                       htmlFor={option.key}
-                      className={`flex cursor-pointer items-start gap-4 rounded-2xl border p-4 transition-colors ${
+                      className={`flex cursor-pointer items-start gap-3 rounded-sm border p-3 transition-colors ${
                         isSelected
                           ? "border-primary/50 bg-primary/5"
                           : "border-border/70 hover:bg-muted/20"
@@ -737,14 +795,14 @@ export function CheckoutPageClient({
                       <RadioGroupItem value={option.key} id={option.key} />
                       <div className="space-y-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-medium text-foreground">
+                          <span className="text-sm font-medium text-foreground">
                             {getLocalizedValue(locale, option.label)}
                           </span>
-                          <Badge variant="outline" className="rounded-full">
+                          <Badge variant="outline" className="rounded-sm">
                             {getCheckoutPaymentModeLabel(locale, option)}
                           </Badge>
                         </div>
-                        <p className="text-sm leading-6 text-muted-foreground">
+                        <p className="text-xs leading-5 text-muted-foreground">
                           {getCheckoutPaymentSummary(
                             locale,
                             option,
@@ -764,7 +822,7 @@ export function CheckoutPageClient({
               </RadioGroup>
 
               {selectedOption ? (
-                <div className="space-y-5 rounded-3xl border border-border/70 bg-muted/20 p-5">
+                <div className="space-y-5 rounded-md border border-border/70 bg-muted/20 p-4">
                   <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_18rem]">
                     <div className="space-y-4">
                       <div className="space-y-2">
@@ -772,7 +830,7 @@ export function CheckoutPageClient({
                           <h3 className="text-lg font-semibold text-foreground">
                             {getLocalizedValue(locale, selectedOption.label)}
                           </h3>
-                          <Badge variant="secondary" className="rounded-full">
+                          <Badge variant="secondary" className="rounded-sm">
                             {getCheckoutPaymentModeLabel(
                               locale,
                               selectedOption,
@@ -789,7 +847,7 @@ export function CheckoutPageClient({
                       </div>
 
                       {selectedOption.accountNumber ? (
-                        <div className="rounded-2xl border border-border/60 bg-background p-4">
+                        <div className="rounded-sm border border-border/60 bg-background p-4">
                           <p className="text-sm text-muted-foreground">
                             {locale === "bn" ? "পেমেন্ট নম্বর" : "Payment number"}
                           </p>
@@ -801,7 +859,7 @@ export function CheckoutPageClient({
 
                       {selectedOption.mode === "gateway" &&
                       !gatewayActiveForSelectedOption ? (
-                        <div className="rounded-2xl border border-border/60 bg-background p-4 text-sm leading-7 text-muted-foreground">
+                        <div className="rounded-sm border border-border/60 bg-background p-4 text-sm leading-7 text-muted-foreground">
                           {locale === "bn"
                             ? "অর্ডার রিকোয়েস্ট সাবমিট করার পর টিম পেমেন্ট সম্পন্ন করার জন্য আপনার সাথে যোগাযোগ করবে।"
                             : "After you submit the order request, the team will contact you to complete the payment."}
@@ -814,7 +872,7 @@ export function CheckoutPageClient({
                         <p className="text-sm font-medium text-foreground">
                           {locale === "bn" ? "পেমেন্ট গাইড" : "Payment guide"}
                         </p>
-                        <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border/60 bg-background">
+                        <div className="relative aspect-[4/3] overflow-hidden rounded-sm border border-border/60 bg-background">
                           <Image
                             src={resolveImageUrl(selectedOption.guideImageUrl)}
                             alt={getLocalizedValue(
@@ -887,7 +945,7 @@ export function CheckoutPageClient({
           </Card>
         </div>
 
-        <Card className="h-fit rounded-3xl border-border/70 shadow-sm lg:sticky lg:top-28">
+        <Card className="h-fit rounded-md border-border/70 shadow-sm lg:sticky lg:top-28">
           <CardHeader className="space-y-2">
             <CardTitle className="text-2xl">
               {locale === "bn" ? "অর্ডার সারাংশ" : "Order summary"}
@@ -902,7 +960,7 @@ export function CheckoutPageClient({
           <CardContent className="space-y-4">
             {visibleItems.map((item) => (
               <div key={item.productId} className="flex gap-3">
-                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl border border-border/60 bg-muted/20">
+                <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-sm border border-border/60 bg-muted/20">
                   <Image
                     src={item.image}
                     alt={locale === "bn" ? item.name.bn : item.name.en}
@@ -975,7 +1033,7 @@ export function CheckoutPageClient({
             </div>
 
             <Button
-              className="w-full rounded-xl"
+              className="w-full rounded-sm"
               onClick={submitOrder}
               disabled={
                 !isHydrated ||

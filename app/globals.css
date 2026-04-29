@@ -150,8 +150,7 @@
   }
 
   html {
-    scrollbar-color:
-      color-mix(in oklch, var(--foreground) 28%, var(--primary))
+    scrollbar-color: color-mix(in oklch, var(--foreground) 28%, var(--primary))
       color-mix(in oklch, var(--background) 88%, var(--primary) 12%);
     scrollbar-width: thin;
   }
