@@ -44,12 +44,12 @@ export function HomeCategoryStrip({
             <Link href={category.href} className="block h-full">
               <Card className="h-full border-border/70 bg-card shadow-sm transition-transform duration-200 hover:bg-accent">
                 <CardContent className="flex flex-col items-center gap-4 text-center">
-                  <div className="relative flex size-16 items-center justify-center overflow-hidden rounded-2xl">
+                  <div className="relative flex size-16 items-center justify-center overflow-hidden rounded-2xl bg-muted/60">
                     <Image
                       src={category.image}
                       alt={category.name[language]}
                       fill
-                      className="object-contain"
+                      className="object-cover"
                       sizes="96px"
                     />
                   </div>

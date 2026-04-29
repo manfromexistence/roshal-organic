@@ -171,7 +171,7 @@ export function StorefrontHeader({
                 alt={siteSettings.brandName}
                 width={34}
                 height={34}
-                className="h-8 w-auto object-contain"
+                className="h-8 w-auto object-cover"
               />
             </div>
             <div className="hidden min-w-0 sm:block">
@@ -492,8 +492,11 @@ export function StorefrontHeader({
               <LocaleSwitcher locale={locale} />
             </div>
 
-            <div className="rounded-2xl border border-border/60 bg-muted/30 p-4">
+            <div className="flex items-center justify-between rounded-2xl border border-border/60 bg-muted/30 p-4">
               <StorefrontThemeToggle />
+              <div className="text-xs text-muted-foreground">
+                {locale === "bn" ? "থিম টগল করুন" : "Toggle theme"}
+              </div>
             </div>
 
             <div className="grid gap-2">

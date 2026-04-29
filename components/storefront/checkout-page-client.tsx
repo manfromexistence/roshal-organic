@@ -692,7 +692,7 @@ export function CheckoutPageClient({
                     src={item.image}
                     alt={locale === "bn" ? item.name.bn : item.name.en}
                     fill
-                    className="object-contain p-2"
+                    className="object-cover p-2"
                     sizes="64px"
                   />
                 </div>

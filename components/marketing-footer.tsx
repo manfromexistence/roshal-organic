@@ -147,107 +147,107 @@ export function MarketingFooter() {
               <img
                 src="/logos/bkash-com.png"
                 alt="bKash"
-                className="h-6 sm:h-8 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity rounded-md"
+                className="h-6 sm:h-8 w-auto object-cover opacity-80 hover:opacity-100 transition-opacity rounded-md"
               />
               <img
                 src="/logos/nagad-com-bd.png"
                 alt="Nagad"
-                className="h-6 sm:h-8 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity rounded-md"
+                className="h-6 sm:h-8 w-auto object-cover opacity-80 hover:opacity-100 transition-opacity rounded-md"
               />
               <img
                 src="/logos/bracbank-com.png"
                 alt="BRAC Bank"
-                className="h-6 sm:h-8 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity rounded-md"
+                className="h-6 sm:h-8 w-auto object-cover opacity-80 hover:opacity-100 transition-opacity rounded-md"
               />
               <img
                 src="/logos/sonali-bank-com.png"
                 alt="Sonali Bank"
-                className="h-6 sm:h-8 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity rounded-md"
+                className="h-6 sm:h-8 w-auto object-cover opacity-80 hover:opacity-100 transition-opacity rounded-md"
               />
               <img
                 src="/logos/janatabank-bd-com.png"
                 alt="Janata Bank"
-                className="h-6 sm:h-8 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity rounded-md"
+                className="h-6 sm:h-8 w-auto object-cover opacity-80 hover:opacity-100 transition-opacity rounded-md"
               />
               <img
                 src="/logos/bdpost-gov-bd.png"
                 alt="BD Post"
-                className="h-6 sm:h-8 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity rounded-md"
+                className="h-6 sm:h-8 w-auto object-cover opacity-80 hover:opacity-100 transition-opacity rounded-md"
               />
               <img
                 src="/logos/btrc-gov-bd.png"
                 alt="BTRC"
-                className="h-6 sm:h-8 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity rounded-md"
+                className="h-6 sm:h-8 w-auto object-cover opacity-80 hover:opacity-100 transition-opacity rounded-md"
               />
               <img
                 src="/logos/grameen-com.png"
                 alt="Grameen"
-                className="h-6 sm:h-8 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity rounded-md"
+                className="h-6 sm:h-8 w-auto object-cover opacity-80 hover:opacity-100 transition-opacity rounded-md"
               />
               <img
                 src="/logos/beximco-com.png"
                 alt="Beximco"
-                className="h-6 sm:h-8 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity rounded-md"
+                className="h-6 sm:h-8 w-auto object-cover opacity-80 hover:opacity-100 transition-opacity rounded-md"
               />
               <img
                 src="/logos/pran-rfl-com.png"
                 alt="PRAN-RFL"
-                className="h-6 sm:h-8 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity rounded-md"
+                className="h-6 sm:h-8 w-auto object-cover opacity-80 hover:opacity-100 transition-opacity rounded-md"
               />
               <img
                 src="/logos/partexstar-com.png"
                 alt="Partex Star"
-                className="h-6 sm:h-8 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity rounded-md"
+                className="h-6 sm:h-8 w-auto object-cover opacity-80 hover:opacity-100 transition-opacity rounded-md"
               />
               <img
                 src="/logos/mohammadi-group-com.png"
                 alt="Mohammadi Group"
-                className="h-6 sm:h-8 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity rounded-md"
+                className="h-6 sm:h-8 w-auto object-cover opacity-80 hover:opacity-100 transition-opacity rounded-md"
               />
               <img
                 src="/logos/bashundharagroup-com.png"
                 alt="Bashundhara Group"
-                className="h-6 sm:h-8 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity rounded-md"
+                className="h-6 sm:h-8 w-auto object-cover opacity-80 hover:opacity-100 transition-opacity rounded-md"
               />
               <img
                 src="/logos/navana-com.png"
                 alt="Navana"
-                className="h-6 sm:h-8 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity rounded-md"
+                className="h-6 sm:h-8 w-auto object-cover opacity-80 hover:opacity-100 transition-opacity rounded-md"
               />
               <img
                 src="/logos/ab-group-com.png"
                 alt="AB Group"
-                className="h-6 sm:h-8 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity rounded-md"
+                className="h-6 sm:h-8 w-auto object-cover opacity-80 hover:opacity-100 transition-opacity rounded-md"
               />
               <img
                 src="/logos/confidencegroup-com-bd.png"
                 alt="Confidence Group"
-                className="h-6 sm:h-8 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity rounded-md"
+                className="h-6 sm:h-8 w-auto object-cover opacity-80 hover:opacity-100 transition-opacity rounded-md"
               />
               <img
                 src="/logos/beximco-pharma-com.png"
                 alt="Beximco Pharma"
-                className="h-6 sm:h-8 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity rounded-md"
+                className="h-6 sm:h-8 w-auto object-cover opacity-80 hover:opacity-100 transition-opacity rounded-md"
               />
               <img
                 src="/logos/squarepharma-com-bd.png"
                 alt="Square Pharma"
-                className="h-6 sm:h-8 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity rounded-md"
+                className="h-6 sm:h-8 w-auto object-cover opacity-80 hover:opacity-100 transition-opacity rounded-md"
               />
               <img
                 src="/logos/lifeline-com-bd.png"
                 alt="Lifeline"
-                className="h-6 sm:h-8 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity rounded-md"
+                className="h-6 sm:h-8 w-auto object-cover opacity-80 hover:opacity-100 transition-opacity rounded-md"
               />
               <img
                 src="/logos/desco-org-bd.png"
                 alt="DESCO"
-                className="h-6 sm:h-8 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity rounded-md"
+                className="h-6 sm:h-8 w-auto object-cover opacity-80 hover:opacity-100 transition-opacity rounded-md"
               />
               <img
                 src="/logos/bpdb-gov-bd.png"
                 alt="BPDB"
-                className="h-6 sm:h-8 w-auto object-contain opacity-80 hover:opacity-100 transition-opacity rounded-md"
+                className="h-6 sm:h-8 w-auto object-cover opacity-80 hover:opacity-100 transition-opacity rounded-md"
               />
             </div>
           </div>

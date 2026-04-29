@@ -118,7 +118,7 @@ export default function LoginPage() {
                     <img
                       src="/logo.png"
                       alt="Roshal Organic"
-                      className="size-12 object-contain"
+                      className="size-12 object-cover"
                     />
                   </div>
                   <span className="sr-only">Roshal Organic</span>

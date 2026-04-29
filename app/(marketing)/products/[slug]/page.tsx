@@ -85,7 +85,7 @@ export default async function ProductDetailsPage({
                   fill
                   priority
                   loading="eager"
-                  className="object-contain"
+                  className="object-cover"
                   sizes="(max-width: 1280px) 100vw, 48vw"
                 />
               </div>
@@ -105,7 +105,7 @@ export default async function ProductDetailsPage({
                         src={image}
                         alt={`${getLocalizedValue(locale, product.name)} ${index + 1}`}
                         fill
-                        className="object-contain"
+                        className="object-cover"
                         sizes="(max-width: 640px) 50vw, 180px"
                       />
                     </div>

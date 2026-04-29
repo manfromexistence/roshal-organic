@@ -42,7 +42,7 @@ function TopSellingCard({
               src={product.image}
               alt={product.name[language]}
               fill
-              className="rounded-sm object-contain transition-transform duration-300 group-hover:scale-105"
+              className="rounded-sm object-cover transition-transform duration-300 group-hover:scale-105"
               sizes="(max-width: 768px) 100vw, 176px"
             />
             {product.badge ? (

@@ -155,7 +155,7 @@ export function CartPageClient({
                         src={item.image}
                         alt={locale === "bn" ? item.name.bn : item.name.en}
                         fill
-                        className="object-contain p-4"
+                        className="object-cover p-4"
                         sizes="160px"
                       />
                     </div>

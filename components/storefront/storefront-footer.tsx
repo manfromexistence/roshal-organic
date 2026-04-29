@@ -154,7 +154,7 @@ export function StorefrontFooter({
                   alt={siteSettings.brandName}
                   width={42}
                   height={42}
-                  className="h-8 w-auto object-contain sm:h-10"
+                  className="h-8 w-auto object-cover sm:h-10"
                 />
               </div>
               <div>
@@ -318,7 +318,7 @@ export function StorefrontFooter({
                     alt={logo.alt}
                     width={132}
                     height={42}
-                    className="rounded-md h-8 w-auto object-contain opacity-85 sm:h-10"
+                    className="rounded-md h-8 w-auto object-cover opacity-85 sm:h-10"
                   />
                 </div>
               ))}

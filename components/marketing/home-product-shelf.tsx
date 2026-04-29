@@ -46,7 +46,7 @@ function ShelfProductCard({
             src={product.image}
             alt={product.name[language]}
             fill
-            className="object-contain transition-transform duration-300 group-hover:scale-105"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
             sizes="(max-width: 768px) 50vw, (max-width: 1280px) 25vw, 20vw"
           />
           {product.badge ? (

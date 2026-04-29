@@ -289,7 +289,7 @@ export function MarketingHeader() {
             alt="Roshal Organic"
             width={60}
             height={60}
-            className="h-10 md:h-14 w-auto object-contain"
+            className="h-10 md:h-14 w-auto object-cover"
           />
           <span className="hidden sm:inline-block font-bold text-xl text-black">
             Roshal Organic
