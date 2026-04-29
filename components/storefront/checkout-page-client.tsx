@@ -672,10 +672,10 @@ export function CheckoutPageClient({
                   className="rounded-md border-border/70 bg-card/95 shadow-sm"
                 >
                   <CardContent className="flex h-full items-start gap-3 p-4">
-                    <div className="rounded-sm bg-primary/10 p-2 text-primary">
+                    <div className="shrink-0 rounded-sm bg-primary/10 p-2 text-primary">
                       <Icon className="size-4" />
                     </div>
-                    <div className="space-y-1">
+                    <div className="min-w-0 space-y-1">
                       <p className="text-sm font-semibold text-foreground">
                         {highlight.title}
                       </p>
@@ -713,11 +713,204 @@ export function CheckoutPageClient({
         </Alert>
       ) : null}
 
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_24rem] xl:grid-cols-[minmax(0,1fr)_26rem]">
-        <div className="space-y-6">
+      <div className="grid gap-8 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_24rem] xl:grid-cols-[minmax(0,1fr)_26rem]">
+        {/* Order Summary - First on mobile, second on desktop */}
+        <div className="min-w-0 space-y-6 order-1 lg:order-2 lg:sticky lg:top-28">
+          <Card className="h-fit rounded-md border-border/70 shadow-sm">
+            <CardHeader className="space-y-2">
+              <CardTitle className="text-2xl">
+                {locale === "bn" ? "অর্ডার সারাংশ" : "Order summary"}
+              </CardTitle>
+              <p className="text-sm leading-7 text-muted-foreground">
+                {locale === "bn"
+                  ? "কার্টে থাকা আইটেম, ডেলিভারি চার্জ, এবং মোট খরচ এখানে দেখুন।"
+                  : "Review the cart items, delivery fee, and total order amount here."}
+              </p>
+            </CardHeader>
+
+            <CardContent className="space-y-4">
+              {visibleItems.map((item) => (
+                <div key={item.productId} className="flex gap-3">
+                  <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-sm border border-border/60 bg-muted/20">
+                    <Image
+                      src={item.image}
+                      alt={locale === "bn" ? item.name.bn : item.name.en}
+                      fill
+                      className="object-cover p-2"
+                      sizes="64px"
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="line-clamp-2 text-sm font-medium text-foreground">
+                      {locale === "bn" ? item.name.bn : item.name.en}
+                    </p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {locale === "bn" ? "পরিমাণ" : "Quantity"}: {item.quantity}
+                    </p>
+                    <p className="mt-1 text-sm font-medium text-foreground">
+                      {formatBdt(item.price * item.quantity, locale)}
+                    </p>
+                  </div>
+                </div>
+              ))}
+
+              <Separator />
+
+              <div className="flex items-center justify-between gap-2 text-sm">
+                <span className="shrink-0 text-muted-foreground">
+                  {locale === "bn" ? "সাবটোটাল" : "Subtotal"}
+                </span>
+                <span className="truncate font-medium text-foreground">
+                  {formatBdt(subtotal, locale)}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between gap-2 text-sm">
+                <span className="shrink-0 text-muted-foreground">
+                  {locale === "bn" ? "ডেলিভারি" : "Delivery"}
+                </span>
+                <span className="truncate font-medium text-foreground">
+                  {formatBdt(shippingFee, locale)}
+                </span>
+              </div>
+
+              <p className="text-xs leading-5 text-muted-foreground">
+                {`${getRoshalDeliveryZoneLabel(locale, deliveryEstimate.zone)} • ${getLocalizedValue(locale, getRoshalDeliveryMatchLabel(deliveryEstimate.matchedBy))}`}
+              </p>
+
+              {selectedOption ? (
+                <div className="flex items-center justify-between gap-2 text-sm">
+                  <span className="shrink-0 text-muted-foreground">
+                    {locale === "bn" ? "পেমেন্ট পদ্ধতি" : "Payment"}
+                  </span>
+                  <span className="truncate text-right font-medium text-foreground">
+                    {getLocalizedValue(
+                      locale,
+                      getRoshalPaymentMethodLabel(selectedOption.key),
+                    )}
+                  </span>
+                </div>
+              ) : null}
+            </CardContent>
+
+            <CardFooter className="flex flex-col gap-4">
+              <div className="flex w-full items-center justify-between gap-2">
+                <span className="shrink-0 text-lg font-semibold text-foreground">
+                  {locale === "bn" ? "মোট" : "Total"}
+                </span>
+                <span className="truncate text-2xl font-semibold text-primary">
+                  {formatBdt(total, locale)}
+                </span>
+              </div>
+
+              <Button
+                className="w-full rounded-sm"
+                onClick={submitOrder}
+                disabled={
+                  !isHydrated ||
+                  isSubmitting ||
+                  visibleItems.length === 0 ||
+                  !selectedOption
+                }
+              >
+                {selectedOption?.mode === "gateway"
+                  ? gatewayActiveForSelectedOption
+                    ? isSubmitting
+                      ? locale === "bn"
+                        ? "সিকিউর পেমেন্টে নেওয়া হচ্ছে..."
+                        : "Redirecting to secure payment..."
+                      : locale === "bn"
+                        ? "সিকিউর পেমেন্টে এগিয়ে যান"
+                        : "Continue to secure payment"
+                    : isSubmitting
+                      ? locale === "bn"
+                        ? "অর্ডার রিকোয়েস্ট পাঠানো হচ্ছে..."
+                        : "Submitting order request..."
+                      : locale === "bn"
+                        ? "অর্ডার রিকোয়েস্ট পাঠান"
+                        : "Submit order request"
+                  : isSubmitting
+                    ? locale === "bn"
+                      ? "অর্ডার করা হচ্ছে..."
+                      : "Placing order..."
+                    : locale === "bn"
+                      ? "অর্ডার নিশ্চিত করুন"
+                      : "Confirm order"}
+              </Button>
+            </CardFooter>
+          </Card>
+
           <Card className="rounded-md border-border/70 shadow-sm">
-            <CardHeader className="gap-4 sm:flex-row sm:items-start sm:justify-between">
-              <div className="space-y-1.5">
+            <CardHeader className="space-y-2">
+              <CardTitle className="text-2xl">
+                {locale === "bn" ? "সহায়তা ও সাপোর্ট" : "Help and support"}
+              </CardTitle>
+              <p className="text-sm leading-7 text-muted-foreground">
+                {locale === "bn"
+                  ? `${siteSupport.brandName} অর্ডার সাবমিটের আগে যেকোনো জিজ্ঞাসায় সাহায্য করতে প্রস্তুত।`
+                  : `${siteSupport.brandName} is ready to help before you submit the order.`}
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="rounded-md border border-border/60 bg-muted/20 p-4">
+                <p className="text-sm font-semibold text-foreground">
+                  {locale === "bn" ? "সাপোর্ট নোট" : "Support note"}
+                </p>
+                <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                  {getLocalizedValue(locale, siteSupport.supportMessage)}
+                </p>
+              </div>
+
+              <div className="grid gap-3 grid-cols-1">
+                {supportActions.map((action) => {
+                  const Icon = action.icon;
+
+                  return (
+                    <a
+                      key={action.key}
+                      href={action.href}
+                      className="flex items-center gap-3 rounded-sm border border-border/60 bg-background px-3 py-3 transition-colors hover:bg-muted/30"
+                    >
+                      <div className="shrink-0 rounded-sm bg-primary/10 p-2 text-primary">
+                        <Icon className="size-4" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                          {action.label}
+                        </p>
+                        <p className="truncate text-sm font-medium text-foreground">
+                          {action.value}
+                        </p>
+                      </div>
+                    </a>
+                  );
+                })}
+              </div>
+
+              <div className="rounded-sm border border-border/60 bg-background p-4">
+                <div className="flex items-start gap-3">
+                  <div className="shrink-0 rounded-sm bg-primary/10 p-2 text-primary">
+                    <MapPin className="size-4" />
+                  </div>
+                  <div className="min-w-0 space-y-1">
+                    <p className="text-sm font-semibold text-foreground">
+                      {locale === "bn" ? "অফিস ঠিকানা" : "Office address"}
+                    </p>
+                    <p className="text-sm leading-6 text-muted-foreground">
+                      {getLocalizedValue(locale, siteSupport.address)}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Forms - Second on mobile, first on desktop */}
+        <div className="min-w-0 space-y-6 order-2 lg:order-1">
+          <Card className="rounded-md border-border/70 shadow-sm">
+            <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div className="min-w-0 space-y-1.5">
                 <CardTitle className="text-2xl">
                   {locale === "bn" ? "ডেলিভারি তথ্য" : "Delivery details"}
                 </CardTitle>
@@ -752,7 +945,7 @@ export function CheckoutPageClient({
                 )}
               </Button>
             </CardHeader>
-            <CardContent className="grid gap-4 md:grid-cols-2">
+            <CardContent className="grid gap-4 grid-cols-1 md:grid-cols-2">
               <Field
                 label={locale === "bn" ? "পূর্ণ নাম" : "Full name"}
                 value={formState.customerName}
@@ -782,7 +975,7 @@ export function CheckoutPageClient({
                 autoComplete="postal-code"
                 inputMode="numeric"
               />
-              <div className="md:col-span-2">
+              <div className="col-span-1 md:col-span-2">
                 <Field
                   label={locale === "bn" ? "ঠিকানা" : "Address"}
                   value={formState.addressLine1}
@@ -790,7 +983,7 @@ export function CheckoutPageClient({
                   autoComplete="address-line1"
                 />
               </div>
-              <div className="md:col-span-2">
+              <div className="col-span-1 md:col-span-2">
                 <Field
                   label={locale === "bn" ? "অতিরিক্ত ঠিকানা" : "Address line 2"}
                   value={formState.addressLine2}
@@ -804,8 +997,8 @@ export function CheckoutPageClient({
                 onChange={(value) => updateFormValue("city", value)}
                 autoComplete="address-level2"
               />
-              <div className="space-y-2 md:col-span-2">
-                <Label>
+              <div className="min-w-0 space-y-2 md:col-span-2">
+                <Label className="block truncate">
                   {locale === "bn" ? "ডেলিভারি ধরন" : "Delivery type"}
                 </Label>
                 <RadioGroup
@@ -814,7 +1007,7 @@ export function CheckoutPageClient({
                     setSubmitError(null);
                     setDeliveryType(value === "office" ? "office" : "home");
                   }}
-                  className="grid gap-3 sm:grid-cols-2"
+                  className="grid gap-3 grid-cols-1 sm:grid-cols-2"
                 >
                   <Label
                     htmlFor="delivery-home"
@@ -824,8 +1017,12 @@ export function CheckoutPageClient({
                         : "border-border/70 hover:bg-muted/20"
                     }`}
                   >
-                    <RadioGroupItem value="home" id="delivery-home" />
-                    <div className="space-y-1">
+                    <RadioGroupItem
+                      value="home"
+                      id="delivery-home"
+                      className="mt-0.5 shrink-0"
+                    />
+                    <div className="min-w-0 space-y-1">
                       <p className="text-sm font-medium text-foreground">
                         {locale === "bn" ? "হোম ডেলিভারি" : "Home delivery"}
                       </p>
@@ -844,8 +1041,12 @@ export function CheckoutPageClient({
                         : "border-border/70 hover:bg-muted/20"
                     }`}
                   >
-                    <RadioGroupItem value="office" id="delivery-office" />
-                    <div className="space-y-1">
+                    <RadioGroupItem
+                      value="office"
+                      id="delivery-office"
+                      className="mt-0.5 shrink-0"
+                    />
+                    <div className="min-w-0 space-y-1">
                       <p className="text-sm font-medium text-foreground">
                         {locale === "bn" ? "অফিস ডেলিভারি" : "Office delivery"}
                       </p>
@@ -858,8 +1059,8 @@ export function CheckoutPageClient({
                   </Label>
                 </RadioGroup>
               </div>
-              <div className="space-y-2 md:col-span-2">
-                <Label htmlFor="notes">
+              <div className="min-w-0 space-y-2 md:col-span-2">
+                <Label htmlFor="notes" className="block truncate">
                   {locale === "bn" ? "অর্ডার নোট" : "Order notes"}
                 </Label>
                 <Textarea
@@ -893,7 +1094,7 @@ export function CheckoutPageClient({
                   setSubmitError(null);
                   setPaymentMethod(value as RoshalPaymentMethod);
                 }}
-                className="grid gap-3 sm:grid-cols-2"
+                className="grid gap-3 grid-cols-1 sm:grid-cols-2"
               >
                 {paymentOptions.map((option) => {
                   const isSelected = option.key === paymentMethod;
@@ -908,8 +1109,12 @@ export function CheckoutPageClient({
                           : "border-border/70 hover:bg-muted/20"
                       }`}
                     >
-                      <RadioGroupItem value={option.key} id={option.key} />
-                      <div className="space-y-1">
+                      <RadioGroupItem
+                        value={option.key}
+                        id={option.key}
+                        className="mt-0.5 shrink-0"
+                      />
+                      <div className="min-w-0 space-y-1">
                         <div className="flex flex-wrap items-center gap-2">
                           <span className="text-sm font-medium text-foreground">
                             {getLocalizedValue(locale, option.label)}
@@ -939,8 +1144,8 @@ export function CheckoutPageClient({
 
               {selectedOption ? (
                 <div className="space-y-5 rounded-md border border-border/70 bg-muted/20 p-4">
-                  <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_18rem]">
-                    <div className="space-y-4">
+                  <div className="grid gap-5 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_18rem]">
+                    <div className="min-w-0 space-y-4">
                       <div className="space-y-2">
                         <div className="flex flex-wrap items-center gap-2">
                           <h3 className="text-lg font-semibold text-foreground">
@@ -967,19 +1172,19 @@ export function CheckoutPageClient({
                           <p className="text-sm text-muted-foreground">
                             {locale === "bn" ? "পেমেন্ট নম্বর" : "Payment number"}
                           </p>
-                          <p className="mt-1 text-lg font-semibold text-foreground">
+                          <p className="mt-1 break-all text-lg font-semibold text-foreground leading-tight">
                             {selectedOption.accountNumber}
                           </p>
                         </div>
                       ) : null}
 
-                      <div className="grid gap-3 md:grid-cols-2">
+                      <div className="grid gap-3 grid-cols-1 md:grid-cols-2">
                         <div className="rounded-sm border border-border/60 bg-background p-4">
                           <div className="flex items-start gap-3">
-                            <div className="rounded-sm bg-primary/10 p-2 text-primary">
+                            <div className="shrink-0 rounded-sm bg-primary/10 p-2 text-primary">
                               <ShieldCheck className="size-4" />
                             </div>
-                            <div className="space-y-1">
+                            <div className="min-w-0 space-y-1">
                               <p className="text-sm font-semibold text-foreground">
                                 {locale === "bn"
                                   ? "ম্যানুয়াল ভেরিফিকেশন"
@@ -996,10 +1201,10 @@ export function CheckoutPageClient({
                         </div>
                         <div className="rounded-sm border border-border/60 bg-background p-4">
                           <div className="flex items-start gap-3">
-                            <div className="rounded-sm bg-primary/10 p-2 text-primary">
+                            <div className="shrink-0 rounded-sm bg-primary/10 p-2 text-primary">
                               <Clock3 className="size-4" />
                             </div>
-                            <div className="space-y-1">
+                            <div className="min-w-0 space-y-1">
                               <p className="text-sm font-semibold text-foreground">
                                 {locale === "bn" ? "সাপোর্ট নোট" : "Support note"}
                               </p>
@@ -1025,7 +1230,7 @@ export function CheckoutPageClient({
                     </div>
 
                     {selectedOption.guideImageUrl ? (
-                      <div className="space-y-2">
+                      <div className="min-w-0 space-y-2">
                         <p className="text-sm font-medium text-foreground">
                           {locale === "bn" ? "পেমেন্ট গাইড" : "Payment guide"}
                         </p>
@@ -1054,7 +1259,7 @@ export function CheckoutPageClient({
                             ? "ট্রানজ্যাকশন আইডি, যে নম্বর থেকে পেমেন্ট করেছেন, এবং স্ক্রিনশট দিন। তারপর অ্যাডমিন যাচাই করে অর্ডার কনফার্ম করবে।"
                             : "Share the transaction ID, the sending number, and the payment screenshot. The admin team will verify them before confirming the order."}
                         </div>
-                        <div className="grid gap-4 md:grid-cols-2">
+                        <div className="grid min-w-0 gap-4 grid-cols-1 md:grid-cols-2">
                           <Field
                             label={
                               locale === "bn"
@@ -1077,7 +1282,7 @@ export function CheckoutPageClient({
                               updateFormValue("paymentSender", value)
                             }
                           />
-                          <div className="md:col-span-2">
+                          <div className="min-w-0 col-span-1 md:col-span-2">
                             <ImageUploadField
                               label={
                                 locale === "bn"
@@ -1131,197 +1336,6 @@ export function CheckoutPageClient({
             </Card>
           ) : null}
         </div>
-
-        <div className="space-y-6 lg:sticky lg:top-28">
-          <Card className="rounded-md border-border/70 shadow-sm">
-            <CardHeader className="space-y-2">
-              <CardTitle className="text-2xl">
-                {locale === "bn" ? "সহায়তা ও সাপোর্ট" : "Help and support"}
-              </CardTitle>
-              <p className="text-sm leading-7 text-muted-foreground">
-                {locale === "bn"
-                  ? `${siteSupport.brandName} অর্ডার সাবমিটের আগে যেকোনো জিজ্ঞাসায় সাহায্য করতে প্রস্তুত।`
-                  : `${siteSupport.brandName} is ready to help before you submit the order.`}
-              </p>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="rounded-md border border-border/60 bg-muted/20 p-4">
-                <p className="text-sm font-semibold text-foreground">
-                  {locale === "bn" ? "সাপোর্ট নোট" : "Support note"}
-                </p>
-                <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                  {getLocalizedValue(locale, siteSupport.supportMessage)}
-                </p>
-              </div>
-
-              <div className="grid gap-3">
-                {supportActions.map((action) => {
-                  const Icon = action.icon;
-
-                  return (
-                    <a
-                      key={action.key}
-                      href={action.href}
-                      className="flex items-center gap-3 rounded-sm border border-border/60 bg-background px-3 py-3 transition-colors hover:bg-muted/30"
-                    >
-                      <div className="rounded-sm bg-primary/10 p-2 text-primary">
-                        <Icon className="size-4" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
-                          {action.label}
-                        </p>
-                        <p className="truncate text-sm font-medium text-foreground">
-                          {action.value}
-                        </p>
-                      </div>
-                    </a>
-                  );
-                })}
-              </div>
-
-              <div className="rounded-sm border border-border/60 bg-background p-4">
-                <div className="flex items-start gap-3">
-                  <div className="rounded-sm bg-primary/10 p-2 text-primary">
-                    <MapPin className="size-4" />
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-sm font-semibold text-foreground">
-                      {locale === "bn" ? "অফিস ঠিকানা" : "Office address"}
-                    </p>
-                    <p className="text-sm leading-6 text-muted-foreground">
-                      {getLocalizedValue(locale, siteSupport.address)}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="h-fit rounded-md border-border/70 shadow-sm">
-            <CardHeader className="space-y-2">
-              <CardTitle className="text-2xl">
-                {locale === "bn" ? "অর্ডার সারাংশ" : "Order summary"}
-              </CardTitle>
-              <p className="text-sm leading-7 text-muted-foreground">
-                {locale === "bn"
-                  ? "কার্টে থাকা আইটেম, ডেলিভারি চার্জ, এবং মোট খরচ এখানে দেখুন।"
-                  : "Review the cart items, delivery fee, and total order amount here."}
-              </p>
-            </CardHeader>
-
-            <CardContent className="space-y-4">
-              {visibleItems.map((item) => (
-                <div key={item.productId} className="flex gap-3">
-                  <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-sm border border-border/60 bg-muted/20">
-                    <Image
-                      src={item.image}
-                      alt={locale === "bn" ? item.name.bn : item.name.en}
-                      fill
-                      className="object-cover p-2"
-                      sizes="64px"
-                    />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="line-clamp-2 text-sm font-medium text-foreground">
-                      {locale === "bn" ? item.name.bn : item.name.en}
-                    </p>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {locale === "bn" ? "পরিমাণ" : "Quantity"}: {item.quantity}
-                    </p>
-                    <p className="mt-1 text-sm font-medium text-foreground">
-                      {formatBdt(item.price * item.quantity, locale)}
-                    </p>
-                  </div>
-                </div>
-              ))}
-
-              <Separator />
-
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">
-                  {locale === "bn" ? "সাবটোটাল" : "Subtotal"}
-                </span>
-                <span className="font-medium text-foreground">
-                  {formatBdt(subtotal, locale)}
-                </span>
-              </div>
-
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">
-                  {locale === "bn" ? "ডেলিভারি" : "Delivery"}
-                </span>
-                <span className="font-medium text-foreground">
-                  {formatBdt(shippingFee, locale)}
-                </span>
-              </div>
-
-              <p className="text-xs leading-5 text-muted-foreground">
-                {`${getRoshalDeliveryZoneLabel(locale, deliveryEstimate.zone)} • ${getLocalizedValue(locale, getRoshalDeliveryMatchLabel(deliveryEstimate.matchedBy))}`}
-              </p>
-
-              {selectedOption ? (
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">
-                    {locale === "bn" ? "পেমেন্ট পদ্ধতি" : "Payment"}
-                  </span>
-                  <span className="font-medium text-foreground">
-                    {getLocalizedValue(
-                      locale,
-                      getRoshalPaymentMethodLabel(selectedOption.key),
-                    )}
-                  </span>
-                </div>
-              ) : null}
-            </CardContent>
-
-            <CardFooter className="flex flex-col gap-4">
-              <div className="flex w-full items-center justify-between">
-                <span className="text-lg font-semibold text-foreground">
-                  {locale === "bn" ? "মোট" : "Total"}
-                </span>
-                <span className="text-2xl font-semibold text-primary">
-                  {formatBdt(total, locale)}
-                </span>
-              </div>
-
-              <Button
-                className="w-full rounded-sm"
-                onClick={submitOrder}
-                disabled={
-                  !isHydrated ||
-                  isSubmitting ||
-                  visibleItems.length === 0 ||
-                  !selectedOption
-                }
-              >
-                {selectedOption?.mode === "gateway"
-                  ? gatewayActiveForSelectedOption
-                    ? isSubmitting
-                      ? locale === "bn"
-                        ? "সিকিউর পেমেন্টে নেওয়া হচ্ছে..."
-                        : "Redirecting to secure payment..."
-                      : locale === "bn"
-                        ? "সিকিউর পেমেন্টে এগিয়ে যান"
-                        : "Continue to secure payment"
-                    : isSubmitting
-                      ? locale === "bn"
-                        ? "অর্ডার রিকোয়েস্ট পাঠানো হচ্ছে..."
-                        : "Submitting order request..."
-                      : locale === "bn"
-                        ? "অর্ডার রিকোয়েস্ট পাঠান"
-                        : "Submit order request"
-                  : isSubmitting
-                    ? locale === "bn"
-                      ? "অর্ডার করা হচ্ছে..."
-                      : "Placing order..."
-                    : locale === "bn"
-                      ? "অর্ডার নিশ্চিত করুন"
-                      : "Confirm order"}
-              </Button>
-            </CardFooter>
-          </Card>
-        </div>
       </div>
     </div>
   );
@@ -1373,14 +1387,17 @@ function Field({
   const inputId = useId();
 
   return (
-    <div className="space-y-2">
-      <Label htmlFor={inputId}>{label}</Label>
+    <div className="min-w-0 w-full space-y-2">
+      <Label htmlFor={inputId} className="block truncate">
+        {label}
+      </Label>
       <Input
         id={inputId}
         type={type}
         value={value}
         autoComplete={autoComplete}
         inputMode={inputMode}
+        className="w-full"
         onChange={(event) => onChange(event.target.value)}
       />
     </div>

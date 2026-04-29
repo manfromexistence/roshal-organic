@@ -75,48 +75,8 @@ export default async function ProductDetailsPage({
   return (
     <div className="container mx-auto min-w-0 space-y-12 overflow-x-clip px-4 py-10">
       <div className="grid min-w-0 grid-cols-1 gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-        <div className="min-w-0 space-y-4">
-          <Card className="gap-0 overflow-hidden rounded-[2rem] border-border/70 p-0 shadow-sm">
-            <CardContent className="p-0">
-              <div className="relative aspect-square overflow-hidden bg-muted/20">
-                <Image
-                  src={product.heroImage}
-                  alt={getLocalizedValue(locale, product.name)}
-                  fill
-                  priority
-                  loading="eager"
-                  className="object-cover"
-                  sizes="(max-width: 1280px) 100vw, 48vw"
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          {galleryImages.length > 1 ? (
-            <div className="grid min-w-0 grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-              {galleryImages.map((image, index) => (
-                <Card
-                  key={`${image}-${index}`}
-                  className="gap-0 overflow-hidden rounded-2xl border-border/70 p-0"
-                >
-                  <CardContent className="p-0">
-                    <div className="relative aspect-square bg-muted/15">
-                      <Image
-                        src={image}
-                        alt={`${getLocalizedValue(locale, product.name)} ${index + 1}`}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 640px) 50vw, 180px"
-                      />
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : null}
-        </div>
-
-        <div className="min-w-0 space-y-6">
+        {/* Product Info - First on mobile, second on desktop */}
+        <div className="min-w-0 space-y-6 order-2 lg:order-1">
           <div className="space-y-4">
             <div className="flex flex-wrap items-center gap-3">
               <Badge variant="secondary" className="rounded-full px-3 py-1">
@@ -176,7 +136,7 @@ export default async function ProductDetailsPage({
                 </Badge>
               </div>
 
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
                 <div className="rounded-2xl border border-border/60 bg-muted/25 p-4">
                   <Truck className="mb-3 size-5 text-primary" />
                   <p className="text-sm font-medium text-foreground">
@@ -230,20 +190,62 @@ export default async function ProductDetailsPage({
             </CardContent>
           </Card>
         </div>
+
+        {/* Product Images - Second on mobile, first on desktop */}
+        <div className="min-w-0 space-y-4 order-1 lg:order-2">
+          <Card className="gap-0 overflow-hidden rounded-[2rem] border-border/70 p-0 shadow-sm">
+            <CardContent className="p-0">
+              <div className="relative aspect-square overflow-hidden bg-muted/20">
+                <Image
+                  src={product.heroImage}
+                  alt={getLocalizedValue(locale, product.name)}
+                  fill
+                  priority
+                  loading="eager"
+                  className="object-cover"
+                  sizes="(max-width: 1280px) 100vw, 48vw"
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {galleryImages.length > 1 ? (
+            <div className="grid min-w-0 grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+              {galleryImages.map((image, index) => (
+                <Card
+                  key={`${image}-${index}`}
+                  className="gap-0 overflow-hidden rounded-2xl border-border/70 p-0"
+                >
+                  <CardContent className="p-0">
+                    <div className="relative aspect-square bg-muted/15">
+                      <Image
+                        src={image}
+                        alt={`${getLocalizedValue(locale, product.name)} ${index + 1}`}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 640px) 50vw, 180px"
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : null}
+        </div>
       </div>
 
       <Tabs defaultValue="details" className="space-y-6">
         <TabsList
           variant="line"
-          className="h-auto w-full flex-wrap justify-start border-b border-border/70 p-0"
+          className="h-auto w-full overflow-x-auto flex-nowrap justify-start border-b border-border/70 p-0"
         >
-          <TabsTrigger value="details" className="px-4 py-3">
+          <TabsTrigger value="details" className="px-4 py-3 whitespace-nowrap">
             {locale === "bn" ? "পণ্যের বিবরণ" : "Product details"}
           </TabsTrigger>
-          <TabsTrigger value="features" className="px-4 py-3">
+          <TabsTrigger value="features" className="px-4 py-3 whitespace-nowrap">
             {locale === "bn" ? "বৈশিষ্ট্য" : "Highlights"}
           </TabsTrigger>
-          <TabsTrigger value="shipping" className="px-4 py-3">
+          <TabsTrigger value="shipping" className="px-4 py-3 whitespace-nowrap">
             {locale === "bn" ? "ডেলিভারি ও পেমেন্ট" : "Delivery & payment"}
           </TabsTrigger>
         </TabsList>
@@ -286,7 +288,7 @@ export default async function ProductDetailsPage({
 
         <TabsContent value="shipping">
           <Card className="rounded-3xl border-border/70 shadow-sm">
-            <CardContent className="grid gap-5 p-6 md:grid-cols-2">
+            <CardContent className="grid gap-5 p-6 grid-cols-1 md:grid-cols-2">
               <div className="space-y-3">
                 <h2 className="text-xl font-semibold text-foreground">
                   {locale === "bn" ? "ডেলিভারি তথ্য" : "Delivery information"}
@@ -324,7 +326,7 @@ export default async function ProductDetailsPage({
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 min-[520px]:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
           {fallbackProducts.map((relatedProduct) => (
             <RoshalProductCard
               key={relatedProduct.id}

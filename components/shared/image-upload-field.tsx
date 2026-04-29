@@ -111,7 +111,7 @@ export function ImageUploadField({
   };
 
   return (
-    <div className="space-y-3">
+    <div className="min-w-0 space-y-3">
       <div className="space-y-2">
         <Label htmlFor={inputId}>{label}</Label>
         {helperText ? (
@@ -119,7 +119,7 @@ export function ImageUploadField({
         ) : null}
       </div>
 
-      <div className="flex flex-col gap-3 md:flex-row">
+      <div className="flex min-w-0 flex-col gap-3 md:flex-row">
         <Input
           id={inputId}
           name={name}
@@ -127,7 +127,7 @@ export function ImageUploadField({
           onChange={(event) => updateValue(event.target.value)}
           placeholder="https://..."
         />
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button
             type="button"
             variant="outline"

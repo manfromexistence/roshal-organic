@@ -247,20 +247,20 @@ export function CartPageClient({
             </CardHeader>
 
             <CardContent className="space-y-4 pt-2">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">
+              <div className="flex items-center justify-between gap-2 text-sm">
+                <span className="shrink-0 text-muted-foreground">
                   {locale === "bn" ? "পণ্য মূল্য" : "Subtotal"}
                 </span>
-                <span className="font-medium text-foreground">
+                <span className="truncate font-medium text-foreground">
                   {formatBdt(subtotal, locale)}
                 </span>
               </div>
 
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">
+              <div className="flex items-center justify-between gap-2 text-sm">
+                <span className="shrink-0 text-muted-foreground">
                   {locale === "bn" ? "ডেলিভারি" : "Delivery"}
                 </span>
-                <span className="font-medium text-foreground">
+                <span className="truncate font-medium text-foreground">
                   {formatBdt(shippingFee, locale)}
                 </span>
               </div>
@@ -273,11 +273,11 @@ export function CartPageClient({
 
               <Separator />
 
-              <div className="flex items-center justify-between">
-                <span className="text-lg font-semibold text-foreground">
+              <div className="flex items-center justify-between gap-2">
+                <span className="shrink-0 text-lg font-semibold text-foreground">
                   {locale === "bn" ? "মোট" : "Total"}
                 </span>
-                <span className="text-2xl font-semibold text-primary">
+                <span className="truncate text-2xl font-semibold text-primary">
                   {formatBdt(total, locale)}
                 </span>
               </div>
