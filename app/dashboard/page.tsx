@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { OverviewChart } from "@/components/dashboard/overview-chart";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireRoshalAdmin } from "@/lib/store-auth";
@@ -66,6 +67,10 @@ export default async function DashboardHomePage() {
           title={locale === "bn" ? "মার্কেটিং পেজ" : "Marketing pages"}
           value={snapshot.marketingPageCount}
         />
+      </div>
+
+      <div className="grid gap-6">
+        <OverviewChart />
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">

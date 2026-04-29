@@ -185,7 +185,8 @@ const fallbackTestimonials: LandingTestimonial[] = [
     ),
     name: "Fariha Akter Tumpa",
     role: localizedValue("উদ্যোক্তা", "Entrepreneur"),
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80",
+    image:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80",
   },
   {
     key: "abir",
@@ -195,7 +196,8 @@ const fallbackTestimonials: LandingTestimonial[] = [
     ),
     name: "Shahriar Khan Abir",
     role: localizedValue("সার্ভিস হোল্ডার", "Service holder"),
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80",
+    image:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80",
   },
   {
     key: "kamran",
@@ -205,7 +207,8 @@ const fallbackTestimonials: LandingTestimonial[] = [
     ),
     name: "Ahmod Al Kamran",
     role: localizedValue("শিক্ষার্থী", "Student"),
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80",
+    image:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80",
   },
 ];
 

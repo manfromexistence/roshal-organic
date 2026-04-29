@@ -3,7 +3,6 @@
 import {
   ChevronDown,
   Heart,
-  Languages,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -279,17 +278,20 @@ export function MarketingHeader() {
   }, [categoryLinks, mounted]);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 h-32">
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between border-b">
-        <Link href="/" className="flex items-center gap-2">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background shadow-md backdrop-blur-xl supports-[backdrop-filter]:bg-background/90 md:h-32">
+      <div className="container mx-auto px-4 py-3 flex items-center justify-between border-b border-border/40">
+        <Link
+          href="/"
+          className="flex items-center gap-3 rounded-md bg-white p-2 md:p-3 shadow-sm dark:bg-white transition-transform hover:scale-[1.02]"
+        >
           <Image
             src="/logo.png"
             alt="Roshal Organic"
-            width={40}
-            height={40}
-            className="h-10 w-auto"
+            width={60}
+            height={60}
+            className="h-10 md:h-14 w-auto object-contain"
           />
-          <span className="font-bold text-lg text-foreground">
+          <span className="hidden sm:inline-block font-bold text-xl text-black">
             Roshal Organic
           </span>
         </Link>
@@ -319,14 +321,14 @@ export function MarketingHeader() {
 
           {/* Language Switcher - Toggle */}
           <Button
-            variant="ghost"
-            size="icon"
+            variant="outline"
             onClick={() =>
               handleLanguageChange(language === "bn" ? "en" : "bn")
             }
             title={language === "bn" ? "Switch to English" : "বাংলায় পরিবর্তন করুন"}
+            className="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center font-black bg-white dark:bg-white text-black hover:bg-gray-100 dark:hover:bg-gray-200 border-none shadow-sm rounded-lg ml-1 md:ml-3"
           >
-            <Languages className="h-5 w-5" />
+            {language === "bn" ? "EN" : "BN"}
             <span className="sr-only">
               {language === "bn" ? "Switch to English" : "বাংলায় পরিবর্তন করুন"}
             </span>
@@ -484,18 +486,18 @@ export function MarketingHeader() {
       </div>
 
       {/* Secondary Category Navigation - Full width at bottom */}
-      <div className="">
+      <div className="bg-primary/5 dark:bg-primary/10 border-b border-border/40">
         <div className="container mx-auto px-4">
           <div
             ref={subheaderRef}
-            className="flex items-center gap-6 py-3 overflow-x-auto"
+            className="flex flex-wrap md:flex-nowrap items-center gap-6 py-2 overflow-x-auto scrollbar-hide font-medium text-sm"
           >
             {visibleCategories.map((link) => (
               <HoverCard key={link.href}>
                 <HoverCardTrigger asChild>
                   <Link
                     href={link.href}
-                    className="text-muted-foreground hover:text-primary whitespace-nowrap transition-colors"
+                    className="text-foreground hover:text-primary hover:bg-primary/10 whitespace-nowrap transition-all px-3 py-1.5 rounded-full"
                   >
                     {link.label}
                   </Link>
