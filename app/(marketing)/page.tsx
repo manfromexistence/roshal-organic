@@ -1,5 +1,6 @@
 import { HomeBrandStrip } from "@/components/marketing/home-brand-strip";
 import { HomeCategoryStrip } from "@/components/marketing/home-category-strip";
+import { FeaturedProducts } from "@/components/marketing/featured-products";
 import { HomeTestimonialCarousel } from "@/components/marketing/home-testimonial-carousel";
 import {
   LandingHero,
@@ -461,6 +462,10 @@ function sectionDescription(
   return fallback;
 }
 
+function isSectionEnabled(section: RoshalMarketingSection | undefined) {
+  return section?.isEnabled !== false;
+}
+
 export default async function LandingPage() {
   const [locale, siteSettings, pageBundle, products, taxonomy] =
     await Promise.all([
@@ -479,8 +484,10 @@ export default async function LandingPage() {
   const heroSection = sectionsByKey.get("hero");
   const categoriesSection = sectionsByKey.get("landing-categories");
   const topSellersSection = sectionsByKey.get("landing-top-sellers");
+  const newArrivalsSection = sectionsByKey.get("landing-new-arrivals");
   const brandsSection = sectionsByKey.get("landing-brands");
   const specialOffersSection = sectionsByKey.get("landing-special-offers");
+  const freshPicksSection = sectionsByKey.get("landing-fresh-picks");
   const testimonialsSection = sectionsByKey.get("landing-testimonials");
 
   const heroBanners = buildHeroBanners(
@@ -494,12 +501,21 @@ export default async function LandingPage() {
     source: "featured",
     limit: 8,
   }).map((product, index) => toMarketingProduct(product, language, index + 4));
+  const newArrivalCards = selectProducts(products, newArrivalsSection, {
+    source: "reverse",
+    limit: 5,
+  }).map((product, index) => toMarketingProduct(product, language, index + 14));
   const deals = buildDeals(
     specialOffersSection,
     siteSettings.primaryCtaHref,
     siteSettings.primaryCtaLabel,
   );
   const brands = buildBrands(brandsSection, language);
+  const freshPickCards = selectProducts(products, freshPicksSection, {
+    source: "all",
+    limit: 5,
+    offset: 4,
+  }).map((product, index) => toMarketingProduct(product, language, index + 24));
   const testimonials = buildTestimonials(testimonialsSection);
   const categoriesDescription = sectionDescription(categoriesSection);
   const brandsDescription = sectionDescription(brandsSection);
@@ -542,6 +558,27 @@ export default async function LandingPage() {
         description={sectionDescription(topSellersSection)}
       />
 
+      {isSectionEnabled(newArrivalsSection) && newArrivalCards.length > 0 ? (
+        <FeaturedProducts
+          products={newArrivalCards}
+          language={language}
+          title={sectionTitle(
+            newArrivalsSection,
+            localizedValue("à¦¨à¦¤à§à¦¨ à¦†à¦—à¦®à¦¨", "New Arrivals"),
+          )}
+          description={sectionDescription(newArrivalsSection)}
+          ctaHref={newArrivalsSection?.ctaHref || "/products"}
+          ctaLabel={
+            newArrivalsSection?.ctaLabel.bn || newArrivalsSection?.ctaLabel.en
+              ? newArrivalsSection.ctaLabel
+              : localizedValue(
+                  "à¦¸à¦¬ à¦¨à¦¤à§à¦¨ à¦ªà¦£à§à¦¯ à¦¦à§‡à¦–à§à¦¨",
+                  "View All New Arrivals",
+                )
+          }
+        />
+      ) : null}
+
       {brands.length > 0 ? (
         <section className="bg-background py-12 md:py-16">
           <div className="container mx-auto space-y-8 px-4 sm:px-6 md:px-8">
@@ -578,6 +615,27 @@ export default async function LandingPage() {
         )}
         description={sectionDescription(specialOffersSection)}
       />
+
+      {isSectionEnabled(freshPicksSection) && freshPickCards.length > 0 ? (
+        <FeaturedProducts
+          products={freshPickCards}
+          language={language}
+          title={sectionTitle(
+            freshPicksSection,
+            localizedValue("à¦¤à¦¾à¦œà¦¾ à¦ªà¦£à§à¦¯", "Fresh Picks"),
+          )}
+          description={sectionDescription(freshPicksSection)}
+          ctaHref={freshPicksSection?.ctaHref || "/products"}
+          ctaLabel={
+            freshPicksSection?.ctaLabel.bn || freshPicksSection?.ctaLabel.en
+              ? freshPicksSection.ctaLabel
+              : localizedValue(
+                  "à¦¸à¦¬ à¦ªà¦£à§à¦¯ à¦¦à§‡à¦–à§à¦¨",
+                  "View All Products",
+                )
+          }
+        />
+      ) : null}
 
       {testimonials.length > 0 ? (
         <section className="bg-background py-12 md:py-16">

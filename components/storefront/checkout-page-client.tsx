@@ -5,7 +5,6 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import type { HTMLAttributes, HTMLInputTypeAttribute } from "react";
 import { useEffect, useId, useMemo, useState } from "react";
-import { HomeTestimonialCarousel } from "@/components/marketing/home-testimonial-carousel";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -57,14 +56,6 @@ interface RoshalReverseGeocodeResponse {
     state?: string;
     postcode?: string;
   };
-}
-
-interface CheckoutTestimonial {
-  key: string;
-  quote: LocalizedValue;
-  name: string;
-  role: LocalizedValue;
-  image?: string;
 }
 
 function getCurrentBrowserPosition() {
@@ -204,7 +195,6 @@ export function CheckoutPageClient({
   locale,
   paymentSettings,
   products,
-  testimonials,
   user,
 }: {
   deliveryZones: RoshalDeliveryZone[];
@@ -212,7 +202,6 @@ export function CheckoutPageClient({
   locale: RoshalLocale;
   paymentSettings: RoshalPaymentSettings;
   products: RoshalProduct[];
-  testimonials: CheckoutTestimonial[];
   user: {
     id: string;
     name: string;
@@ -679,7 +668,7 @@ export function CheckoutPageClient({
                 </CardTitle>
                 <p className="text-sm leading-6 text-muted-foreground">
                   {locale === "bn"
-                    ? "à¦¬à§à¦°à¦¾à¦‰à¦œà¦¾à¦° à¦…à¦Ÿà§‹à¦«à¦¿à¦² à¦¬à§à¦¯à¦¬à¦¹à¦¾à¦° à¦•à¦°à§à¦¨ à¦…à¦¥à¦¬à¦¾ à¦¬à¦°à§à¦¤à¦®à¦¾à¦¨ à¦²à§‹à¦•à§‡à¦¶à¦¨ à¦†à¦¨à§‡ à¦ à¦¿à¦•à¦¾à¦¨à¦¾ à¦“ à¦¶à¦¹à¦° à¦¦à§à¦°à§à¦¤ à¦ªà§‚à¦°à¦£ à¦•à¦°à§à¦¨à¥¤"
+                    ? "\u09ac\u09cd\u09b0\u09be\u0989\u099c\u09be\u09b0 \u0985\u099f\u09cb\u09ab\u09bf\u09b2 \u09ac\u09cd\u09af\u09ac\u09b9\u09be\u09b0 \u0995\u09b0\u09c1\u09a8 \u0985\u09a5\u09ac\u09be \u09ac\u09b0\u09cd\u09a4\u09ae\u09be\u09a8 \u09b2\u09cb\u0995\u09c7\u09b6\u09a8 \u0986\u09a8\u09c7 \u09a0\u09bf\u0995\u09be\u09a8\u09be, \u09b6\u09b9\u09b0 \u098f\u09ac\u0982 \u09aa\u09cb\u09b8\u09cd\u099f \u0995\u09cb\u09a1 \u09a6\u09cd\u09b0\u09c1\u09a4 \u09aa\u09c2\u09b0\u09a3 \u0995\u09b0\u09c1\u09a8\u0964"
                     : "Use browser autofill or pull your current location to quickly fill the address, city, and postal code."}
                 </p>
               </div>
@@ -695,14 +684,14 @@ export function CheckoutPageClient({
                   <>
                     <Loader2 className="size-4 animate-spin" />
                     {locale === "bn"
-                      ? "à¦²à§‹à¦•à§‡à¦¶à¦¨ à¦†à¦¨à¦¾ à¦¹à¦šà§à¦›à§‡..."
+                      ? "\u09b2\u09cb\u0995\u09c7\u09b6\u09a8 \u0986\u09a8\u09be \u09b9\u099a\u09cd\u099b\u09c7..."
                       : "Locating..."}
                   </>
                 ) : (
                   <>
                     <LocateFixed className="size-4" />
                     {locale === "bn"
-                      ? "à¦¬à¦°à§à¦¤à¦®à¦¾à¦¨ à¦²à§‹à¦•à§‡à¦¶à¦¨ à¦¬à§à¦¯à¦¬à¦¹à¦¾à¦° à¦•à¦°à§à¦¨"
+                      ? "\u09ac\u09b0\u09cd\u09a4\u09ae\u09be\u09a8 \u09b2\u09cb\u0995\u09c7\u09b6\u09a8 \u09ac\u09cd\u09af\u09ac\u09b9\u09be\u09b0 \u0995\u09b0\u09c1\u09a8"
                       : "Use current location"}
                   </>
                 )}
@@ -907,27 +896,6 @@ export function CheckoutPageClient({
               ) : null}
             </CardContent>
           </Card>
-
-          {testimonials.length > 0 ? (
-            <Card className="rounded-md border-border/70 shadow-sm">
-              <CardHeader className="space-y-2">
-                <CardTitle className="text-2xl">
-                  {locale === "bn" ? "গ্রাহকের অভিজ্ঞতা" : "Customer comments"}
-                </CardTitle>
-                <p className="text-sm leading-7 text-muted-foreground">
-                  {locale === "bn"
-                    ? "চেকআউট ও ডেলিভারি অভিজ্ঞতা সম্পর্কে গ্রাহকের কিছু ছোট মন্তব্য।"
-                    : "A few short notes from customers about checkout and delivery."}
-                </p>
-              </CardHeader>
-              <CardContent className="overflow-hidden">
-                <HomeTestimonialCarousel
-                  language={locale}
-                  testimonials={testimonials}
-                />
-              </CardContent>
-            </Card>
-          ) : null}
         </div>
       </div>
     </div>

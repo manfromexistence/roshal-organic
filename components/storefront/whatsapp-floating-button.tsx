@@ -16,7 +16,7 @@ export function WhatsAppFloatingButton({
   return (
     <Button
       asChild
-      className="fixed bottom-[3.4rem] right-3.5 z-[70] rounded-sm px-3 py-2 shadow-lg md:bottom-3"
+      className="fixed bottom-[5rem] right-3.5 z-[70] rounded-sm px-3 py-2 shadow-lg md:bottom-3"
     >
       <Link
         href={href}

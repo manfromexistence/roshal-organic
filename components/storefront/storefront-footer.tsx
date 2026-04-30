@@ -80,7 +80,7 @@ export function StorefrontFooter({
   );
 
   return (
-    <footer className="border-t border-border/60 bg-card/70 pb-4 md:pb-0">
+    <footer className="border-t border-border/60 bg-card/70 pb-16 md:pb-0">
       <div className="container mx-auto space-y-2 px-4 py-2 sm:px-6 md:px-8">
         <div className="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-[1.25fr_0.75fr_0.75fr]">
           <div className="space-y-2">
