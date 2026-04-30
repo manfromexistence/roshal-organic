@@ -1,4 +1,4 @@
-| S.L | Headline | Details of query | Link | Developer Comment | Status | Updated Comment |
+﻿| S.L | Headline | Details of query | Link | Developer Comment | Status | Updated Comment |
 |---|---|---|---|---|---|---|
 | 1 | Language | Language change toggle modern kora dorkar. design Demo >> | Demo | done | 🔶 Pending | Demo er moto ektu same koren vai dekhe dekhe. |
 | 2 | Top Menu (Category) | 1. Top bar a Language toggle option visible thakbe. <br>2. Dropdown Menu gulao Mobile a visible thakbe ager moto.<br>3. Top bar pc te vanish hoye jabe scroll down korar somoy (tobe Category menu visible thakbe ghorerbazar er moto).<br>4. Top bar smoothly visible hobe scroll up korar somoy. | | | 🔶 Pending | Do these<br>1. PC te visible hoyni akhono.<br>2. Category Menu gula Mobile a visible hoyni akhono (More er moddhe thakbena category, Screen ei visible hobe). <br>3. 3 & 4 number ta hoyni. |
