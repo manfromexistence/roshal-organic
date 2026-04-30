@@ -37,7 +37,7 @@ function TopSellingCard({
     <ImageCard className="group overflow-hidden rounded-md border-border/80 bg-card shadow-sm transition-all duration-200 hover:border-primary/25 hover:shadow-md">
       <div className="grid gap-0 md:grid-cols-[0.95fr_1.05fr]">
         <ImageCardHeader className="p-0">
-          <div className="relative aspect-[4/3] overflow-hidden border-b border-border/70 bg-muted/35 md:h-full md:min-h-[12.5rem] md:border-r md:border-b-0">
+          <div className="relative aspect-[11/8] overflow-hidden border-b border-border/70 bg-muted/35 md:h-full md:min-h-[11rem] md:border-r md:border-b-0">
             <Image
               src={product.image}
               alt={product.name[language]}
@@ -46,16 +46,16 @@ function TopSellingCard({
               sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 220px"
             />
             {product.badge ? (
-              <Badge className="absolute top-3 right-3 rounded-md">
+              <Badge className="absolute top-2.5 right-2.5 rounded-sm">
                 {product.badge}
               </Badge>
             ) : null}
           </div>
         </ImageCardHeader>
 
-        <ImageCardContent className="flex flex-col justify-center gap-3 px-4 py-4 text-left md:px-5 md:py-[1.125rem]">
-          <div className="space-y-2">
-            <ImageCardTitle className="text-base leading-6 tracking-tight md:text-lg">
+        <ImageCardContent className="flex flex-col justify-center gap-2.5 px-3.5 py-3.5 text-left md:px-4 md:py-3.5">
+          <div className="space-y-1.5">
+            <ImageCardTitle className="text-base leading-5 tracking-tight md:text-lg">
               {product.name[language]}
             </ImageCardTitle>
             <div className="flex flex-wrap items-center gap-2">
@@ -70,15 +70,15 @@ function TopSellingCard({
             </div>
           </div>
 
-          <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap md:justify-start">
+          <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap md:justify-start">
             {product.cartProduct ? (
               <AddToCartButton
                 product={product.cartProduct}
                 locale={language}
-                className="w-full rounded-md sm:min-w-36 sm:w-auto"
+                className="w-full rounded-sm sm:min-w-36 sm:w-auto"
               />
             ) : (
-              <Button className="w-full rounded-md sm:min-w-36 sm:w-auto">
+              <Button className="w-full rounded-sm sm:min-w-36 sm:w-auto">
                 <ShoppingBag className="size-4" />
                 {language === "bn" ? "কার্টে যোগ করুন" : "Add To Cart"}
               </Button>
@@ -87,7 +87,7 @@ function TopSellingCard({
             <Button
               asChild
               variant="secondary"
-              className="w-full rounded-md sm:min-w-28 sm:w-auto"
+              className="w-full rounded-sm sm:min-w-28 sm:w-auto"
             >
               <Link href={product.href || `/products/${product.id}`}>
                 {language === "bn" ? "এখনই কিনুন" : "Buy now"}
@@ -117,7 +117,7 @@ export function HomeTopSellingGrid({
       <div className="container mx-auto space-y-8 px-4 sm:px-6 md:px-8">
         <HomeSectionHeading title={title} description={description} centered />
 
-        <div className="grid grid-cols-2 gap-3 md:gap-5">
+        <div className="grid grid-cols-2 gap-3 md:gap-4">
           {products.map((product) => (
             <TopSellingCard
               key={String(product.id)}

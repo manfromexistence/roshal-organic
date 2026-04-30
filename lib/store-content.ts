@@ -35,6 +35,13 @@ import type {
   RoshalSiteSettings,
 } from "@/lib/store-types";
 
+const ROSHAL_VISIBLE_PAYMENT_METHODS: RoshalPaymentMethod[] = [
+  "cash_on_delivery",
+  "card",
+  "bkash",
+  "nagad",
+];
+
 function normalizePaymentMethod(
   value: string | null | undefined,
 ): RoshalPaymentMethod {
@@ -272,31 +279,9 @@ function sanitizePaymentOption(
   option: RoshalPaymentSettings["options"][number],
 ): RoshalPaymentSettings["options"][number] {
   const key = normalizePaymentMethod(option.key);
-
-  if (key !== "upay") {
-    return {
-      ...option,
-      key,
-    };
-  }
-
   return {
     ...option,
     key,
-    label: {
-      bn: "উপায়",
-      en: option.label.en || "Upay",
-    },
-    merchantLabel: {
-      bn: "উপায় গেটওয়ে",
-      en: option.merchantLabel.en || "Upay gateway",
-    },
-    instructions: {
-      bn: "উপায় গেটওয়ে চালু থাকলে চেকআউটে aamarPay রিডাইরেক্ট হবে। প্রয়োজন হলে অ্যাডমিন ড্যাশবোর্ড থেকে এটিকে ম্যানুয়াল মোডে পরিবর্তন করতে পারবেন।",
-      en:
-        option.instructions.en ||
-        "When Upay gateway checkout is enabled, customers will be redirected through aamarPay. Admins can switch this option to manual mode from the dashboard if needed.",
-    },
   };
 }
 
@@ -308,10 +293,16 @@ function mapPaymentSettings(
     defaultRoshalPaymentSettings.options,
   );
   const defaultOptionsByKey = new Map(
-    defaultRoshalPaymentSettings.options.map((option) => [
-      normalizePaymentMethod(option.key),
-      sanitizePaymentOption(option),
-    ]),
+    defaultRoshalPaymentSettings.options
+      .filter((option) =>
+        ROSHAL_VISIBLE_PAYMENT_METHODS.includes(
+          normalizePaymentMethod(option.key),
+        ),
+      )
+      .map((option) => [
+        normalizePaymentMethod(option.key),
+        sanitizePaymentOption(option),
+      ]),
   );
   const storedOptionsByKey = new Map(
     storedOptions.map((option) => [
@@ -339,10 +330,7 @@ function mapPaymentSettings(
       });
     },
   );
-  const customOptions = Array.from(storedOptionsByKey.entries())
-    .filter(([key]) => !defaultOptionsByKey.has(key))
-    .map(([, option]) => option);
-  const options = [...mergedOptions, ...customOptions].sort((left, right) => {
+  const options = mergedOptions.sort((left, right) => {
     if (left.key === "cash_on_delivery") {
       return -1;
     }
@@ -450,14 +438,24 @@ export async function getRoshalPaymentSettings() {
       ? mapPaymentSettings(settings)
       : {
           ...defaultRoshalPaymentSettings,
-          options: defaultRoshalPaymentSettings.options.map(
-            sanitizePaymentOption,
-          ),
+          options: defaultRoshalPaymentSettings.options
+            .filter((option) =>
+              ROSHAL_VISIBLE_PAYMENT_METHODS.includes(
+                normalizePaymentMethod(option.key),
+              ),
+            )
+            .map(sanitizePaymentOption),
         };
   } catch {
     return {
       ...defaultRoshalPaymentSettings,
-      options: defaultRoshalPaymentSettings.options.map(sanitizePaymentOption),
+      options: defaultRoshalPaymentSettings.options
+        .filter((option) =>
+          ROSHAL_VISIBLE_PAYMENT_METHODS.includes(
+            normalizePaymentMethod(option.key),
+          ),
+        )
+        .map(sanitizePaymentOption),
     };
   }
 }

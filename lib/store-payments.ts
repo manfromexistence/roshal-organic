@@ -9,8 +9,6 @@ const ROSHAL_GATEWAY_METHODS: RoshalPaymentMethod[] = [
   "card",
   "bkash",
   "nagad",
-  "rocket",
-  "upay",
 ];
 
 interface AamarPayCheckoutSessionInput {

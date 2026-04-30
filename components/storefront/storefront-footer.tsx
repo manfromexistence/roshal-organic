@@ -80,12 +80,12 @@ export function StorefrontFooter({
   );
 
   return (
-    <footer className="border-t border-border/60 bg-card/70 pb-16 md:pb-0">
+    <footer className="border-t border-primary-foreground/12 bg-primary text-primary-foreground pb-16 md:pb-0">
       <div className="container mx-auto space-y-2 px-4 py-2 sm:px-6 md:px-8">
         <div className="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-[1.25fr_0.75fr_0.75fr]">
           <div className="space-y-2">
             <Link href="/" className="inline-flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-md border border-border/70 bg-background shadow-sm">
+              <div className="flex h-11 w-11 items-center justify-center rounded-md border border-primary-foreground/18 bg-primary-foreground/10 shadow-sm">
                 <Image
                   src="/apple-touch-icon.png"
                   alt={siteSettings.brandName}
@@ -95,29 +95,29 @@ export function StorefrontFooter({
                 />
               </div>
               <div className="space-y-0">
-                <p className="font-wordmark text-[15px] text-foreground">
+                <p className="font-wordmark text-[15px] text-primary-foreground">
                   {siteSettings.brandName}
                 </p>
               </div>
             </Link>
 
-            <p className="max-w-sm text-xs leading-5 text-muted-foreground">
+            <p className="max-w-sm text-xs leading-5 text-primary-foreground/80">
               {locale === "bn"
                 ? "খাঁটি মধু, ঘি, তেল, গুড়, ফল এবং দৈনন্দিন অর্গানিক প্রয়োজনীয় পণ্য এখন এক জায়গায়।"
                 : "Pure honey, ghee, oils, jaggery, fruit, and trusted organic essentials in one storefront."}
             </p>
 
-            <div className="space-y-1 text-xs text-muted-foreground">
+            <div className="space-y-1 text-xs text-primary-foreground/80">
               <Link
                 href={`tel:${siteSettings.contactPhone}`}
-                className="flex items-center gap-2 transition-colors hover:text-primary"
+                className="flex items-center gap-2 transition-colors hover:text-primary-foreground"
               >
                 <Phone className="size-4" />
                 <span>{siteSettings.contactPhone}</span>
               </Link>
               <Link
                 href={`mailto:${siteSettings.contactEmail}`}
-                className="flex items-center gap-2 transition-colors hover:text-primary"
+                className="flex items-center gap-2 transition-colors hover:text-primary-foreground"
               >
                 <Mail className="size-4" />
                 <span>{siteSettings.contactEmail}</span>
@@ -131,7 +131,7 @@ export function StorefrontFooter({
             <div className="flex flex-wrap gap-1.5">
               <Link
                 href={whatsappHref}
-                className="inline-flex items-center gap-2 rounded-sm border border-transparent bg-primary/12 px-2.5 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary/18"
+                className="inline-flex items-center gap-2 rounded-sm border border-primary-foreground/10 bg-primary-foreground/12 px-2.5 py-1 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary-foreground/20"
               >
                 <IconBrandWhatsapp className="size-4" />
                 {locale === "bn" ? "WhatsApp" : "WhatsApp"}
@@ -139,7 +139,7 @@ export function StorefrontFooter({
               {siteSettings.facebookUrl ? (
                 <Link
                   href={siteSettings.facebookUrl}
-                  className="inline-flex items-center gap-2 rounded-sm border border-transparent bg-primary/12 px-2.5 py-1 text-xs font-medium text-primary transition-colors hover:bg-primary/18"
+                  className="inline-flex items-center gap-2 rounded-sm border border-primary-foreground/10 bg-primary-foreground/12 px-2.5 py-1 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary-foreground/20"
                 >
                   <IconBrandFacebook className="size-4" />
                   Facebook
@@ -149,15 +149,15 @@ export function StorefrontFooter({
           </div>
 
           <div className="space-y-1">
-            <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/80">
+            <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/80">
               {locale === "bn" ? "তথ্য" : "Information"}
             </h3>
-            <div className="space-y-1 text-xs text-muted-foreground">
+            <div className="space-y-1 text-xs text-primary-foreground/80">
               {informationalPages.map((page) => (
                 <Link
                   key={page.id}
                   href={`/${page.slug}`}
-                  className="block transition-colors hover:text-primary"
+                  className="block transition-colors hover:text-primary-foreground"
                 >
                   {getLocalizedValue(locale, page.navigationLabel)}
                 </Link>
@@ -166,15 +166,15 @@ export function StorefrontFooter({
           </div>
 
           <div className="space-y-1">
-            <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-foreground/80">
+            <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/80">
               {locale === "bn" ? "সাপোর্ট" : "Support"}
             </h3>
-            <div className="space-y-1 text-xs text-muted-foreground">
+            <div className="space-y-1 text-xs text-primary-foreground/80">
               {supportLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="block transition-colors hover:text-primary"
+                  className="block transition-colors hover:text-primary-foreground"
                 >
                   {getLocalizedValue(locale, link.label)}
                 </Link>
@@ -183,9 +183,9 @@ export function StorefrontFooter({
           </div>
         </div>
 
-        <Separator />
+        <Separator className="bg-primary-foreground/12" />
 
-        <div className="flex flex-col gap-1 text-[11px] text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-1 text-[11px] text-primary-foreground/70 sm:flex-row sm:items-center sm:justify-between">
           <p>
             © 2026 {siteSettings.brandName}.{" "}
             {locale === "bn" ? "সর্বস্ব সংরক্ষিত।" : "All rights reserved."}
@@ -193,13 +193,13 @@ export function StorefrontFooter({
           <div className="flex flex-wrap gap-3">
             <Link
               href="/track-order"
-              className="transition-colors hover:text-primary"
+              className="transition-colors hover:text-primary-foreground"
             >
               {locale === "bn" ? "অর্ডার ট্র্যাক" : "Track order"}
             </Link>
             <Link
               href="/contact"
-              className="transition-colors hover:text-primary"
+              className="transition-colors hover:text-primary-foreground"
             >
               {locale === "bn" ? "যোগাযোগ" : "Contact"}
             </Link>

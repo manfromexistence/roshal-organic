@@ -178,8 +178,6 @@ export async function saveRoshalPaymentSettings(formData: FormData) {
     "card",
     "bkash",
     "nagad",
-    "rocket",
-    "upay",
   ];
 
   await upsertRoshalPaymentSettings({

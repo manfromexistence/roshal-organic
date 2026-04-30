@@ -692,3 +692,52 @@
  GET / 200 in 536ms (next.js: 6ms, application-code: 530ms)
  GET /api/auth/get-session 200 in 1286ms (next.js: 193ms, application-code: 1093ms)
  GET /api/auth/get-session 200 in 132ms (next.js: 6ms, application-code: 126ms)
+ POST /api/upload/imgbb 200 in 3.3s (next.js: 1500ms, application-code: 1838ms)
+✓ Compiled in 349ms
+✓ Compiled in 290ms
+✓ Compiled in 185ms
+ GET / 200 in 6.1s (next.js: 557ms, application-code: 5.5s)
+ GET /api/auth/get-session 200 in 428ms (next.js: 299ms, application-code: 129ms)
+ GET /checkout 200 in 1554ms (next.js: 186ms, proxy.ts: 407ms, application-code: 961ms)
+ GET /api/auth/get-session 200 in 118ms (next.js: 11ms, application-code: 108ms)
+ GET /checkout 200 in 896ms (next.js: 3ms, proxy.ts: 299ms, application-code: 594ms)
+ GET /api/auth/get-session 200 in 112ms (next.js: 8ms, application-code: 104ms)
+ GET /checkout 200 in 679ms (next.js: 3ms, proxy.ts: 204ms, application-code: 473ms)
+ GET /api/auth/get-session 200 in 112ms (next.js: 8ms, application-code: 105ms)
+ GET / 200 in 549ms (next.js: 3ms, application-code: 546ms)
+ GET /api/auth/get-session 200 in 117ms (next.js: 8ms, application-code: 109ms)
+ GET / 200 in 549ms (next.js: 5ms, application-code: 545ms)
+ GET /api/auth/get-session 200 in 137ms (next.js: 12ms, application-code: 125ms)
+✓ Compiled in 578ms
+ GET / 200 in 1275ms (next.js: 366ms, application-code: 909ms)
+ GET / 200 in 719ms (next.js: 3ms, application-code: 716ms)
+✓ Compiled in 269ms
+ GET / 200 in 2.2s (next.js: 191ms, application-code: 1968ms)
+ GET / 200 in 1564ms (next.js: 205ms, application-code: 1359ms)
+ GET / 200 in 1216ms (next.js: 36ms, application-code: 1180ms)
+ GET / 200 in 1216ms (next.js: 100ms, application-code: 1117ms)
+ GET / 200 in 1272ms (next.js: 4ms, application-code: 1267ms)
+ GET / 500 in 2.2s (next.js: 2.2s, application-code: 12ms)
+ GET / 500 in 14ms (next.js: 6ms, application-code: 7ms)
+ GET / 500 in 20ms (next.js: 8ms, application-code: 12ms)
+ GET / 500 in 16ms (next.js: 8ms, application-code: 8ms)
+ GET / 500 in 32ms (next.js: 12ms, application-code: 20ms)
+ GET / 500 in 30ms (next.js: 21ms, application-code: 9ms)
+ GET / 500 in 52ms (next.js: 43ms, application-code: 9ms)
+✓ Compiled in 473ms
+ GET / 500 in 1841ms
+ GET / 200 in 2.3s (next.js: 203ms, application-code: 2.1s)
+ GET /api/auth/get-session 200 in 415ms (next.js: 277ms, application-code: 138ms)
+✓ Compiled in 210ms
+ GET / 200 in 1051ms (next.js: 197ms, application-code: 854ms)
+ GET / 200 in 691ms (next.js: 2ms, application-code: 688ms)
+✓ Compiled in 329ms
+ GET / 200 in 950ms (next.js: 35ms, application-code: 915ms)
+ GET / 200 in 1045ms (next.js: 3ms, application-code: 1042ms)
+ GET / 200 in 997ms (next.js: 4ms, application-code: 993ms)
+ GET / 200 in 1441ms (next.js: 212ms, application-code: 1229ms)
+ GET / 200 in 1098ms (next.js: 68ms, application-code: 1030ms)
+ GET / 200 in 1207ms (next.js: 95ms, application-code: 1112ms)
+ GET / 200 in 400ms (next.js: 2ms, application-code: 398ms)
+ GET / 200 in 350ms (next.js: 2ms, application-code: 347ms)
+ GET / 200 in 351ms (next.js: 33ms, application-code: 318ms)

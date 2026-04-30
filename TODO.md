@@ -25,6 +25,12 @@
 - [x] `Cash on delivery` is backfilled for older payment rows and forced to remain the first visible option.
 - [x] Dashboard-saved labels, numbers, modes, and enabled states are preserved while missing methods are restored.
 
+## 2026-05-01 Checkout payment cleanup
+
+- [x] Keep only `Cash on delivery`, `Card`, `bKash`, and `Nagad` visible across storefront and dashboard payment settings.
+- [x] Add compact `bKash` and `Nagad` logos to the checkout payment selector.
+- [x] Add a visible border to the floating WhatsApp chat bubble.
+
 ## 2026-04-30 Header follow-up
 
 - [x] Keep the sub-header visible while scrolling down and hide only the main header on both desktop and mobile.
@@ -56,3 +62,10 @@
 - [x] Remove the checkout testimonial/comment section and stop pulling homepage testimonial data into the checkout route.
 - [x] Replace the visible broken checkout delivery helper/location labels so the page shows readable Bangla and English only.
 - [x] Render additional seeded home CMS product sections back onto the storefront so more cards stay dashboard-controlled without changing the current compact responsive shelf layout.
+
+## 2026-05-01 UI and payment/upload follow-up
+
+- [x] Move the footer onto a primary-colored surface and make the dashboard sidebar use the same primary-led background direction.
+- [x] Tighten storefront product-card heights by trimming image ratios, spacing, and action areas without changing the existing card structure.
+- [x] Restore compact wallet verification inputs on checkout for `bKash`, `Nagad`, and `Rocket` while keeping `Cash on delivery` first and visible on the current page.
+- [x] Harden the shared image-upload trigger so both dashboard editors and frontend upload surfaces use the same stable picker flow again.

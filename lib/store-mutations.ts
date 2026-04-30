@@ -303,14 +303,7 @@ const roshalCheckoutRequestSchema = z.object({
     .or(z.literal(""))
     .or(z.null())
     .transform((value) => value || undefined),
-  paymentMethod: z.enum([
-    "cash_on_delivery",
-    "card",
-    "bkash",
-    "nagad",
-    "rocket",
-    "upay",
-  ]),
+  paymentMethod: z.enum(["cash_on_delivery", "card", "bkash", "nagad"]),
   paymentReference: z
     .string()
     .trim()

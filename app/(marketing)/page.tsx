@@ -1,6 +1,6 @@
+import { FeaturedProducts } from "@/components/marketing/featured-products";
 import { HomeBrandStrip } from "@/components/marketing/home-brand-strip";
 import { HomeCategoryStrip } from "@/components/marketing/home-category-strip";
-import { FeaturedProducts } from "@/components/marketing/featured-products";
 import { HomeTestimonialCarousel } from "@/components/marketing/home-testimonial-carousel";
 import {
   LandingHero,

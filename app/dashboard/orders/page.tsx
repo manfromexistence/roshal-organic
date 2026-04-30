@@ -47,11 +47,9 @@ export default async function DashboardOrdersPage() {
   }));
   const paymentMethodOrder: RoshalPaymentMethod[] = [
     "cash_on_delivery",
+    "card",
     "bkash",
     "nagad",
-    "rocket",
-    "upay",
-    "card",
   ];
   const paymentMethodData = paymentMethodOrder.map((method) => ({
     key: method,

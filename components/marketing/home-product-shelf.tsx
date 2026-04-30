@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import {
   ImageCard,
   ImageCardContent,
-  ImageCardDescription,
   ImageCardFooter,
   ImageCardHeader,
   ImageCardTitle,
@@ -41,7 +40,7 @@ function ShelfProductCard({
   return (
     <ImageCard className="group flex h-full flex-col overflow-hidden rounded-md border-border/80 bg-card shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-md">
       <ImageCardHeader className="p-0">
-        <div className="relative aspect-[4/3] overflow-hidden border-b border-border/70 bg-muted/35">
+        <div className="relative aspect-[7/5] overflow-hidden border-b border-border/70 bg-muted/35">
           <Image
             src={product.image}
             alt={product.name[language]}
@@ -52,7 +51,7 @@ function ShelfProductCard({
           {product.badge ? (
             <Badge
               variant={product.badgeVariant || "secondary"}
-              className="absolute left-3 top-3 rounded-md"
+              className="absolute left-2.5 top-2.5 rounded-sm"
             >
               {product.badge}
             </Badge>
@@ -60,9 +59,9 @@ function ShelfProductCard({
         </div>
       </ImageCardHeader>
 
-      <ImageCardContent className="flex flex-1 flex-col items-start gap-2 px-3.5 pb-3 pt-3 text-left">
-        <div className="w-full space-y-1.5">
-          <ImageCardTitle className="line-clamp-2 min-h-11 text-[0.94rem] leading-[1.35rem] text-foreground">
+      <ImageCardContent className="flex flex-1 flex-col items-start gap-1.5 px-3 pb-2.5 pt-2.5 text-left">
+        <div className="w-full space-y-1">
+          <ImageCardTitle className="line-clamp-2 min-h-10 text-[0.92rem] leading-5 text-foreground">
             {product.name[language]}
           </ImageCardTitle>
           <div className="flex flex-wrap items-center gap-2 text-sm">
@@ -74,17 +73,10 @@ function ShelfProductCard({
             ) : null}
           </div>
         </div>
-
-        {typeof product.rating === "number" ? (
-          <ImageCardDescription className="text-xs">
-            {product.rating.toFixed(1)}
-            {typeof product.reviews === "number" ? ` (${product.reviews})` : ""}
-          </ImageCardDescription>
-        ) : null}
       </ImageCardContent>
 
       <ImageCardFooter className="mt-auto px-0 pb-0 pt-0">
-        <div className="grid w-full gap-2 border-t border-border/70 px-3.5 pb-3.5 pt-3">
+        <div className="grid w-full gap-1.5 border-t border-border/70 px-3 pb-3 pt-2.5">
           {product.cartProduct ? (
             <AddToCartButton
               product={product.cartProduct}

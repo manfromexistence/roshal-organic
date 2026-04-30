@@ -91,7 +91,7 @@ const primaryNavigationTemplate: DashboardNavItem[] = [
     title: "Payments",
     url: "/dashboard/payments",
     icon: "payments",
-    keywords: ["bkash", "nagad", "rocket", "upay", "card"],
+    keywords: ["cash on delivery", "bkash", "nagad", "card"],
   },
   {
     title: "Users",

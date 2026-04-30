@@ -24,8 +24,6 @@ const paymentMethodOrder: RoshalPaymentMethod[] = [
   "card",
   "bkash",
   "nagad",
-  "rocket",
-  "upay",
 ];
 
 export default async function DashboardPaymentsPage() {

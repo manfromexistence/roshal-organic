@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import type { HTMLAttributes, HTMLInputTypeAttribute } from "react";
 import { useEffect, useId, useMemo, useState } from "react";
+import { ImageUploadField } from "@/components/shared/image-upload-field";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -166,7 +167,12 @@ function getDefaultCheckoutPaymentMethod(
   );
 }
 
-const checkoutWalletKeys: RoshalPaymentMethod[] = ["bkash", "nagad", "rocket"];
+const checkoutWalletKeys: RoshalPaymentMethod[] = ["bkash", "nagad"];
+
+const checkoutPaymentLogos: Partial<Record<RoshalPaymentMethod, string>> = {
+  bkash: "/bkash-logo.svg",
+  nagad: "/nagad-logo.svg",
+};
 
 function sortCheckoutPaymentOptions(options: RoshalPaymentSettings["options"]) {
   return [...options]
@@ -279,6 +285,15 @@ export function CheckoutPageClient({
   const selectedOption =
     paymentOptions.find((option) => option.key === paymentMethod) ||
     paymentOptions[0];
+  const selectedWalletNeedsVerification = Boolean(
+    selectedOption && checkoutWalletKeys.includes(selectedOption.key),
+  );
+  const showSelectedPaymentDetails = Boolean(
+    selectedOption &&
+      ((selectedOption.accountNumber &&
+        selectedOption.key !== "cash_on_delivery") ||
+        selectedWalletNeedsVerification),
+  );
   const gatewayActiveForSelectedOption = Boolean(
     selectedOption &&
       selectedOption.mode === "gateway" &&
@@ -436,6 +451,20 @@ export function CheckoutPageClient({
         locale === "bn"
           ? "নাম, ফোন এবং ঠিকানা দিন।"
           : "Please provide your name, phone number, and address.",
+      );
+      return;
+    }
+
+    if (
+      selectedWalletNeedsVerification &&
+      (!formState.paymentSender.trim() ||
+        !formState.paymentReference.trim() ||
+        !formState.paymentProofUrl.trim())
+    ) {
+      showCheckoutError(
+        locale === "bn"
+          ? "\u09ae\u09be\u09a8\u09c1\u09af\u09bc\u09be\u09b2 \u09aa\u09c7\u09ae\u09c7\u09a8\u09cd\u099f\u09c7\u09b0 \u099c\u09a8\u09cd\u09af \u09b8\u09c7\u09a8\u09cd\u09a1\u09be\u09b0 \u09a8\u09be\u09ae\u09cd\u09ac\u09be\u09b0, \u099f\u09cd\u09b0\u09be\u09a8\u099c\u09be\u0995\u09b6\u09a8 \u0986\u0987\u09a1\u09bf \u098f\u09ac\u0982 \u09aa\u09c7\u09ae\u09c7\u09a8\u09cd\u099f \u09aa\u09cd\u09b0\u09c1\u09ab \u0985\u09aa\u09b2\u09cb\u09a1 \u0995\u09b0\u09c1\u09a8\u0964"
+          : "For wallet payment, please provide the sender number, transaction ID, and payment proof.",
       );
       return;
     }
@@ -841,13 +870,14 @@ export function CheckoutPageClient({
                   setSubmitError(null);
                   setPaymentMethod(value as RoshalPaymentMethod);
                 }}
-                className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3"
+                className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4"
               >
                 {paymentOptions.map((option) => {
                   const isSelected = option.key === paymentMethod;
                   const isCompactWalletOption = checkoutWalletKeys.includes(
                     option.key,
                   );
+                  const logoSrc = checkoutPaymentLogos[option.key];
 
                   return (
                     <Label
@@ -855,8 +885,8 @@ export function CheckoutPageClient({
                       htmlFor={option.key}
                       className={`flex cursor-pointer rounded-sm border transition-colors ${
                         isCompactWalletOption
-                          ? "items-center gap-2.5 px-3 py-2"
-                          : "items-start gap-3 px-3 py-2.5"
+                          ? "items-center gap-2 px-2.5 py-2"
+                          : "items-start gap-2.5 px-2.5 py-2.5"
                       } ${
                         isSelected
                           ? "border-primary/50 bg-primary/5"
@@ -868,7 +898,18 @@ export function CheckoutPageClient({
                         id={option.key}
                         className="mt-0.5 shrink-0"
                       />
-                      <div className="min-w-0">
+                      <div className="min-w-0 space-y-1">
+                        {logoSrc ? (
+                          <div className="flex items-center">
+                            <Image
+                              src={logoSrc}
+                              alt={`${getLocalizedValue(locale, option.label)} logo`}
+                              width={72}
+                              height={24}
+                              className="h-6 w-auto rounded-[4px] border border-border/60"
+                            />
+                          </div>
+                        ) : null}
                         <span className="text-sm font-medium text-foreground">
                           {getLocalizedValue(locale, option.label)}
                         </span>
@@ -878,17 +919,75 @@ export function CheckoutPageClient({
                 })}
               </RadioGroup>
 
-              {selectedOption ? (
-                <div className="space-y-3 rounded-md border border-border/70 bg-muted/20 p-4">
+              {selectedOption && showSelectedPaymentDetails ? (
+                <div className="space-y-3 rounded-md border border-border/70 bg-muted/20 p-3">
                   {selectedOption.accountNumber &&
                   selectedOption.key !== "cash_on_delivery" ? (
-                    <div className="rounded-sm border border-border/60 bg-background px-3 py-2.5">
+                    <div className="rounded-sm border border-border/60 bg-background px-3 py-2">
                       <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
                         Payment number
                       </p>
                       <p className="mt-1 break-all text-base font-semibold leading-tight text-foreground">
                         {selectedOption.accountNumber}
                       </p>
+                    </div>
+                  ) : null}
+
+                  {selectedWalletNeedsVerification ? (
+                    <div className="grid gap-3 md:grid-cols-2">
+                      <Field
+                        label={
+                          locale === "bn"
+                            ? "\u09b8\u09c7\u09a8\u09cd\u09a1\u09be\u09b0 \u09a8\u09be\u09ae\u09cd\u09ac\u09be\u09b0"
+                            : "Sender number"
+                        }
+                        value={formState.paymentSender}
+                        onChange={(value) =>
+                          updateFormValue("paymentSender", value)
+                        }
+                        inputMode="tel"
+                      />
+                      <Field
+                        label={
+                          locale === "bn"
+                            ? "\u099f\u09cd\u09b0\u09be\u09a8\u099c\u09be\u0995\u09b6\u09a8 \u0986\u0987\u09a1\u09bf"
+                            : "Transaction ID"
+                        }
+                        value={formState.paymentReference}
+                        onChange={(value) =>
+                          updateFormValue("paymentReference", value)
+                        }
+                      />
+                      <div className="md:col-span-2">
+                        <ImageUploadField
+                          compact
+                          showPreview={false}
+                          label={
+                            locale === "bn"
+                              ? "\u09aa\u09c7\u09ae\u09c7\u09a8\u09cd\u099f \u09aa\u09cd\u09b0\u09c1\u09ab"
+                              : "Payment proof"
+                          }
+                          uploadLabel={
+                            locale === "bn"
+                              ? "\u09b8\u09cd\u0995\u09cd\u09b0\u09bf\u09a8\u09b6\u099f \u0986\u09aa\u09b2\u09cb\u09a1"
+                              : "Upload proof"
+                          }
+                          uploadingLabel={
+                            locale === "bn"
+                              ? "\u0986\u09aa\u09b2\u09cb\u09a1 \u09b9\u099a\u09cd\u099b\u09c7"
+                              : "Uploading"
+                          }
+                          clearLabel={
+                            locale === "bn"
+                              ? "\u09b8\u09b0\u09be\u09a8"
+                              : "Clear"
+                          }
+                          value={formState.paymentProofUrl}
+                          onChange={(value) =>
+                            updateFormValue("paymentProofUrl", value)
+                          }
+                        />
+                      </div>
                     </div>
                   ) : null}
                 </div>

@@ -14,9 +14,7 @@ function normalizePaymentMethod(value: string): RoshalPaymentMethod {
     value === "cash_on_delivery" ||
     value === "card" ||
     value === "bkash" ||
-    value === "nagad" ||
-    value === "rocket" ||
-    value === "upay"
+    value === "nagad"
   ) {
     return value;
   }

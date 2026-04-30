@@ -53,7 +53,7 @@ export function RoshalProductCard({
             href={`/products/${product.slug}`}
             className="block rounded-t-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
-            <div className="relative aspect-square overflow-hidden border-b border-border/70 bg-muted/35">
+            <div className="relative aspect-[11/10] overflow-hidden border-b border-border/70 bg-muted/35">
               <Image
                 src={product.heroImage}
                 alt={name}
@@ -64,7 +64,7 @@ export function RoshalProductCard({
             </div>
           </Link>
 
-          <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between p-2.5">
+          <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between p-2">
             {badgeLabel ? (
               <Badge className="pointer-events-auto rounded-sm">
                 {badgeLabel}
@@ -83,7 +83,7 @@ export function RoshalProductCard({
         </div>
       </ImageCardHeader>
 
-      <ImageCardContent className="flex flex-1 flex-col items-start gap-1 px-2.5 pb-2 pt-2 text-left">
+      <ImageCardContent className="flex flex-1 flex-col items-start gap-0.5 px-2 pb-1.5 pt-1.5 text-left">
         <div className="w-full space-y-0.5">
           <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
             {categoryLabel}
@@ -116,7 +116,7 @@ export function RoshalProductCard({
       </ImageCardContent>
 
       <ImageCardFooter className="mt-auto px-0 pb-0 pt-0">
-        <div className="grid w-full gap-1.5 border-t border-border/70 px-2.5 pb-2.5 pt-2">
+        <div className="grid w-full gap-1 border-t border-border/70 px-2 pb-2 pt-1.5">
           <Button
             asChild
             variant="outline"

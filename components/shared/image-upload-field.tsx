@@ -2,27 +2,32 @@
 
 import { ImagePlus, Loader2, Trash2 } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useId, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useEffect, useId, useState } from "react";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 export function ImageUploadField({
   clearLabel = "Clear",
+  compact = false,
   label,
   helperText,
   name,
+  showPreview = true,
   uploadLabel = "Upload",
   uploadingLabel = "Uploading",
   value,
   onChange,
 }: {
   clearLabel?: string;
+  compact?: boolean;
   label: string;
   helperText?: string;
   name?: string;
+  showPreview?: boolean;
   uploadLabel?: string;
   uploadingLabel?: string;
   value: string;
@@ -31,7 +36,7 @@ export function ImageUploadField({
   const [isUploading, setIsUploading] = useState(false);
   const [currentValue, setCurrentValue] = useState(value);
   const inputId = useId();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputId = `${inputId}-file`;
 
   useEffect(() => {
     setCurrentValue(value);
@@ -40,25 +45,6 @@ export function ImageUploadField({
   const updateValue = (nextValue: string) => {
     setCurrentValue(nextValue);
     onChange?.(nextValue);
-  };
-
-  const openFilePicker = () => {
-    const input = fileInputRef.current;
-
-    if (!input) {
-      return;
-    }
-
-    try {
-      input.click();
-      return;
-    } catch {}
-
-    if (typeof input.showPicker === "function") {
-      try {
-        input.showPicker();
-      } catch {}
-    }
   };
 
   const handleFileChange = async (
@@ -119,20 +105,32 @@ export function ImageUploadField({
         ) : null}
       </div>
 
-      <div className="flex min-w-0 flex-col gap-3 md:flex-row">
+      <div
+        className={cn(
+          "flex min-w-0 flex-col gap-3",
+          !compact && "md:flex-row",
+          compact && "gap-2",
+        )}
+      >
         <Input
           id={inputId}
           name={name}
           value={currentValue}
           onChange={(event) => updateValue(event.target.value)}
           placeholder="https://..."
+          className={cn(compact && "h-9 rounded-sm")}
         />
         <div className="flex flex-wrap gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            disabled={isUploading}
-            onClick={openFilePicker}
+          <label
+            htmlFor={fileInputId}
+            className={cn(
+              buttonVariants({
+                variant: "outline",
+                size: compact ? "sm" : "default",
+              }),
+              "cursor-pointer rounded-sm",
+              isUploading && "pointer-events-none opacity-50",
+            )}
           >
             {isUploading ? (
               <>
@@ -145,11 +143,13 @@ export function ImageUploadField({
                 {uploadLabel}
               </>
             )}
-          </Button>
+          </label>
           {currentValue ? (
             <Button
               type="button"
               variant="ghost"
+              size={compact ? "sm" : "default"}
+              className="rounded-sm"
               onClick={() => updateValue("")}
             >
               <Trash2 className="size-4" />
@@ -160,8 +160,7 @@ export function ImageUploadField({
       </div>
 
       <input
-        ref={fileInputRef}
-        id={`${inputId}-file`}
+        id={fileInputId}
         type="file"
         accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
         className="hidden"
@@ -169,8 +168,10 @@ export function ImageUploadField({
         disabled={isUploading}
       />
 
-      {currentValue ? (
-        <Card className="overflow-hidden">
+      {currentValue && showPreview ? (
+        <Card
+          className={cn("overflow-hidden rounded-sm", compact && "shadow-xs")}
+        >
           <CardContent className="p-0">
             <div className="relative aspect-[4/3] w-full bg-muted">
               <Image
