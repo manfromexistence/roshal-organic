@@ -19,8 +19,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added responsive payment partners grid layout with grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 for better logo distribution across screen sizes
 
 ### Changed
+- Changed the first client-delivery storefront pass to use real DB-seeded taxonomy rows instead of re-merging hardcoded category defaults on every read, so dashboard category and subcategory create/edit/delete now truthfully owns the public navigation and filters after the initial seed.
+- Changed the homepage for the client delivery brief by removing the extra `New Arrivals` and `Just For You` shelves, tightening the top-sellers/category/testimonial card layouts, shrinking the login/signup chrome, and simplifying the footer so the storefront feels closer to the requested Bangladeshi ecommerce density.
+- Changed the marketing hero layout so the desktop right banner stays fixed while the mobile homepage only renders a single hero banner card, matching the requested Ghore-Bazar-style split more closely.
+- Changed the fixed storefront header to listen to the real Radix `ScrollArea` viewport instead of `window.scrollY`, so the desktop top bar now hides on scroll down and reappears on scroll up while the category rail remains pinned.
+- Changed the default light Roshal theme bootstrap and preset state to use a softly green-tinted background, card, popover, and sidebar surface, and rotated the theme storage keys so stale neutral browser theme state no longer overrides the refreshed client-delivery palette.
 - Changed the storefront checkout and dashboard payment settings so cash on delivery is now the only visible customer-facing/admin-managed payment option, while the existing bKash, Nagad, Rocket, Upay, and card code paths remain preserved but hidden for later reactivation.
 - Changed the checkout payment panel to default to cash on delivery, remove the extra wallet-support help surfaces from the live customer flow, and keep the existing delivery/contact form layout intact.
+- Changed the storefront and dashboard payment settings again so `Cash on delivery` stays first/default while `card`, `bKash`, `Nagad`, `Rocket`, and `Upay` are visible again, with the extra checkout payment-help copy removed and the wallet option cards compacted.
 - Changed storefront cart and checkout pages to use responsive wrapping, flex constraints, and text truncation, ensuring long content and payment grids fit reliably on smaller mobile screens
 - Changed the storefront checkout page to use a denser mobile-friendly delivery and payment layout with trust highlights, manual-verification guidance, support actions, and customer comments inspired by the requested Bangladeshi ecommerce checkout pattern while leaving the rest of the marketing UI untouched
 - Changed the desktop storefront sub-header dropdowns to escape the category rail correctly by making the non-viewport navigation-menu content overflow visible and raising the rail stacking context above the marketing pages
@@ -257,6 +263,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All linting errors and warnings resolved across the codebase
 
 ### Fixed
+- Fixed the public storefront scrollbar contrast so the vertical rail is visible again against the lighter client-delivery theme, both for native page scrollbars and the shared Radix `ScrollArea` thumb.
+- Fixed the live storefront mobile hero overflow by hiding the secondary banner below `md`, and re-verified that the mobile homepage stays at `390px` with no horizontal overflow.
+- Fixed the live taxonomy ownership bug where deleted dashboard categories would silently come back from code defaults, and verified that the initial default bundle now seeds into Turso as `9` categories and `45` subcategories instead of only appearing through runtime fallback merging.
 - Fixed the shared Roshal toast styling so checkout validation, geolocation-permission, and upload/payment feedback now render on visible theme-backed surfaces with readable foreground text in both light and dark mode
 - Fixed the live wallet-review checkout audit path by verifying and hardening a real storefront flow: customer order creation, admin dashboard payment confirmation, and customer order-history reflection of the updated paid state and review notes
 - Fixed the live storefront card padding regression on catalog/home product cards by moving image-first media into the header section and keeping the spacing only around the textual content and CTA region

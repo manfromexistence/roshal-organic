@@ -1,7 +1,7 @@
 import type { ThemeStyleProps } from "@/types/theme";
 
-export const NEXT_THEME_STORAGE_KEY = "roshal-theme-mode-v2";
-export const THEME_STORAGE_KEY = "roshal-theme-state-v3";
+export const NEXT_THEME_STORAGE_KEY = "roshal-theme-mode-v3";
+export const THEME_STORAGE_KEY = "roshal-theme-state-v4";
 
 export interface ThemeStateSnapshot {
   light: ThemeStyleProps;
@@ -10,11 +10,11 @@ export interface ThemeStateSnapshot {
 }
 
 export const DEFAULT_LIGHT_THEME_COLORS: ThemeStyleProps = {
-  background: "oklch(0.99 0 0)",
+  background: "oklch(0.985 0.01 148)",
   foreground: "oklch(0.145 0 0)",
-  card: "oklch(1 0 0)",
+  card: "oklch(0.995 0.008 148)",
   "card-foreground": "oklch(0.145 0 0)",
-  popover: "oklch(1 0 0)",
+  popover: "oklch(0.995 0.008 148)",
   "popover-foreground": "oklch(0.145 0 0)",
   primary: "oklch(28.04% 0.05154 150.113)",
   "primary-foreground": "oklch(0.985 0 0)",
@@ -34,7 +34,7 @@ export const DEFAULT_LIGHT_THEME_COLORS: ThemeStyleProps = {
   "chart-3": "oklch(0.62 0.11 221)",
   "chart-4": "oklch(0.78 0.15 118)",
   "chart-5": "oklch(0.58 0.16 29)",
-  sidebar: "oklch(0.985 0.004 145)",
+  sidebar: "oklch(0.988 0.008 148)",
   "sidebar-foreground": "oklch(0.145 0 0)",
   "sidebar-primary": "oklch(28.04% 0.05154 150.113)",
   "sidebar-primary-foreground": "oklch(0.985 0 0)",

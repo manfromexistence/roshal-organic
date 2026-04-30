@@ -173,13 +173,14 @@ export async function saveRoshalSiteSettings(formData: FormData) {
 export async function saveRoshalPaymentSettings(formData: FormData) {
   await requireRoshalAdmin();
   const existingSettings = await getRoshalPaymentSettings();
-  const cashOnDeliveryOption =
-    existingSettings.options.find(
-      (option) => option.key === "cash_on_delivery",
-    ) || existingSettings.options[0];
-  const hiddenLegacyOptions = existingSettings.options.filter(
-    (option) => option.key !== "cash_on_delivery",
-  );
+  const paymentMethodOrder: RoshalPaymentMethod[] = [
+    "cash_on_delivery",
+    "card",
+    "bkash",
+    "nagad",
+    "rocket",
+    "upay",
+  ];
 
   await upsertRoshalPaymentSettings({
     id: textValue(formData, "id") || undefined,
@@ -195,10 +196,14 @@ export async function saveRoshalPaymentSettings(formData: FormData) {
     supportMessageEn: formData.has("supportMessageEn")
       ? textValue(formData, "supportMessageEn")
       : existingSettings.supportMessage.en,
-    options: [
-      buildPaymentOption(formData, "cash_on_delivery", 0, cashOnDeliveryOption),
-      ...hiddenLegacyOptions,
-    ],
+    options: paymentMethodOrder.map((key, index) =>
+      buildPaymentOption(
+        formData,
+        key,
+        index,
+        existingSettings.options.find((option) => option.key === key),
+      ),
+    ),
   });
 
   finishAction("/dashboard/payments", formData, [

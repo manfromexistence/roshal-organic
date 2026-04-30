@@ -1,6 +1,10 @@
-import { asc } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { roshalCategories, roshalSubcategories } from "@/lib/schema";
+import {
+  roshalCategories,
+  roshalSubcategories,
+  roshalTaxonomyMeta,
+} from "@/lib/schema";
 import { safeJsonParse } from "@/lib/store-format";
 import { normalizeRoshalAssetPath } from "@/lib/store-media";
 import {
@@ -79,66 +83,18 @@ function mapSubcategory(
   };
 }
 
-function mergeCategories(categories: RoshalStoreCategory[]) {
-  const categoryByKey = new Map(
-    categories.map((category) => [category.key, category]),
-  );
-  const merged: RoshalStoreCategory[] = [];
-  const seenKeys = new Set<string>();
-
-  for (const fallback of defaultRoshalCategories) {
-    const category = categoryByKey.get(fallback.key) || fallback;
-    merged.push(category);
-    seenKeys.add(category.key);
-  }
-
-  const customCategories = categories
-    .filter((category) => !seenKeys.has(category.key))
-    .sort((left, right) => {
-      if (left.sortOrder !== right.sortOrder) {
-        return left.sortOrder - right.sortOrder;
-      }
-
-      return left.label.en.localeCompare(right.label.en);
-    });
-
-  return [...merged, ...customCategories];
-}
-
-function mergeSubcategories(
+function resolveSubcategories(
   subcategories: RoshalStoreSubcategory[],
   categories: RoshalStoreCategory[],
 ) {
-  const subcategoryByKey = new Map(
-    subcategories.map((subcategory) => [subcategory.key, subcategory]),
-  );
   const categoryById = new Map(
     categories.map((category) => [category.id, category]),
   );
   const categoryByKey = new Map(
     categories.map((category) => [category.key, category]),
   );
-  const merged: RoshalStoreSubcategory[] = [];
-  const seenKeys = new Set<string>();
 
-  for (const fallback of defaultRoshalSubcategories) {
-    const subcategory = subcategoryByKey.get(fallback.key) || fallback;
-    const resolvedCategory =
-      categoryById.get(subcategory.categoryId) ||
-      categoryByKey.get(subcategory.categoryKey) ||
-      categoryById.get(fallback.categoryId) ||
-      categoryByKey.get(fallback.categoryKey);
-
-    merged.push({
-      ...subcategory,
-      categoryId: resolvedCategory?.id || subcategory.categoryId,
-      categoryKey: resolvedCategory?.key || subcategory.categoryKey,
-    });
-    seenKeys.add(subcategory.key);
-  }
-
-  const customSubcategories = subcategories
-    .filter((subcategory) => !seenKeys.has(subcategory.key))
+  return subcategories
     .map((subcategory) => {
       const resolvedCategory =
         categoryById.get(subcategory.categoryId) ||
@@ -157,19 +113,120 @@ function mergeSubcategories(
 
       return left.label.en.localeCompare(right.label.en);
     });
+}
 
-  return [...merged, ...customSubcategories];
+const TAXONOMY_META_ID = "taxonomy-defaults";
+
+async function ensureRoshalTaxonomySeeded() {
+  const [metaRow] = await db
+    .select()
+    .from(roshalTaxonomyMeta)
+    .where(eq(roshalTaxonomyMeta.id, TAXONOMY_META_ID))
+    .limit(1);
+
+  const existingCategories = await db
+    .select({ id: roshalCategories.id })
+    .from(roshalCategories)
+    .limit(1);
+  const existingSubcategories = await db
+    .select({ id: roshalSubcategories.id })
+    .from(roshalSubcategories)
+    .limit(1);
+
+  if (metaRow?.defaultsSeeded) {
+    return;
+  }
+
+  if (existingCategories.length > 0 || existingSubcategories.length > 0) {
+    const timestamp = new Date();
+
+    await db
+      .insert(roshalTaxonomyMeta)
+      .values({
+        id: TAXONOMY_META_ID,
+        defaultsSeeded: true,
+        createdAt: metaRow?.createdAt || timestamp,
+        updatedAt: timestamp,
+      })
+      .onConflictDoUpdate({
+        target: roshalTaxonomyMeta.id,
+        set: {
+          defaultsSeeded: true,
+          updatedAt: timestamp,
+        },
+      });
+    return;
+  }
+
+  const timestamp = new Date();
+
+  await db.transaction(async (tx) => {
+    await tx.insert(roshalCategories).values(
+      defaultRoshalCategories.map((category) => ({
+        id: category.id,
+        key: category.key,
+        labelBn: category.label.bn,
+        labelEn: category.label.en,
+        descriptionBn: category.description.bn || null,
+        descriptionEn: category.description.en || null,
+        imageUrl: category.imageUrl || null,
+        sourceKeysJson: JSON.stringify(category.sourceKeys),
+        isEnabled: category.isEnabled,
+        showInNavigation: category.showInNavigation,
+        showOnHomepage: category.showOnHomepage,
+        sortOrder: category.sortOrder,
+        createdAt: timestamp,
+        updatedAt: timestamp,
+      })),
+    );
+
+    await tx.insert(roshalSubcategories).values(
+      defaultRoshalSubcategories.map((subcategory) => ({
+        id: subcategory.id,
+        categoryId: subcategory.categoryId,
+        key: subcategory.key,
+        labelBn: subcategory.label.bn,
+        labelEn: subcategory.label.en,
+        descriptionBn: subcategory.description.bn || null,
+        descriptionEn: subcategory.description.en || null,
+        imageUrl: subcategory.imageUrl || null,
+        sourceKeysJson: JSON.stringify(subcategory.sourceKeys),
+        isEnabled: subcategory.isEnabled,
+        showInNavigation: subcategory.showInNavigation,
+        sortOrder: subcategory.sortOrder,
+        createdAt: timestamp,
+        updatedAt: timestamp,
+      })),
+    );
+
+    await tx
+      .insert(roshalTaxonomyMeta)
+      .values({
+        id: TAXONOMY_META_ID,
+        defaultsSeeded: true,
+        createdAt: timestamp,
+        updatedAt: timestamp,
+      })
+      .onConflictDoUpdate({
+        target: roshalTaxonomyMeta.id,
+        set: {
+          defaultsSeeded: true,
+          updatedAt: timestamp,
+        },
+      });
+  });
 }
 
 export async function getRoshalTaxonomy(): Promise<RoshalTaxonomyBundle> {
   try {
     await ensureRoshalTaxonomySchema();
+    await ensureRoshalTaxonomySeeded();
 
     const categoryRows = await db
       .select()
       .from(roshalCategories)
       .orderBy(asc(roshalCategories.sortOrder), asc(roshalCategories.labelEn));
-    const mergedCategories = mergeCategories(categoryRows.map(mapCategory));
+    const categories = categoryRows.map(mapCategory);
 
     const subcategoryRows = await db
       .select()
@@ -178,14 +235,14 @@ export async function getRoshalTaxonomy(): Promise<RoshalTaxonomyBundle> {
         asc(roshalSubcategories.sortOrder),
         asc(roshalSubcategories.labelEn),
       );
-    const mergedSubcategories = mergeSubcategories(
-      subcategoryRows.map((row) => mapSubcategory(row, mergedCategories)),
-      mergedCategories,
+    const subcategories = resolveSubcategories(
+      subcategoryRows.map((row) => mapSubcategory(row, categories)),
+      categories,
     );
 
     return {
-      categories: mergedCategories,
-      subcategories: mergedSubcategories,
+      categories,
+      subcategories,
     };
   } catch {
     return {

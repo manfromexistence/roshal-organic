@@ -1,9 +1,10 @@
 # Project Tasks
 
 ## In Progress
-- [ ] 2026-04-29 23:40 Apply the first client-delivery punch-list across the storefront and dashboard: scroll-aware top bar, simplified footer/contact info, lighter homepage sections, compact checkout/delivery controls, richer signup, public track-order, and stronger category/subcategory dashboard controls.
 
 ## Completed
+- [x] 2026-04-30 21:02 Reopened the storefront payment list with `Cash on delivery` first/default, restored the visible `card`, `bKash`, `Nagad`, `Rocket`, and `Upay` methods, removed the extra checkout payment help text, and made the wallet option cards more compact without changing the rest of the checkout layout.
+- [x] 2026-04-30 04:05 Finished the first client-delivery storefront punch-list: seeded real taxonomy rows into Turso so dashboard category edits are authoritative, simplified the homepage section mix, tightened homepage product/testimonial/category cards, improved the fixed header scroll behavior, refreshed the light theme background/cards, and verified the public login plus public track-order routes in a live browser pass.
 - [x] 2026-04-30 20:32 Added `cash_on_delivery` as the default visible checkout payment method, hid the legacy wallet/card methods from the customer-facing checkout and dashboard payment settings UI, and preserved the hidden payment configurations in the admin save flow.
 - [x] 2026-04-30 02:05 Enforced reliable responsive wrapping, flex boundaries, and text truncation across the checkout and cart pages, ensuring that long payment options and delivery forms do not break the container on smaller screens.
 - [x] 2026-04-30 02:11 Reworked the storefront checkout page around a denser mobile-friendly delivery/payment layout, added trust/support blocks plus customer comments, and kept the rest of the marketing UI unchanged.

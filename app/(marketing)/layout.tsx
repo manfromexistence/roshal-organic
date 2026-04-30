@@ -72,7 +72,7 @@ export default async function MarketingLayout({
         type="always"
         scrollHideDelay={0}
         className="min-h-0 flex-1"
-        viewportClassName="min-w-0 overscroll-contain [&>div]:!block [&>div]:!min-w-0 [&>div]:!w-full"
+        viewportClassName="storefront-scroll-viewport min-w-0 overscroll-contain [&>div]:!block [&>div]:!min-w-0 [&>div]:!w-full"
       >
         <div className="flex min-h-full w-full min-w-0 flex-col overflow-x-clip">
           <main className="min-h-[calc(100vh-18rem)] w-full min-w-0 overflow-x-clip pb-20 md:pb-0">

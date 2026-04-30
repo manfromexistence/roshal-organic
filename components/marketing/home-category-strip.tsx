@@ -33,27 +33,27 @@ export function HomeCategoryStrip({
         align: "start",
         dragFree: true,
       }}
-      className="max-w-full overflow-x-clip px-4 sm:px-10 md:px-14"
+      className="max-w-full overflow-x-clip px-3 sm:px-8 md:px-12"
     >
       <CarouselContent className="-ml-3 md:-ml-4">
         {categories.map((category) => (
           <CarouselItem
             key={category.key}
-            className="basis-[50%] pl-3 min-[420px]:basis-[56%] sm:basis-1/3 md:pl-4 lg:basis-1/6"
+            className="basis-[50%] pl-3 min-[420px]:basis-[48%] sm:basis-1/3 md:pl-4 lg:basis-1/6"
           >
             <Link href={category.href} className="block h-full">
               <Card className="h-full rounded-md border-border/70 bg-card shadow-sm transition-transform duration-200 hover:bg-accent/60">
-                <CardContent className="flex flex-col items-center gap-3 p-4 text-center">
-                  <div className="relative flex size-16 items-center justify-center overflow-hidden rounded-md bg-muted/60">
+                <CardContent className="flex flex-col items-center justify-center gap-2.5 p-4 text-center">
+                  <div className="relative flex size-[4.5rem] items-center justify-center overflow-hidden rounded-md bg-muted/60">
                     <Image
                       src={category.image}
                       alt={category.name[language]}
                       fill
                       className="object-cover"
-                      sizes="96px"
+                      sizes="72px"
                     />
                   </div>
-                  <p className="text-sm font-medium text-foreground">
+                  <p className="line-clamp-2 text-sm font-medium leading-5 text-foreground">
                     {category.name[language]}
                   </p>
                 </CardContent>

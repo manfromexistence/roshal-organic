@@ -80,32 +80,22 @@ export function StorefrontFooter({
 
   return (
     <footer className="border-t border-border/60 bg-card/70 pb-16 md:pb-0">
-      <div className="container mx-auto space-y-6 px-4 py-8 sm:px-6 md:px-8">
-        <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr_0.8fr_0.9fr]">
-          <div className="space-y-4">
+      <div className="container mx-auto space-y-5 px-4 py-6 sm:px-6 md:px-8">
+        <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-[1.2fr_0.8fr_0.8fr_0.9fr]">
+          <div className="space-y-3.5">
             <Link href="/" className="inline-flex items-center gap-3">
               <div className="flex h-11 w-11 items-center justify-center rounded-md border border-border/70 bg-background shadow-sm">
                 <Image
-                  src="/logo.png"
+                  src="/apple-touch-icon.png"
                   alt={siteSettings.brandName}
                   width={42}
                   height={42}
-                  className="h-9 w-auto object-contain dark:hidden rounded-md"
-                />
-                <Image
-                  src="/logo-light.png"
-                  alt={siteSettings.brandName}
-                  width={42}
-                  height={42}
-                  className="hidden h-9 w-auto object-contain dark:block rounded-md"
+                  className="h-9 w-9 object-contain rounded-md"
                 />
               </div>
-              <div className="space-y-1">
+              <div className="space-y-0.5">
                 <p className="font-wordmark text-xl text-foreground">
                   {siteSettings.brandName}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  {getLocalizedValue(locale, siteSettings.tagline)}
                 </p>
               </div>
             </Link>

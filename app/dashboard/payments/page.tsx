@@ -19,7 +19,14 @@ import type {
   RoshalPaymentOption,
 } from "@/lib/store-types";
 
-const paymentMethodOrder: RoshalPaymentMethod[] = ["cash_on_delivery"];
+const paymentMethodOrder: RoshalPaymentMethod[] = [
+  "cash_on_delivery",
+  "card",
+  "bkash",
+  "nagad",
+  "rocket",
+  "upay",
+];
 
 export default async function DashboardPaymentsPage() {
   const [locale, paymentSettings] = await Promise.all([
@@ -96,9 +103,7 @@ export default async function DashboardPaymentsPage() {
           {locale === "bn" ? "পেমেন্ট সেটিংস" : "Payment settings"}
         </p>
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          {locale === "bn"
-            ? "ক্যাশ অন ডেলিভারি সেটিংস"
-            : "Cash on delivery settings"}
+          {locale === "bn" ? "ক্যাশ অন ডেলিভারি সেটিংস" : "Payment settings"}
         </h1>
       </div>
 

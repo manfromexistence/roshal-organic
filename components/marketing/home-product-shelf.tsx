@@ -39,15 +39,15 @@ function ShelfProductCard({
   language: Language;
 }) {
   return (
-    <ImageCard className="group flex h-full flex-col overflow-hidden rounded-md border-border/80 bg-card shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary/25 hover:shadow-md">
+    <ImageCard className="group flex h-full flex-col overflow-hidden rounded-md border-border/80 bg-card shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-md">
       <ImageCardHeader className="p-0">
-        <div className="relative aspect-square overflow-hidden border-b border-border/70 bg-muted/35">
+        <div className="relative aspect-[4/3] overflow-hidden border-b border-border/70 bg-muted/35">
           <Image
             src={product.image}
             alt={product.name[language]}
             fill
             className="object-cover transition-transform duration-300 group-hover:scale-105"
-            sizes="(max-width: 768px) 50vw, (max-width: 1280px) 25vw, 20vw"
+            sizes="(max-width: 768px) 50vw, (max-width: 1280px) 25vw, 18vw"
           />
           {product.badge ? (
             <Badge
@@ -60,9 +60,9 @@ function ShelfProductCard({
         </div>
       </ImageCardHeader>
 
-      <ImageCardContent className="flex flex-1 flex-col items-start gap-2.5 px-3.5 pb-3.5 pt-3.5 text-left">
-        <div className="w-full space-y-2">
-          <ImageCardTitle className="line-clamp-2 text-[0.98rem] leading-6 text-foreground">
+      <ImageCardContent className="flex flex-1 flex-col items-start gap-2 px-3.5 pb-3 pt-3 text-left">
+        <div className="w-full space-y-1.5">
+          <ImageCardTitle className="line-clamp-2 min-h-11 text-[0.94rem] leading-[1.35rem] text-foreground">
             {product.name[language]}
           </ImageCardTitle>
           <div className="flex flex-wrap items-center gap-2 text-sm">
@@ -84,20 +84,20 @@ function ShelfProductCard({
       </ImageCardContent>
 
       <ImageCardFooter className="mt-auto px-0 pb-0 pt-0">
-        <div className="grid w-full gap-2 border-t border-border/70 px-4 pb-4 pt-4">
+        <div className="grid w-full gap-2 border-t border-border/70 px-3.5 pb-3.5 pt-3">
           {product.cartProduct ? (
             <AddToCartButton
               product={product.cartProduct}
               locale={language}
-              className="w-full rounded-lg"
+              className="w-full rounded-sm"
             />
           ) : (
-            <Button className="w-full rounded-lg">
+            <Button className="w-full rounded-sm">
               <ShoppingBag className="size-4" />
               {language === "bn" ? "কার্টে যোগ করুন" : "Add To Cart"}
             </Button>
           )}
-          <Button asChild variant="outline" className="w-full rounded-lg">
+          <Button asChild variant="outline" className="w-full rounded-sm">
             <Link href={product.href || `/products/${product.id}`}>
               {language === "bn" ? "বিস্তারিত দেখুন" : "View details"}
             </Link>
@@ -135,7 +135,7 @@ export function HomeProductShelf({
           ctaLabel={ctaLabel}
         />
 
-        <div className="grid grid-cols-2 gap-4 min-[520px]:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
+        <div className="grid grid-cols-2 gap-3.5 min-[520px]:grid-cols-2 md:grid-cols-3 lg:gap-4 xl:grid-cols-5">
           {products.map((product) => (
             <ShelfProductCard
               key={String(product.id)}

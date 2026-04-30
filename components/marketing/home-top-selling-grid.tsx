@@ -35,15 +35,15 @@ function TopSellingCard({
 }) {
   return (
     <ImageCard className="group overflow-hidden rounded-md border-border/80 bg-card shadow-sm transition-all duration-200 hover:border-primary/25 hover:shadow-md">
-      <div className="grid gap-0 sm:grid-cols-[1.02fr_0.98fr]">
+      <div className="grid gap-0 md:grid-cols-[0.95fr_1.05fr]">
         <ImageCardHeader className="p-0">
-          <div className="relative aspect-[4/4] overflow-hidden border-b border-border/70 bg-muted/35 md:h-full md:min-h-[15rem] md:border-r md:border-b-0">
+          <div className="relative aspect-[4/3] overflow-hidden border-b border-border/70 bg-muted/35 md:h-full md:min-h-[12.5rem] md:border-r md:border-b-0">
             <Image
               src={product.image}
               alt={product.name[language]}
               fill
               className="rounded-sm object-cover transition-transform duration-300 group-hover:scale-105"
-              sizes="(max-width: 768px) 100vw, 176px"
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 220px"
             />
             {product.badge ? (
               <Badge className="absolute top-3 right-3 rounded-md">
@@ -53,13 +53,13 @@ function TopSellingCard({
           </div>
         </ImageCardHeader>
 
-        <ImageCardContent className="flex flex-col justify-center gap-4 px-4 py-4 text-left md:px-5 md:py-5">
+        <ImageCardContent className="flex flex-col justify-center gap-3 px-4 py-4 text-left md:px-5 md:py-[1.125rem]">
           <div className="space-y-2">
-            <ImageCardTitle className="text-lg tracking-tight md:text-xl">
+            <ImageCardTitle className="text-base leading-6 tracking-tight md:text-lg">
               {product.name[language]}
             </ImageCardTitle>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xl font-semibold text-primary md:text-2xl">
+              <span className="text-lg font-semibold text-primary md:text-xl">
                 {product.price}
               </span>
               {product.originalPrice ? (
@@ -70,15 +70,15 @@ function TopSellingCard({
             </div>
           </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap md:justify-start">
+          <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap md:justify-start">
             {product.cartProduct ? (
               <AddToCartButton
                 product={product.cartProduct}
                 locale={language}
-                className="w-full rounded-md sm:min-w-40 sm:w-auto"
+                className="w-full rounded-md sm:min-w-36 sm:w-auto"
               />
             ) : (
-              <Button className="w-full rounded-md sm:min-w-40 sm:w-auto">
+              <Button className="w-full rounded-md sm:min-w-36 sm:w-auto">
                 <ShoppingBag className="size-4" />
                 {language === "bn"
                   ? "à¦•à¦¾à¦°à§à¦Ÿà§‡ à¦¯à§‹à¦— à¦•à¦°à§à¦¨"
@@ -89,7 +89,7 @@ function TopSellingCard({
             <Button
               asChild
               variant="secondary"
-              className="w-full rounded-md sm:min-w-32 sm:w-auto"
+              className="w-full rounded-md sm:min-w-28 sm:w-auto"
             >
               <Link href={product.href || `/products/${product.id}`}>
                 {language === "bn" ? "à¦à¦–à¦¨à¦‡ à¦•à¦¿à¦¨à§à¦¨" : "Buy now"}
@@ -119,7 +119,7 @@ export function HomeTopSellingGrid({
       <div className="container mx-auto space-y-8 px-4 sm:px-6 md:px-8">
         <HomeSectionHeading title={title} description={description} centered />
 
-        <div className="grid grid-cols-2 gap-6 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
           {products.map((product) => (
             <TopSellingCard
               key={String(product.id)}

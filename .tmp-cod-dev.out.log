@@ -38,3 +38,124 @@
  GET /api/auth/get-session 200 in 103ms (next.js: 7ms, application-code: 96ms)
 ○ Compiling /dashboard/payments ...
  GET /dashboard/payments 200 in 4.4s (next.js: 3.6s, proxy.ts: 97ms, application-code: 709ms)
+ GET / 200 in 1238ms (next.js: 147ms, application-code: 1091ms)
+ GET /api/auth/get-session 200 in 50ms (next.js: 34ms, application-code: 16ms)
+ GET / 200 in 476ms (next.js: 183ms, application-code: 292ms)
+ GET /api/auth/get-session 200 in 18ms (next.js: 10ms, application-code: 8ms)
+ GET /login?callbackURL=%2Fcheckout 500 in 4.2s (next.js: 3.4s, proxy.ts: 605ms, application-code: 231ms)
+ GET /login?callbackURL=%2Fcheckout 500 in 26ms (next.js: 8ms, proxy.ts: 5ms, application-code: 13ms)
+ GET /login?callbackURL=%2Fcheckout 500 in 32ms (next.js: 8ms, proxy.ts: 15ms, application-code: 9ms)
+ GET /login?callbackURL=%2Fcheckout 500 in 499ms (next.js: 54ms, proxy.ts: 426ms, application-code: 19ms)
+ GET /login?callbackURL=%2Fcheckout 500 in 228ms (next.js: 8ms, proxy.ts: 208ms, application-code: 12ms)
+ GET /login?callbackURL=%2Fcheckout 500 in 435ms (next.js: 9ms, proxy.ts: 409ms, application-code: 17ms)
+ GET /login?callbackURL=%2Fcheckout 500 in 335ms (next.js: 9ms, proxy.ts: 313ms, application-code: 13ms)
+✓ Compiled in 766ms
+ GET /login?callbackURL=%2Fcheckout 200 in 3.7s (next.js: 490ms, proxy.ts: 553ms, application-code: 2.6s)
+ GET /api/auth/get-session 200 in 460ms (next.js: 386ms, application-code: 74ms)
+✓ Compiled in 631ms
+ GET /login?callbackURL=%2Fcheckout 200 in 1574ms (next.js: 355ms, proxy.ts: 371ms, application-code: 848ms)
+✓ Compiled in 329ms
+✓ Compiled in 320ms
+ GET /login?callbackURL=%2Fcheckout 200 in 1482ms (next.js: 298ms, proxy.ts: 332ms, application-code: 852ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 655ms (next.js: 5ms, proxy.ts: 11ms, application-code: 639ms)
+✓ Compiled in 268ms
+ GET /login?callbackURL=%2Fcheckout 200 in 1154ms (next.js: 245ms, proxy.ts: 250ms, application-code: 659ms)
+✓ Compiled in 431ms
+ GET /login?callbackURL=%2Fcheckout 200 in 1882ms (next.js: 383ms, proxy.ts: 281ms, application-code: 1218ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 1020ms (next.js: 51ms, proxy.ts: 240ms, application-code: 730ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 574ms (next.js: 4ms, proxy.ts: 14ms, application-code: 555ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 734ms (next.js: 9ms, proxy.ts: 15ms, application-code: 710ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 548ms (next.js: 8ms, proxy.ts: 83ms, application-code: 457ms)
+✓ Compiled in 214ms
+ GET /login?callbackURL=%2Fcheckout 200 in 1360ms (next.js: 293ms, proxy.ts: 230ms, application-code: 837ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 691ms (next.js: 4ms, proxy.ts: 9ms, application-code: 677ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 609ms (next.js: 3ms, proxy.ts: 7ms, application-code: 598ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 470ms (next.js: 4ms, proxy.ts: 13ms, application-code: 453ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 553ms (next.js: 3ms, proxy.ts: 12ms, application-code: 538ms)
+✓ Compiled in 250ms
+ GET /login?callbackURL=%2Fcheckout 200 in 1485ms (next.js: 254ms, proxy.ts: 283ms, application-code: 948ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 787ms (next.js: 7ms, proxy.ts: 12ms, application-code: 768ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 715ms (next.js: 5ms, proxy.ts: 11ms, application-code: 698ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 539ms (next.js: 4ms, proxy.ts: 16ms, application-code: 519ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 454ms (next.js: 4ms, proxy.ts: 13ms, application-code: 437ms)
+✓ Compiled in 388ms
+ GET /login?callbackURL=%2Fcheckout 200 in 1470ms (next.js: 252ms, proxy.ts: 247ms, application-code: 970ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 759ms (next.js: 9ms, proxy.ts: 14ms, application-code: 736ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 660ms (next.js: 6ms, proxy.ts: 19ms, application-code: 635ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 463ms (next.js: 5ms, proxy.ts: 23ms, application-code: 434ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 531ms (next.js: 6ms, proxy.ts: 11ms, application-code: 514ms)
+✓ Compiled in 526ms
+✓ Compiled in 389ms
+ GET /login?callbackURL=%2Fcheckout 200 in 705ms (next.js: 7ms, proxy.ts: 16ms, application-code: 683ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 830ms (next.js: 5ms, proxy.ts: 11ms, application-code: 814ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 1534ms (next.js: 281ms, proxy.ts: 278ms, application-code: 975ms)
+✓ Compiled in 337ms
+ GET /login?callbackURL=%2Fcheckout 200 in 1219ms (next.js: 354ms, proxy.ts: 227ms, application-code: 639ms)
+✓ Compiled in 144ms
+ GET /login?callbackURL=%2Fcheckout 200 in 525ms (next.js: 4ms, proxy.ts: 11ms, application-code: 510ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 1284ms (next.js: 351ms, proxy.ts: 238ms, application-code: 695ms)
+✓ Compiled in 295ms
+ GET /login?callbackURL=%2Fcheckout 200 in 1301ms (next.js: 253ms, proxy.ts: 257ms, application-code: 791ms)
+✓ Compiled in 390ms
+ GET /login?callbackURL=%2Fcheckout 200 in 1144ms (next.js: 225ms, proxy.ts: 220ms, application-code: 699ms)
+✓ Compiled in 301ms
+✓ Compiled in 270ms
+ GET /login?callbackURL=%2Fcheckout 200 in 1099ms (next.js: 202ms, proxy.ts: 250ms, application-code: 647ms)
+✓ Compiled in 305ms
+ GET /login?callbackURL=%2Fcheckout 200 in 1135ms (next.js: 238ms, proxy.ts: 232ms, application-code: 665ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 492ms (next.js: 6ms, proxy.ts: 17ms, application-code: 469ms)
+✓ Compiled in 2.1s
+ GET /login?callbackURL=%2Fcheckout 200 in 3.9s (next.js: 1745ms, proxy.ts: 1289ms, application-code: 863ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 672ms (next.js: 4ms, proxy.ts: 11ms, application-code: 658ms)
+✓ Compiled in 177ms
+ GET /login?callbackURL=%2Fcheckout 200 in 1178ms (next.js: 216ms, proxy.ts: 58ms, application-code: 904ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 738ms (next.js: 10ms, proxy.ts: 234ms, application-code: 494ms)
+ GET / 200 in 3.5s (next.js: 456ms, application-code: 3.0s)
+ GET /api/auth/get-session 200 in 1072ms (next.js: 1037ms, application-code: 35ms)
+ GET / 200 in 1375ms (next.js: 5ms, application-code: 1370ms)
+ GET /api/auth/get-session 200 in 16ms (next.js: 5ms, application-code: 11ms)
+ GET /login?mode=signup 200 in 1458ms (next.js: 4ms, proxy.ts: 8ms, application-code: 1446ms)
+ GET /api/auth/get-session 200 in 11ms (next.js: 3ms, application-code: 8ms)
+○ Compiling /track-order ...
+ GET /track-order 200 in 4.8s (next.js: 4.2s, application-code: 603ms)
+ GET /api/auth/get-session 200 in 28ms (next.js: 14ms, application-code: 14ms)
+ GET /products 200 in 2.5s (next.js: 1513ms, application-code: 979ms)
+ GET /api/auth/get-session 200 in 21ms (next.js: 9ms, application-code: 12ms)
+✓ Compiled in 320ms
+ GET /login?callbackURL=%2Fcheckout 200 in 664ms (next.js: 6ms, proxy.ts: 17ms, application-code: 640ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 1957ms (next.js: 610ms, proxy.ts: 394ms, application-code: 953ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 585ms (next.js: 7ms, proxy.ts: 12ms, application-code: 566ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 578ms (next.js: 5ms, proxy.ts: 12ms, application-code: 560ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 510ms (next.js: 5ms, proxy.ts: 15ms, application-code: 490ms)
+✓ Compiled in 284ms
+ GET /login?callbackURL=%2Fcheckout 200 in 1441ms (next.js: 353ms, proxy.ts: 416ms, application-code: 672ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 517ms (next.js: 4ms, proxy.ts: 8ms, application-code: 505ms)
+✓ Compiled in 340ms
+ GET /login?callbackURL=%2Fcheckout 200 in 1685ms (next.js: 396ms, proxy.ts: 317ms, application-code: 973ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 537ms (next.js: 7ms, proxy.ts: 44ms, application-code: 486ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 978ms (next.js: 7ms, proxy.ts: 13ms, application-code: 958ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 893ms (next.js: 6ms, proxy.ts: 13ms, application-code: 874ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 700ms (next.js: 7ms, proxy.ts: 21ms, application-code: 672ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 823ms (next.js: 6ms, proxy.ts: 14ms, application-code: 803ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 394ms (next.js: 12ms, proxy.ts: 14ms, application-code: 368ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 398ms (next.js: 7ms, proxy.ts: 12ms, application-code: 379ms)
+✓ Compiled in 571ms
+ GET /login?callbackURL=%2Fcheckout 200 in 601ms (next.js: 5ms, proxy.ts: 14ms, application-code: 583ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 1537ms (next.js: 453ms, proxy.ts: 280ms, application-code: 804ms)
+✓ Compiled in 225ms
+ GET /login?callbackURL=%2Fcheckout 200 in 1554ms (next.js: 319ms, proxy.ts: 223ms, application-code: 1012ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 719ms (next.js: 7ms, proxy.ts: 14ms, application-code: 699ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 856ms (next.js: 5ms, proxy.ts: 11ms, application-code: 840ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 798ms (next.js: 5ms, proxy.ts: 10ms, application-code: 783ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 951ms (next.js: 6ms, proxy.ts: 10ms, application-code: 935ms)
+✓ Compiled in 188ms
+ GET /login?callbackURL=%2Fcheckout 200 in 1332ms (next.js: 376ms, proxy.ts: 258ms, application-code: 698ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 526ms (next.js: 5ms, proxy.ts: 9ms, application-code: 512ms)
+ GET / 200 in 1727ms (next.js: 489ms, application-code: 1239ms)
+ GET /api/auth/get-session 200 in 552ms (next.js: 474ms, application-code: 78ms)
+ GET / 200 in 609ms (next.js: 6ms, application-code: 603ms)
+ GET /api/auth/get-session 200 in 49ms (next.js: 20ms, application-code: 29ms)
+ GET /login?mode=signup 200 in 2.2s (next.js: 9ms, proxy.ts: 14ms, application-code: 2.2s)
+ GET /api/auth/get-session 200 in 59ms (next.js: 29ms, application-code: 30ms)
+ GET /track-order 200 in 3.2s (next.js: 1249ms, application-code: 1937ms)
+ GET /api/auth/get-session 200 in 31ms (next.js: 14ms, application-code: 17ms)

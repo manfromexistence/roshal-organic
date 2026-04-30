@@ -13,11 +13,11 @@
   --font-roshal-mono:
     "JetBrains Mono", "Roboto Mono", "Fira Code", ui-monospace, SFMono-Regular,
     Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  --background: oklch(0.99 0 0);
+  --background: oklch(0.985 0.01 148);
   --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
+  --card: oklch(0.995 0.008 148);
   --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
+  --popover: oklch(0.995 0.008 148);
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(28.04% 0.05154 150.113);
   --primary-foreground: oklch(0.985 0 0);
@@ -157,20 +157,20 @@
 
   html::-webkit-scrollbar,
   body::-webkit-scrollbar {
-    width: 10px;
+    width: 12px;
   }
 
   html::-webkit-scrollbar-track,
   body::-webkit-scrollbar-track {
-    background: color-mix(in oklch, var(--background) 88%, var(--primary) 12%);
+    background: color-mix(in oklch, var(--background) 80%, var(--primary) 20%);
   }
 
   html::-webkit-scrollbar-thumb,
   body::-webkit-scrollbar-thumb {
-    background: color-mix(in oklch, var(--foreground) 28%, var(--primary));
+    background: color-mix(in oklch, var(--foreground) 36%, var(--primary));
     border-radius: 999px;
     border: 2px solid
-      color-mix(in oklch, var(--background) 88%, var(--primary) 12%);
+      color-mix(in oklch, var(--background) 80%, var(--primary) 20%);
   }
 
   body {
@@ -197,9 +197,14 @@
   .storefront-shell {
     background-color: color-mix(
       in oklch,
-      var(--background) 90%,
-      var(--primary) 10%
+      var(--background) 84%,
+      var(--primary) 16%
     );
+  }
+
+  html:not(.dark) .storefront-shell [data-slot="card"] {
+    background-color: color-mix(in oklch, var(--card) 90%, var(--primary) 10%);
+    border-color: color-mix(in oklch, var(--border) 82%, var(--primary) 18%);
   }
 
   .dark .themed-avatar-fallback {

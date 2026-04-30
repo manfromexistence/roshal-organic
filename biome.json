@@ -153,6 +153,16 @@
       }
     },
     {
+      "includes": ["Admin Panel Modification.html", "Web Modification.html"],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "useGenericFontNames": "off"
+          }
+        }
+      }
+    },
+    {
       "includes": ["types/**"],
       "linter": {
         "rules": {

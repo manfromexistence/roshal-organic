@@ -16,6 +16,12 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { LocaleSwitcher } from "@/components/storefront/locale-switcher";
 import { StorefrontThemeToggle } from "@/components/storefront/theme-toggle";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -130,11 +136,14 @@ export function StorefrontHeader({
   }, [searchParams]);
 
   useEffect(() => {
-    let lastScrollY = window.scrollY;
+    const scrollContainer = document.querySelector<HTMLElement>(
+      ".storefront-scroll-viewport",
+    );
+    let lastScrollY = scrollContainer?.scrollTop ?? window.scrollY;
 
     const handleScroll = () => {
       const isDesktop = window.innerWidth >= 1024;
-      const currentScrollY = window.scrollY;
+      const currentScrollY = scrollContainer?.scrollTop ?? window.scrollY;
 
       if (!isDesktop) {
         setHideDesktopTopBar(false);
@@ -158,11 +167,13 @@ export function StorefrontHeader({
     };
 
     handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    scrollContainer?.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
     window.addEventListener("resize", handleScroll);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      scrollContainer?.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleScroll);
     };
   }, []);
@@ -210,32 +221,30 @@ export function StorefrontHeader({
       <header className="fixed inset-x-0 top-0 z-[60] bg-background/95 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/88">
         <div
           className={cn(
-            "h-15 lg:h-17 border-b border-border/60 transition-transform duration-300 ease-out lg:will-change-transform",
+            "h-14 lg:h-16 border-b border-border/60 transition-transform duration-300 ease-out lg:will-change-transform",
             hideDesktopTopBar && "lg:-translate-y-[calc(100%+1px)]",
           )}
         >
-          <div className="container mx-auto flex min-w-0 items-center gap-3 px-4 py-2.5 md:py-3 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-4">
+          <div className="container mx-auto flex min-w-0 items-center gap-3 px-4 py-2 md:py-2.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-4">
             <Link href="/" className="flex min-w-0 items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-border/60 bg-card shadow-sm">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-border/60 bg-card shadow-sm">
                 <Image
-                  src="/logo.png"
+                  src="/apple-touch-icon.png"
                   alt={siteSettings.brandName}
-                  width={42}
-                  height={42}
-                  className="h-9 w-auto object-contain dark:hidden"
-                />
-                <Image
-                  src="/logo-light.png"
-                  alt={siteSettings.brandName}
-                  width={42}
-                  height={42}
-                  className="hidden h-9 w-auto object-contain dark:block rounded-md"
+                  width={44}
+                  height={44}
+                  className="h-10 w-10 object-contain"
                 />
               </div>
               <div className="hidden min-w-0 sm:block">
-                <span className="font-wordmark block truncate text-[1.3rem] leading-none text-foreground sm:text-[1.4rem]">
-                  {siteSettings.brandName}
-                </span>
+                <Image
+                  src="/logo.png"
+                  alt={siteSettings.brandName}
+                  width={210}
+                  height={60}
+                  priority
+                  className="h-10 w-auto object-contain"
+                />
               </div>
             </Link>
 
@@ -439,8 +448,8 @@ export function StorefrontHeader({
 
       <div
         className={cn(
-          "fixed inset-x-0 z-10 hidden bg-primary dark:bg-primary/90 shadow-sm backdrop-blur transition-[top] duration-300 lg:block",
-          hideDesktopTopBar ? "top-0" : "top-[4.5rem]",
+          "fixed inset-x-0 z-10 hidden border-b border-border/60 bg-primary/14 shadow-sm backdrop-blur transition-[top] duration-300 lg:block",
+          hideDesktopTopBar ? "top-0" : "top-16",
         )}
       >
         <div className="container mx-auto px-4">
@@ -463,7 +472,7 @@ export function StorefrontHeader({
                           activeCategory === group.key &&
                           activeSubcategory === "all"
                         }
-                        className="inline-flex h-10 items-center rounded-sm px-3 text-sm font-medium whitespace-nowrap text-foreground/90 hover:bg-primary/10 hover:text-foreground focus:bg-primary/10 focus:text-foreground data-[active=true]:bg-primary/12 data-[active=true]:text-primary"
+                        className="inline-flex h-10 items-center rounded-sm px-3 text-sm font-medium whitespace-nowrap text-foreground/90 hover:bg-background/80 hover:text-foreground focus:bg-background/80 focus:text-foreground data-[active=true]:bg-background data-[active=true]:text-primary"
                       >
                         <Link href={group.href}>
                           {getLocalizedValue(locale, group.label)}
@@ -483,8 +492,8 @@ export function StorefrontHeader({
                   >
                     <NavigationMenuTrigger
                       className={cn(
-                        "h-10 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-background dark:text-foreground hover:bg-primary/10 hover:text-foreground focus:bg-primary/10 focus:text-bg-red-500 data-[state=open]:bg-primary/12 data-[state=open]:text-muted-foreground",
-                        triggerActive && "bg-primary/12 text-background",
+                        "h-10 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-foreground/90 hover:bg-background/80 hover:text-foreground focus:bg-background/80 focus:text-foreground data-[state=open]:bg-background data-[state=open]:text-foreground",
+                        triggerActive && "bg-background text-primary",
                       )}
                     >
                       {getLocalizedValue(locale, group.label)}
@@ -517,10 +526,10 @@ export function StorefrontHeader({
                 <NavigationMenuItem className="flex shrink-0 items-center">
                   <NavigationMenuTrigger
                     className={cn(
-                      "h-10 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-background dark:text-foreground hover:bg-primary/10 hover:text-foreground focus:bg-primary/10 focus:text-foreground data-[state=open]:bg-primary/12 data-[state=open]:text-foreground",
+                      "h-10 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-foreground/90 hover:bg-background/80 hover:text-foreground focus:bg-background/80 focus:text-foreground data-[state=open]:bg-background data-[state=open]:text-foreground",
                       pathname === "/products" &&
                         overflowCategoryKeys.has(activeCategory) &&
-                        "bg-primary/12 text-primary",
+                        "bg-background text-primary",
                     )}
                   >
                     {locale === "bn" ? "আরও" : "More"}
@@ -611,32 +620,43 @@ export function StorefrontHeader({
               </div>
 
               <div className="space-y-3">
-                {taxonomy.map((group) => (
-                  <div
-                    key={group.key}
-                    className="rounded-sm border border-border/60 bg-card p-4"
-                  >
-                    <Link
-                      href={group.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="block text-sm font-semibold text-foreground"
+                <Accordion
+                  type="multiple"
+                  className="rounded-sm border border-border/60 bg-card"
+                >
+                  {taxonomy.map((group) => (
+                    <AccordionItem
+                      key={group.key}
+                      value={group.key}
+                      className="border-border/60"
                     >
-                      {getLocalizedValue(locale, group.label)}
-                    </Link>
-                    <div className="mt-3 grid gap-2">
-                      {group.children.map((child) => (
+                      <AccordionTrigger className="px-4 py-3 text-sm font-semibold hover:no-underline">
+                        {getLocalizedValue(locale, group.label)}
+                      </AccordionTrigger>
+                      <AccordionContent className="space-y-2 px-4 pb-4">
                         <Link
-                          key={child.key}
-                          href={child.href}
+                          href={group.href}
                           onClick={() => setMobileMenuOpen(false)}
-                          className="rounded-sm bg-muted/35 px-3 py-2 text-sm text-foreground/90"
+                          className="block rounded-sm bg-muted/40 px-3 py-2 text-sm font-medium text-foreground/90"
                         >
-                          {getLocalizedValue(locale, child.label)}
+                          {locale === "bn"
+                            ? "à¦¸à¦¬ à¦¦à§‡à¦–à§à¦¨"
+                            : "View category"}
                         </Link>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+                        {group.children.map((child) => (
+                          <Link
+                            key={child.key}
+                            href={child.href}
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="block rounded-sm px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted/35 hover:text-foreground"
+                          >
+                            {getLocalizedValue(locale, child.label)}
+                          </Link>
+                        ))}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
               </div>
 
               {sessionUser ? (

@@ -112,15 +112,6 @@ export default async function CheckoutPage() {
       locale={locale}
       paymentSettings={paymentSettings}
       products={products}
-      siteSupport={{
-        address: siteSettings.address,
-        brandName: siteSettings.brandName,
-        contactEmail: siteSettings.contactEmail,
-        contactPhone: siteSettings.contactPhone,
-        manualReviewNotice: paymentSettings.manualReviewNotice,
-        supportMessage: paymentSettings.supportMessage,
-        whatsappPhone: siteSettings.whatsappPhone,
-      }}
       testimonials={testimonials}
       user={{
         id: sessionUser.id,

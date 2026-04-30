@@ -1,4 +1,3 @@
-import { FeaturedProducts } from "@/components/marketing/featured-products";
 import { HomeBrandStrip } from "@/components/marketing/home-brand-strip";
 import { HomeCategoryStrip } from "@/components/marketing/home-category-strip";
 import { HomeTestimonialCarousel } from "@/components/marketing/home-testimonial-carousel";
@@ -6,7 +5,6 @@ import {
   LandingHero,
   type LandingHeroBanner,
 } from "@/components/marketing/landing-hero";
-import { NewArrivals } from "@/components/marketing/new-arrivals";
 import { SpecialOffers } from "@/components/marketing/special-offers";
 import { TopSellers } from "@/components/marketing/top-sellers";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
@@ -463,22 +461,6 @@ function sectionDescription(
   return fallback;
 }
 
-function sectionCtaLabel(
-  section: RoshalMarketingSection | undefined,
-  fallback: LocalizedValue,
-) {
-  return section?.ctaLabel.bn || section?.ctaLabel.en
-    ? section.ctaLabel
-    : fallback;
-}
-
-function sectionCtaHref(
-  section: RoshalMarketingSection | undefined,
-  fallback: string,
-) {
-  return section?.ctaHref || fallback;
-}
-
 export default async function LandingPage() {
   const [locale, siteSettings, pageBundle, products, taxonomy] =
     await Promise.all([
@@ -496,10 +478,8 @@ export default async function LandingPage() {
 
   const heroSection = sectionsByKey.get("hero");
   const categoriesSection = sectionsByKey.get("landing-categories");
-  const featuredSection = sectionsByKey.get("featured-products");
   const topSellersSection = sectionsByKey.get("landing-top-sellers");
   const brandsSection = sectionsByKey.get("landing-brands");
-  const newArrivalsSection = sectionsByKey.get("landing-new-arrivals");
   const specialOffersSection = sectionsByKey.get("landing-special-offers");
   const testimonialsSection = sectionsByKey.get("landing-testimonials");
 
@@ -510,18 +490,10 @@ export default async function LandingPage() {
     siteSettings.primaryCtaLabel,
   );
   const categories = buildCategories(categoriesSection, taxonomy);
-  const featuredCards = selectProducts(products, featuredSection, {
-    source: "featured",
-    limit: 8,
-  }).map((product, index) => toMarketingProduct(product, language, index));
   const topSellerCards = selectProducts(products, topSellersSection, {
     source: "featured",
     limit: 8,
   }).map((product, index) => toMarketingProduct(product, language, index + 4));
-  const newArrivalCards = selectProducts(products, newArrivalsSection, {
-    source: "reverse",
-    limit: 8,
-  }).map((product, index) => toMarketingProduct(product, language, index + 8));
   const deals = buildDeals(
     specialOffersSection,
     siteSettings.primaryCtaHref,
@@ -597,21 +569,6 @@ export default async function LandingPage() {
         </section>
       ) : null}
 
-      <NewArrivals
-        products={newArrivalCards}
-        language={language}
-        title={sectionTitle(
-          newArrivalsSection,
-          localizedValue("নতুন আগমন", "New Arrivals"),
-        )}
-        description={sectionDescription(newArrivalsSection)}
-        ctaHref={sectionCtaHref(newArrivalsSection, "/products")}
-        ctaLabel={sectionCtaLabel(
-          newArrivalsSection,
-          localizedValue("সব নতুন পণ্য দেখুন", "View all new arrivals"),
-        )}
-      />
-
       <SpecialOffers
         deals={deals}
         language={language}
@@ -620,21 +577,6 @@ export default async function LandingPage() {
           localizedValue("বিশেষ অফার", "Special Offers"),
         )}
         description={sectionDescription(specialOffersSection)}
-      />
-
-      <FeaturedProducts
-        products={featuredCards}
-        language={language}
-        title={sectionTitle(
-          featuredSection,
-          localizedValue("শুধু আপনার জন্য", "Just For You"),
-        )}
-        description={sectionDescription(featuredSection)}
-        ctaHref={sectionCtaHref(featuredSection, "/products")}
-        ctaLabel={sectionCtaLabel(
-          featuredSection,
-          localizedValue("সব পণ্য দেখুন", "View all products"),
-        )}
       />
 
       {testimonials.length > 0 ? (

@@ -167,24 +167,17 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-background pt-8 lg:pt-32">
-      <div className="mx-auto grid min-h-screen max-w-7xl gap-6 px-4 py-6">
-        {/* <section className="hidden rounded-md border border-border/60 bg-card/60 p-8 shadow-sm lg:flex lg:flex-col lg:justify-between">
+      <div className="mx-auto grid min-h-screen max-w-7xl gap-6 px-4 py-6 lg:grid-cols-[1fr_minmax(0,32rem)] lg:items-center">
+        <section className="hidden rounded-md border border-border/60 bg-card/70 p-8 shadow-sm lg:flex lg:min-h-[42rem] lg:flex-col lg:justify-between">
           <div className="space-y-6">
             <div className="inline-flex items-center gap-3">
               <div className="flex h-14 w-14 items-center justify-center rounded-md border border-border/70 bg-background shadow-sm">
                 <Image
-                  src="/logo.png"
+                  src="/apple-touch-icon.png"
                   alt="Roshal Organic"
                   width={48}
                   height={48}
-                  className="h-11 w-auto object-contain dark:hidden"
-                />
-                <Image
-                  src="/logo-light.png"
-                  alt="Roshal Organic"
-                  width={48}
-                  height={48}
-                  className="hidden h-11 w-auto object-contain dark:block"
+                  className="h-11 w-11 object-contain"
                 />
               </div>
               <div>
@@ -214,7 +207,7 @@ export default function LoginPage() {
             <p>Save delivery details for faster checkout</p>
             <p>Use the same account for storefront and order history</p>
           </div>
-        </section> */}
+        </section>
 
         <section className="flex items-center justify-center">
           <Card className="w-full max-w-2xl rounded-md border-border/70 shadow-sm">
