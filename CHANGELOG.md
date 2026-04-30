@@ -9,7 +9,15 @@ All notable changes to this project will be documented in this file.
 - Tightened the homepage merchandising surfaces, product cards, testimonial cards, footer spacing, and floating WhatsApp placement for the client delivery pass.
 - Updated the public order-tracking flow to use order number lookup only.
 - Upgraded the login and signup surface with real Bangladesh district and thana data, an 11-digit mobile flow, and the requested customer registration fields.
+- Restored the non-header marketing homepage sections to the previous committed composition while keeping the current header, sub-header, landing hero, and footer in place.
+- Reworked the fixed storefront sub-header to fit categories by viewport width and move overflowed categories into `More` instead of relying on horizontal scrolling.
+- Switched the current homepage top-seller section back to a two-column layout on smaller screens and converted the sub-header `More` overflow into category accordions with nested subcategory links.
 
 ### Fixed
 - Restored `cash_on_delivery` into live checkout payment settings for older dashboard payment rows by merging stored `optionsJson` with the current default method set instead of trusting stale DB arrays as complete.
 - Preserved dashboard-managed payment labels, numbers, modes, and enabled states while still backfilling newly added payment methods in canonical order.
+- Updated the fixed storefront header so the top bar hides on scroll-down while the sub-header remains visible, then both surfaces return on scroll-up.
+- Removed duplicated category accordions from the mobile sheet because the fixed sub-header now carries storefront category navigation on mobile as well.
+- Replaced homepage placeholder and mojibake copy in the hero, headings, testimonial fallbacks, and top-seller actions so the storefront now shows only real Bangla or English text.
+- Unified the storefront taxonomy rail so the same fixed sub-header serves both mobile and desktop instead of maintaining a separate mobile-only category strip.
+- Re-applied the Bangla top-seller CTA labels after the homepage section revert so the restored cards do not show mojibake text.

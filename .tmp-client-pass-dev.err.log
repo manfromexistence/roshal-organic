@@ -6989,3 +6989,42 @@ To fix this, make sure your Cache-Control headers allow revalidation of chunks a
   digest: '2506280496'
 }
 ⚠ Server is approaching the used memory threshold, restarting...
+⨯ ReferenceError: Accordion is not defined
+    at StorefrontHeader (components\storefront\storefront-header.tsx:620:18)
+  618 |
+  619 |               <div className="space-y-3">
+> 620 |                 <Accordion
+      |                  ^
+  621 |                   type="multiple"
+  622 |                   className="rounded-sm border border-border/60 bg-card"
+  623 |                 > {
+  digest: '3357711967'
+}
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+[browser] ReferenceError: Accordion is not defined
+    at StorefrontHeader (components/storefront/storefront-header.tsx:620:18)
+  618 |
+  619 |               <div className="space-y-3">
+> 620 |                 <Accordion
+      |                  ^
+  621 |                   type="multiple"
+  622 |                   className="rounded-sm border border-border/60 bg-card"
+  623 |                 > (app/error.tsx:18:13)
+[browser] ReferenceError: Accordion is not defined
+    at StorefrontHeader (components/storefront/storefront-header.tsx:613:18)
+  611 |
+  612 |               <div className="space-y-3">
+> 613 |                 <Accordion
+      |                  ^
+  614 |                   type="multiple"
+  615 |                   className="rounded-sm border border-border/60 bg-card"
+  616 |                 > (app/error.tsx:18:13)
+[browser] ReferenceError: Accordion is not defined
+    at StorefrontHeader (components/storefront/storefront-header.tsx:613:18)
+  611 |
+  612 |               <div className="space-y-3">
+> 613 |                 <Accordion
+      |                  ^
+  614 |                   type="multiple"
+  615 |                   className="rounded-sm border border-border/60 bg-card"
+  616 |                 > (app/error.tsx:18:13)

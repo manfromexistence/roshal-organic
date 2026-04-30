@@ -24,3 +24,29 @@
 - [x] Live checkout payment settings now merge stored dashboard options with the current default option set.
 - [x] `Cash on delivery` is backfilled for older payment rows and forced to remain the first visible option.
 - [x] Dashboard-saved labels, numbers, modes, and enabled states are preserved while missing methods are restored.
+
+## 2026-04-30 Header follow-up
+
+- [x] Keep the sub-header visible while scrolling down and hide only the main header on both desktop and mobile.
+- [x] Restore the main header together with the sub-header when scrolling upward.
+- [x] Remove duplicated category accordions from the mobile menu because the fixed sub-header now handles storefront category navigation.
+
+## 2026-04-30 Homepage text and sub-header cleanup
+
+- [x] Replace homepage/top-seller placeholder and mojibake strings with real Bangla and English copy only.
+- [x] Remove the dedicated mobile category strip so the fixed storefront sub-header is shared across smaller and larger screens.
+
+## 2026-04-30 Homepage section revert
+
+- [x] Restore the non-header marketing homepage sections to the previous committed composition while keeping the current header, sub-header, landing hero, and footer.
+- [x] Re-apply the top-seller Bangla button copy fix after the section-level revert so the restored homepage does not show mojibake text.
+
+## 2026-04-30 Sub-header fit cleanup
+
+- [x] Remove horizontal scrolling from the fixed storefront sub-header.
+- [x] Fit the number of visible top-level categories to the current viewport width and move the remainder into the `More` menu with their subcategories intact.
+
+## 2026-04-30 Fast UI follow-up
+
+- [x] Restore the smaller-screen two-column top-seller grid behavior for the current homepage section layout.
+- [x] Replace the sub-header `More` overflow list with category accordions so each overflow category expands to show its subcategories.

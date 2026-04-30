@@ -84,6 +84,7 @@ export function StorefrontHeader({
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const [hideTopBar, setHideTopBar] = useState(false);
+  const [visibleTaxonomyCount, setVisibleTaxonomyCount] = useState(7);
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -121,8 +122,8 @@ export function StorefrontHeader({
   ];
   const activeCategory = searchParams.get("category") || "all";
   const activeSubcategory = searchParams.get("subcategory") || "all";
-  const visibleDesktopTaxonomy = taxonomy.slice(0, 8);
-  const overflowDesktopTaxonomy = taxonomy.slice(8);
+  const visibleDesktopTaxonomy = taxonomy.slice(0, visibleTaxonomyCount);
+  const overflowDesktopTaxonomy = taxonomy.slice(visibleTaxonomyCount);
   const overflowCategoryKeys = new Set(
     overflowDesktopTaxonomy.map((group) => group.key),
   );
@@ -136,22 +137,71 @@ export function StorefrontHeader({
   }, [searchParams]);
 
   useEffect(() => {
-    const scrollContainer = document.querySelector<HTMLElement>(
-      ".storefront-scroll-viewport",
-    );
-    let lastScrollY = scrollContainer?.scrollTop ?? window.scrollY;
+    const updateVisibleTaxonomyCount = () => {
+      const screenWidth = window.innerWidth;
 
-    const handleScroll = () => {
-      const currentScrollY = scrollContainer?.scrollTop ?? window.scrollY;
-      const isDesktopViewport = window.innerWidth >= 1024;
-
-      if (!isDesktopViewport) {
-        setHideTopBar(false);
-        lastScrollY = currentScrollY;
+      if (screenWidth < 360) {
+        setVisibleTaxonomyCount(2);
         return;
       }
 
-      if (currentScrollY < 64) {
+      if (screenWidth < 480) {
+        setVisibleTaxonomyCount(3);
+        return;
+      }
+
+      if (screenWidth < 640) {
+        setVisibleTaxonomyCount(4);
+        return;
+      }
+
+      if (screenWidth < 768) {
+        setVisibleTaxonomyCount(5);
+        return;
+      }
+
+      if (screenWidth < 1024) {
+        setVisibleTaxonomyCount(6);
+        return;
+      }
+
+      if (screenWidth < 1280) {
+        setVisibleTaxonomyCount(7);
+        return;
+      }
+
+      if (screenWidth < 1440) {
+        setVisibleTaxonomyCount(8);
+        return;
+      }
+
+      setVisibleTaxonomyCount(9);
+    };
+
+    updateVisibleTaxonomyCount();
+    window.addEventListener("resize", updateVisibleTaxonomyCount);
+
+    return () => {
+      window.removeEventListener("resize", updateVisibleTaxonomyCount);
+    };
+  }, []);
+
+  useEffect(() => {
+    const scrollContainer = document.querySelector<HTMLElement>(
+      ".storefront-scroll-viewport",
+    );
+    const getScrollY = () =>
+      Math.max(
+        scrollContainer?.scrollTop ?? 0,
+        window.scrollY,
+        document.documentElement.scrollTop,
+      );
+    let lastScrollY = getScrollY();
+
+    const handleScroll = () => {
+      const currentScrollY = getScrollY();
+
+      if (currentScrollY < 48) {
         setHideTopBar(false);
         lastScrollY = currentScrollY;
         return;
@@ -170,10 +220,14 @@ export function StorefrontHeader({
     scrollContainer?.addEventListener("scroll", handleScroll, {
       passive: true,
     });
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
     window.addEventListener("resize", handleScroll);
 
     return () => {
       scrollContainer?.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleScroll);
     };
   }, []);
@@ -218,13 +272,13 @@ export function StorefrontHeader({
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-[100] bg-background shadow-sm">
-        <div
-          className={cn(
-            "h-14 lg:h-[4.1rem] border-b border-border/60 transition-transform duration-300 ease-out will-change-transform",
-            hideTopBar && "lg:-translate-y-[calc(100%+1px)]",
-          )}
-        >
+      <header
+        className={cn(
+          "fixed inset-x-0 top-0 z-[100] bg-background shadow-sm transition-transform duration-300 ease-out will-change-transform",
+          hideTopBar && "-translate-y-[calc(100%+1px)]",
+        )}
+      >
+        <div className="h-14 border-b border-border/60 lg:h-[4.1rem]">
           <div className="container mx-auto flex h-full min-w-0 items-center gap-3 px-4 py-1 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-4">
             <Link href="/" className="flex min-w-0 items-center gap-2">
               <div className="min-w-0 flex items-center">
@@ -434,31 +488,14 @@ export function StorefrontHeader({
 
       <div
         className={cn(
-          "fixed inset-x-0 z-[90] border-b border-border/60 bg-[color:color-mix(in_oklch,var(--primary)_16%,var(--background)_84%)] shadow-sm transition-[top] duration-300",
-          hideTopBar ? "top-14 lg:top-0" : "top-14 lg:top-[4.1rem]",
+          "fixed inset-x-0 z-[90] border-b border-primary-foreground/10 bg-primary text-primary-foreground shadow-md transition-[top] duration-300",
+          hideTopBar ? "top-0" : "top-14 lg:top-[4.1rem]",
         )}
       >
         <div className="container mx-auto px-4">
-          <div className="flex h-12 items-center gap-1.5 overflow-x-auto whitespace-nowrap scrollbar-hide lg:hidden">
-            {taxonomy.map((group) => (
-              <Link
-                key={group.key}
-                href={group.href}
-                className={cn(
-                  "inline-flex h-9 shrink-0 items-center justify-center rounded-sm px-3 text-sm font-medium text-foreground transition-colors hover:bg-background/80 hover:text-foreground",
-                  pathname === "/products" &&
-                    activeCategory === group.key &&
-                    "bg-background text-primary shadow-sm",
-                )}
-              >
-                {getLocalizedValue(locale, group.label)}
-              </Link>
-            ))}
-          </div>
-
           <NavigationMenu
             viewport={false}
-            className="hidden max-w-none flex-none justify-start lg:flex"
+            className="flex max-w-none flex-none justify-start"
           >
             <NavigationMenuList className="w-full flex-nowrap items-center justify-start gap-1 py-1.5">
               {visibleDesktopTaxonomy.map((group) => {
@@ -475,7 +512,7 @@ export function StorefrontHeader({
                           activeCategory === group.key &&
                           activeSubcategory === "all"
                         }
-                        className="inline-flex h-10 items-center rounded-sm px-3 text-sm font-medium whitespace-nowrap text-foreground transition-colors hover:bg-background/80 hover:text-foreground focus:bg-background/80 focus:text-foreground data-[active=true]:bg-background data-[active=true]:text-primary data-[active=true]:shadow-sm"
+                        className="inline-flex h-10 items-center rounded-sm px-3 text-sm font-medium whitespace-nowrap text-primary-foreground/90 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground focus:bg-primary-foreground/10 focus:text-primary-foreground data-[active=true]:bg-primary-foreground/10 data-[active=true]:text-primary-foreground"
                       >
                         <Link href={group.href}>
                           {getLocalizedValue(locale, group.label)}
@@ -495,13 +532,14 @@ export function StorefrontHeader({
                   >
                     <NavigationMenuTrigger
                       className={cn(
-                        "relative z-[1] h-10 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-foreground opacity-100 transition-colors hover:bg-background/80 hover:text-foreground focus:bg-background/80 focus:text-foreground data-[state=open]:bg-background data-[state=open]:text-primary data-[state=open]:shadow-sm data-[state=open]:opacity-100",
-                        triggerActive && "bg-background text-primary shadow-sm",
+                        "relative z-[1] h-10 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-primary-foreground/90 opacity-100 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground focus:bg-primary-foreground/10 focus:text-primary-foreground data-[state=open]:bg-background data-[state=open]:text-primary data-[state=open]:shadow-sm data-[state=open]:opacity-100",
+                        triggerActive &&
+                          "bg-primary-foreground/10 text-primary-foreground",
                       )}
                     >
                       {getLocalizedValue(locale, group.label)}
                     </NavigationMenuTrigger>
-                    <NavigationMenuContent className="z-[80] min-w-[24rem] rounded-sm border border-border/70 bg-background p-2 shadow-xl">
+                    <NavigationMenuContent className="absolute left-0 top-full z-[80] min-w-[18rem] rounded-sm border border-border/70 bg-background p-2 shadow-xl sm:min-w-[20rem] md:min-w-[24rem]">
                       <div className="grid gap-1">
                         {group.children.map((child) => (
                           <NavigationMenuLink
@@ -529,45 +567,56 @@ export function StorefrontHeader({
                 <NavigationMenuItem className="flex shrink-0 items-center">
                   <NavigationMenuTrigger
                     className={cn(
-                      "relative z-[1] h-10 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-foreground opacity-100 transition-colors hover:bg-background/80 hover:text-foreground focus:bg-background/80 focus:text-foreground data-[state=open]:bg-background data-[state=open]:text-primary data-[state=open]:shadow-sm",
+                      "relative z-[1] h-10 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-primary-foreground/90 opacity-100 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground focus:bg-primary-foreground/10 focus:text-primary-foreground data-[state=open]:bg-background data-[state=open]:text-primary data-[state=open]:shadow-sm",
                       pathname === "/products" &&
                         overflowCategoryKeys.has(activeCategory) &&
-                        "bg-background text-primary shadow-sm",
+                        "bg-primary-foreground/10 text-primary-foreground",
                     )}
                   >
                     {locale === "bn" ? "আরও" : "More"}
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent className="z-[80] min-w-[32rem] max-w-[calc(100vw-7rem)] rounded-sm border border-border/70 bg-background p-3 shadow-xl">
-                    <div className="grid gap-4 md:grid-cols-2">
+                  <NavigationMenuContent className="absolute top-full right-0 left-auto z-[80] min-w-[18rem] max-w-[min(24rem,calc(100vw-2rem))] rounded-sm border border-border/70 bg-background p-3 shadow-xl sm:min-w-[22rem] md:min-w-[28rem] md:max-w-[calc(100vw-7rem)]">
+                    <Accordion type="multiple" className="w-full space-y-2">
                       {overflowDesktopTaxonomy.map((group) => (
-                        <div key={group.key} className="space-y-2">
-                          <Link
-                            href={group.href}
-                            className="block rounded-sm px-2 py-1 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
-                          >
+                        <AccordionItem
+                          key={group.key}
+                          value={group.key}
+                          className="rounded-sm border border-border/60 px-3"
+                        >
+                          <AccordionTrigger className="py-3 text-sm font-semibold text-foreground hover:no-underline">
                             {getLocalizedValue(locale, group.label)}
-                          </Link>
-                          <div className="grid gap-1">
-                            {group.children.map((child) => (
-                              <NavigationMenuLink
-                                key={child.key}
-                                asChild
-                                active={
-                                  pathname === "/products" &&
-                                  activeCategory === group.key &&
-                                  activeSubcategory === child.key
-                                }
-                                className="rounded-sm px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted data-[active=true]:bg-primary/10 data-[active=true]:text-primary"
-                              >
-                                <Link href={child.href}>
-                                  {getLocalizedValue(locale, child.label)}
-                                </Link>
-                              </NavigationMenuLink>
-                            ))}
-                          </div>
-                        </div>
+                          </AccordionTrigger>
+                          <AccordionContent className="space-y-1 pb-3">
+                            <Link
+                              href={group.href}
+                              className="block rounded-sm px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
+                            >
+                              {locale === "bn"
+                                ? `${getLocalizedValue(locale, group.label)} দেখুন`
+                                : `Browse ${getLocalizedValue(locale, group.label)}`}
+                            </Link>
+                            <div className="grid gap-1">
+                              {group.children.map((child) => (
+                                <NavigationMenuLink
+                                  key={child.key}
+                                  asChild
+                                  active={
+                                    pathname === "/products" &&
+                                    activeCategory === group.key &&
+                                    activeSubcategory === child.key
+                                  }
+                                  className="rounded-sm px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted data-[active=true]:bg-primary/10 data-[active=true]:text-primary"
+                                >
+                                  <Link href={child.href}>
+                                    {getLocalizedValue(locale, child.label)}
+                                  </Link>
+                                </NavigationMenuLink>
+                              ))}
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
                       ))}
-                    </div>
+                    </Accordion>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
               ) : null}
@@ -620,46 +669,6 @@ export function StorefrontHeader({
                 >
                   {locale === "bn" ? "ট্র্যাক অর্ডার" : "Track Order"}
                 </Link>
-              </div>
-
-              <div className="space-y-3">
-                <Accordion
-                  type="multiple"
-                  className="rounded-sm border border-border/60 bg-card"
-                >
-                  {taxonomy.map((group) => (
-                    <AccordionItem
-                      key={group.key}
-                      value={group.key}
-                      className="border-border/60"
-                    >
-                      <AccordionTrigger className="px-4 py-3 text-sm font-semibold hover:no-underline">
-                        {getLocalizedValue(locale, group.label)}
-                      </AccordionTrigger>
-                      <AccordionContent className="space-y-2 px-4 pb-4">
-                        <Link
-                          href={group.href}
-                          onClick={() => setMobileMenuOpen(false)}
-                          className="block rounded-sm bg-muted/40 px-3 py-2 text-sm font-medium text-foreground/90"
-                        >
-                          {locale === "bn"
-                            ? "à¦¸à¦¬ à¦¦à§‡à¦–à§à¦¨"
-                            : "View category"}
-                        </Link>
-                        {group.children.map((child) => (
-                          <Link
-                            key={child.key}
-                            href={child.href}
-                            onClick={() => setMobileMenuOpen(false)}
-                            className="block rounded-sm px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted/35 hover:text-foreground"
-                          >
-                            {getLocalizedValue(locale, child.label)}
-                          </Link>
-                        ))}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
               </div>
 
               {sessionUser ? (
