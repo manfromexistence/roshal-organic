@@ -7028,3 +7028,857 @@ To fix this, make sure your Cache-Control headers allow revalidation of chunks a
   614 |                   type="multiple"
   615 |                   className="rounded-sm border border-border/60 bg-card"
   616 |                 > (app/error.tsx:18:13)
+[browser] ReferenceError: HomeTestimonialCarousel is not defined
+    at CheckoutPageClient (components/storefront/checkout-page-client.tsx:923:18)
+  921 |               </CardHeader>
+  922 |               <CardContent className="overflow-hidden">
+> 923 |                 <HomeTestimonialCarousel
+      |                  ^
+  924 |                   language={locale}
+  925 |                   testimonials={testimonials}
+  926 |                 /> (app/error.tsx:18:13)
+[browser] ReferenceError: HomeTestimonialCarousel is not defined
+    at CheckoutPageClient (components/storefront/checkout-page-client.tsx:923:18)
+  921 |               </CardHeader>
+  922 |               <CardContent className="overflow-hidden">
+> 923 |                 <HomeTestimonialCarousel
+      |                  ^
+  924 |                   language={locale}
+  925 |                   testimonials={testimonials}
+  926 |                 /> (app/error.tsx:18:13)
+[browser] ReferenceError: HomeTestimonialCarousel is not defined
+    at CheckoutPageClient (components/storefront/checkout-page-client.tsx:915:18)
+  913 |               </CardHeader>
+  914 |               <CardContent className="overflow-hidden">
+> 915 |                 <HomeTestimonialCarousel
+      |                  ^
+  916 |                   language={locale}
+  917 |                   testimonials={testimonials}
+  918 |                 /> (app/error.tsx:18:13)
+[browser] ReferenceError: testimonials is not defined
+    at CheckoutPageClient (components/storefront/checkout-page-client.tsx:899:12)
+  897 |           </Card>
+  898 |
+> 899 |           {testimonials.length > 0 ? (
+      |            ^
+  900 |             <Card className="rounded-md border-border/70 shadow-sm">
+  901 |               <CardHeader className="space-y-2">
+  902 |                 <CardTitle className="text-2xl"> (app/error.tsx:18:13)
+[browser] ./components/storefront/checkout-page-client.tsx:492:18
+Expression expected
+  490 |           <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
+  491 |             {locale === "bn" ? "??????? ?????? ??????? ????" : "Use current location"}
+> 492 |                   </>
+      |                  ^
+  493 |                 )}
+  494 |               </Button>
+  495 |             </CardHeader>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] ./components/storefront/checkout-page-client.tsx:492:18
+Expression expected
+  490 |           <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
+  491 |             {locale === "bn" ? "??????? ?????? ??????? ????" : "Use current location"}
+> 492 |                   </>
+      |                  ^
+  493 |                 )}
+  494 |               </Button>
+  495 |             </CardHeader>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] ./components/storefront/checkout-page-client.tsx:492:18
+Expression expected
+  490 |           <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
+  491 |             {locale === "bn" ? "??????? ?????? ??????? ????" : "Use current location"}
+> 492 |                   </>
+      |                  ^
+  493 |                 )}
+  494 |               </Button>
+  495 |             </CardHeader>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] ./components/storefront/checkout-page-client.tsx:492:18
+Expression expected
+  490 |           <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
+  491 |             {locale === "bn" ? "??????? ?????? ??????? ????" : "Use current location"}
+> 492 |                   </>
+      |                  ^
+  493 |                 )}
+  494 |               </Button>
+  495 |             </CardHeader>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] ./components/storefront/checkout-page-client.tsx:492:18
+Expression expected
+  490 |           <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
+  491 |             {locale === "bn" ? "??????? ?????? ??????? ????" : "Use current location"}
+> 492 |                   </>
+      |                  ^
+  493 |                 )}
+  494 |               </Button>
+  495 |             </CardHeader>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] ./components/storefront/checkout-page-client.tsx:492:18
+Expression expected
+  490 |           <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
+  491 |             {locale === "bn" ? "??????? ?????? ??????? ????" : "Use current location"}
+> 492 |                   </>
+      |                  ^
+  493 |                 )}
+  494 |               </Button>
+  495 |             </CardHeader>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] ./components/storefront/checkout-page-client.tsx:492:18
+Expression expected
+  490 |           <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
+  491 |             {locale === "bn" ? "??????? ?????? ??????? ????" : "Use current location"}
+> 492 |                   </>
+      |                  ^
+  493 |                 )}
+  494 |               </Button>
+  495 |             </CardHeader>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] ./components/storefront/checkout-page-client.tsx:492:18
+Expression expected
+  490 |           <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
+  491 |             {locale === "bn" ? "??????? ?????? ??????? ????" : "Use current location"}
+> 492 |                   </>
+      |                  ^
+  493 |                 )}
+  494 |               </Button>
+  495 |             </CardHeader>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] ./components/storefront/checkout-page-client.tsx:492:18
+Expression expected
+  490 |           <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
+  491 |             {locale === "bn" ? "??????? ?????? ??????? ????" : "Use current location"}
+> 492 |                   </>
+      |                  ^
+  493 |                 )}
+  494 |               </Button>
+  495 |             </CardHeader>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+⨯ ./components/storefront/checkout-page-client.tsx:492:18
+Expression expected
+  [90m490 |[0m           <p className=[32m"text-xs font-medium uppercase tracking-[0.22em] text-primary"[0m>
+  [90m491 |[0m             {locale === [32m"bn"[0m ? [32m"??????? ?????? ??????? ????"[0m : [32m"Use current location"[0m}
+[31m[1m>[0m [90m492 |[0m                   </>
+  [90m    |[0m                  [31m[1m^[0m
+  [90m493 |[0m                 )}
+  [90m494 |[0m               </[33mButton[0m>
+  [90m495 |[0m             </[33mCardHeader[0m>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx
+
+
+[browser] ./components/storefront/checkout-page-client.tsx:492:18
+Expression expected
+  490 |           <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
+  491 |             {locale === "bn" ? "??????? ?????? ??????? ????" : "Use current location"}
+> 492 |                   </>
+      |                  ^
+  493 |                 )}
+  494 |               </Button>
+  495 |             </CardHeader>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] Uncaught Error: ./components/storefront/checkout-page-client.tsx:492:18
+Expression expected
+  490 |           <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
+  491 |             {locale === "bn" ? "??????? ?????? ??????? ????" : "Use current location"}
+> 492 |                   </>
+      |                  ^
+  493 |                 )}
+  494 |               </Button>
+  495 |             </CardHeader>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx
+
+
+    at <unknown> (Error: ./components/storefront/checkout-page-client.tsx:492:18)
+    at <unknown> (Error: (./components/storefront/checkout-page-client.tsx:492:18)
+[browser] ./components/storefront/checkout-page-client.tsx:492:18
+Expression expected
+  490 |           <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
+  491 |             {locale === "bn" ? "??????? ?????? ??????? ????" : "Use current location"}
+> 492 |                   </>
+      |                  ^
+  493 |                 )}
+  494 |               </Button>
+  495 |             </CardHeader>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+⨯ ./components/storefront/checkout-page-client.tsx:492:18
+Expression expected
+  [90m490 |[0m           <p className=[32m"text-xs font-medium uppercase tracking-[0.22em] text-primary"[0m>
+  [90m491 |[0m             {locale === [32m"bn"[0m ? [32m"??????? ?????? ??????? ????"[0m : [32m"Use current location"[0m}
+[31m[1m>[0m [90m492 |[0m                   </>
+  [90m    |[0m                  [31m[1m^[0m
+  [90m493 |[0m                 )}
+  [90m494 |[0m               </[33mButton[0m>
+  [90m495 |[0m             </[33mCardHeader[0m>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx
+
+
+[browser] ./components/storefront/checkout-page-client.tsx:492:18
+Expression expected
+  490 |           <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
+  491 |             {locale === "bn" ? "??????? ?????? ??????? ????" : "Use current location"}
+> 492 |                   </>
+      |                  ^
+  493 |                 )}
+  494 |               </Button>
+  495 |             </CardHeader>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] ./components/storefront/checkout-page-client.tsx:492:18
+Expression expected
+  490 |           <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
+  491 |             {locale === "bn" ? "??????? ?????? ??????? ????" : "Use current location"}
+> 492 |                   </>
+      |                  ^
+  493 |                 )}
+  494 |               </Button>
+  495 |             </CardHeader>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] ./components/storefront/checkout-page-client.tsx:492:18
+Expression expected
+  490 |           <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
+  491 |             {locale === "bn" ? "??????? ?????? ??????? ????" : "Use current location"}
+> 492 |                   </>
+      |                  ^
+  493 |                 )}
+  494 |               </Button>
+  495 |             </CardHeader>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] ./components/storefront/checkout-page-client.tsx:492:18
+Expression expected
+  490 |           <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
+  491 |             {locale === "bn" ? "??????? ?????? ??????? ????" : "Use current location"}
+> 492 |                   </>
+      |                  ^
+  493 |                 )}
+  494 |               </Button>
+  495 |             </CardHeader>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+⨯ ./components/storefront/checkout-page-client.tsx:492:18
+Expression expected
+  [90m490 |[0m           <p className=[32m"text-xs font-medium uppercase tracking-[0.22em] text-primary"[0m>
+  [90m491 |[0m             {locale === [32m"bn"[0m ? [32m"??????? ?????? ??????? ????"[0m : [32m"Use current location"[0m}
+[31m[1m>[0m [90m492 |[0m                   </>
+  [90m    |[0m                  [31m[1m^[0m
+  [90m493 |[0m                 )}
+  [90m494 |[0m               </[33mButton[0m>
+  [90m495 |[0m             </[33mCardHeader[0m>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx
+
+
+⨯ ./components/storefront/checkout-page-client.tsx:492:18
+Expression expected
+  [90m490 |[0m           <p className=[32m"text-xs font-medium uppercase tracking-[0.22em] text-primary"[0m>
+  [90m491 |[0m             {locale === [32m"bn"[0m ? [32m"??????? ?????? ??????? ????"[0m : [32m"Use current location"[0m}
+[31m[1m>[0m [90m492 |[0m                   </>
+  [90m    |[0m                  [31m[1m^[0m
+  [90m493 |[0m                 )}
+  [90m494 |[0m               </[33mButton[0m>
+  [90m495 |[0m             </[33mCardHeader[0m>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx
+
+
+[browser] ./components/storefront/checkout-page-client.tsx:492:18
+Expression expected
+  490 |           <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
+  491 |             {locale === "bn" ? "??????? ?????? ??????? ????" : "Use current location"}
+> 492 |                   </>
+      |                  ^
+  493 |                 )}
+  494 |               </Button>
+  495 |             </CardHeader>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] Uncaught Error: ./components/storefront/checkout-page-client.tsx:492:18
+Expression expected
+  490 |           <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
+  491 |             {locale === "bn" ? "??????? ?????? ??????? ????" : "Use current location"}
+> 492 |                   </>
+      |                  ^
+  493 |                 )}
+  494 |               </Button>
+  495 |             </CardHeader>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx
+
+
+    at <unknown> (Error: ./components/storefront/checkout-page-client.tsx:492:18)
+    at <unknown> (Error: (./components/storefront/checkout-page-client.tsx:492:18)
+[browser] ./components/storefront/checkout-page-client.tsx:492:18
+Expression expected
+  490 |           <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
+  491 |             {locale === "bn" ? "??????? ?????? ??????? ????" : "Use current location"}
+> 492 |                   </>
+      |                  ^
+  493 |                 )}
+  494 |               </Button>
+  495 |             </CardHeader>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] ./components/storefront/checkout-page-client.tsx:492:18
+Expression expected
+  490 |           <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
+  491 |             {locale === "bn" ? "??????? ?????? ??????? ????" : "Use current location"}
+> 492 |                   </>
+      |                  ^
+  493 |                 )}
+  494 |               </Button>
+  495 |             </CardHeader>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] ./components/storefront/checkout-page-client.tsx:492:18
+Expression expected
+  490 |           <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
+  491 |             {locale === "bn" ? "??????? ?????? ??????? ????" : "Use current location"}
+> 492 |                   </>
+      |                  ^
+  493 |                 )}
+  494 |               </Button>
+  495 |             </CardHeader>
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] ./components/storefront/checkout-page-client.tsx:669:113
+Expected '</', got 'ident'
+  667 | ...à¦¾à¦°à¦¿ à¦¤à¦¥à§à¦¯" : "Delivery details"}
+  668 | ...
+> 669 | ...">`r`n                  {locale === "bn"`r`n                    ? "???????? ?????? ???...
+      |                                               ^
+  670 | ...
+  671 | ...
+  672 | ...
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] ./components/storefront/checkout-page-client.tsx:669:113
+Expected '</', got 'ident'
+  667 | ...à¦¾à¦°à¦¿ à¦¤à¦¥à§à¦¯" : "Delivery details"}
+  668 | ...
+> 669 | ...">`r`n                  {locale === "bn"`r`n                    ? "???????? ?????? ???...
+      |                                               ^
+  670 | ...
+  671 | ...
+  672 | ...
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] ./components/storefront/checkout-page-client.tsx:669:113
+Expected '</', got 'ident'
+  667 | ...à¦¾à¦°à¦¿ à¦¤à¦¥à§à¦¯" : "Delivery details"}
+  668 | ...
+> 669 | ...">`r`n                  {locale === "bn"`r`n                    ? "???????? ?????? ???...
+      |                                               ^
+  670 | ...
+  671 | ...
+  672 | ...
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] ./components/storefront/checkout-page-client.tsx:669:113
+Expected '</', got 'ident'
+  667 | ...à¦¾à¦°à¦¿ à¦¤à¦¥à§à¦¯" : "Delivery details"}
+  668 | ...
+> 669 | ...">`r`n                  {locale === "bn"`r`n                    ? "???????? ?????? ???...
+      |                                               ^
+  670 | ...
+  671 | ...
+  672 | ...
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] ./components/storefront/checkout-page-client.tsx:669:113
+Expected '</', got 'ident'
+  667 | ...à¦¾à¦°à¦¿ à¦¤à¦¥à§à¦¯" : "Delivery details"}
+  668 | ...
+> 669 | ...">`r`n                  {locale === "bn"`r`n                    ? "???????? ?????? ???...
+      |                                               ^
+  670 | ...
+  671 | ...
+  672 | ...
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] Uncaught Error: ./components/storefront/checkout-page-client.tsx:669:113
+Expected '</', got 'ident'
+  667 | ...à¦¾à¦°à¦¿ à¦¤à¦¥à§à¦¯" : "Delivery details"}
+  668 | ...
+> 669 | ...">`r`n                  {locale === "bn"`r`n                    ? "???????? ?????? ???...
+      |                                               ^
+  670 | ...
+  671 | ...
+  672 | ...
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx
+
+
+    at <unknown> (Error: ./components/storefront/checkout-page-client.tsx:669:113)
+    at <unknown> (Error: (./components/storefront/checkout-page-client.tsx:669:113)
+[browser] ./components/storefront/checkout-page-client.tsx:669:113
+Expected '</', got 'ident'
+  667 | ...à¦¾à¦°à¦¿ à¦¤à¦¥à§à¦¯" : "Delivery details"}
+  668 | ...
+> 669 | ...">`r`n                  {locale === "bn"`r`n                    ? "???????? ?????? ???...
+      |                                               ^
+  670 | ...
+  671 | ...
+  672 | ...
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] ./components/storefront/checkout-page-client.tsx:669:113
+Expected '</', got 'ident'
+  667 | ...à¦¾à¦°à¦¿ à¦¤à¦¥à§à¦¯" : "Delivery details"}
+  668 | ...
+> 669 | ...">`r`n                  {locale === "bn"`r`n                    ? "???????? ?????? ???...
+      |                                               ^
+  670 | ...
+  671 | ...
+  672 | ...
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] ./components/storefront/checkout-page-client.tsx:669:113
+Expected '</', got 'ident'
+  667 | ...à¦¾à¦°à¦¿ à¦¤à¦¥à§à¦¯" : "Delivery details"}
+  668 | ...
+> 669 | ...">`r`n                  {locale === "bn"`r`n                    ? "???????? ?????? ???...
+      |                                               ^
+  670 | ...
+  671 | ...
+  672 | ...
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+⨯ ./components/storefront/checkout-page-client.tsx:669:113
+Expected '</', got 'ident'
+  [90m667 |[0m ...[32mà¦¾à¦°à¦¿ à¦¤à¦¥à§à¦¯"[0m : [32m"Delivery details"[0m}
+  [90m668 |[0m ...
+[31m[1m>[0m [90m669 |[0m ...[32m"[0m>[32m`r`[0mn                  {locale === [32m"bn"[0m[32m`r`[0mn                    ? [32m"???????? ?????? ???...[0m
+  [90m    |[0m                                               [31m[1m^[0m
+  [90m670 |[0m ...
+  [90m671 |[0m ...
+  [90m672 |[0m ...
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx
+
+
+[browser] ./components/storefront/checkout-page-client.tsx:669:113
+Expected '</', got 'ident'
+  667 | ...à¦¾à¦°à¦¿ à¦¤à¦¥à§à¦¯" : "Delivery details"}
+  668 | ...
+> 669 | ...">`r`n                  {locale === "bn"`r`n                    ? "???????? ?????? ???...
+      |                                               ^
+  670 | ...
+  671 | ...
+  672 | ...
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] ./components/storefront/checkout-page-client.tsx:669:113
+Expected '</', got 'ident'
+  667 | ...à¦¾à¦°à¦¿ à¦¤à¦¥à§à¦¯" : "Delivery details"}
+  668 | ...
+> 669 | ...">`r`n                  {locale === "bn"`r`n                    ? "???????? ?????? ???...
+      |                                               ^
+  670 | ...
+  671 | ...
+  672 | ...
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] ./components/storefront/checkout-page-client.tsx:669:113
+Expected '</', got 'ident'
+  667 | ...à¦¾à¦°à¦¿ à¦¤à¦¥à§à¦¯" : "Delivery details"}
+  668 | ...
+> 669 | ...">`r`n                  {locale === "bn"`r`n                    ? "???????? ?????? ???...
+      |                                               ^
+  670 | ...
+  671 | ...
+  672 | ...
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] ./components/storefront/checkout-page-client.tsx:669:113
+Expected '</', got 'ident'
+  667 | ...à¦¾à¦°à¦¿ à¦¤à¦¥à§à¦¯" : "Delivery details"}
+  668 | ...
+> 669 | ...">`r`n                  {locale === "bn"`r`n                    ? "???????? ?????? ???...
+      |                                               ^
+  670 | ...
+  671 | ...
+  672 | ...
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+⨯ ./components/storefront/checkout-page-client.tsx:669:113
+Expected '</', got 'ident'
+  [90m667 |[0m ...[32mà¦¾à¦°à¦¿ à¦¤à¦¥à§à¦¯"[0m : [32m"Delivery details"[0m}
+  [90m668 |[0m ...
+[31m[1m>[0m [90m669 |[0m ...[32m"[0m>[32m`r`[0mn                  {locale === [32m"bn"[0m[32m`r`[0mn                    ? [32m"???????? ?????? ???...[0m
+  [90m    |[0m                                               [31m[1m^[0m
+  [90m670 |[0m ...
+  [90m671 |[0m ...
+  [90m672 |[0m ...
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx
+
+
+[browser] ./components/storefront/checkout-page-client.tsx:669:113
+Expected '</', got 'ident'
+  667 | ...à¦¾à¦°à¦¿ à¦¤à¦¥à§à¦¯" : "Delivery details"}
+  668 | ...
+> 669 | ...">`r`n                  {locale === "bn"`r`n                    ? "???????? ?????? ???...
+      |                                               ^
+  670 | ...
+  671 | ...
+  672 | ...
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] ./components/storefront/checkout-page-client.tsx:669:113
+Expected '</', got 'ident'
+  667 | ...à¦¾à¦°à¦¿ à¦¤à¦¥à§à¦¯" : "Delivery details"}
+  668 | ...
+> 669 | ...">`r`n                  {locale === "bn"`r`n                    ? "???????? ?????? ???...
+      |                                               ^
+  670 | ...
+  671 | ...
+  672 | ...
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+⨯ ./components/storefront/checkout-page-client.tsx:669:113
+Expected '</', got 'ident'
+  [90m667 |[0m ...[32mà¦¾à¦°à¦¿ à¦¤à¦¥à§à¦¯"[0m : [32m"Delivery details"[0m}
+  [90m668 |[0m ...
+[31m[1m>[0m [90m669 |[0m ...[32m"[0m>[32m`r`[0mn                  {locale === [32m"bn"[0m[32m`r`[0mn                    ? [32m"???????? ?????? ???...[0m
+  [90m    |[0m                                               [31m[1m^[0m
+  [90m670 |[0m ...
+  [90m671 |[0m ...
+  [90m672 |[0m ...
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx
+
+
+[browser] ./components/storefront/checkout-page-client.tsx:669:113
+Expected '</', got 'ident'
+  667 | ...à¦¾à¦°à¦¿ à¦¤à¦¥à§à¦¯" : "Delivery details"}
+  668 | ...
+> 669 | ...">`r`n                  {locale === "bn"`r`n                    ? "???????? ?????? ???...
+      |                                               ^
+  670 | ...
+  671 | ...
+  672 | ...
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] Uncaught Error: ./components/storefront/checkout-page-client.tsx:669:113
+Expected '</', got 'ident'
+  667 | ...à¦¾à¦°à¦¿ à¦¤à¦¥à§à¦¯" : "Delivery details"}
+  668 | ...
+> 669 | ...">`r`n                  {locale === "bn"`r`n                    ? "???????? ?????? ???...
+      |                                               ^
+  670 | ...
+  671 | ...
+  672 | ...
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx
+
+
+    at <unknown> (Error: ./components/storefront/checkout-page-client.tsx:669:113)
+    at <unknown> (Error: (./components/storefront/checkout-page-client.tsx:669:113)
+[browser] ./components/storefront/checkout-page-client.tsx:669:113
+Expected '</', got 'ident'
+  667 | ...à¦¾à¦°à¦¿ à¦¤à¦¥à§à¦¯" : "Delivery details"}
+  668 | ...
+> 669 | ...">`r`n                  {locale === "bn"`r`n                    ? "???????? ?????? ???...
+      |                                               ^
+  670 | ...
+  671 | ...
+  672 | ...
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] ./components/storefront/checkout-page-client.tsx:669:113
+Expected '</', got 'ident'
+  667 | ...à¦¾à¦°à¦¿ à¦¤à¦¥à§à¦¯" : "Delivery details"}
+  668 | ...
+> 669 | ...">`r`n                  {locale === "bn"`r`n                    ? "???????? ?????? ???...
+      |                                               ^
+  670 | ...
+  671 | ...
+  672 | ...
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+[browser] ./components/storefront/checkout-page-client.tsx:669:113
+Expected '</', got 'ident'
+  667 | ...à¦¾à¦°à¦¿ à¦¤à¦¥à§à¦¯" : "Delivery details"}
+  668 | ...
+> 669 | ...">`r`n                  {locale === "bn"`r`n                    ? "???????? ?????? ???...
+      |                                               ^
+  670 | ...
+  671 | ...
+  672 | ...
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Server Component:
+    ./components/storefront/checkout-page-client.tsx
+    ./app/(marketing)/checkout/page.tsx 
+⚠ Fast Refresh had to perform a full reload when ./node_modules/next/dist/client/image-component.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+⚠ Fast Refresh had to perform a full reload when ./node_modules/next/dist/client/image-component.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+⚠ Fast Refresh had to perform a full reload when ./node_modules/next/dist/client/image-component.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+⚠ Fast Refresh had to perform a full reload when ./node_modules/next/dist/client/image-component.js changed. Read more: https://nextjs.org/docs/messages/fast-refresh-reload
+⨯ Error: Module [project]/node_modules/next/dist/esm/lib/framework/boundary-components.js [app-ssr] (ecmascript) was instantiated because it was required from module [project]/node_modules/next/dist/esm/build/templates/app-page.js?page=/(marketing)/checkout/page { METADATA_0 => "[project]/app/icon.svg.mjs { IMAGE => \"[project]/app/icon.svg (static in ecmascript, tag client)\" } [app-rsc] (structured image object, ecmascript)", METADATA_1 => "[project]/app/opengraph-image--metadata.js [app-rsc] (ecmascript, Next.js Server Component)", MODULE_2 => "[project]/app/layout.tsx [app-rsc] (ecmascript, Next.js Server Component)", MODULE_3 => "[project]/app/error.tsx [app-rsc] (ecmascript, Next.js Server Component)", MODULE_4 => "[project]/app/not-found.tsx [app-rsc] (ecmascript, Next.js Server Component)", MODULE_5 => "[project]/node_modules/next/dist/client/components/builtin/forbidden.js [app-rsc] (ecmascript, Next.js Server Component)", MODULE_6 => "[project]/node_modules/next/dist/client/components/builtin/unauthorized.js [app-rsc] (ecmascript, Next.js Server Component)", MODULE_7 => "[project]/app/global-error.tsx [app-rsc] (ecmascript, Next.js Server Component)", MODULE_8 => "[project]/app/(marketing)/layout.tsx [app-rsc] (ecmascript, Next.js Server Component)", MODULE_9 => "[project]/app/not-found.tsx [app-rsc] (ecmascript, Next.js Server Component)", MODULE_10 => "[project]/node_modules/next/dist/client/components/builtin/forbidden.js [app-rsc] (ecmascript, Next.js Server Component)", MODULE_11 => "[project]/node_modules/next/dist/client/components/builtin/unauthorized.js [app-rsc] (ecmascript, Next.js Server Component)", MODULE_12 => "[project]/app/(marketing)/checkout/page.tsx [app-rsc] (ecmascript, Next.js Server Component)" } [app-rsc] (ecmascript) <locals>, but the module factory is not available.
+This is often caused by a stale browser cache, misconfigured Cache-Control headers, or a service worker serving outdated responses.
+To fix this, make sure your Cache-Control headers allow revalidation of chunks and review your service worker configuration. As an immediate workaround, try hard-reloading the page, clearing the browser cache, or unregistering any service workers.
+    at ignore-listed frames {
+  digest: '155525966'
+}
+⨯ Error: Module [project]/components/storefront/checkout-page-client.tsx [app-ssr] (ecmascript) was instantiated because it was required from module [project]/node_modules/next/dist/esm/build/templates/app-page.js?page=/(marketing)/checkout/page { METADATA_0 => "[project]/app/icon.svg.mjs { IMAGE => \"[project]/app/icon.svg (static in ecmascript, tag client)\" } [app-rsc] (structured image object, ecmascript)", METADATA_1 => "[project]/app/opengraph-image--metadata.js [app-rsc] (ecmascript, Next.js Server Component)", MODULE_2 => "[project]/app/layout.tsx [app-rsc] (ecmascript, Next.js Server Component)", MODULE_3 => "[project]/app/error.tsx [app-rsc] (ecmascript, Next.js Server Component)", MODULE_4 => "[project]/app/not-found.tsx [app-rsc] (ecmascript, Next.js Server Component)", MODULE_5 => "[project]/node_modules/next/dist/client/components/builtin/forbidden.js [app-rsc] (ecmascript, Next.js Server Component)", MODULE_6 => "[project]/node_modules/next/dist/client/components/builtin/unauthorized.js [app-rsc] (ecmascript, Next.js Server Component)", MODULE_7 => "[project]/app/global-error.tsx [app-rsc] (ecmascript, Next.js Server Component)", MODULE_8 => "[project]/app/(marketing)/layout.tsx [app-rsc] (ecmascript, Next.js Server Component)", MODULE_9 => "[project]/app/not-found.tsx [app-rsc] (ecmascript, Next.js Server Component)", MODULE_10 => "[project]/node_modules/next/dist/client/components/builtin/forbidden.js [app-rsc] (ecmascript, Next.js Server Component)", MODULE_11 => "[project]/node_modules/next/dist/client/components/builtin/unauthorized.js [app-rsc] (ecmascript, Next.js Server Component)", MODULE_12 => "[project]/app/(marketing)/checkout/page.tsx [app-rsc] (ecmascript, Next.js Server Component)" } [app-rsc] (ecmascript) <locals>, but the module factory is not available.
+This is often caused by a stale browser cache, misconfigured Cache-Control headers, or a service worker serving outdated responses.
+To fix this, make sure your Cache-Control headers allow revalidation of chunks and review your service worker configuration. As an immediate workaround, try hard-reloading the page, clearing the browser cache, or unregistering any service workers.
+    at ignore-listed frames {
+  digest: '1720942365'
+}
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+[browser] Image with src "/brand-story.jpg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading

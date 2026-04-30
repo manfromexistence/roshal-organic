@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 - Restored the non-header marketing homepage sections to the previous committed composition while keeping the current header, sub-header, landing hero, and footer in place.
 - Reworked the fixed storefront sub-header to fit categories by viewport width and move overflowed categories into `More` instead of relying on horizontal scrolling.
 - Switched the current homepage top-seller section back to a two-column layout on smaller screens and converted the sub-header `More` overflow into category accordions with nested subcategory links.
+- Added the seeded `landing-new-arrivals` and `landing-fresh-picks` shelves back onto the homepage so more storefront cards stay driven by the dashboard home-page CMS sections.
 
 ### Fixed
 - Restored `cash_on_delivery` into live checkout payment settings for older dashboard payment rows by merging stored `optionsJson` with the current default method set instead of trusting stale DB arrays as complete.
@@ -21,3 +22,4 @@ All notable changes to this project will be documented in this file.
 - Replaced homepage placeholder and mojibake copy in the hero, headings, testimonial fallbacks, and top-seller actions so the storefront now shows only real Bangla or English text.
 - Unified the storefront taxonomy rail so the same fixed sub-header serves both mobile and desktop instead of maintaining a separate mobile-only category strip.
 - Re-applied the Bangla top-seller CTA labels after the homepage section revert so the restored cards do not show mojibake text.
+- Removed the checkout customer-comments section, dropped its dead homepage-testimonial data plumbing, and fixed the remaining broken Bangla helper/location labels inside the checkout delivery card.

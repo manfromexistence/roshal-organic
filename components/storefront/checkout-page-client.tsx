@@ -29,7 +29,6 @@ import { formatBdt } from "@/lib/store-format";
 import { getLocalizedValue } from "@/lib/store-locale";
 import { getRoshalPaymentMethodLabel } from "@/lib/store-orders";
 import type {
-  LocalizedValue,
   RoshalDeliveryZone,
   RoshalLocale,
   RoshalPaymentGatewaySummary,

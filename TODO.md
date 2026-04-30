@@ -50,3 +50,9 @@
 
 - [x] Restore the smaller-screen two-column top-seller grid behavior for the current homepage section layout.
 - [x] Replace the sub-header `More` overflow list with category accordions so each overflow category expands to show its subcategories.
+
+## 2026-04-30 Checkout and home CMS follow-up
+
+- [x] Remove the checkout testimonial/comment section and stop pulling homepage testimonial data into the checkout route.
+- [x] Replace the visible broken checkout delivery helper/location labels so the page shows readable Bangla and English only.
+- [x] Render additional seeded home CMS product sections back onto the storefront so more cards stay dashboard-controlled without changing the current compact responsive shelf layout.
