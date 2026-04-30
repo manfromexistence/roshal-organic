@@ -23,7 +23,6 @@ export default async function TrackOrderPage({
 }: {
   searchParams?: Promise<{
     orderNumber?: string;
-    phone?: string;
   }>;
 }) {
   const [locale, resolvedSearchParams] = await Promise.all([
@@ -31,12 +30,8 @@ export default async function TrackOrderPage({
     searchParams,
   ]);
   const orderNumber = resolvedSearchParams?.orderNumber?.trim() || "";
-  const phone = resolvedSearchParams?.phone?.trim() || "";
-  const order =
-    orderNumber && phone
-      ? await getRoshalOrderByLookup(orderNumber, phone)
-      : null;
-  const searched = Boolean(orderNumber || phone);
+  const order = orderNumber ? await getRoshalOrderByLookup(orderNumber) : null;
+  const searched = Boolean(orderNumber);
 
   return (
     <div className="container mx-auto max-w-6xl space-y-6 px-4 py-10">
@@ -51,8 +46,8 @@ export default async function TrackOrderPage({
         </h1>
         <p className="max-w-3xl text-sm leading-7 text-muted-foreground">
           {locale === "bn"
-            ? "অর্ডার নম্বর এবং ফোন নম্বর দিলেই আপনি অর্ডারের বর্তমান অবস্থা, পেমেন্ট স্ট্যাটাস এবং ডেলিভারি অগ্রগতি দেখতে পারবেন।"
-            : "Use the order number and phone number to view the latest order, payment, and delivery status."}
+            ? "শুধু অর্ডার নম্বর দিয়েই আপনি অর্ডারের বর্তমান অবস্থা, পেমেন্ট স্ট্যাটাস এবং ডেলিভারি অগ্রগতি দেখতে পারবেন।"
+            : "Use only the order number to view the latest order, payment, and delivery status."}
         </p>
       </div>
 
@@ -63,7 +58,7 @@ export default async function TrackOrderPage({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <form className="grid gap-4 md:grid-cols-[1fr_1fr_auto]">
+          <form className="grid gap-4 md:grid-cols-[1fr_auto]">
             <div className="space-y-2">
               <Label htmlFor="orderNumber">
                 {locale === "bn" ? "অর্ডার নম্বর" : "Order number"}
@@ -73,18 +68,6 @@ export default async function TrackOrderPage({
                 name="orderNumber"
                 defaultValue={orderNumber}
                 placeholder="RO-20260429124922-76E2EF"
-                className="rounded-md"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="phone">
-                {locale === "bn" ? "ফোন নম্বর" : "Phone number"}
-              </Label>
-              <Input
-                id="phone"
-                name="phone"
-                defaultValue={phone}
-                placeholder="01805-767300"
                 className="rounded-md"
               />
             </div>
@@ -102,8 +85,8 @@ export default async function TrackOrderPage({
         <Alert variant="destructive">
           <AlertDescription>
             {locale === "bn"
-              ? "অর্ডার নম্বর অথবা ফোন নম্বর মেলেনি। আবার চেষ্টা করুন।"
-              : "The order number and phone number did not match. Please try again."}
+              ? "অর্ডার নম্বর মেলেনি। আবার চেষ্টা করুন।"
+              : "The order number could not be matched. Please try again."}
           </AlertDescription>
         </Alert>
       ) : null}

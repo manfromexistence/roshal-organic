@@ -80,31 +80,31 @@ export function HomeTestimonialCarousel({
         {testimonials.map((testimonial) => (
           <CarouselItem
             key={testimonial.key}
-            className="basis-[88%] pl-4 md:basis-1/2 md:pl-6 lg:basis-1/3"
+            className="basis-[70%] pl-4 md:basis-[34%] md:pl-6 lg:basis-[22%]"
           >
-            <Card className="h-full rounded-md border-border/70 bg-card shadow-sm hover:bg-accent/60">
-              <CardContent className="flex h-full flex-col justify-between gap-3.5 p-4 md:gap-4 md:p-[1.125rem]">
-                <div className="space-y-3">
+            <Card className="h-full rounded-sm border-border/70 bg-card shadow-sm hover:bg-accent/60">
+              <CardContent className="flex h-full flex-col justify-between gap-1.5 p-2 md:gap-2 md:p-2.5">
+                <div className="space-y-1">
                   <div className="inline-flex rounded-sm bg-primary/10 p-1.5 text-primary">
-                    <Quote className="size-3.5" />
+                    <Quote className="size-3" />
                   </div>
-                  <p className="line-clamp-3 text-sm leading-6 text-muted-foreground">
+                  <p className="line-clamp-2 text-xs leading-[1rem] text-muted-foreground">
                     {testimonial.quote[language]}
                   </p>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="relative size-9 overflow-hidden rounded-full">
+                <div className="flex items-center gap-2">
+                  <div className="relative size-7 overflow-hidden rounded-full">
                     {testimonial.image ? (
                       <Image
                         src={testimonial.image}
                         alt={testimonial.name}
                         fill
                         className="object-cover"
-                        sizes="36px"
+                        sizes="28px"
                       />
                     ) : (
-                      <Avatar className="size-9">
+                      <Avatar className="size-7">
                         <AvatarFallback className="bg-primary/10 text-primary">
                           {testimonial.name
                             .split(" ")
@@ -117,8 +117,10 @@ export function HomeTestimonialCarousel({
                     )}
                   </div>
                   <div>
-                    <p className="text-sm font-medium">{testimonial.name}</p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs font-medium leading-none">
+                      {testimonial.name}
+                    </p>
+                    <p className="text-[10px] text-muted-foreground">
                       {testimonial.role[language]}
                     </p>
                   </div>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -17,7 +17,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import { authClient } from "@/lib/auth-client";
 import {
@@ -97,6 +96,15 @@ export default function LoginPage() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrorMessage(null);
+
+    if (!isSignIn) {
+      const phone = normalizePhone(mobile);
+      if (phone.length !== 11) {
+        setErrorMessage("Mobile number must be exactly 11 digits.");
+        return;
+      }
+    }
+
     setIsLoading(true);
 
     try {
@@ -143,7 +151,17 @@ export default function LoginPage() {
         );
       }
 
-      window.location.replace(hasCallbackURL ? callbackURL : "/login");
+      if (hasCallbackURL) {
+        window.location.replace(callbackURL);
+        return;
+      }
+
+      const session = await authClient.getSession();
+      const role = (
+        session.data?.user as { role?: "admin" | "user" } | undefined
+      )?.role;
+
+      window.location.replace(role === "admin" ? "/dashboard" : "/profile");
       return;
     } catch (error) {
       console.error("Authentication error:", error);
@@ -168,7 +186,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-background pt-8 lg:pt-32">
       <div className="mx-auto grid min-h-screen max-w-7xl gap-6 px-4 py-6 lg:grid-cols-[1fr_minmax(0,32rem)] lg:items-center">
-        <section className="hidden rounded-md border border-border/60 bg-card/70 p-8 shadow-sm lg:flex lg:min-h-[42rem] lg:flex-col lg:justify-between">
+        <section className="hidden rounded-sm border border-border/60 bg-card/70 p-8 shadow-sm lg:flex lg:min-h-[42rem] lg:flex-col lg:justify-between">
           <div className="space-y-6">
             <div className="inline-flex items-center gap-3">
               <div className="flex h-14 w-14 items-center justify-center rounded-md border border-border/70 bg-background shadow-sm">
@@ -210,7 +228,7 @@ export default function LoginPage() {
         </section>
 
         <section className="flex items-center justify-center">
-          <Card className="w-full max-w-2xl rounded-md border-border/70 shadow-sm">
+          <Card className="w-full max-w-2xl rounded-sm border-border/70 shadow-sm">
             <CardHeader className="space-y-4 pb-6">
               <div className="flex flex-col items-center gap-3 text-center">
                 <Link href="/" className="inline-flex items-center gap-3">
@@ -247,8 +265,8 @@ export default function LoginPage() {
                 }}
               >
                 <TabsList className="grid w-full grid-cols-2 rounded-sm">
-                  <TabsTrigger value="signin">Sign in</TabsTrigger>
-                  <TabsTrigger value="signup">Create account</TabsTrigger>
+                  <TabsTrigger value="signin">Login</TabsTrigger>
+                  <TabsTrigger value="signup">Sign Up</TabsTrigger>
                 </TabsList>
               </Tabs>
             </CardHeader>
@@ -319,6 +337,8 @@ export default function LoginPage() {
                         value={mobile}
                         autoComplete="tel"
                         inputMode="tel"
+                        maxLength={11}
+                        minLength={11}
                         onChange={(event) => {
                           setErrorMessage(null);
                           setMobile(event.target.value);
@@ -345,7 +365,7 @@ export default function LoginPage() {
 
                     <div className="space-y-2 md:col-span-2">
                       <Label htmlFor="signup-address">Address</Label>
-                      <Textarea
+                      <Input
                         id="signup-address"
                         value={address}
                         autoComplete="street-address"
@@ -354,53 +374,57 @@ export default function LoginPage() {
                           setAddress(event.target.value);
                         }}
                         placeholder="House, road, area"
-                        rows={4}
                         required
                       />
                     </div>
 
-                    <div className="space-y-2">
-                      <Label>District</Label>
-                      <Select
-                        value={district}
-                        onValueChange={(value) => {
-                          setErrorMessage(null);
-                          setDistrict(value);
-                        }}
-                      >
-                        <SelectTrigger className="rounded-sm">
-                          <SelectValue placeholder="Select district" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {bangladeshDistrictOptions.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              {option.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                    <div className="grid grid-cols-2 gap-4 md:col-span-2">
+                      <div className="min-w-0 space-y-2">
+                        <Label>District</Label>
+                        <Select
+                          value={district}
+                          onValueChange={(value) => {
+                            setErrorMessage(null);
+                            setDistrict(value);
+                          }}
+                        >
+                          <SelectTrigger className="h-10 min-w-0 rounded-sm text-xs sm:text-sm">
+                            <SelectValue placeholder="Select district" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {bangladeshDistrictOptions.map((option) => (
+                              <SelectItem
+                                key={option.value}
+                                value={option.value}
+                              >
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-                    <div className="space-y-2">
-                      <Label>Thana</Label>
-                      <Select
-                        value={thana}
-                        onValueChange={(value) => {
-                          setErrorMessage(null);
-                          setThana(value);
-                        }}
-                      >
-                        <SelectTrigger className="rounded-sm">
-                          <SelectValue placeholder="Select thana" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {districtOption.thanas.map((option) => (
-                            <SelectItem key={option} value={option}>
-                              {option}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <div className="min-w-0 space-y-2">
+                        <Label>Thana</Label>
+                        <Select
+                          value={thana}
+                          onValueChange={(value) => {
+                            setErrorMessage(null);
+                            setThana(value);
+                          }}
+                        >
+                          <SelectTrigger className="h-10 min-w-0 rounded-sm text-xs sm:text-sm">
+                            <SelectValue placeholder="Select thana" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {districtOption.thanas.map((option) => (
+                              <SelectItem key={option} value={option}>
+                                {option}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
 
                     <div className="space-y-2 md:col-span-2">
@@ -432,10 +456,10 @@ export default function LoginPage() {
                   {isLoading
                     ? isSignIn
                       ? "Signing in..."
-                      : "Creating account..."
+                      : "Signing up..."
                     : isSignIn
-                      ? "Sign in to Roshal Organic"
-                      : "Create customer account"}
+                      ? "Login"
+                      : "Sign Up"}
                 </Button>
               </form>
 

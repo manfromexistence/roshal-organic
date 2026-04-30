@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import {
   ImageCard,
   ImageCardContent,
-  ImageCardDescription,
   ImageCardFooter,
   ImageCardHeader,
   ImageCardTitle,
@@ -39,8 +38,6 @@ export function ProductCard({
   name,
   price,
   originalPrice,
-  rating,
-  reviews,
   badge,
   badgeVariant = "default",
   ctaLabel,
@@ -49,8 +46,8 @@ export function ProductCard({
   const actionHref = href || `/products/${id}`;
 
   return (
-    <ImageCard className="overflow-hidden transition-shadow hover:shadow-lg">
-      <div className="relative h-40 md:h-48">
+    <ImageCard className="overflow-hidden rounded-sm transition-shadow hover:shadow-lg">
+      <div className="relative h-36 md:h-44">
         <Image
           src={image}
           alt={name[language]}
@@ -71,39 +68,30 @@ export function ProductCard({
           />
         ) : null}
       </div>
-      <ImageCardHeader className="space-y-1 px-3 pt-0 pb-2">
-        <ImageCardTitle className="line-clamp-2 text-sm">
+      <ImageCardHeader className="space-y-0.5 px-2 pt-2 pb-1">
+        <ImageCardTitle className="line-clamp-2 text-[13px] leading-[1.2]">
           {name[language]}
         </ImageCardTitle>
-        {typeof rating === "number" || typeof reviews === "number" ? (
-          <ImageCardDescription className="flex items-center gap-1 text-xs">
-            <span className="text-primary">★</span>
-            {typeof rating === "number" ? <span>{rating}</span> : null}
-            {typeof reviews === "number" ? (
-              <span className="text-muted-foreground">({reviews})</span>
-            ) : null}
-          </ImageCardDescription>
-        ) : null}
       </ImageCardHeader>
-      <ImageCardContent className="px-3 pt-0 pb-2">
-        <div className="flex items-center gap-2">
-          <span className="text-base font-bold text-primary">{price}</span>
+      <ImageCardContent className="px-2 pt-0 pb-1">
+        <div className="flex items-center gap-1.5">
+          <span className="text-sm font-bold text-primary">{price}</span>
           {originalPrice ? (
-            <span className="text-sm font-semibold text-muted-foreground line-through">
+            <span className="text-[11px] font-semibold text-muted-foreground line-through">
               {originalPrice}
             </span>
           ) : null}
         </div>
       </ImageCardContent>
-      <ImageCardFooter className="px-3 pt-0 pb-2">
+      <ImageCardFooter className="px-2 pt-0 pb-2">
         <Link href={actionHref} className="w-full">
-          <Button className="w-full" size="sm">
-            <ShoppingCart className="mr-2 h-4 w-4" />
+          <Button className="w-full h-8 px-2 text-xs" size="sm">
+            <ShoppingCart className="mr-1.5 h-3.5 w-3.5" />
             {ctaLabel
               ? ctaLabel[language]
               : language === "bn"
-                ? "বিস্তারিত দেখুন"
-                : "View details"}
+                ? "বিস্তারিত"
+                : "Details"}
           </Button>
         </Link>
       </ImageCardFooter>

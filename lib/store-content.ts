@@ -303,10 +303,60 @@ function sanitizePaymentOption(
 function mapPaymentSettings(
   row: typeof roshalPaymentSettings.$inferSelect,
 ): RoshalPaymentSettings {
-  const options = safeJsonParse<RoshalPaymentSettings["options"]>(
+  const storedOptions = safeJsonParse<RoshalPaymentSettings["options"]>(
     row.optionsJson,
     defaultRoshalPaymentSettings.options,
   );
+  const defaultOptionsByKey = new Map(
+    defaultRoshalPaymentSettings.options.map((option) => [
+      normalizePaymentMethod(option.key),
+      sanitizePaymentOption(option),
+    ]),
+  );
+  const storedOptionsByKey = new Map(
+    storedOptions.map((option) => [
+      normalizePaymentMethod(option.key),
+      sanitizePaymentOption({
+        ...option,
+        guideImageUrl: normalizeRoshalAssetPath(option.guideImageUrl, ""),
+      }),
+    ]),
+  );
+  const mergedOptions = Array.from(defaultOptionsByKey.entries()).map(
+    ([key, defaultOption]) => {
+      const storedOption = storedOptionsByKey.get(key);
+
+      return sanitizePaymentOption({
+        ...defaultOption,
+        ...storedOption,
+        key,
+        label: storedOption?.label || defaultOption.label,
+        merchantLabel:
+          storedOption?.merchantLabel || defaultOption.merchantLabel,
+        instructions: storedOption?.instructions || defaultOption.instructions,
+        guideImageUrl:
+          storedOption?.guideImageUrl || defaultOption.guideImageUrl,
+      });
+    },
+  );
+  const customOptions = Array.from(storedOptionsByKey.entries())
+    .filter(([key]) => !defaultOptionsByKey.has(key))
+    .map(([, option]) => option);
+  const options = [...mergedOptions, ...customOptions].sort((left, right) => {
+    if (left.key === "cash_on_delivery") {
+      return -1;
+    }
+
+    if (right.key === "cash_on_delivery") {
+      return 1;
+    }
+
+    if (left.sortOrder !== right.sortOrder) {
+      return left.sortOrder - right.sortOrder;
+    }
+
+    return left.key.localeCompare(right.key);
+  });
 
   return {
     id: row.id,
@@ -318,12 +368,7 @@ function mapPaymentSettings(
       bn: row.supportMessageBn,
       en: row.supportMessageEn,
     },
-    options: options
-      .map((option) => ({
-        ...option,
-        guideImageUrl: normalizeRoshalAssetPath(option.guideImageUrl, ""),
-      }))
-      .map(sanitizePaymentOption),
+    options,
   };
 }
 
@@ -615,14 +660,11 @@ export async function getRoshalOrderById(id: string) {
   }
 }
 
-function normalizeLookupPhone(value: string) {
+function _normalizeLookupPhone(value: string) {
   return value.replace(/\D/g, "");
 }
 
-export async function getRoshalOrderByLookup(
-  orderNumber: string,
-  phone: string,
-) {
+export async function getRoshalOrderByLookup(orderNumber: string) {
   try {
     const [order] = await db
       .select()
@@ -634,15 +676,7 @@ export async function getRoshalOrderByLookup(
       return null;
     }
 
-    const normalizedLookupPhone = normalizeLookupPhone(phone);
-
-    if (!normalizedLookupPhone) {
-      return null;
-    }
-
-    return normalizeLookupPhone(order.phone) === normalizedLookupPhone
-      ? mapOrder(order)
-      : null;
+    return mapOrder(order);
   } catch {
     return null;
   }

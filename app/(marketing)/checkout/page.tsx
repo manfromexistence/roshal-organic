@@ -23,7 +23,7 @@ const fallbackTestimonials: CheckoutTestimonial[] = [
   {
     key: "checkout-tumpa",
     quote: localizedValue(
-      "ডেলিভারির আগে কল কনফার্ম করে এবং প্রুফ দেখে অর্ডার ধরে রাখে, তাই আমার কাছে চেকআউটটা ভরসার লাগে।",
+      "ডেলিভারির আগে কল কনফার্ম করে, আর পণ্য হাতে পাওয়ার সময় ক্যাশ পেমেন্ট করা যায়।",
       "They confirm the order before delivery, and I can pay in cash when it arrives.",
     ),
     name: "Fariha Akter Tumpa",
@@ -45,7 +45,7 @@ const fallbackTestimonials: CheckoutTestimonial[] = [
   {
     key: "checkout-kamran",
     quote: localizedValue(
-      "বিকাশের স্ক্রিনশট দিয়ে অর্ডার করেছি, তারপর অ্যাডমিন ভেরিফাই করে আপডেট দিয়েছে। প্রসেসটা সহজ ছিল।",
+      "ঠিকানা আর ফোন দিলেই অর্ডার করা গেছে। ক্যাশ অন ডেলিভারি থাকায় চেকআউটটা অনেক সহজ লেগেছে।",
       "It only took my address and phone to place the order, and paying cash on delivery felt very simple.",
     ),
     name: "Ahmod Al Kamran",

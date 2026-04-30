@@ -6,9 +6,7 @@ import { useRouter } from "next/navigation";
 import type { HTMLAttributes, HTMLInputTypeAttribute } from "react";
 import { useEffect, useId, useMemo, useState } from "react";
 import { HomeTestimonialCarousel } from "@/components/marketing/home-testimonial-carousel";
-import { ImageUploadField } from "@/components/shared/image-upload-field";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,7 +21,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
-import { resolveImageUrl } from "@/lib/storage-utils";
 import {
   getRoshalDeliveryMatchLabel,
   getRoshalDeliveryZoneLabel,
@@ -38,7 +35,6 @@ import type {
   RoshalLocale,
   RoshalPaymentGatewaySummary,
   RoshalPaymentMethod,
-  RoshalPaymentOption,
   RoshalPaymentSettings,
   RoshalProduct,
 } from "@/lib/store-types";
@@ -202,21 +198,6 @@ function sortCheckoutPaymentOptions(options: RoshalPaymentSettings["options"]) {
     });
 }
 
-function getCheckoutPaymentModeLabel(
-  locale: RoshalLocale,
-  option: RoshalPaymentOption,
-) {
-  if (option.key === "cash_on_delivery") {
-    return locale === "bn" ? "ডেলিভারির সময় পেমেন্ট" : "Pay on delivery";
-  }
-
-  if (option.mode === "manual" || option.requiresProof) {
-    return locale === "bn" ? "অ্যাডমিন ভেরিফাই" : "Admin verify";
-  }
-
-  return locale === "bn" ? "অনলাইন পেমেন্ট" : "Online payment";
-}
-
 export function CheckoutPageClient({
   deliveryZones,
   gatewaySummary,
@@ -315,11 +296,6 @@ export function CheckoutPageClient({
       selectedOption.mode === "gateway" &&
       gatewaySummary.configured &&
       gatewaySummary.supportedMethods.includes(selectedOption.key),
-  );
-  const shouldCapturePaymentDetails = Boolean(
-    selectedOption &&
-      (selectedOption.mode === "manual" ||
-        (!gatewayActiveForSelectedOption && selectedOption.requiresProof)),
   );
   const subtotal = useMemo(
     () =>
@@ -433,10 +409,6 @@ export function CheckoutPageClient({
         return locale === "bn"
           ? "নির্বাচিত পেমেন্ট অপশনটি এখন উপলভ্য নয়। অন্য একটি অপশন বেছে নিন।"
           : "The selected payment option is not available right now. Please choose another one.";
-      case "payment-proof-required":
-        return locale === "bn"
-          ? "এই পেমেন্ট অপশনের জন্য ট্রানজ্যাকশন আইডি, সেন্ডার নম্বর এবং স্ক্রিনশট প্রয়োজন।"
-          : "This payment method requires a transaction ID, sender number, and payment screenshot.";
       case "product-unavailable":
         return locale === "bn"
           ? "কার্টের এক বা একাধিক পণ্য এখন আর উপলভ্য নেই।"
@@ -476,20 +448,6 @@ export function CheckoutPageClient({
         locale === "bn"
           ? "নাম, ফোন এবং ঠিকানা দিন।"
           : "Please provide your name, phone number, and address.",
-      );
-      return;
-    }
-
-    if (
-      shouldCapturePaymentDetails &&
-      (!formState.paymentReference ||
-        !formState.paymentSender ||
-        !formState.paymentProofUrl)
-    ) {
-      showCheckoutError(
-        locale === "bn"
-          ? "ট্রানজ্যাকশন আইডি, পেমেন্ট নম্বর এবং স্ক্রিনশট দিন।"
-          : "Please provide the transaction ID, sending number, and payment screenshot.",
       );
       return;
     }
@@ -551,23 +509,11 @@ export function CheckoutPageClient({
                   ? "ডেলিভারি ও পেমেন্ট সম্পন্ন করুন"
                   : "Complete delivery and payment"}
               </h1>
-              <p className="max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
+              <p className="max-w-3xl text-sm leading-6 text-muted-foreground md:text-base">
                 {locale === "bn"
-                  ? "ঠিকানা, যোগাযোগ, পেমেন্ট অপশন, এবং প্রয়োজনে স্ক্রিনশট প্রুফ দিয়ে অর্ডার নিশ্চিত করুন।"
-                  : "Confirm the order with your address, contact details, and cash on delivery."}
+                  ? "ঠিকানা, যোগাযোগের তথ্য এবং পেমেন্ট অপশন দিয়ে সহজে অর্ডার নিশ্চিত করুন।"
+                  : "Confirm the order with your address, contact details, and preferred payment option."}
               </p>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              {paymentOptions.map((option) => (
-                <Badge
-                  key={option.key}
-                  variant="secondary"
-                  className="rounded-sm px-3 py-1"
-                >
-                  {getLocalizedValue(locale, option.label)}
-                </Badge>
-              ))}
             </div>
           </div>
         </div>
@@ -875,19 +821,20 @@ export function CheckoutPageClient({
                     </div>
                   </Label>
                 </RadioGroup>
-              </div>
-              <div className="min-w-0 space-y-2 md:col-span-2">
-                <Label htmlFor="notes" className="block truncate">
-                  {locale === "bn" ? "অর্ডার নোট" : "Order notes"}
-                </Label>
-                <Textarea
-                  id="notes"
-                  value={formState.notes}
-                  onChange={(event) =>
-                    updateFormValue("notes", event.target.value)
-                  }
-                  rows={4}
-                />
+
+                <div className="min-w-0 space-y-2 md:col-span-2">
+                  <Label htmlFor="notes" className="block truncate">
+                    {locale === "bn" ? "অর্ডার নোট" : "Order notes"}
+                  </Label>
+                  <Textarea
+                    id="notes"
+                    value={formState.notes}
+                    onChange={(event) =>
+                      updateFormValue("notes", event.target.value)
+                    }
+                    rows={4}
+                  />
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -906,7 +853,7 @@ export function CheckoutPageClient({
                   setSubmitError(null);
                   setPaymentMethod(value as RoshalPaymentMethod);
                 }}
-                className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3"
+                className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3"
               >
                 {paymentOptions.map((option) => {
                   const isSelected = option.key === paymentMethod;
@@ -920,8 +867,8 @@ export function CheckoutPageClient({
                       htmlFor={option.key}
                       className={`flex cursor-pointer rounded-sm border transition-colors ${
                         isCompactWalletOption
-                          ? "items-center gap-2.5 px-3 py-2.5"
-                          : "items-start gap-3 p-3"
+                          ? "items-center gap-2.5 px-3 py-2"
+                          : "items-start gap-3 px-3 py-2.5"
                       } ${
                         isSelected
                           ? "border-primary/50 bg-primary/5"
@@ -933,15 +880,10 @@ export function CheckoutPageClient({
                         id={option.key}
                         className="mt-0.5 shrink-0"
                       />
-                      <div className="min-w-0 space-y-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="text-sm font-medium text-foreground">
-                            {getLocalizedValue(locale, option.label)}
-                          </span>
-                          <Badge variant="outline" className="rounded-sm">
-                            {getCheckoutPaymentModeLabel(locale, option)}
-                          </Badge>
-                        </div>
+                      <div className="min-w-0">
+                        <span className="text-sm font-medium text-foreground">
+                          {getLocalizedValue(locale, option.label)}
+                        </span>
                       </div>
                     </Label>
                   );
@@ -949,100 +891,17 @@ export function CheckoutPageClient({
               </RadioGroup>
 
               {selectedOption ? (
-                <div className="space-y-5 rounded-md border border-border/70 bg-muted/20 p-4">
-                  <div className="grid gap-5 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_18rem]">
-                    <div className="min-w-0 space-y-4">
-                      <div className="space-y-2">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="text-lg font-semibold text-foreground">
-                            {getLocalizedValue(locale, selectedOption.label)}
-                          </h3>
-                          <Badge variant="secondary" className="rounded-sm">
-                            {getCheckoutPaymentModeLabel(
-                              locale,
-                              selectedOption,
-                            )}
-                          </Badge>
-                        </div>
-                      </div>
-
-                      {selectedOption.accountNumber ? (
-                        <div className="rounded-sm border border-border/60 bg-background p-4">
-                          <p className="text-sm text-muted-foreground">
-                            {locale === "bn" ? "পেমেন্ট নম্বর" : "Payment number"}
-                          </p>
-                          <p className="mt-1 break-all text-lg font-semibold text-foreground leading-tight">
-                            {selectedOption.accountNumber}
-                          </p>
-                        </div>
-                      ) : null}
+                <div className="space-y-3 rounded-md border border-border/70 bg-muted/20 p-4">
+                  {selectedOption.accountNumber &&
+                  selectedOption.key !== "cash_on_delivery" ? (
+                    <div className="rounded-sm border border-border/60 bg-background px-3 py-2.5">
+                      <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+                        Payment number
+                      </p>
+                      <p className="mt-1 break-all text-base font-semibold leading-tight text-foreground">
+                        {selectedOption.accountNumber}
+                      </p>
                     </div>
-
-                    {selectedOption.key !== "cash_on_delivery" &&
-                    selectedOption.guideImageUrl ? (
-                      <div className="min-w-0 space-y-2">
-                        <p className="text-sm font-medium text-foreground">
-                          {locale === "bn" ? "পেমেন্ট গাইড" : "Payment guide"}
-                        </p>
-                        <div className="relative aspect-[4/3] overflow-hidden rounded-sm border border-border/60 bg-background">
-                          <Image
-                            src={resolveImageUrl(selectedOption.guideImageUrl)}
-                            alt={getLocalizedValue(
-                              locale,
-                              selectedOption.label,
-                            )}
-                            fill
-                            sizes="(max-width: 1024px) 100vw, 288px"
-                            className="object-cover"
-                          />
-                        </div>
-                      </div>
-                    ) : null}
-                  </div>
-
-                  {shouldCapturePaymentDetails ? (
-                    <>
-                      <Separator />
-                      <div className="space-y-4">
-                        <div className="grid min-w-0 gap-4 grid-cols-1 md:grid-cols-2">
-                          <Field
-                            label={
-                              locale === "bn"
-                                ? "ট্রানজ্যাকশন আইডি"
-                                : "Transaction ID"
-                            }
-                            value={formState.paymentReference}
-                            onChange={(value) =>
-                              updateFormValue("paymentReference", value)
-                            }
-                          />
-                          <Field
-                            label={
-                              locale === "bn"
-                                ? "যে নম্বর থেকে পেমেন্ট করেছেন"
-                                : "Sender number"
-                            }
-                            value={formState.paymentSender}
-                            onChange={(value) =>
-                              updateFormValue("paymentSender", value)
-                            }
-                          />
-                          <div className="min-w-0 col-span-1 md:col-span-2">
-                            <ImageUploadField
-                              label={
-                                locale === "bn"
-                                  ? "পেমেন্ট স্ক্রিনশট"
-                                  : "Payment proof screenshot"
-                              }
-                              value={formState.paymentProofUrl}
-                              onChange={(value) =>
-                                updateFormValue("paymentProofUrl", value)
-                              }
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </>
                   ) : null}
                 </div>
               ) : null}

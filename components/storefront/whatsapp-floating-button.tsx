@@ -5,16 +5,18 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 export function WhatsAppFloatingButton({
+  facebookHref: _facebookHref,
   href,
   label,
 }: {
+  facebookHref?: string;
   href: string;
   label: string;
 }) {
   return (
     <Button
       asChild
-      className="fixed bottom-24 right-4 z-[70] rounded-md px-4 py-3 shadow-lg md:bottom-6"
+      className="fixed bottom-[3.4rem] right-3.5 z-[70] rounded-sm px-3 py-2 shadow-lg md:bottom-3"
     >
       <Link
         href={href}

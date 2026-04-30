@@ -202,6 +202,20 @@
     );
   }
 
+  .storefront-shell
+    [data-slot="scroll-area-scrollbar"][data-orientation="vertical"] {
+    top: 6.5rem;
+    bottom: 4.75rem;
+  }
+
+  @media (min-width: 1024px) {
+    .storefront-shell
+      [data-slot="scroll-area-scrollbar"][data-orientation="vertical"] {
+      top: 7rem;
+      bottom: 0.75rem;
+    }
+  }
+
   html:not(.dark) .storefront-shell [data-slot="card"] {
     background-color: color-mix(in oklch, var(--card) 90%, var(--primary) 10%);
     border-color: color-mix(in oklch, var(--border) 82%, var(--primary) 18%);

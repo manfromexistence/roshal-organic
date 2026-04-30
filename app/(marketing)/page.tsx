@@ -1,12 +1,11 @@
 import { HomeBrandStrip } from "@/components/marketing/home-brand-strip";
 import { HomeCategoryStrip } from "@/components/marketing/home-category-strip";
 import { HomeTestimonialCarousel } from "@/components/marketing/home-testimonial-carousel";
+import { HomeTopSellingGrid } from "@/components/marketing/home-top-selling-grid";
 import {
   LandingHero,
   type LandingHeroBanner,
 } from "@/components/marketing/landing-hero";
-import { SpecialOffers } from "@/components/marketing/special-offers";
-import { TopSellers } from "@/components/marketing/top-sellers";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import {
   getRoshalPageBundle,
@@ -42,15 +41,6 @@ interface MarketingProductCard {
   cartProduct?: RoshalProduct;
 }
 
-interface LandingDeal {
-  title: LocalizedValue;
-  description: LocalizedValue;
-  image: string;
-  discount: string;
-  href?: string;
-  ctaLabel?: LocalizedValue;
-}
-
 interface LandingBrand {
   key: string;
   name: string;
@@ -68,51 +58,37 @@ interface LandingTestimonial {
 
 const fallbackBanners: LandingHeroBanner[] = [
   {
-    title: localizedValue("আজকের সেরা পছন্দ", "Fresh market essentials"),
+    title: localizedValue("????? ???? ?????", "Fresh market essentials"),
     subtitle: localizedValue(
-      "মধু, ঘি, গুড়, আম এবং রান্নাঘরের প্রয়োজনীয় খাঁটি পণ্য।",
+      "???, ??, ????, ?? ??? ?????????? ????????? ????? ?????",
       "Pure honey, ghee, jaggery, fruit, and trusted kitchen essentials.",
     ),
     image: "/special-offer.jpg",
     href: "/products",
-    ctaLabel: localizedValue("এখনই কিনুন", "Shop now"),
+    ctaLabel: localizedValue("???? ?????", "Shop now"),
   },
   {
-    title: localizedValue("খাঁটি মধু ও ঘি", "Pure honey and ghee"),
+    title: localizedValue("????? ??? ? ??", "Pure honey and ghee"),
     subtitle: localizedValue(
-      "পরিবারের জন্য প্রতিদিনের স্বাস্থ্যকর ও বিশ্বস্ত পছন্দ।",
+      "???????? ???? ?????????? ??????????? ? ???????? ??????",
       "Everyday healthy staples you can trust for your family.",
     ),
     image: "/brand-story.jpg",
     href: "/products?category=honey",
-    ctaLabel: localizedValue("বিস্তারিত দেখুন", "Explore"),
+    ctaLabel: localizedValue("????????? ?????", "Explore"),
   },
   {
-    title: localizedValue("মৌসুমি ফল ও বাজার", "Seasonal fruits and market picks"),
+    title: localizedValue(
+      "?????? ?? ? ?????",
+      "Seasonal fruits and market picks",
+    ),
     subtitle: localizedValue(
-      "মৌসুমের সেরা সংগ্রহ এখন এক জায়গায়।",
+      "??????? ???? ?????? ??? ?? ???????",
       "The best of the season, collected in one storefront.",
     ),
     image: "/newsletter.jpg",
     href: "/products",
-    ctaLabel: localizedValue("সব পণ্য", "View products"),
-  },
-];
-
-const fallbackDeals: LandingDeal[] = [
-  {
-    title: localizedValue("মধু বান্ডেল অফার", "Honey bundle offer"),
-    description: localizedValue("৩টি মধু কিনে ১টি ফ্রি", "Buy 3 and get 1 free"),
-    image: "/deal-3.jpg",
-    discount: "25% OFF",
-    href: "/products/pure-honey",
-  },
-  {
-    title: localizedValue("ঘি বান্ডেল অফার", "Ghee bundle offer"),
-    description: localizedValue("২টি ঘি কিনে ১০% ছাড়", "Buy 2 and save 10%"),
-    image: "/oil-2.jpg",
-    discount: "10% OFF",
-    href: "/products/organic-ghee",
+    ctaLabel: localizedValue("?? ????", "View products"),
   },
 ];
 
@@ -147,33 +123,33 @@ const fallbackTestimonials: LandingTestimonial[] = [
   {
     key: "tumpa",
     quote: localizedValue(
-      "এই অভিজ্ঞতার জগতে আস্থার একটি প্রতিষ্ঠিত নাম রোশাল অর্গানিক।",
+      "?? ????????? ???? ?????? ???? ?????????? ??? ????? ?????????",
       "Roshal Organic has become a dependable name for our household essentials.",
     ),
     name: "Fariha Akter Tumpa",
-    role: localizedValue("উদ্যোক্তা", "Entrepreneur"),
+    role: localizedValue("?????????", "Entrepreneur"),
     image:
       "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&q=80",
   },
   {
     key: "abir",
     quote: localizedValue(
-      "ঘি আমি নিজে খুব একটা পছন্দ করতাম না, কিন্তু বাড়ির সবার জন্য কিনে বুঝলাম মানটা সত্যিই ভালো।",
+      "?? ??? ???? ??? ???? ????? ????? ??, ?????? ????? ???? ???? ???? ?????? ????? ?????? ?????",
       "I did not care much for ghee before, but buying it for my family made the quality obvious.",
     ),
     name: "Shahriar Khan Abir",
-    role: localizedValue("সার্ভিস হোল্ডার", "Service holder"),
+    role: localizedValue("??????? ???????", "Service holder"),
     image:
       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80",
   },
   {
     key: "kamran",
     quote: localizedValue(
-      "বাজারের অনেক জায়গা থেকে কিনেছি, কিন্তু রোশালের পণ্যে ভরসা করা যায়।",
+      "??????? ???? ????? ???? ??????, ?????? ??????? ????? ???? ??? ????",
       "I have tried many stores, but Roshal is one of the few I can genuinely trust.",
     ),
     name: "Ahmod Al Kamran",
-    role: localizedValue("শিক্ষার্থী", "Student"),
+    role: localizedValue("??????????", "Student"),
     image:
       "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80",
   },
@@ -268,7 +244,7 @@ function buildCategories(
       name:
         item.title ||
         item.label ||
-        localizedValue(`ক্যাটাগরি ${index + 1}`, `Category ${index + 1}`),
+        localizedValue(`????????? ${index + 1}`, `Category ${index + 1}`),
       image:
         item.imageUrl || fallbackBanners[index % fallbackBanners.length].image,
       href: item.href || "/products",
@@ -283,25 +259,25 @@ function buildCategories(
   return [
     {
       key: "fallback-oil-ghee",
-      name: localizedValue("তেল ও ঘি", "Oil & Ghee"),
+      name: localizedValue("??? ? ??", "Oil & Ghee"),
       image: "/ghee.jpg",
       href: "/products?category=oil-ghee",
     },
     {
       key: "fallback-honey",
-      name: localizedValue("মধু", "Honey"),
+      name: localizedValue("???", "Honey"),
       image: "/honey.jpg",
       href: "/products?category=honey",
     },
     {
       key: "fallback-fruits-dates",
-      name: localizedValue("ফল ও খেজুর", "Fruits & Dates"),
+      name: localizedValue("?? ? ?????", "Fruits & Dates"),
       image: "/mango-2.jpg",
       href: "/products?category=fruits-dates",
     },
     {
       key: "fallback-dairy",
-      name: localizedValue("দুগ্ধজাত", "Dairy"),
+      name: localizedValue("????????", "Dairy"),
       image: "/yogurt-2.jpg",
       href: "/products?category=dairy-breakfast",
     },
@@ -373,30 +349,6 @@ function toMarketingProduct(
   };
 }
 
-function buildDeals(
-  section: RoshalMarketingSection | undefined,
-  siteCtaHref: string,
-  siteCtaLabel: LocalizedValue,
-) {
-  if (section?.items.length) {
-    return section.items.map((item, index) => ({
-      title:
-        item.title ||
-        item.label ||
-        fallbackDeals[index % fallbackDeals.length].title,
-      description:
-        item.body || fallbackDeals[index % fallbackDeals.length].description,
-      image: item.imageUrl || fallbackDeals[index % fallbackDeals.length].image,
-      discount:
-        item.value || fallbackDeals[index % fallbackDeals.length].discount,
-      href: item.href || siteCtaHref,
-      ctaLabel: item.label || siteCtaLabel,
-    }));
-  }
-
-  return fallbackDeals;
-}
-
 function buildBrands(
   section: RoshalMarketingSection | undefined,
   locale: Language,
@@ -408,7 +360,7 @@ function buildBrands(
         locale,
         item.title ||
           item.label ||
-          localizedValue(`ব্র্যান্ড ${index + 1}`, `Brand ${index + 1}`),
+          localizedValue(`????????? ${index + 1}`, `Brand ${index + 1}`),
       ),
       image:
         item.imageUrl || fallbackBrands[index % fallbackBrands.length].image,
@@ -450,17 +402,6 @@ function sectionTitle(
   return section?.title.bn || section?.title.en ? section.title : fallback;
 }
 
-function sectionDescription(
-  section: RoshalMarketingSection | undefined,
-  fallback?: LocalizedValue,
-) {
-  if (section?.body.bn || section?.body.en) {
-    return section.body;
-  }
-
-  return fallback;
-}
-
 export default async function LandingPage() {
   const [locale, siteSettings, pageBundle, products, taxonomy] =
     await Promise.all([
@@ -480,7 +421,6 @@ export default async function LandingPage() {
   const categoriesSection = sectionsByKey.get("landing-categories");
   const topSellersSection = sectionsByKey.get("landing-top-sellers");
   const brandsSection = sectionsByKey.get("landing-brands");
-  const specialOffersSection = sectionsByKey.get("landing-special-offers");
   const testimonialsSection = sectionsByKey.get("landing-testimonials");
 
   const heroBanners = buildHeroBanners(
@@ -494,17 +434,8 @@ export default async function LandingPage() {
     source: "featured",
     limit: 8,
   }).map((product, index) => toMarketingProduct(product, language, index + 4));
-  const deals = buildDeals(
-    specialOffersSection,
-    siteSettings.primaryCtaHref,
-    siteSettings.primaryCtaLabel,
-  );
   const brands = buildBrands(brandsSection, language);
   const testimonials = buildTestimonials(testimonialsSection);
-  const categoriesDescription = sectionDescription(categoriesSection);
-  const brandsDescription = sectionDescription(brandsSection);
-  const testimonialsDescription = sectionDescription(testimonialsSection);
-
   return (
     <div className="flex w-full min-w-0 flex-col overflow-hidden">
       <LandingHero banners={heroBanners} language={language} />
@@ -517,34 +448,33 @@ export default async function LandingPage() {
                 language,
                 sectionTitle(
                   categoriesSection,
-                  localizedValue("বিশেষ ক্যাটাগরি", "Featured Categories"),
+                  localizedValue("????? ?????????", "Featured Categories"),
                 ),
               )}
             </h2>
-            {categoriesDescription ? (
-              <p className="mx-auto max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
-                {getLocalizedValue(language, categoriesDescription)}
-              </p>
-            ) : null}
           </div>
 
           <HomeCategoryStrip categories={categories} language={language} />
         </div>
       </section>
 
-      <TopSellers
-        products={topSellerCards}
-        language={language}
-        title={sectionTitle(
-          topSellersSection,
-          localizedValue("শীর্ষ বিক্রিত পণ্য", "Top Selling Products"),
-        )}
-        description={sectionDescription(topSellersSection)}
-      />
+      {topSellerCards.length > 0 ? (
+        <HomeTopSellingGrid
+          products={topSellerCards.slice(0, 4)}
+          language={language}
+          title={getLocalizedValue(
+            language,
+            sectionTitle(
+              topSellersSection,
+              localizedValue("????? ?????? ???", "Top Sellers"),
+            ),
+          )}
+        />
+      ) : null}
 
       {brands.length > 0 ? (
-        <section className="bg-background py-12 md:py-16">
-          <div className="container mx-auto space-y-8 px-4 sm:px-6 md:px-8">
+        <section className="bg-background py-12 md:py-14">
+          <div className="container mx-auto space-y-7 px-4 sm:px-6 md:px-8">
             <ScrollReveal>
               <div className="space-y-3">
                 <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
@@ -552,15 +482,10 @@ export default async function LandingPage() {
                     language,
                     sectionTitle(
                       brandsSection,
-                      localizedValue("আমাদের ব্র্যান্ড", "Our Brands"),
+                      localizedValue("????? ???????", "Our Brands"),
                     ),
                   )}
                 </h2>
-                {brandsDescription ? (
-                  <p className="max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
-                    {getLocalizedValue(language, brandsDescription)}
-                  </p>
-                ) : null}
               </div>
             </ScrollReveal>
 
@@ -568,16 +493,6 @@ export default async function LandingPage() {
           </div>
         </section>
       ) : null}
-
-      <SpecialOffers
-        deals={deals}
-        language={language}
-        title={sectionTitle(
-          specialOffersSection,
-          localizedValue("বিশেষ অফার", "Special Offers"),
-        )}
-        description={sectionDescription(specialOffersSection)}
-      />
 
       {testimonials.length > 0 ? (
         <section className="bg-background py-12 md:py-16">
@@ -589,15 +504,10 @@ export default async function LandingPage() {
                     language,
                     sectionTitle(
                       testimonialsSection,
-                      localizedValue("গ্রাহকের অভিজ্ঞতা", "What Customers Say"),
+                      localizedValue("???????? ????????", "What Customers Say"),
                     ),
                   )}
                 </h2>
-                {testimonialsDescription ? (
-                  <p className="mx-auto max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
-                    {getLocalizedValue(language, testimonialsDescription)}
-                  </p>
-                ) : null}
               </div>
             </ScrollReveal>
 

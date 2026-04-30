@@ -30,7 +30,7 @@ function resolveDiscountLabel(product: RoshalProduct, locale: RoshalLocale) {
     return product.badge;
   }
 
-  return locale === "bn" ? `সেভ ${discount}%` : `Save ${discount}%`;
+  return locale === "bn" ? `Save ${discount}%` : `Save ${discount}%`;
 }
 
 export function RoshalProductCard({
@@ -46,12 +46,12 @@ export function RoshalProductCard({
   const badgeLabel = resolveDiscountLabel(product, locale);
 
   return (
-    <ImageCard className="group flex h-full flex-col overflow-hidden rounded-md border-border/80 bg-card shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary/25 hover:shadow-md">
+    <ImageCard className="group flex h-full flex-col overflow-hidden rounded-sm border-border/80 bg-card shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-md">
       <ImageCardHeader className="p-0">
         <div className="relative">
           <Link
             href={`/products/${product.slug}`}
-            className="block rounded-t-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className="block rounded-t-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <div className="relative aspect-square overflow-hidden border-b border-border/70 bg-muted/35">
               <Image
@@ -64,9 +64,9 @@ export function RoshalProductCard({
             </div>
           </Link>
 
-          <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between p-3">
+          <div className="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between p-2.5">
             {badgeLabel ? (
-              <Badge className="pointer-events-auto rounded-md">
+              <Badge className="pointer-events-auto rounded-sm">
                 {badgeLabel}
               </Badge>
             ) : (
@@ -83,61 +83,55 @@ export function RoshalProductCard({
         </div>
       </ImageCardHeader>
 
-      <ImageCardContent className="flex flex-1 flex-col items-start gap-2.5 px-3.5 pb-3.5 pt-3.5 text-left">
-        <div className="w-full space-y-2">
-          <p className="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+      <ImageCardContent className="flex flex-1 flex-col items-start gap-1 px-2.5 pb-2 pt-2 text-left">
+        <div className="w-full space-y-0.5">
+          <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
             {categoryLabel}
           </p>
           <Link
             href={`/products/${product.slug}`}
             className="block w-full transition-colors hover:text-primary"
           >
-            <ImageCardTitle className="line-clamp-2 text-lg leading-7 text-foreground">
+            <ImageCardTitle className="line-clamp-2 text-sm leading-[1.18] text-foreground">
               {name}
             </ImageCardTitle>
           </Link>
-          <ImageCardDescription className="line-clamp-2 leading-6">
+          <ImageCardDescription className="line-clamp-2 text-[11px] leading-[1.25]">
             {summary}
           </ImageCardDescription>
         </div>
 
-        <div className="mt-auto flex w-full flex-col items-start gap-1.5">
-          <div className="space-y-1">
-            <p className="price-emphasis text-xl font-semibold text-primary dark:[color:color-mix(in_oklch,var(--foreground)_68%,var(--primary))]">
+        <div className="mt-auto flex w-full flex-col items-start gap-0.5 pt-1">
+          <div className="space-y-0">
+            <p className="price-emphasis text-base font-semibold text-primary dark:[color:color-mix(in_oklch,var(--foreground)_68%,var(--primary))]">
               {formatBdt(product.price, locale)}
             </p>
             {product.compareAtPrice ? (
-              <p className="text-sm text-muted-foreground line-through">
+              <p className="text-[11px] text-muted-foreground line-through">
                 {formatBdt(product.compareAtPrice, locale)}
               </p>
             ) : null}
-          </div>
-
-          <div className="text-xs text-muted-foreground">
-            {product.inventory > 0
-              ? locale === "bn"
-                ? `${product.inventory} বাকি`
-                : `${product.inventory} left`
-              : locale === "bn"
-                ? "স্টক শেষ"
-                : "Out of stock"}
           </div>
         </div>
       </ImageCardContent>
 
       <ImageCardFooter className="mt-auto px-0 pb-0 pt-0">
-        <div className="grid w-full gap-2.5 border-t border-border/70 px-3.5 pb-3.5 pt-3.5">
-          <Button asChild variant="outline" className="rounded-md">
+        <div className="grid w-full gap-1.5 border-t border-border/70 px-2.5 pb-2.5 pt-2">
+          <Button
+            asChild
+            variant="outline"
+            className="h-8 rounded-sm px-2 text-[11px]"
+          >
             <Link href={`/products/${product.slug}`}>
-              <Eye className="size-4" />
-              {locale === "bn" ? "বিস্তারিত" : "Details"}
+              <Eye className="mr-1.5 size-3.5" />
+              {locale === "bn" ? "Details" : "Details"}
             </Link>
           </Button>
 
           <AddToCartButton
             product={product}
             locale={locale}
-            className="w-full rounded-md"
+            className="h-8 w-full rounded-sm text-[11px]"
           />
         </div>
       </ImageCardFooter>

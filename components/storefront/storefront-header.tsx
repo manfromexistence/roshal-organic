@@ -83,7 +83,7 @@ export function StorefrontHeader({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
-  const [hideDesktopTopBar, setHideDesktopTopBar] = useState(false);
+  const [hideTopBar, setHideTopBar] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -121,8 +121,8 @@ export function StorefrontHeader({
   ];
   const activeCategory = searchParams.get("category") || "all";
   const activeSubcategory = searchParams.get("subcategory") || "all";
-  const visibleDesktopTaxonomy = taxonomy.slice(0, 7);
-  const overflowDesktopTaxonomy = taxonomy.slice(7);
+  const visibleDesktopTaxonomy = taxonomy.slice(0, 8);
+  const overflowDesktopTaxonomy = taxonomy.slice(8);
   const overflowCategoryKeys = new Set(
     overflowDesktopTaxonomy.map((group) => group.key),
   );
@@ -142,25 +142,25 @@ export function StorefrontHeader({
     let lastScrollY = scrollContainer?.scrollTop ?? window.scrollY;
 
     const handleScroll = () => {
-      const isDesktop = window.innerWidth >= 1024;
       const currentScrollY = scrollContainer?.scrollTop ?? window.scrollY;
+      const isDesktopViewport = window.innerWidth >= 1024;
 
-      if (!isDesktop) {
-        setHideDesktopTopBar(false);
+      if (!isDesktopViewport) {
+        setHideTopBar(false);
         lastScrollY = currentScrollY;
         return;
       }
 
-      if (currentScrollY < 72) {
-        setHideDesktopTopBar(false);
+      if (currentScrollY < 64) {
+        setHideTopBar(false);
         lastScrollY = currentScrollY;
         return;
       }
 
       if (currentScrollY > lastScrollY + 8) {
-        setHideDesktopTopBar(true);
+        setHideTopBar(true);
       } else if (currentScrollY < lastScrollY - 8) {
-        setHideDesktopTopBar(false);
+        setHideTopBar(false);
       }
 
       lastScrollY = currentScrollY;
@@ -218,32 +218,23 @@ export function StorefrontHeader({
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-[60] bg-background/95 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/88">
+      <header className="fixed inset-x-0 top-0 z-[100] bg-background shadow-sm">
         <div
           className={cn(
-            "h-14 lg:h-16 border-b border-border/60 transition-transform duration-300 ease-out lg:will-change-transform",
-            hideDesktopTopBar && "lg:-translate-y-[calc(100%+1px)]",
+            "h-14 lg:h-[4.1rem] border-b border-border/60 transition-transform duration-300 ease-out will-change-transform",
+            hideTopBar && "lg:-translate-y-[calc(100%+1px)]",
           )}
         >
-          <div className="container mx-auto flex min-w-0 items-center gap-3 px-4 py-2 md:py-2.5 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-4">
-            <Link href="/" className="flex min-w-0 items-center gap-3">
-              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-border/60 bg-card shadow-sm">
-                <Image
-                  src="/apple-touch-icon.png"
-                  alt={siteSettings.brandName}
-                  width={44}
-                  height={44}
-                  className="h-10 w-10 object-contain"
-                />
-              </div>
-              <div className="hidden min-w-0 sm:block">
+          <div className="container mx-auto flex h-full min-w-0 items-center gap-3 px-4 py-1 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-4">
+            <Link href="/" className="flex min-w-0 items-center gap-2">
+              <div className="min-w-0 flex items-center">
                 <Image
                   src="/logo.png"
                   alt={siteSettings.brandName}
-                  width={210}
-                  height={60}
+                  width={340}
+                  height={110}
                   priority
-                  className="h-10 w-auto object-contain"
+                  className="h-[3.35rem] w-auto object-contain object-left lg:h-[3.95rem]"
                 />
               </div>
             </Link>
@@ -279,10 +270,11 @@ export function StorefrontHeader({
             </form>
 
             <div className="ml-auto hidden items-center justify-self-end gap-1 lg:flex">
+              <LocaleSwitcher locale={locale} className="mr-1 h-8" />
               <Button
                 asChild
                 variant="ghost"
-                className="h-auto flex-col items-center justify-center gap-0.5 rounded-md px-2.5 py-1.5 text-[11px] text-foreground"
+                className="h-auto flex-col items-center justify-center gap-0.5 rounded-sm px-2.5 py-1.5 text-[11px] text-foreground hover:bg-accent/60"
               >
                 <Link href="/track-order">
                   <PackageSearch className="size-5" />
@@ -294,7 +286,7 @@ export function StorefrontHeader({
                 <Button
                   asChild
                   variant="ghost"
-                  className="h-auto flex-col items-center justify-center gap-0.5 rounded-md px-2.5 py-1.5 text-[11px] text-foreground"
+                  className="h-auto flex-col items-center justify-center gap-0.5 rounded-sm px-2.5 py-1.5 text-[11px] text-foreground hover:bg-accent/60"
                 >
                   <Link href="/profile">
                     <Avatar className="size-6 ring-1 ring-border/70">
@@ -309,7 +301,7 @@ export function StorefrontHeader({
                 <Button
                   asChild
                   variant="ghost"
-                  className="h-auto flex-col items-center justify-center gap-0.5 rounded-md px-2.5 py-1.5 text-[11px] text-foreground"
+                  className="h-auto flex-col items-center justify-center gap-0.5 rounded-sm px-2.5 py-1.5 text-[11px] text-foreground hover:bg-accent/60"
                 >
                   <Link href="/login">
                     <User className="size-5" />
@@ -320,7 +312,7 @@ export function StorefrontHeader({
               <Button
                 asChild
                 variant="ghost"
-                className="relative h-auto flex-col items-center justify-center gap-0.5 rounded-md px-2.5 py-1.5 text-[11px] text-foreground"
+                className="relative h-auto flex-col items-center justify-center gap-0.5 rounded-sm px-2.5 py-1.5 text-[11px] text-foreground hover:bg-accent/60"
               >
                 <Link href="/favorites">
                   <Heart className="size-5" />
@@ -336,7 +328,7 @@ export function StorefrontHeader({
               <Button
                 asChild
                 variant="ghost"
-                className="relative h-auto flex-col items-center justify-center gap-0.5 rounded-md px-2.5 py-1.5 text-[11px] text-foreground"
+                className="relative h-auto flex-col items-center justify-center gap-0.5 rounded-sm px-2.5 py-1.5 text-[11px] text-foreground hover:bg-accent/60"
               >
                 <Link href="/cart">
                   <ShoppingBag className="size-5" />
@@ -353,7 +345,7 @@ export function StorefrontHeader({
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="h-auto flex-col items-center justify-center gap-0.5 rounded-md px-2.5 py-1.5 text-[11px] text-foreground"
+                    className="h-auto flex-col items-center justify-center gap-0.5 rounded-sm px-2.5 py-1.5 text-[11px] text-foreground hover:bg-accent/60"
                   >
                     <Grid3X3 className="size-5" />
                     <span>{locale === "bn" ? "আরও" : "More"}</span>
@@ -369,12 +361,6 @@ export function StorefrontHeader({
                         {locale === "bn" ? "থিম" : "Theme"}
                       </span>
                       <StorefrontThemeToggle />
-                    </div>
-                    <div className="flex items-center justify-between gap-3 rounded-md border border-border/60 bg-muted/30 p-3">
-                      <span className="text-sm font-medium">
-                        {locale === "bn" ? "à¦­à¦¾à¦·à¦¾" : "Language"}
-                      </span>
-                      <LocaleSwitcher locale={locale} className="h-8" />
                     </div>
                   </div>
                   <DropdownMenuSeparator />
@@ -418,7 +404,7 @@ export function StorefrontHeader({
                 asChild
                 variant="ghost"
                 size="icon"
-                className="relative rounded-md"
+                className="relative rounded-sm"
               >
                 <Link
                   href="/cart"
@@ -435,7 +421,7 @@ export function StorefrontHeader({
               <Button
                 variant="ghost"
                 size="icon"
-                className="rounded-md"
+                className="rounded-sm"
                 onClick={() => setMobileMenuOpen(true)}
                 aria-label={locale === "bn" ? "মেনু" : "Menu"}
               >
@@ -448,16 +434,33 @@ export function StorefrontHeader({
 
       <div
         className={cn(
-          "fixed inset-x-0 z-10 hidden border-b border-border/60 bg-primary/14 shadow-sm backdrop-blur transition-[top] duration-300 lg:block",
-          hideDesktopTopBar ? "top-0" : "top-16",
+          "fixed inset-x-0 z-[90] border-b border-border/60 bg-[color:color-mix(in_oklch,var(--primary)_16%,var(--background)_84%)] shadow-sm transition-[top] duration-300",
+          hideTopBar ? "top-14 lg:top-0" : "top-14 lg:top-[4.1rem]",
         )}
       >
         <div className="container mx-auto px-4">
+          <div className="flex h-12 items-center gap-1.5 overflow-x-auto whitespace-nowrap scrollbar-hide lg:hidden">
+            {taxonomy.map((group) => (
+              <Link
+                key={group.key}
+                href={group.href}
+                className={cn(
+                  "inline-flex h-9 shrink-0 items-center justify-center rounded-sm px-3 text-sm font-medium text-foreground transition-colors hover:bg-background/80 hover:text-foreground",
+                  pathname === "/products" &&
+                    activeCategory === group.key &&
+                    "bg-background text-primary shadow-sm",
+                )}
+              >
+                {getLocalizedValue(locale, group.label)}
+              </Link>
+            ))}
+          </div>
+
           <NavigationMenu
             viewport={false}
-            className="max-w-none justify-start overflow-visible"
+            className="hidden max-w-none flex-none justify-start lg:flex"
           >
-            <NavigationMenuList className="w-full flex-nowrap items-center justify-start gap-1 overflow-visible py-1.5">
+            <NavigationMenuList className="w-full flex-nowrap items-center justify-start gap-1 py-1.5">
               {visibleDesktopTaxonomy.map((group) => {
                 if (group.children.length === 0) {
                   return (
@@ -472,7 +475,7 @@ export function StorefrontHeader({
                           activeCategory === group.key &&
                           activeSubcategory === "all"
                         }
-                        className="inline-flex h-10 items-center rounded-sm px-3 text-sm font-medium whitespace-nowrap text-foreground/90 hover:bg-background/80 hover:text-foreground focus:bg-background/80 focus:text-foreground data-[active=true]:bg-background data-[active=true]:text-primary"
+                        className="inline-flex h-10 items-center rounded-sm px-3 text-sm font-medium whitespace-nowrap text-foreground transition-colors hover:bg-background/80 hover:text-foreground focus:bg-background/80 focus:text-foreground data-[active=true]:bg-background data-[active=true]:text-primary data-[active=true]:shadow-sm"
                       >
                         <Link href={group.href}>
                           {getLocalizedValue(locale, group.label)}
@@ -492,13 +495,13 @@ export function StorefrontHeader({
                   >
                     <NavigationMenuTrigger
                       className={cn(
-                        "h-10 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-foreground/90 hover:bg-background/80 hover:text-foreground focus:bg-background/80 focus:text-foreground data-[state=open]:bg-background data-[state=open]:text-foreground",
-                        triggerActive && "bg-background text-primary",
+                        "relative z-[1] h-10 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-foreground opacity-100 transition-colors hover:bg-background/80 hover:text-foreground focus:bg-background/80 focus:text-foreground data-[state=open]:bg-background data-[state=open]:text-primary data-[state=open]:shadow-sm data-[state=open]:opacity-100",
+                        triggerActive && "bg-background text-primary shadow-sm",
                       )}
                     >
                       {getLocalizedValue(locale, group.label)}
                     </NavigationMenuTrigger>
-                    <NavigationMenuContent className="min-w-[22rem] rounded-sm border border-border/70 bg-background p-2 shadow-xl">
+                    <NavigationMenuContent className="z-[80] min-w-[24rem] rounded-sm border border-border/70 bg-background p-2 shadow-xl">
                       <div className="grid gap-1">
                         {group.children.map((child) => (
                           <NavigationMenuLink
@@ -526,15 +529,15 @@ export function StorefrontHeader({
                 <NavigationMenuItem className="flex shrink-0 items-center">
                   <NavigationMenuTrigger
                     className={cn(
-                      "h-10 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-foreground/90 hover:bg-background/80 hover:text-foreground focus:bg-background/80 focus:text-foreground data-[state=open]:bg-background data-[state=open]:text-foreground",
+                      "relative z-[1] h-10 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-foreground opacity-100 transition-colors hover:bg-background/80 hover:text-foreground focus:bg-background/80 focus:text-foreground data-[state=open]:bg-background data-[state=open]:text-primary data-[state=open]:shadow-sm",
                       pathname === "/products" &&
                         overflowCategoryKeys.has(activeCategory) &&
-                        "bg-background text-primary",
+                        "bg-background text-primary shadow-sm",
                     )}
                   >
                     {locale === "bn" ? "আরও" : "More"}
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent className="min-w-[30rem] max-w-[calc(100vw-7rem)] rounded-sm border border-border/70 bg-background p-3 shadow-xl">
+                  <NavigationMenuContent className="z-[80] min-w-[32rem] max-w-[calc(100vw-7rem)] rounded-sm border border-border/70 bg-background p-3 shadow-xl">
                     <div className="grid gap-4 md:grid-cols-2">
                       {overflowDesktopTaxonomy.map((group) => (
                         <div key={group.key} className="space-y-2">

@@ -65,7 +65,8 @@ export default async function MarketingLayout({
 
       <WhatsAppFloatingButton
         href={getWhatsAppHref(siteSettings.whatsappPhone) || "/contact"}
-        label={locale === "bn" ? "চ্যাট করুন" : "Chat with us"}
+        facebookHref={siteSettings.facebookUrl}
+        label={locale === "bn" ? "চ্যাট" : "Chat"}
       />
 
       <ScrollArea

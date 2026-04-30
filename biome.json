@@ -153,7 +153,12 @@
       }
     },
     {
-      "includes": ["Admin Panel Modification.html", "Web Modification.html"],
+      "includes": [
+        "Admin Panel Modification.html",
+        "Web Modification.html",
+        "hexed/Admin Panel Modification.html",
+        "hexed/Web Modification.html"
+      ],
       "linter": {
         "rules": {
           "a11y": {

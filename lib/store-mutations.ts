@@ -111,10 +111,8 @@ function getRoshalPaymentWorkflowState(
     return {
       requiresManualReview: true,
       status: "payment-review",
-      paymentStatus: option.requiresProof ? "under-review" : "pending",
-      trackingNote: option.requiresProof
-        ? "Waiting for admin payment verification."
-        : "Waiting for admin payment confirmation.",
+      paymentStatus: "pending",
+      trackingNote: "Waiting for admin payment confirmation.",
     };
   }
 
@@ -129,11 +127,15 @@ function getRoshalPaymentWorkflowState(
 function shouldRequireRoshalPaymentProof(
   option: Pick<RoshalPaymentOption, "key" | "mode" | "requiresProof">,
 ) {
-  if (option.mode !== "gateway") {
-    return option.requiresProof;
+  if (option.key === "cash_on_delivery") {
+    return false;
   }
 
-  return !hasRoshalGatewayIntegration(option.key) && option.requiresProof;
+  if (option.mode !== "gateway") {
+    return false;
+  }
+
+  return false;
 }
 
 function toGatewayMetaJson(value: Record<string, string> | null | undefined) {
