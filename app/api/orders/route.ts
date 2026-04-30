@@ -11,6 +11,7 @@ import type { RoshalPaymentMethod } from "@/lib/store-types";
 
 function normalizePaymentMethod(value: string): RoshalPaymentMethod {
   if (
+    value === "cash_on_delivery" ||
     value === "card" ||
     value === "bkash" ||
     value === "nagad" ||
@@ -20,7 +21,7 @@ function normalizePaymentMethod(value: string): RoshalPaymentMethod {
     return value;
   }
 
-  return "bkash";
+  return "cash_on_delivery";
 }
 
 export async function POST(request: Request) {

@@ -1,6 +1,7 @@
 export type RoshalLocale = "bn" | "en";
 export type RoshalRole = "admin" | "user";
 export type RoshalPaymentMethod =
+  | "cash_on_delivery"
   | "card"
   | "bkash"
   | "nagad"

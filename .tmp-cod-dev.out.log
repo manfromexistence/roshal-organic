@@ -1,0 +1,40 @@
+▲ Next.js 16.2.4 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.100:3000
+- Environments: .env.local, .env
+✓ Ready in 7.0s
+
+○ Compiling / ...
+ GET / 200 in 13.1s (next.js: 9.7s, application-code: 3.4s)
+ GET /login?callbackURL=%2Fcheckout 200 in 2.4s (next.js: 1550ms, proxy.ts: 235ms, application-code: 594ms)
+ GET /api/auth/get-session 200 in 2.5s (next.js: 2.5s, application-code: 24ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 425ms (next.js: 5ms, proxy.ts: 7ms, application-code: 413ms)
+ GET /api/auth/get-session 200 in 17ms (next.js: 8ms, application-code: 9ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 373ms (next.js: 4ms, proxy.ts: 12ms, application-code: 357ms)
+ GET /api/auth/get-session 200 in 19ms (next.js: 10ms, application-code: 9ms)
+ POST /api/auth/sign-in/email 200 in 313ms (next.js: 9ms, application-code: 304ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 356ms (next.js: 5ms, proxy.ts: 9ms, application-code: 342ms)
+ GET /api/auth/get-session 200 in 98ms (next.js: 4ms, application-code: 94ms)
+ GET /login?callbackURL=%2Fdashboard%2Fpayments 200 in 201ms (next.js: 4ms, proxy.ts: 11ms, application-code: 187ms)
+ GET /api/auth/get-session 200 in 15ms (next.js: 9ms, application-code: 7ms)
+ POST /api/auth/sign-in/email 200 in 232ms (next.js: 2ms, application-code: 230ms)
+ GET /login?callbackURL=%2Fdashboard%2Fpayments 200 in 207ms (next.js: 4ms, proxy.ts: 12ms, application-code: 191ms)
+ GET /api/auth/get-session 200 in 18ms (next.js: 11ms, application-code: 7ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 290ms (next.js: 4ms, proxy.ts: 4ms, application-code: 281ms)
+ GET /api/auth/get-session 200 in 19ms (next.js: 11ms, application-code: 9ms)
+ POST /api/auth/sign-in/email 200 in 220ms (next.js: 3ms, application-code: 217ms)
+ GET /api/auth/get-session 200 in 106ms (next.js: 7ms, application-code: 98ms)
+ GET /checkout 200 in 1727ms (next.js: 1053ms, proxy.ts: 98ms, application-code: 576ms)
+ GET /api/auth/get-session 200 in 105ms (next.js: 9ms, application-code: 96ms)
+ GET /login?callbackURL=%2Fcheckout 200 in 402ms (next.js: 6ms, proxy.ts: 7ms, application-code: 388ms)
+ GET /api/auth/get-session 200 in 21ms (next.js: 13ms, application-code: 9ms)
+ POST /api/auth/sign-in/email 200 in 259ms (next.js: 5ms, application-code: 254ms)
+ GET /api/auth/get-session 200 in 132ms (next.js: 3ms, application-code: 129ms)
+ GET /checkout 200 in 396ms (next.js: 4ms, proxy.ts: 94ms, application-code: 298ms)
+ GET /api/auth/get-session 200 in 108ms (next.js: 8ms, application-code: 100ms)
+ GET /login?callbackURL=%2Fdashboard%2Fpayments 200 in 195ms (next.js: 3ms, proxy.ts: 15ms, application-code: 177ms)
+ GET /api/auth/get-session 200 in 15ms (next.js: 9ms, application-code: 6ms)
+ POST /api/auth/sign-in/email 200 in 231ms (next.js: 3ms, application-code: 228ms)
+ GET /api/auth/get-session 200 in 103ms (next.js: 7ms, application-code: 96ms)
+○ Compiling /dashboard/payments ...
+ GET /dashboard/payments 200 in 4.4s (next.js: 3.6s, proxy.ts: 97ms, application-code: 709ms)

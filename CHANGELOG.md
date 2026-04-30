@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added responsive payment partners grid layout with grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 for better logo distribution across screen sizes
 
 ### Changed
+- Changed the storefront checkout and dashboard payment settings so cash on delivery is now the only visible customer-facing/admin-managed payment option, while the existing bKash, Nagad, Rocket, Upay, and card code paths remain preserved but hidden for later reactivation.
+- Changed the checkout payment panel to default to cash on delivery, remove the extra wallet-support help surfaces from the live customer flow, and keep the existing delivery/contact form layout intact.
 - Changed storefront cart and checkout pages to use responsive wrapping, flex constraints, and text truncation, ensuring long content and payment grids fit reliably on smaller mobile screens
 - Changed the storefront checkout page to use a denser mobile-friendly delivery and payment layout with trust highlights, manual-verification guidance, support actions, and customer comments inspired by the requested Bangladeshi ecommerce checkout pattern while leaving the rest of the marketing UI untouched
 - Changed the desktop storefront sub-header dropdowns to escape the category rail correctly by making the non-viewport navigation-menu content overflow visible and raising the rail stacking context above the marketing pages

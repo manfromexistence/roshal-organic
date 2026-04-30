@@ -39,6 +39,7 @@ function normalizePaymentMethod(
   value: string | null | undefined,
 ): RoshalPaymentMethod {
   if (
+    value === "cash_on_delivery" ||
     value === "card" ||
     value === "bkash" ||
     value === "nagad" ||
@@ -48,7 +49,7 @@ function normalizePaymentMethod(
     return value;
   }
 
-  return "bkash";
+  return "cash_on_delivery";
 }
 
 function mapPage(row: typeof roshalPages.$inferSelect): RoshalMarketingPage {

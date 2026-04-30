@@ -4,6 +4,7 @@
 - [ ] 2026-04-29 23:40 Apply the first client-delivery punch-list across the storefront and dashboard: scroll-aware top bar, simplified footer/contact info, lighter homepage sections, compact checkout/delivery controls, richer signup, public track-order, and stronger category/subcategory dashboard controls.
 
 ## Completed
+- [x] 2026-04-30 20:32 Added `cash_on_delivery` as the default visible checkout payment method, hid the legacy wallet/card methods from the customer-facing checkout and dashboard payment settings UI, and preserved the hidden payment configurations in the admin save flow.
 - [x] 2026-04-30 02:05 Enforced reliable responsive wrapping, flex boundaries, and text truncation across the checkout and cart pages, ensuring that long payment options and delivery forms do not break the container on smaller screens.
 - [x] 2026-04-30 02:11 Reworked the storefront checkout page around a denser mobile-friendly delivery/payment layout, added trust/support blocks plus customer comments, and kept the rest of the marketing UI unchanged.
 - [x] 2026-04-30 02:11 Fixed the shared toast styling so checkout/location/manual-payment messages render with readable text and proper theme-backed surfaces instead of the earlier transparent look.

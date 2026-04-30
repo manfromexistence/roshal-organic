@@ -84,6 +84,16 @@ function normalizeSourceKeysInput(keys: string[], fallbackKey: string) {
 function getRoshalPaymentWorkflowState(
   option: Pick<RoshalPaymentOption, "key" | "mode" | "requiresProof">,
 ) {
+  if (option.key === "cash_on_delivery") {
+    return {
+      requiresManualReview: false,
+      status: "pending",
+      paymentStatus: "pending",
+      trackingNote:
+        "Cash on delivery selected. Please keep the order amount ready at delivery.",
+    };
+  }
+
   const liveGatewayAvailable =
     option.mode === "gateway" && hasRoshalGatewayIntegration(option.key);
 
@@ -291,7 +301,14 @@ const roshalCheckoutRequestSchema = z.object({
     .or(z.literal(""))
     .or(z.null())
     .transform((value) => value || undefined),
-  paymentMethod: z.enum(["card", "bkash", "nagad", "rocket", "upay"]),
+  paymentMethod: z.enum([
+    "cash_on_delivery",
+    "card",
+    "bkash",
+    "nagad",
+    "rocket",
+    "upay",
+  ]),
   paymentReference: z
     .string()
     .trim()

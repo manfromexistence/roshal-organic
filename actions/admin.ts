@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireRoshalAdmin, requireRoshalUser } from "@/lib/store-auth";
+import { getRoshalPaymentSettings } from "@/lib/store-content";
 import { safeJsonParse } from "@/lib/store-format";
 import {
   createValidatedRoshalOrder,
@@ -58,29 +59,68 @@ function buildPaymentOption(
   formData: FormData,
   key: RoshalPaymentMethod,
   sortOrder: number,
+  fallback?: {
+    enabled: boolean;
+    mode: "manual" | "gateway";
+    label: { bn: string; en: string };
+    merchantLabel: { bn: string; en: string };
+    accountType: string;
+    accountNumber: string;
+    instructions: { bn: string; en: string };
+    guideImageUrl: string;
+    requiresProof: boolean;
+    sortOrder: number;
+  },
 ) {
   return {
     key,
-    enabled: boolValue(formData, `${key}Enabled`),
-    mode:
-      textValue(formData, `${key}Mode`) === "gateway" ? "gateway" : "manual",
+    enabled: formData.has(`${key}Enabled`)
+      ? boolValue(formData, `${key}Enabled`)
+      : (fallback?.enabled ?? false),
+    mode: formData.has(`${key}Mode`)
+      ? textValue(formData, `${key}Mode`) === "gateway"
+        ? "gateway"
+        : "manual"
+      : (fallback?.mode ?? "manual"),
     label: {
-      bn: textValue(formData, `${key}LabelBn`),
-      en: textValue(formData, `${key}LabelEn`),
+      bn: formData.has(`${key}LabelBn`)
+        ? textValue(formData, `${key}LabelBn`)
+        : (fallback?.label.bn ?? ""),
+      en: formData.has(`${key}LabelEn`)
+        ? textValue(formData, `${key}LabelEn`)
+        : (fallback?.label.en ?? ""),
     },
     merchantLabel: {
-      bn: textValue(formData, `${key}MerchantLabelBn`),
-      en: textValue(formData, `${key}MerchantLabelEn`),
+      bn: formData.has(`${key}MerchantLabelBn`)
+        ? textValue(formData, `${key}MerchantLabelBn`)
+        : (fallback?.merchantLabel.bn ?? ""),
+      en: formData.has(`${key}MerchantLabelEn`)
+        ? textValue(formData, `${key}MerchantLabelEn`)
+        : (fallback?.merchantLabel.en ?? ""),
     },
-    accountType: textValue(formData, `${key}AccountType`) || "mobile-wallet",
-    accountNumber: textValue(formData, `${key}AccountNumber`),
+    accountType: formData.has(`${key}AccountType`)
+      ? textValue(formData, `${key}AccountType`) || "mobile-wallet"
+      : (fallback?.accountType ?? "mobile-wallet"),
+    accountNumber: formData.has(`${key}AccountNumber`)
+      ? textValue(formData, `${key}AccountNumber`)
+      : (fallback?.accountNumber ?? ""),
     instructions: {
-      bn: textValue(formData, `${key}InstructionsBn`),
-      en: textValue(formData, `${key}InstructionsEn`),
+      bn: formData.has(`${key}InstructionsBn`)
+        ? textValue(formData, `${key}InstructionsBn`)
+        : (fallback?.instructions.bn ?? ""),
+      en: formData.has(`${key}InstructionsEn`)
+        ? textValue(formData, `${key}InstructionsEn`)
+        : (fallback?.instructions.en ?? ""),
     },
-    guideImageUrl: textValue(formData, `${key}GuideImageUrl`),
-    requiresProof: boolValue(formData, `${key}RequiresProof`),
-    sortOrder: numberValue(formData, `${key}SortOrder`) || sortOrder,
+    guideImageUrl: formData.has(`${key}GuideImageUrl`)
+      ? textValue(formData, `${key}GuideImageUrl`)
+      : (fallback?.guideImageUrl ?? ""),
+    requiresProof: formData.has(`${key}RequiresProof`)
+      ? boolValue(formData, `${key}RequiresProof`)
+      : (fallback?.requiresProof ?? false),
+    sortOrder: formData.has(`${key}SortOrder`)
+      ? numberValue(formData, `${key}SortOrder`) || sortOrder
+      : (fallback?.sortOrder ?? sortOrder),
   } as const;
 }
 
@@ -132,19 +172,32 @@ export async function saveRoshalSiteSettings(formData: FormData) {
 
 export async function saveRoshalPaymentSettings(formData: FormData) {
   await requireRoshalAdmin();
+  const existingSettings = await getRoshalPaymentSettings();
+  const cashOnDeliveryOption =
+    existingSettings.options.find(
+      (option) => option.key === "cash_on_delivery",
+    ) || existingSettings.options[0];
+  const hiddenLegacyOptions = existingSettings.options.filter(
+    (option) => option.key !== "cash_on_delivery",
+  );
 
   await upsertRoshalPaymentSettings({
     id: textValue(formData, "id") || undefined,
-    manualReviewNoticeBn: textValue(formData, "manualReviewNoticeBn"),
-    manualReviewNoticeEn: textValue(formData, "manualReviewNoticeEn"),
-    supportMessageBn: textValue(formData, "supportMessageBn"),
-    supportMessageEn: textValue(formData, "supportMessageEn"),
+    manualReviewNoticeBn: formData.has("manualReviewNoticeBn")
+      ? textValue(formData, "manualReviewNoticeBn")
+      : existingSettings.manualReviewNotice.bn,
+    manualReviewNoticeEn: formData.has("manualReviewNoticeEn")
+      ? textValue(formData, "manualReviewNoticeEn")
+      : existingSettings.manualReviewNotice.en,
+    supportMessageBn: formData.has("supportMessageBn")
+      ? textValue(formData, "supportMessageBn")
+      : existingSettings.supportMessage.bn,
+    supportMessageEn: formData.has("supportMessageEn")
+      ? textValue(formData, "supportMessageEn")
+      : existingSettings.supportMessage.en,
     options: [
-      buildPaymentOption(formData, "card", 0),
-      buildPaymentOption(formData, "bkash", 1),
-      buildPaymentOption(formData, "nagad", 2),
-      buildPaymentOption(formData, "rocket", 3),
-      buildPaymentOption(formData, "upay", 4),
+      buildPaymentOption(formData, "cash_on_delivery", 0, cashOnDeliveryOption),
+      ...hiddenLegacyOptions,
     ],
   });
 
@@ -523,7 +576,8 @@ export async function submitRoshalCheckoutOrder(formData: FormData) {
     postalCode: optionalTextValue(formData, "postalCode") || undefined,
     notes: optionalTextValue(formData, "notes") || undefined,
     paymentMethod:
-      (textValue(formData, "paymentMethod") as RoshalPaymentMethod) || "bkash",
+      (textValue(formData, "paymentMethod") as RoshalPaymentMethod) ||
+      "cash_on_delivery",
     paymentReference:
       optionalTextValue(formData, "paymentReference") || undefined,
     paymentSender: optionalTextValue(formData, "paymentSender") || undefined,

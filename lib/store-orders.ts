@@ -72,6 +72,8 @@ export function getRoshalPaymentMethodLabel(
   method: RoshalPaymentMethod,
 ): LocalizedValue {
   switch (method) {
+    case "cash_on_delivery":
+      return localizedValue("ক্যাশ অন ডেলিভারি", "Cash on delivery");
     case "card":
       return localizedValue("কার্ড", "Card");
     case "nagad":
@@ -121,6 +123,86 @@ export function getRoshalOrderTrackingSteps(
         ),
         completed: true,
         highlighted: true,
+      },
+    ];
+  }
+
+  if (order.paymentMethod === "cash_on_delivery") {
+    return [
+      {
+        key: "placed",
+        label: localizedValue(
+          "à¦…à¦°à§à¦¡à¦¾à¦° à¦•à¦°à¦¾ à¦¹à¦¯à¦¼à§‡à¦›à§‡",
+          "Order placed",
+        ),
+        description: localizedValue(
+          "à¦†à¦®à¦°à¦¾ à¦†à¦ªà¦¨à¦¾à¦° à¦…à¦°à§à¦¡à¦¾à¦°à¦Ÿà¦¿ à¦—à§à¦°à¦¹à¦£ à¦•à¦°à§‡à¦›à¦¿à¥¤",
+          "We have received your order.",
+        ),
+        completed: true,
+      },
+      {
+        key: "payment",
+        label: localizedValue("ক্যাশ অন ডেলিভারি", "Cash on delivery"),
+        description: localizedValue(
+          order.paymentStatus === "paid"
+            ? "ডেলিভারির সময় ক্যাশ পেমেন্ট সংগ্রহ করা হয়েছে।"
+            : "অর্ডার পৌঁছালে ডেলিভারি ম্যানকে ক্যাশে পেমেন্ট করবেন।",
+          order.paymentStatus === "paid"
+            ? "Cash on delivery payment has been collected."
+            : "Please pay in cash when the order reaches you.",
+        ),
+        completed: order.paymentStatus === "paid",
+        highlighted:
+          order.paymentStatus !== "paid" && order.status !== "cancelled",
+      },
+      {
+        key: "confirmed",
+        label: localizedValue(
+          "à¦…à¦°à§à¦¡à¦¾à¦° à¦¨à¦¿à¦¶à§à¦šà¦¿à¦¤",
+          "Order confirmed",
+        ),
+        description: localizedValue(
+          "à¦…à§à¦¯à¦¾à¦¡à¦®à¦¿à¦¨ à¦…à¦°à§à¦¡à¦¾à¦°à¦Ÿà¦¿ à¦ªà§à¦°à¦¸à§‡à¦¸à§‡à¦° à¦œà¦¨à§à¦¯ à¦…à¦¨à§à¦®à§‹à¦¦à¦¨ à¦¦à¦¿à¦¯à¦¼à§‡à¦›à§‡à¥¤",
+          "The admin has approved the order for processing.",
+        ),
+        completed: isOrderAtLeast(order, "confirmed"),
+        highlighted: order.status === "confirmed",
+      },
+      {
+        key: "processing",
+        label: localizedValue("à¦ªà§à¦°à¦¸à§‡à¦¸à¦¿à¦‚", "Processing"),
+        description: localizedValue(
+          "à¦†à¦ªà¦¨à¦¾à¦° à¦…à¦°à§à¦¡à¦¾à¦° à¦ªà§à¦°à¦¸à§à¦¤à§à¦¤ à¦“ à¦ªà§à¦¯à¦¾à¦• à¦•à¦°à¦¾ à¦¹à¦šà§à¦›à§‡à¥¤",
+          "Your order is being prepared and packed for delivery.",
+        ),
+        completed: isOrderAtLeast(order, "processing"),
+        highlighted: order.status === "processing",
+      },
+      {
+        key: "shipped",
+        label: localizedValue(
+          "à¦ªà¦¾à¦ à¦¾à¦¨à§‹ à¦¹à¦¯à¦¼à§‡à¦›à§‡",
+          "Shipped",
+        ),
+        description: localizedValue(
+          "à¦…à¦°à§à¦¡à¦¾à¦°à¦Ÿà¦¿ à¦¡à§‡à¦²à¦¿à¦­à¦¾à¦°à¦¿à¦° à¦œà¦¨à§à¦¯ à¦ªà¦¾à¦ à¦¾à¦¨à§‹ à¦¹à¦¯à¦¼à§‡à¦›à§‡à¥¤",
+          "The order has been dispatched for delivery.",
+        ),
+        completed: isOrderAtLeast(order, "shipped"),
+        highlighted: order.status === "shipped",
+      },
+      {
+        key: "delivered",
+        label: localizedValue(
+          "à¦¡à§‡à¦²à¦¿à¦­à¦¾à¦° à¦¹à¦¯à¦¼à§‡à¦›à§‡",
+          "Delivered",
+        ),
+        description: localizedValue(
+          "à¦…à¦°à§à¦¡à¦¾à¦°à¦Ÿà¦¿ à¦¸à¦«à¦²à¦­à¦¾à¦¬à§‡ à¦¡à§‡à¦²à¦¿à¦­à¦¾à¦° à¦¹à¦¯à¦¼à§‡à¦›à§‡à¥¤",
+          "The order has been delivered successfully.",
+        ),
+        completed: order.status === "delivered",
       },
     ];
   }

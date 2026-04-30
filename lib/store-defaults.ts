@@ -1066,6 +1066,22 @@ export const defaultRoshalPaymentSettings: RoshalPaymentSettings = {
   ),
   options: [
     {
+      key: "cash_on_delivery",
+      enabled: true,
+      mode: "manual",
+      label: localizedValue("ক্যাশ অন ডেলিভারি", "Cash on delivery"),
+      merchantLabel: localizedValue("ডেলিভারির সময় পেমেন্ট", "Pay on delivery"),
+      accountType: "cash-on-delivery",
+      accountNumber: "",
+      instructions: localizedValue(
+        "অর্ডার রিসিভ করার সময় ডেলিভারি ম্যানকে ক্যাশে পেমেন্ট করুন।",
+        "Pay the delivery agent in cash when the order arrives.",
+      ),
+      guideImageUrl: "",
+      requiresProof: false,
+      sortOrder: 0,
+    },
+    {
       key: "card",
       enabled: true,
       mode: "gateway",
@@ -1079,7 +1095,7 @@ export const defaultRoshalPaymentSettings: RoshalPaymentSettings = {
       ),
       guideImageUrl: "",
       requiresProof: false,
-      sortOrder: 0,
+      sortOrder: 1,
     },
     {
       key: "bkash",
@@ -1098,7 +1114,7 @@ export const defaultRoshalPaymentSettings: RoshalPaymentSettings = {
       ),
       guideImageUrl: "",
       requiresProof: true,
-      sortOrder: 1,
+      sortOrder: 2,
     },
     {
       key: "nagad",
@@ -1117,7 +1133,7 @@ export const defaultRoshalPaymentSettings: RoshalPaymentSettings = {
       ),
       guideImageUrl: "",
       requiresProof: true,
-      sortOrder: 2,
+      sortOrder: 3,
     },
     {
       key: "rocket",
@@ -1136,7 +1152,7 @@ export const defaultRoshalPaymentSettings: RoshalPaymentSettings = {
       ),
       guideImageUrl: "",
       requiresProof: true,
-      sortOrder: 3,
+      sortOrder: 4,
     },
     {
       key: "upay",

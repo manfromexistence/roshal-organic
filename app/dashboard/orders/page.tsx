@@ -13,6 +13,7 @@ import {
   getRoshalPaymentMethodLabel,
   getRoshalPaymentStatusLabel,
 } from "@/lib/store-orders";
+import type { RoshalPaymentMethod } from "@/lib/store-types";
 
 export default async function DashboardOrdersPage() {
   const [locale, orders] = await Promise.all([
@@ -44,18 +45,19 @@ export default async function DashboardOrdersPage() {
     label: getLocalizedValue(locale, getRoshalOrderStatusLabel(status)),
     value: orders.filter((order) => order.status === status).length,
   }));
-  const paymentMethodData = ["bkash", "nagad", "rocket", "upay", "card"].map(
-    (method) => ({
-      key: method,
-      label: getLocalizedValue(
-        locale,
-        getRoshalPaymentMethodLabel(
-          method as "bkash" | "nagad" | "rocket" | "upay" | "card",
-        ),
-      ),
-      value: orders.filter((order) => order.paymentMethod === method).length,
-    }),
-  );
+  const paymentMethodOrder: RoshalPaymentMethod[] = [
+    "cash_on_delivery",
+    "bkash",
+    "nagad",
+    "rocket",
+    "upay",
+    "card",
+  ];
+  const paymentMethodData = paymentMethodOrder.map((method) => ({
+    key: method,
+    label: getLocalizedValue(locale, getRoshalPaymentMethodLabel(method)),
+    value: orders.filter((order) => order.paymentMethod === method).length,
+  }));
   const paymentStatusData = ["pending", "under-review", "paid", "failed"].map(
     (status) => ({
       key: status,

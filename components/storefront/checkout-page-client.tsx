@@ -189,11 +189,14 @@ function getDefaultCheckoutPaymentMethod(
 
   return (
     sortedOptions.find(
+      (option) => option.enabled && option.key === "cash_on_delivery",
+    )?.key ||
+    sortedOptions.find(
       (option) =>
         option.enabled && (option.mode === "manual" || option.requiresProof),
     )?.key ||
     sortedOptions.find((option) => option.enabled)?.key ||
-    "bkash"
+    "cash_on_delivery"
   );
 }
 
@@ -201,6 +204,10 @@ function getCheckoutPaymentModeLabel(
   locale: RoshalLocale,
   option: RoshalPaymentOption,
 ) {
+  if (option.key === "cash_on_delivery") {
+    return locale === "bn" ? "ডেলিভারির সময় পেমেন্ট" : "Pay on delivery";
+  }
+
   if (option.mode === "manual" || option.requiresProof) {
     return locale === "bn" ? "অ্যাডমিন ভেরিফাই" : "Admin verify";
   }
@@ -213,6 +220,12 @@ function getCheckoutPaymentSummary(
   option: RoshalPaymentOption,
   gatewayActive: boolean,
 ) {
+  if (option.key === "cash_on_delivery") {
+    return locale === "bn"
+      ? "অর্ডার পৌঁছালে ডেলিভারি ম্যানকে ক্যাশে পেমেন্ট করবেন।"
+      : "Pay the delivery agent in cash when the order reaches you.";
+  }
+
   if (option.key === "bkash") {
     return locale === "bn"
       ? "বিকাশে পেমেন্ট করুন, ট্রানজ্যাকশন আইডি ও স্ক্রিনশট দিন, তারপর অ্যাডমিন টিম ভেরিফাই করে অর্ডার কনফার্ম করবে।"
@@ -284,7 +297,7 @@ export function CheckoutPageClient({
   const paymentOptions = useMemo(
     () =>
       paymentSettings.options
-        .filter((option) => option.enabled)
+        .filter((option) => option.enabled && option.key === "cash_on_delivery")
         .sort((left, right) => left.sortOrder - right.sortOrder),
     [paymentSettings.options],
   );
@@ -385,6 +398,9 @@ export function CheckoutPageClient({
   );
   const shippingFee = deliveryEstimate.fee;
   const total = subtotal + shippingFee;
+  const showLegacyPaymentHelp = paymentOptions.some(
+    (option) => option.key !== "cash_on_delivery",
+  );
   const trustHighlights = [
     {
       key: "manual-review",
@@ -645,7 +661,7 @@ export function CheckoutPageClient({
               <p className="max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
                 {locale === "bn"
                   ? "ঠিকানা, যোগাযোগ, পেমেন্ট অপশন, এবং প্রয়োজনে স্ক্রিনশট প্রুফ দিয়ে অর্ডার নিশ্চিত করুন।"
-                  : "Confirm the order with your address, contact details, payment option, and proof screenshot when required."}
+                  : "Confirm the order with your address, contact details, and cash on delivery."}
               </p>
             </div>
 
@@ -662,32 +678,34 @@ export function CheckoutPageClient({
             </div>
           </div>
 
-          <div className="grid gap-3 md:grid-cols-3">
-            {trustHighlights.map((highlight) => {
-              const Icon = highlight.icon;
+          {showLegacyPaymentHelp ? (
+            <div className="grid gap-3 md:grid-cols-3">
+              {trustHighlights.map((highlight) => {
+                const Icon = highlight.icon;
 
-              return (
-                <Card
-                  key={highlight.key}
-                  className="rounded-md border-border/70 bg-card/95 shadow-sm"
-                >
-                  <CardContent className="flex h-full items-start gap-3 p-4">
-                    <div className="shrink-0 rounded-sm bg-primary/10 p-2 text-primary">
-                      <Icon className="size-4" />
-                    </div>
-                    <div className="min-w-0 space-y-1">
-                      <p className="text-sm font-semibold text-foreground">
-                        {highlight.title}
-                      </p>
-                      <p className="text-xs leading-6 text-muted-foreground">
-                        {highlight.description}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
+                return (
+                  <Card
+                    key={highlight.key}
+                    className="rounded-md border-border/70 bg-card/95 shadow-sm"
+                  >
+                    <CardContent className="flex h-full items-start gap-3 p-4">
+                      <div className="shrink-0 rounded-sm bg-primary/10 p-2 text-primary">
+                        <Icon className="size-4" />
+                      </div>
+                      <div className="min-w-0 space-y-1">
+                        <p className="text-sm font-semibold text-foreground">
+                          {highlight.title}
+                        </p>
+                        <p className="text-xs leading-6 text-muted-foreground">
+                          {highlight.description}
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          ) : null}
         </div>
       </div>
 
@@ -840,70 +858,72 @@ export function CheckoutPageClient({
             </CardFooter>
           </Card>
 
-          <Card className="rounded-md border-border/70 shadow-sm">
-            <CardHeader className="space-y-2">
-              <CardTitle className="text-2xl">
-                {locale === "bn" ? "সহায়তা ও সাপোর্ট" : "Help and support"}
-              </CardTitle>
-              <p className="text-sm leading-7 text-muted-foreground">
-                {locale === "bn"
-                  ? `${siteSupport.brandName} অর্ডার সাবমিটের আগে যেকোনো জিজ্ঞাসায় সাহায্য করতে প্রস্তুত।`
-                  : `${siteSupport.brandName} is ready to help before you submit the order.`}
-              </p>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="rounded-md border border-border/60 bg-muted/20 p-4">
-                <p className="text-sm font-semibold text-foreground">
-                  {locale === "bn" ? "সাপোর্ট নোট" : "Support note"}
+          {showLegacyPaymentHelp ? (
+            <Card className="rounded-md border-border/70 shadow-sm">
+              <CardHeader className="space-y-2">
+                <CardTitle className="text-2xl">
+                  {locale === "bn" ? "সহায়তা ও সাপোর্ট" : "Help and support"}
+                </CardTitle>
+                <p className="text-sm leading-7 text-muted-foreground">
+                  {locale === "bn"
+                    ? `${siteSupport.brandName} অর্ডার সাবমিটের আগে যেকোনো জিজ্ঞাসায় সাহায্য করতে প্রস্তুত।`
+                    : `${siteSupport.brandName} is ready to help before you submit the order.`}
                 </p>
-                <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                  {getLocalizedValue(locale, siteSupport.supportMessage)}
-                </p>
-              </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="rounded-md border border-border/60 bg-muted/20 p-4">
+                  <p className="text-sm font-semibold text-foreground">
+                    {locale === "bn" ? "সাপোর্ট নোট" : "Support note"}
+                  </p>
+                  <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                    {getLocalizedValue(locale, siteSupport.supportMessage)}
+                  </p>
+                </div>
 
-              <div className="grid gap-3 grid-cols-1">
-                {supportActions.map((action) => {
-                  const Icon = action.icon;
+                <div className="grid gap-3 grid-cols-1">
+                  {supportActions.map((action) => {
+                    const Icon = action.icon;
 
-                  return (
-                    <a
-                      key={action.key}
-                      href={action.href}
-                      className="flex items-center gap-3 rounded-sm border border-border/60 bg-background px-3 py-3 transition-colors hover:bg-muted/30"
-                    >
-                      <div className="shrink-0 rounded-sm bg-primary/10 p-2 text-primary">
-                        <Icon className="size-4" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
-                          {action.label}
-                        </p>
-                        <p className="truncate text-sm font-medium text-foreground">
-                          {action.value}
-                        </p>
-                      </div>
-                    </a>
-                  );
-                })}
-              </div>
+                    return (
+                      <a
+                        key={action.key}
+                        href={action.href}
+                        className="flex items-center gap-3 rounded-sm border border-border/60 bg-background px-3 py-3 transition-colors hover:bg-muted/30"
+                      >
+                        <div className="shrink-0 rounded-sm bg-primary/10 p-2 text-primary">
+                          <Icon className="size-4" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                            {action.label}
+                          </p>
+                          <p className="truncate text-sm font-medium text-foreground">
+                            {action.value}
+                          </p>
+                        </div>
+                      </a>
+                    );
+                  })}
+                </div>
 
-              <div className="rounded-sm border border-border/60 bg-background p-4">
-                <div className="flex items-start gap-3">
-                  <div className="shrink-0 rounded-sm bg-primary/10 p-2 text-primary">
-                    <MapPin className="size-4" />
-                  </div>
-                  <div className="min-w-0 space-y-1">
-                    <p className="text-sm font-semibold text-foreground">
-                      {locale === "bn" ? "অফিস ঠিকানা" : "Office address"}
-                    </p>
-                    <p className="text-sm leading-6 text-muted-foreground">
-                      {getLocalizedValue(locale, siteSupport.address)}
-                    </p>
+                <div className="rounded-sm border border-border/60 bg-background p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="shrink-0 rounded-sm bg-primary/10 p-2 text-primary">
+                      <MapPin className="size-4" />
+                    </div>
+                    <div className="min-w-0 space-y-1">
+                      <p className="text-sm font-semibold text-foreground">
+                        {locale === "bn" ? "অফিস ঠিকানা" : "Office address"}
+                      </p>
+                      <p className="text-sm leading-6 text-muted-foreground">
+                        {getLocalizedValue(locale, siteSupport.address)}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          ) : null}
         </div>
 
         {/* Forms - Second on mobile, first on desktop */}
@@ -1083,7 +1103,7 @@ export function CheckoutPageClient({
               <p className="text-sm leading-7 text-muted-foreground">
                 {locale === "bn"
                   ? "যে পেমেন্ট অপশনটি সুবিধাজনক সেটি বেছে নিন এবং প্রয়োজন হলে প্রুফ আপলোড করুন।"
-                  : "Choose the payment option that fits best and upload proof when it is required."}
+                  : "Cash on delivery is selected by default. Pay when the order reaches you."}
               </p>
             </CardHeader>
 
@@ -1178,49 +1198,54 @@ export function CheckoutPageClient({
                         </div>
                       ) : null}
 
-                      <div className="grid gap-3 grid-cols-1 md:grid-cols-2">
-                        <div className="rounded-sm border border-border/60 bg-background p-4">
-                          <div className="flex items-start gap-3">
-                            <div className="shrink-0 rounded-sm bg-primary/10 p-2 text-primary">
-                              <ShieldCheck className="size-4" />
+                      {selectedOption.key !== "cash_on_delivery" ? (
+                        <div className="grid gap-3 grid-cols-1 md:grid-cols-2">
+                          <div className="rounded-sm border border-border/60 bg-background p-4">
+                            <div className="flex items-start gap-3">
+                              <div className="shrink-0 rounded-sm bg-primary/10 p-2 text-primary">
+                                <ShieldCheck className="size-4" />
+                              </div>
+                              <div className="min-w-0 space-y-1">
+                                <p className="text-sm font-semibold text-foreground">
+                                  {locale === "bn"
+                                    ? "ম্যানুয়াল ভেরিফিকেশন"
+                                    : "Manual verification"}
+                                </p>
+                                <p className="text-xs leading-6 text-muted-foreground">
+                                  {getLocalizedValue(
+                                    locale,
+                                    siteSupport.manualReviewNotice,
+                                  )}
+                                </p>
+                              </div>
                             </div>
-                            <div className="min-w-0 space-y-1">
-                              <p className="text-sm font-semibold text-foreground">
-                                {locale === "bn"
-                                  ? "ম্যানুয়াল ভেরিফিকেশন"
-                                  : "Manual verification"}
-                              </p>
-                              <p className="text-xs leading-6 text-muted-foreground">
-                                {getLocalizedValue(
-                                  locale,
-                                  siteSupport.manualReviewNotice,
-                                )}
-                              </p>
+                          </div>
+                          <div className="rounded-sm border border-border/60 bg-background p-4">
+                            <div className="flex items-start gap-3">
+                              <div className="shrink-0 rounded-sm bg-primary/10 p-2 text-primary">
+                                <Clock3 className="size-4" />
+                              </div>
+                              <div className="min-w-0 space-y-1">
+                                <p className="text-sm font-semibold text-foreground">
+                                  {locale === "bn"
+                                    ? "সাপোর্ট নোট"
+                                    : "Support note"}
+                                </p>
+                                <p className="text-xs leading-6 text-muted-foreground">
+                                  {getLocalizedValue(
+                                    locale,
+                                    siteSupport.supportMessage,
+                                  )}
+                                </p>
+                              </div>
                             </div>
                           </div>
                         </div>
-                        <div className="rounded-sm border border-border/60 bg-background p-4">
-                          <div className="flex items-start gap-3">
-                            <div className="shrink-0 rounded-sm bg-primary/10 p-2 text-primary">
-                              <Clock3 className="size-4" />
-                            </div>
-                            <div className="min-w-0 space-y-1">
-                              <p className="text-sm font-semibold text-foreground">
-                                {locale === "bn" ? "সাপোর্ট নোট" : "Support note"}
-                              </p>
-                              <p className="text-xs leading-6 text-muted-foreground">
-                                {getLocalizedValue(
-                                  locale,
-                                  siteSupport.supportMessage,
-                                )}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                      ) : null}
 
                       {selectedOption.mode === "gateway" &&
-                      !gatewayActiveForSelectedOption ? (
+                      !gatewayActiveForSelectedOption &&
+                      selectedOption.key !== "cash_on_delivery" ? (
                         <div className="rounded-sm border border-border/60 bg-background p-4 text-sm leading-7 text-muted-foreground">
                           {locale === "bn"
                             ? "অর্ডার রিকোয়েস্ট সাবমিট করার পর টিম পেমেন্ট সম্পন্ন করার জন্য আপনার সাথে যোগাযোগ করবে।"
@@ -1229,7 +1254,8 @@ export function CheckoutPageClient({
                       ) : null}
                     </div>
 
-                    {selectedOption.guideImageUrl ? (
+                    {selectedOption.key !== "cash_on_delivery" &&
+                    selectedOption.guideImageUrl ? (
                       <div className="min-w-0 space-y-2">
                         <p className="text-sm font-medium text-foreground">
                           {locale === "bn" ? "পেমেন্ট গাইড" : "Payment guide"}
@@ -1308,7 +1334,7 @@ export function CheckoutPageClient({
                   <p className="text-sm leading-7 text-muted-foreground">
                     {locale === "bn"
                       ? "পেমেন্ট প্রুফ জমা দিলে অ্যাডমিন টিম যাচাই করে অর্ডারের পরবর্তী আপডেট দেবে।"
-                      : "After you submit the payment proof, the admin team will verify it and share the next order update."}
+                      : "The delivery team will contact you after the order is confirmed."}
                   </p>
                 </div>
               ) : null}
