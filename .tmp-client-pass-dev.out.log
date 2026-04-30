@@ -682,3 +682,13 @@
  GET /api/auth/get-session 200 in 118ms (next.js: 11ms, application-code: 106ms)
  GET / 200 in 424ms (next.js: 3ms, application-code: 421ms)
  GET /api/auth/get-session 200 in 109ms (next.js: 10ms, application-code: 99ms)
+ GET /products/organic-ghee 200 in 1044ms (next.js: 312ms, application-code: 733ms)
+ GET / 200 in 711ms (next.js: 28ms, application-code: 683ms)
+ GET / 200 in 12ms (next.js: 4ms, application-code: 8ms)
+ GET / 200 in 485ms (next.js: 4ms, application-code: 481ms)
+○ Compiling /cart ...
+ GET /cart 200 in 4.8s (next.js: 3.5s, application-code: 1281ms)
+ GET /checkout 200 in 771ms (next.js: 11ms, proxy.ts: 314ms, application-code: 447ms)
+ GET / 200 in 536ms (next.js: 6ms, application-code: 530ms)
+ GET /api/auth/get-session 200 in 1286ms (next.js: 193ms, application-code: 1093ms)
+ GET /api/auth/get-session 200 in 132ms (next.js: 6ms, application-code: 126ms)

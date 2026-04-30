@@ -107,3 +107,11 @@ Fb: www.facebook.com/roshalorganic"
 2. Home Delivery naki Office delivery ta Redial system a jekono 1 ta select kora jabe."				
 
 ----------------------------------------------------------------------------------------------------------------------
+
+1. footer primary background
+2. dashboard sidebar primary background
+3. cards height smaller but don't change too much like image the image size a little smaller and the cards height overral smaller in all products cards
+4. payment checkout page
+5. dashboard image and frontend image upload not working
+
+----------------------------------------------------------------------------------------------------------------------
