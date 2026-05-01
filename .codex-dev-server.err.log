@@ -854,3 +854,4 @@ Debug info:
 - CJS module can't be async. 
 [browser] Image with src "/deal-3.jpg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
 Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+error: script "dev" exited with code 255

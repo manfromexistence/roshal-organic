@@ -35,9 +35,10 @@ import {
 } from "@/lib/store-delivery";
 import { formatBdt } from "@/lib/store-format";
 import { getLocalizedValue } from "@/lib/store-locale";
-import { getRoshalPaymentMethodLabel } from "@/lib/store-orders";
+import { isRoshalManualPaymentReferenceRequired } from "@/lib/store-payment-methods";
 import { isBangladeshPhoneComplete } from "@/lib/store-phone";
 import type {
+  RoshalDeliverySettings,
   RoshalDeliveryZone,
   RoshalLocale,
   RoshalPaymentGatewaySummary,
@@ -64,8 +65,6 @@ function getDefaultCheckoutPaymentMethod(
     "cash_on_delivery"
   );
 }
-
-const checkoutWalletKeys: RoshalPaymentMethod[] = ["bkash", "nagad"];
 
 const checkoutPaymentLogos: Partial<Record<RoshalPaymentMethod, string>> = {
   bkash: "/logos/bkash-com.png",
@@ -130,6 +129,7 @@ function sortCheckoutPaymentOptions(options: RoshalPaymentSettings["options"]) {
 }
 
 export function CheckoutPageClient({
+  deliverySettings,
   deliveryZones,
   gatewaySummary,
   locale,
@@ -137,6 +137,7 @@ export function CheckoutPageClient({
   products,
   user,
 }: {
+  deliverySettings: RoshalDeliverySettings;
   deliveryZones: RoshalDeliveryZone[];
   gatewaySummary: RoshalPaymentGatewaySummary;
   locale: RoshalLocale;
@@ -241,7 +242,7 @@ export function CheckoutPageClient({
     paymentOptions.find((option) => option.key === paymentMethod) ||
     paymentOptions[0];
   const selectedWalletNeedsVerification = Boolean(
-    selectedOption && checkoutWalletKeys.includes(selectedOption.key),
+    selectedOption && isRoshalManualPaymentReferenceRequired(selectedOption),
   );
   const showSelectedPaymentDetails = Boolean(
     selectedOption &&
@@ -266,16 +267,20 @@ export function CheckoutPageClient({
         addressLine1: formState.addressLine1,
         addressLine2: formState.addressLine2,
         city: formState.city,
+        deliverySettings,
         postalCode: formState.postalCode,
         itemCount: visibleItems.length,
+        subtotal,
         zones: deliveryZones,
       }),
     [
+      deliverySettings,
       deliveryZones,
       formState.addressLine1,
       formState.addressLine2,
       formState.city,
       formState.postalCode,
+      subtotal,
       visibleItems.length,
     ],
   );
@@ -528,16 +533,24 @@ export function CheckoutPageClient({
                 {`${getRoshalDeliveryZoneLabel(locale, deliveryEstimate.zone)} • ${getLocalizedValue(locale, getRoshalDeliveryMatchLabel(deliveryEstimate.matchedBy))}`}
               </p>
 
+              {deliveryEstimate.freeDeliveryApplied ? (
+                <p className="text-xs font-medium text-primary">
+                  {locale === "bn"
+                    ? "Free delivery applied."
+                    : `Free delivery applied from ${formatBdt(
+                        deliveryEstimate.freeDeliveryThreshold,
+                        locale,
+                      )}.`}
+                </p>
+              ) : null}
+
               {selectedOption ? (
                 <div className="flex items-center justify-between gap-2 text-sm">
                   <span className="shrink-0 text-muted-foreground">
                     {locale === "bn" ? "পেমেন্ট পদ্ধতি" : "Payment"}
                   </span>
                   <span className="truncate text-right font-medium text-foreground">
-                    {getLocalizedValue(
-                      locale,
-                      getRoshalPaymentMethodLabel(selectedOption.key),
-                    )}
+                    {getLocalizedValue(locale, selectedOption.label)}
                   </span>
                 </div>
               ) : null}

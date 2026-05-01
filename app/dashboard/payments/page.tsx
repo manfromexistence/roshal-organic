@@ -4,8 +4,7 @@ import {
 } from "@/actions/admin";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { DashboardDeliveryZonesEditor } from "@/components/dashboard/delivery-zones-editor";
-import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
-import { DashboardFormSelect } from "@/components/dashboard/form-select";
+import { DashboardPaymentProvidersEditor } from "@/components/dashboard/payment-providers-editor";
 import {
   Accordion,
   AccordionContent,
@@ -13,34 +12,19 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import {
   getRoshalPaymentSettings,
   getRoshalSiteSettings,
 } from "@/lib/store-content";
 import { getRoshalLocale } from "@/lib/store-i18n";
-import type {
-  RoshalPaymentMethod,
-  RoshalPaymentOption,
-  RoshalSiteSettings,
-} from "@/lib/store-types";
-
-const paymentMethodOrder: RoshalPaymentMethod[] = [
-  "cash_on_delivery",
-  "card",
-  "bkash",
-  "nagad",
-];
+import type { RoshalSiteSettings } from "@/lib/store-types";
 
 const saveMessages: Record<string, string> = {
-  delivery: "Delivery charge settings saved successfully.",
-  payment: "Payment settings saved successfully.",
+  delivery: "Delivery settings saved successfully.",
+  payment: "Payment providers saved successfully.",
 };
 
 export default async function DashboardPaymentsPage({
@@ -58,22 +42,7 @@ export default async function DashboardPaymentsPage({
     requireRoshalAdmin(),
   ]);
 
-  const getOption = (key: RoshalPaymentMethod): RoshalPaymentOption =>
-    paymentSettings.options.find((option) => option.key === key) || {
-      key,
-      enabled: false,
-      mode: "manual",
-      label: { bn: key, en: key },
-      merchantLabel: { bn: "", en: "" },
-      accountType: "cash-on-delivery",
-      accountNumber: "",
-      instructions: { bn: "", en: "" },
-      guideImageUrl: "",
-      requiresProof: false,
-      sortOrder: paymentMethodOrder.indexOf(key),
-    };
-
-  const visibleOptions = paymentMethodOrder.map((key) => getOption(key));
+  const visibleOptions = paymentSettings.options;
   const enabledCount = visibleOptions.filter((option) => option.enabled).length;
   const gatewayModeCount = visibleOptions.filter(
     (option) => option.enabled && option.mode === "gateway",
@@ -84,6 +53,7 @@ export default async function DashboardPaymentsPage({
       option.mode === "manual" &&
       option.key !== "cash_on_delivery",
   ).length;
+
   return (
     <div className="min-w-0 space-y-6 px-6 pt-6 pb-4">
       <div className="min-w-0 space-y-2">
@@ -91,7 +61,9 @@ export default async function DashboardPaymentsPage({
           {locale === "bn" ? "পেমেন্ট সেটিংস" : "Payment settings"}
         </p>
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          {locale === "bn" ? "ক্যাশ অন ডেলিভারি সেটিংস" : "Payment settings"}
+          {locale === "bn"
+            ? "পেমেন্ট ও ডেলিভারি সেটিংস"
+            : "Payment and delivery settings"}
         </h1>
       </div>
 
@@ -106,19 +78,31 @@ export default async function DashboardPaymentsPage({
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <DashboardMetricCard
-          title={locale === "bn" ? "চালু অপশন" : "Enabled options"}
+          title={locale === "bn" ? "চালু পেমেন্ট" : "Enabled providers"}
           value={enabledCount}
-          hint={`${visibleOptions.length} supported methods`}
+          hint={
+            locale === "bn"
+              ? `${visibleOptions.length}টি কনফিগার করা অপশন`
+              : `${visibleOptions.length} configured providers`
+          }
         />
         <DashboardMetricCard
           title={locale === "bn" ? "গেটওয়ে মোড" : "Gateway modes"}
           value={gatewayModeCount}
-          hint="Card or provider-backed methods"
+          hint={
+            locale === "bn"
+              ? "কার্ড বা প্রোভাইডার-ব্যাকড পেমেন্ট"
+              : "Card or provider-backed methods"
+          }
         />
         <DashboardMetricCard
-          title={locale === "bn" ? "ম্যানুয়াল রিভিউ" : "Manual review"}
+          title={locale === "bn" ? "ম্যানুয়াল রিভিউ" : "Manual review"}
           value={manualReviewCount}
-          hint="Wallet methods checked by admin"
+          hint={
+            locale === "bn"
+              ? "অ্যাডমিন যাচাই করবে"
+              : "Manual payment methods checked by admin"
+          }
         />
       </div>
 
@@ -134,12 +118,12 @@ export default async function DashboardPaymentsPage({
         <Card className="border-none bg-card shadow-sm">
           <CardHeader className="space-y-1">
             <CardTitle>
-              {locale === "bn" ? "ডেলিভারি চার্জ" : "Delivery charges"}
+              {locale === "bn" ? "ডেলিভারি সেটিংস" : "Delivery settings"}
             </CardTitle>
             <p className="text-sm text-muted-foreground">
               {locale === "bn"
-                ? "Dhaka district হলে Inside Dhaka charge, অন্য district হলে Outside Dhaka charge checkout-এ বসবে।"
-                : "Dhaka district uses the Inside Dhaka fee; every other district uses the Outside Dhaka fee at checkout."}
+                ? "Dhaka district হলে Inside Dhaka fee, অন্য district হলে Outside Dhaka fee checkout-এ বসবে। Free delivery rule একই সেটিংস থেকে কাজ করবে।"
+                : "Dhaka district uses the Inside Dhaka fee; every other district uses the Outside Dhaka fee at checkout. Free delivery rules are applied from the same saved settings."}
             </p>
           </CardHeader>
           <CardContent>
@@ -147,8 +131,8 @@ export default async function DashboardPaymentsPage({
               <AccordionItem value="delivery-charges">
                 <AccordionTrigger>
                   {locale === "bn"
-                    ? "ডেলিভারি চার্জ এডিট করুন"
-                    : "Edit delivery charges"}
+                    ? "ডেলিভারি নিয়ম এডিট করুন"
+                    : "Edit delivery rules"}
                 </AccordionTrigger>
                 <AccordionContent
                   forceMount
@@ -157,12 +141,13 @@ export default async function DashboardPaymentsPage({
                   <DashboardDeliveryZonesEditor
                     locale={locale}
                     name="deliveryZonesJson"
+                    settings={siteSettings.deliverySettings}
                     value={siteSettings.deliveryZones}
                   />
                   <Button type="submit">
                     {locale === "bn"
-                      ? "ডেলিভারি চার্জ সেভ করুন"
-                      : "Save delivery charges"}
+                      ? "ডেলিভারি সেটিংস সেভ করুন"
+                      : "Save delivery settings"}
                   </Button>
                 </AccordionContent>
               </AccordionItem>
@@ -182,125 +167,27 @@ export default async function DashboardPaymentsPage({
         <Card className="border-none bg-card shadow-sm">
           <CardHeader>
             <CardTitle>
-              {locale === "bn" ? "পেমেন্ট মেথড" : "Payment methods"}
+              {locale === "bn" ? "পেমেন্ট প্রোভাইডার" : "Payment providers"}
             </CardTitle>
             <p className="text-sm text-muted-foreground">
               {locale === "bn"
-                ? "প্রতিটি মেথড খুলে প্রয়োজনীয় সেটিংস আপডেট করুন।"
-                : "Open only the method you need to update."}
+                ? "Checkout payment provider যোগ, remove, চালু/বন্ধ এবং reorder করুন।"
+                : "Add, remove, enable, and reorder checkout payment providers from one compact editor."}
             </p>
           </CardHeader>
           <CardContent>
-            <Accordion type="multiple" className="space-y-3">
-              {paymentMethodOrder.map((key) => {
-                const option = getOption(key);
-
-                return (
-                  <AccordionItem
-                    key={key}
-                    value={key}
-                    className="rounded-lg border border-border/70 bg-background/50 px-4"
-                  >
-                    <AccordionTrigger className="hover:no-underline">
-                      <span className="flex min-w-0 flex-1 flex-wrap items-center gap-3 text-left">
-                        <span className="font-semibold">
-                          {locale === "bn" ? option.label.bn : option.label.en}
-                        </span>
-                        <Badge
-                          variant={option.enabled ? "secondary" : "outline"}
-                        >
-                          {option.enabled ? "Enabled" : "Disabled"}
-                        </Badge>
-                        <Badge variant="outline">{option.mode}</Badge>
-                      </span>
-                    </AccordionTrigger>
-                    <AccordionContent
-                      forceMount
-                      className="space-y-5 data-[state=closed]:hidden"
-                    >
-                      <div className="grid min-w-0 gap-5 md:grid-cols-2">
-                        <DashboardFormCheckbox
-                          name={`${key}Enabled`}
-                          defaultChecked={option.enabled}
-                          label={locale === "bn" ? "চালু" : "Enabled"}
-                        />
-                        <Field
-                          name={`${key}LabelBn`}
-                          label="Label (BN)"
-                          defaultValue={option.label.bn}
-                        />
-                        <Field
-                          name={`${key}LabelEn`}
-                          label="Label (EN)"
-                          defaultValue={option.label.en}
-                        />
-                        <Field
-                          name={`${key}MerchantLabelBn`}
-                          label="Merchant Label (BN)"
-                          defaultValue={option.merchantLabel.bn}
-                        />
-                        <Field
-                          name={`${key}MerchantLabelEn`}
-                          label="Merchant Label (EN)"
-                          defaultValue={option.merchantLabel.en}
-                        />
-                        <Field
-                          name={`${key}AccountNumber`}
-                          label="Optional internal note"
-                          defaultValue={option.accountNumber}
-                        />
-                        <Field
-                          name={`${key}AccountType`}
-                          label="Account Type"
-                          defaultValue={option.accountType}
-                        />
-                        <div className="space-y-2">
-                          <Label>{locale === "bn" ? "মোড" : "Mode"}</Label>
-                          <DashboardFormSelect
-                            name={`${key}Mode`}
-                            defaultValue={option.mode}
-                            options={[
-                              { value: "manual", label: "manual" },
-                              { value: "gateway", label: "gateway" },
-                            ]}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label>
-                            {locale === "bn" ? "সোর্ট অর্ডার" : "Sort order"}
-                          </Label>
-                          <Input
-                            name={`${key}SortOrder`}
-                            type="number"
-                            defaultValue={String(option.sortOrder)}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="grid min-w-0 gap-5 md:grid-cols-2">
-                        <TextField
-                          name={`${key}InstructionsBn`}
-                          label="Checkout note (BN)"
-                          defaultValue={option.instructions.bn}
-                          rows={4}
-                        />
-                        <TextField
-                          name={`${key}InstructionsEn`}
-                          label="Checkout note (EN)"
-                          defaultValue={option.instructions.en}
-                          rows={4}
-                        />
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                );
-              })}
-            </Accordion>
+            <DashboardPaymentProvidersEditor
+              locale={locale}
+              name="paymentOptionsJson"
+              value={paymentSettings.options}
+            />
           </CardContent>
         </Card>
 
         <Button type="submit">
-          {locale === "bn" ? "পেমেন্ট সেটিংস সেভ করুন" : "Save payment settings"}
+          {locale === "bn"
+            ? "পেমেন্ট প্রোভাইডার সেভ করুন"
+            : "Save payment providers"}
         </Button>
       </form>
     </div>
@@ -363,41 +250,5 @@ function HiddenSiteSettingsInputs({
         value={siteSettings.primaryCtaLabel.en}
       />
     </>
-  );
-}
-
-function Field({
-  name,
-  label,
-  defaultValue,
-}: {
-  name: string;
-  label: string;
-  defaultValue: string;
-}) {
-  return (
-    <div className="space-y-2">
-      <Label htmlFor={name}>{label}</Label>
-      <Input id={name} name={name} defaultValue={defaultValue} />
-    </div>
-  );
-}
-
-function TextField({
-  name,
-  label,
-  defaultValue,
-  rows,
-}: {
-  name: string;
-  label: string;
-  defaultValue: string;
-  rows: number;
-}) {
-  return (
-    <div className="space-y-2">
-      <Label htmlFor={name}>{label}</Label>
-      <Textarea id={name} name={name} defaultValue={defaultValue} rows={rows} />
-    </div>
   );
 }

@@ -50,12 +50,32 @@ export interface TaxonomySubcategoryOption {
   count: number;
 }
 
+const CATEGORY_IMAGE_FALLBACKS: Record<string, string> = {
+  "dairy-breakfast": "/yogurt-2.jpg",
+  "fresh-vegetables": "/vegetables.jpg",
+  "fruits-dates": "/mango-2.jpg",
+  honey: "/honey.jpg",
+  "jaggery-sweeteners": "/deal-2.jpg",
+  "kitchen-essentials": "/ghee.jpg",
+  "oil-ghee": "/ghee.jpg",
+  "organic-certified": "/brand-story.jpg",
+  "wellness-picks": "/special-offer.jpg",
+};
+
 function getSourceKeys(
   value:
     | Pick<RoshalStoreCategory, "key" | "sourceKeys">
     | Pick<RoshalStoreSubcategory, "key" | "sourceKeys">,
 ) {
   return value.sourceKeys.length > 0 ? value.sourceKeys : [value.key];
+}
+
+function getCategoryImage(
+  category: Pick<RoshalStoreCategory, "imageUrl" | "key">,
+) {
+  return (
+    category.imageUrl || CATEGORY_IMAGE_FALLBACKS[category.key] || "/logo.png"
+  );
 }
 
 function hasSourceKey(sourceKeys: string[], value: string) {
@@ -164,7 +184,7 @@ export function buildStorefrontTaxonomy({
         label: category.label,
         href: `/products?category=${category.key}`,
         description: category.description,
-        featuredImage: category.imageUrl,
+        featuredImage: getCategoryImage(category),
         children: buildCategoryFallbackChildren(category, children),
       };
     });
@@ -179,7 +199,7 @@ export function buildHomepageCategories({
     .map((category) => ({
       key: category.key,
       name: category.label,
-      image: category.imageUrl,
+      image: getCategoryImage(category),
       href: `/products?category=${category.key}`,
     }));
 }

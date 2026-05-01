@@ -1,4 +1,5 @@
 import { localizedValue } from "@/lib/store-locale";
+import { getRoshalFallbackPaymentMethodLabel } from "@/lib/store-payment-methods";
 import type {
   LocalizedValue,
   RoshalOrder,
@@ -76,6 +77,8 @@ export function getRoshalPaymentMethodLabel(
       return localizedValue("ক্যাশ অন ডেলিভারি (COD)", "Cash On Delivery (COD)");
     case "card":
       return localizedValue("কার্ড", "Card");
+    case "bkash":
+      return localizedValue("বিকাশ", "bKash");
     case "nagad":
       return localizedValue("নগদ", "Nagad");
     case "rocket":
@@ -83,7 +86,7 @@ export function getRoshalPaymentMethodLabel(
     case "upay":
       return localizedValue("উপায়", "Upay");
     default:
-      return localizedValue("বিকাশ", "bKash");
+      return getRoshalFallbackPaymentMethodLabel(method);
   }
 }
 

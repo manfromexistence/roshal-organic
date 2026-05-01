@@ -1,4 +1,5 @@
 import { vegetableProducts } from "@/data/vegetable-products";
+import { defaultRoshalDeliverySettings } from "@/lib/store-delivery";
 import { localizedValue } from "@/lib/store-locale";
 import {
   defaultRoshalExtendedPages,
@@ -55,6 +56,7 @@ export const defaultRoshalSiteSettings: RoshalSiteSettings = {
       sortOrder: 1,
     },
   ],
+  deliverySettings: defaultRoshalDeliverySettings,
 };
 
 export const defaultRoshalPages: RoshalMarketingPage[] = [

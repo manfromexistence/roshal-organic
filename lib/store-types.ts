@@ -1,12 +1,13 @@
 export type RoshalLocale = "bn" | "en";
 export type RoshalRole = "admin" | "user";
-export type RoshalPaymentMethod =
+export type RoshalKnownPaymentMethod =
   | "cash_on_delivery"
   | "card"
   | "bkash"
   | "nagad"
   | "rocket"
   | "upay";
+export type RoshalPaymentMethod = RoshalKnownPaymentMethod | (string & {});
 export type RoshalPaymentGatewayProvider = "aamarpay";
 
 export interface LocalizedValue {
@@ -51,6 +52,8 @@ export interface RoshalMarketingPage {
   heroImage: string;
   status: string;
   showInNavigation: boolean;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface RoshalStoreCategory {
@@ -64,6 +67,8 @@ export interface RoshalStoreCategory {
   showInNavigation: boolean;
   showOnHomepage: boolean;
   sortOrder: number;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface RoshalStoreSubcategory {
@@ -78,6 +83,8 @@ export interface RoshalStoreSubcategory {
   isEnabled: boolean;
   showInNavigation: boolean;
   sortOrder: number;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface RoshalTaxonomyBundle {
@@ -97,6 +104,11 @@ export interface RoshalDeliveryZone {
   sortOrder: number;
 }
 
+export interface RoshalDeliverySettings {
+  enableFreeDelivery: boolean;
+  freeDeliveryThreshold: number;
+}
+
 export interface RoshalSiteSettings {
   id: string;
   brandName: string;
@@ -112,6 +124,7 @@ export interface RoshalSiteSettings {
   primaryCtaHref: string;
   primaryCtaLabel: LocalizedValue;
   deliveryZones: RoshalDeliveryZone[];
+  deliverySettings: RoshalDeliverySettings;
 }
 
 export interface RoshalPaymentOption {
@@ -168,6 +181,8 @@ export interface RoshalProduct {
   isFeatured: boolean;
   isPublished: boolean;
   sortOrder: number;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface RoshalProductReview {

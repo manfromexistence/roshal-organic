@@ -81,6 +81,12 @@ export const roshalSiteSettings = sqliteTable("roshal_site_settings", {
   primaryCtaLabelBn: text("primary_cta_label_bn").notNull(),
   primaryCtaLabelEn: text("primary_cta_label_en").notNull(),
   deliveryZonesJson: text("delivery_zones_json"),
+  freeDeliveryEnabled: integer("free_delivery_enabled", { mode: "boolean" })
+    .notNull()
+    .default(false),
+  freeDeliveryThreshold: integer("free_delivery_threshold")
+    .notNull()
+    .default(2000),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
   updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
 });

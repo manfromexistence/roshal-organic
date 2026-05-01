@@ -16,12 +16,16 @@ import {
   defaultRoshalSections,
   defaultRoshalSiteSettings,
 } from "@/lib/store-defaults";
-import { normalizeRoshalTwoZoneDeliveryZones } from "@/lib/store-delivery";
+import {
+  normalizeRoshalDeliverySettings,
+  normalizeRoshalTwoZoneDeliveryZones,
+} from "@/lib/store-delivery";
 import { safeJsonParse } from "@/lib/store-format";
 import {
   normalizeRoshalAssetPath,
   normalizeRoshalProductMedia,
 } from "@/lib/store-media";
+import { normalizeRoshalPaymentMethodKey } from "@/lib/store-payment-methods";
 import { ensureRoshalSiteSettingsSchema } from "@/lib/store-site-settings-schema";
 import type {
   RoshalDashboardSnapshot,
@@ -35,28 +39,10 @@ import type {
   RoshalSiteSettings,
 } from "@/lib/store-types";
 
-const ROSHAL_VISIBLE_PAYMENT_METHODS: RoshalPaymentMethod[] = [
-  "cash_on_delivery",
-  "card",
-  "bkash",
-  "nagad",
-];
-
 function normalizePaymentMethod(
   value: string | null | undefined,
 ): RoshalPaymentMethod {
-  if (
-    value === "cash_on_delivery" ||
-    value === "card" ||
-    value === "bkash" ||
-    value === "nagad" ||
-    value === "rocket" ||
-    value === "upay"
-  ) {
-    return value;
-  }
-
-  return "cash_on_delivery";
+  return normalizeRoshalPaymentMethodKey(value);
 }
 
 function mapPage(row: typeof roshalPages.$inferSelect): RoshalMarketingPage {
@@ -78,6 +64,8 @@ function mapPage(row: typeof roshalPages.$inferSelect): RoshalMarketingPage {
     heroImage: normalizeRoshalAssetPath(row.heroImage, ""),
     status: row.status,
     showInNavigation: Boolean(row.showInNavigation),
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
   };
 }
 
@@ -200,6 +188,8 @@ function mapProduct(row: typeof roshalProducts.$inferSelect): RoshalProduct {
     isFeatured: Boolean(row.isFeatured),
     isPublished: Boolean(row.isPublished),
     sortOrder: row.sortOrder,
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
   });
 }
 
@@ -279,20 +269,35 @@ function sanitizePaymentOption(
   option: RoshalPaymentSettings["options"][number],
 ): RoshalPaymentSettings["options"][number] {
   const key = normalizePaymentMethod(option.key);
+  const safeLabel = {
+    bn: option.label?.bn?.trim() || option.label?.en?.trim() || key,
+    en: option.label?.en?.trim() || option.label?.bn?.trim() || key,
+  };
   const label =
-    key === "cash_on_delivery" && !/cod/i.test(option.label.en)
+    key === "cash_on_delivery" && !/cod/i.test(safeLabel.en)
       ? {
-          bn: option.label.bn.includes("COD")
-            ? option.label.bn
-            : `${option.label.bn} (COD)`,
-          en: `${option.label.en} (COD)`,
+          bn: safeLabel.bn.includes("COD")
+            ? safeLabel.bn
+            : `${safeLabel.bn} (COD)`,
+          en: `${safeLabel.en} (COD)`,
         }
-      : option.label;
+      : safeLabel;
 
   return {
     ...option,
     key,
     label,
+    merchantLabel: {
+      bn: option.merchantLabel?.bn?.trim() || "",
+      en: option.merchantLabel?.en?.trim() || "",
+    },
+    accountType: option.accountType?.trim() || "mobile-wallet",
+    accountNumber: option.accountNumber?.trim() || "",
+    instructions: {
+      bn: option.instructions?.bn?.trim() || "",
+      en: option.instructions?.en?.trim() || "",
+    },
+    guideImageUrl: option.guideImageUrl?.trim() || "",
     requiresProof: false,
   };
 }
@@ -300,63 +305,61 @@ function sanitizePaymentOption(
 function mapPaymentSettings(
   row: typeof roshalPaymentSettings.$inferSelect,
 ): RoshalPaymentSettings {
-  const storedOptions = safeJsonParse<RoshalPaymentSettings["options"]>(
-    row.optionsJson,
-    defaultRoshalPaymentSettings.options,
-  );
+  const parsedOptions = safeJsonParse<unknown>(row.optionsJson, null);
+  const storedOptions = Array.isArray(parsedOptions)
+    ? (parsedOptions as RoshalPaymentSettings["options"])
+    : defaultRoshalPaymentSettings.options;
   const defaultOptionsByKey = new Map(
-    defaultRoshalPaymentSettings.options
-      .filter((option) =>
-        ROSHAL_VISIBLE_PAYMENT_METHODS.includes(
-          normalizePaymentMethod(option.key),
-        ),
-      )
-      .map((option) => [
-        normalizePaymentMethod(option.key),
-        sanitizePaymentOption(option),
-      ]),
-  );
-  const storedOptionsByKey = new Map(
-    storedOptions.map((option) => [
+    defaultRoshalPaymentSettings.options.map((option) => [
       normalizePaymentMethod(option.key),
-      sanitizePaymentOption({
-        ...option,
-        guideImageUrl: normalizeRoshalAssetPath(option.guideImageUrl, ""),
-      }),
+      sanitizePaymentOption(option),
     ]),
   );
-  const mergedOptions = Array.from(defaultOptionsByKey.entries()).map(
-    ([key, defaultOption]) => {
-      const storedOption = storedOptionsByKey.get(key);
+  const options = storedOptions
+    .map((option, index) => {
+      const key = normalizePaymentMethod(option.key);
+      const defaultOption = defaultOptionsByKey.get(key);
 
       return sanitizePaymentOption({
-        ...defaultOption,
-        ...storedOption,
+        ...(defaultOption || {}),
+        ...option,
         key,
-        label: storedOption?.label || defaultOption.label,
-        merchantLabel:
-          storedOption?.merchantLabel || defaultOption.merchantLabel,
-        instructions: storedOption?.instructions || defaultOption.instructions,
-        guideImageUrl:
-          storedOption?.guideImageUrl || defaultOption.guideImageUrl,
+        label: option.label ||
+          defaultOption?.label || {
+            bn: key,
+            en: key,
+          },
+        merchantLabel: option.merchantLabel ||
+          defaultOption?.merchantLabel || {
+            bn: "",
+            en: "",
+          },
+        instructions: option.instructions ||
+          defaultOption?.instructions || {
+            bn: "",
+            en: "",
+          },
+        guideImageUrl: normalizeRoshalAssetPath(option.guideImageUrl, ""),
+        sortOrder: Number.isFinite(Number(option.sortOrder))
+          ? Number(option.sortOrder)
+          : index,
       });
-    },
-  );
-  const options = mergedOptions.sort((left, right) => {
-    if (left.key === "cash_on_delivery") {
-      return -1;
-    }
+    })
+    .sort((left, right) => {
+      if (left.key === "cash_on_delivery") {
+        return -1;
+      }
 
-    if (right.key === "cash_on_delivery") {
-      return 1;
-    }
+      if (right.key === "cash_on_delivery") {
+        return 1;
+      }
 
-    if (left.sortOrder !== right.sortOrder) {
-      return left.sortOrder - right.sortOrder;
-    }
+      if (left.sortOrder !== right.sortOrder) {
+        return left.sortOrder - right.sortOrder;
+      }
 
-    return left.key.localeCompare(right.key);
-  });
+      return left.key.localeCompare(right.key);
+    });
 
   return {
     id: row.id,
@@ -430,6 +433,13 @@ function mapSiteSettings(
       ),
       defaultRoshalSiteSettings.deliveryZones,
     ),
+    deliverySettings: normalizeRoshalDeliverySettings(
+      {
+        enableFreeDelivery: Boolean(row.freeDeliveryEnabled),
+        freeDeliveryThreshold: row.freeDeliveryThreshold,
+      },
+      defaultRoshalSiteSettings.deliverySettings,
+    ),
   };
 }
 
@@ -450,24 +460,14 @@ export async function getRoshalPaymentSettings() {
       ? mapPaymentSettings(settings)
       : {
           ...defaultRoshalPaymentSettings,
-          options: defaultRoshalPaymentSettings.options
-            .filter((option) =>
-              ROSHAL_VISIBLE_PAYMENT_METHODS.includes(
-                normalizePaymentMethod(option.key),
-              ),
-            )
-            .map(sanitizePaymentOption),
+          options: defaultRoshalPaymentSettings.options.map(
+            sanitizePaymentOption,
+          ),
         };
   } catch {
     return {
       ...defaultRoshalPaymentSettings,
-      options: defaultRoshalPaymentSettings.options
-        .filter((option) =>
-          ROSHAL_VISIBLE_PAYMENT_METHODS.includes(
-            normalizePaymentMethod(option.key),
-          ),
-        )
-        .map(sanitizePaymentOption),
+      options: defaultRoshalPaymentSettings.options.map(sanitizePaymentOption),
     };
   }
 }
@@ -748,7 +748,7 @@ export async function getRoshalUsers() {
         createdAt: users.createdAt,
       })
       .from(users)
-      .orderBy(asc(users.name));
+      .orderBy(desc(users.createdAt), asc(users.name));
 
     return records
       .filter(

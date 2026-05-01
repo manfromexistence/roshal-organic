@@ -32,6 +32,7 @@ interface ProductRow {
   inventory: number;
   inventoryStatus: string;
   inventoryStatusKey: "out-of-stock" | "low-stock" | "in-stock";
+  latestAt: number;
   status: string;
 }
 
@@ -97,6 +98,17 @@ function getColumns(): ColumnDef<ProductRow>[] {
             {row.original.inventoryStatus}
           </Badge>
         </div>
+      ),
+    },
+    {
+      id: "latestAt",
+      accessorKey: "latestAt",
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title="Latest"
+          label="Latest update"
+        />
       ),
     },
     {
@@ -169,6 +181,10 @@ function getInventoryState(product: RoshalProduct) {
   } as const;
 }
 
+function latestProductTime(product: RoshalProduct) {
+  return (product.updatedAt || product.createdAt || new Date(0)).getTime();
+}
+
 export function RoshalProductsTable({
   products,
   locale,
@@ -176,7 +192,22 @@ export function RoshalProductsTable({
   products: RoshalProduct[];
   locale: RoshalLocale;
 }) {
-  const rows: ProductRow[] = products.map((product) => {
+  const sortedProducts = [...products].sort((left, right) => {
+    const latestDelta = latestProductTime(right) - latestProductTime(left);
+
+    if (latestDelta !== 0) {
+      return latestDelta;
+    }
+
+    if (left.sortOrder !== right.sortOrder) {
+      return left.sortOrder - right.sortOrder;
+    }
+
+    return getLocalizedValue(locale, left.name).localeCompare(
+      getLocalizedValue(locale, right.name),
+    );
+  });
+  const rows: ProductRow[] = sortedProducts.map((product) => {
     const inventoryState = getInventoryState(product);
 
     return {
@@ -188,6 +219,7 @@ export function RoshalProductsTable({
       inventory: product.inventory,
       inventoryStatus: inventoryState.label,
       inventoryStatusKey: inventoryState.key,
+      latestAt: latestProductTime(product),
       status: product.isPublished ? "published" : "draft",
     };
   });
@@ -198,7 +230,10 @@ export function RoshalProductsTable({
     pageCount: Math.ceil(Math.max(rows.length, 1) / 10),
     initialState: {
       pagination: { pageIndex: 0, pageSize: 10 },
-      sorting: [{ id: "name", desc: false }],
+      sorting: [{ id: "latestAt", desc: true }],
+      columnVisibility: {
+        latestAt: false,
+      },
     },
     manualFiltering: false,
     manualPagination: false,
@@ -213,7 +248,7 @@ export function RoshalProductsTable({
     >
       <div className="min-w-0">
         <div className="grid gap-2.5 p-3 pt-0 sm:grid-cols-2 sm:p-4 sm:pt-0 md:hidden">
-          {products.map((product) => {
+          {sortedProducts.map((product) => {
             const name = getLocalizedValue(locale, product.name);
             const category = getLocalizedValue(locale, product.categoryLabel);
             const inventoryState = getInventoryState(product);

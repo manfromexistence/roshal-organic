@@ -89,13 +89,10 @@ const numberTextFilter: FilterFn<OrderRow> = (row, columnId, filterValue) => {
   return normalizedTerms.every((term) => rawValue.includes(term));
 };
 
-function paymentMethodOptions(locale: RoshalLocale) {
-  const methods: RoshalPaymentMethod[] = [
-    "cash_on_delivery",
-    "card",
-    "bkash",
-    "nagad",
-  ];
+function paymentMethodOptions(locale: RoshalLocale, rows: OrderRow[]) {
+  const methods = Array.from(
+    new Set(rows.map((row) => row.paymentMethodKey)),
+  ).sort((left, right) => left.localeCompare(right));
 
   return methods.map((method) => ({
     value: method,
@@ -103,7 +100,10 @@ function paymentMethodOptions(locale: RoshalLocale) {
   }));
 }
 
-function getColumns(locale: RoshalLocale): ColumnDef<OrderRow>[] {
+function getColumns(
+  locale: RoshalLocale,
+  rows: OrderRow[],
+): ColumnDef<OrderRow>[] {
   return [
     {
       id: "orderLookup",
@@ -168,7 +168,7 @@ function getColumns(locale: RoshalLocale): ColumnDef<OrderRow>[] {
       meta: {
         label: "Payment method",
         variant: "multiSelect",
-        options: paymentMethodOptions(locale),
+        options: paymentMethodOptions(locale, rows),
       },
       enableColumnFilter: true,
       filterFn: selectFilter,
@@ -371,7 +371,7 @@ export function RoshalOrdersTable({
 
   const { table } = useDataTable({
     data: rows,
-    columns: getColumns(locale),
+    columns: getColumns(locale, rows),
     pageCount: Math.ceil(Math.max(rows.length, 1) / 10),
     initialState: {
       pagination: { pageIndex: 0, pageSize: 10 },

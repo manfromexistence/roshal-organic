@@ -26,6 +26,7 @@ interface PageRow {
   title: string;
   slug: string;
   status: string;
+  latestAt: number;
   navigation: string;
   storefrontPath: string;
 }
@@ -48,6 +49,17 @@ function getColumns(): ColumnDef<PageRow>[] {
         variant: "text",
       },
       enableColumnFilter: true,
+    },
+    {
+      id: "latestAt",
+      accessorKey: "latestAt",
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title="Latest"
+          label="Latest update"
+        />
+      ),
     },
     {
       id: "slug",
@@ -127,11 +139,25 @@ export function RoshalPagesTable({
   pages: RoshalMarketingPage[];
   locale: RoshalLocale;
 }) {
-  const rows: PageRow[] = pages.map((page) => ({
+  const sortedPages = [...pages].sort((left, right) => {
+    const latestDelta =
+      (right.updatedAt || right.createdAt || new Date(0)).getTime() -
+      (left.updatedAt || left.createdAt || new Date(0)).getTime();
+
+    if (latestDelta !== 0) {
+      return latestDelta;
+    }
+
+    return getLocalizedValue(locale, left.title).localeCompare(
+      getLocalizedValue(locale, right.title),
+    );
+  });
+  const rows: PageRow[] = sortedPages.map((page) => ({
     id: page.id,
     title: getLocalizedValue(locale, page.title),
     slug: page.slug,
     status: page.status,
+    latestAt: (page.updatedAt || page.createdAt || new Date(0)).getTime(),
     storefrontPath: storefrontPathFromSlug(page.slug),
     navigation: page.showInNavigation ? "Visible" : "Hidden",
   }));
@@ -142,7 +168,10 @@ export function RoshalPagesTable({
     pageCount: Math.ceil(Math.max(rows.length, 1) / 10),
     initialState: {
       pagination: { pageIndex: 0, pageSize: 10 },
-      sorting: [{ id: "title", desc: false }],
+      sorting: [{ id: "latestAt", desc: true }],
+      columnVisibility: {
+        latestAt: false,
+      },
     },
     manualFiltering: false,
     manualPagination: false,
@@ -157,7 +186,7 @@ export function RoshalPagesTable({
     >
       <div className="min-w-0">
         <div className="grid gap-2.5 p-3 pt-0 sm:grid-cols-2 sm:p-4 sm:pt-0 md:hidden">
-          {pages.map((page) => {
+          {sortedPages.map((page) => {
             const storefrontPath = storefrontPathFromSlug(page.slug);
 
             return (

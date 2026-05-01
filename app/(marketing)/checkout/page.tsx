@@ -27,6 +27,7 @@ export default async function CheckoutPage() {
 
   return (
     <CheckoutPageClient
+      deliverySettings={siteSettings.deliverySettings}
       deliveryZones={siteSettings.deliveryZones}
       gatewaySummary={gatewaySummary}
       locale={locale}

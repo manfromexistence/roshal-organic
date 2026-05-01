@@ -23,6 +23,7 @@ export interface CategoryTableRow {
   id: string;
   key: string;
   label: string;
+  latestAt: number;
   productCount: number;
   showInNavigation: boolean;
   showOnHomepage: boolean;
@@ -49,6 +50,17 @@ function getColumns(): ColumnDef<CategoryTableRow>[] {
         variant: "text",
       },
       enableColumnFilter: true,
+    },
+    {
+      id: "latestAt",
+      accessorKey: "latestAt",
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title="Latest"
+          label="Latest update"
+        />
+      ),
     },
     {
       id: "key",
@@ -162,13 +174,29 @@ function getColumns(): ColumnDef<CategoryTableRow>[] {
 }
 
 export function RoshalCategoriesTable({ rows }: { rows: CategoryTableRow[] }) {
+  const sortedRows = [...rows].sort((left, right) => {
+    const latestDelta = right.latestAt - left.latestAt;
+
+    if (latestDelta !== 0) {
+      return latestDelta;
+    }
+
+    if (left.sortOrder !== right.sortOrder) {
+      return left.sortOrder - right.sortOrder;
+    }
+
+    return left.label.localeCompare(right.label);
+  });
   const { table } = useDataTable({
-    data: rows,
+    data: sortedRows,
     columns: getColumns(),
-    pageCount: Math.ceil(Math.max(rows.length, 1) / 10),
+    pageCount: Math.ceil(Math.max(sortedRows.length, 1) / 10),
     initialState: {
       pagination: { pageIndex: 0, pageSize: 10 },
-      sorting: [{ id: "sortOrder", desc: false }],
+      sorting: [{ id: "latestAt", desc: true }],
+      columnVisibility: {
+        latestAt: false,
+      },
     },
     manualFiltering: false,
     manualPagination: false,
@@ -191,7 +219,7 @@ export function RoshalCategoriesTable({ rows }: { rows: CategoryTableRow[] }) {
     >
       <div className="min-w-0">
         <div className="grid gap-2.5 p-3 pt-0 sm:grid-cols-2 sm:p-4 sm:pt-0 md:hidden">
-          {rows.map((row) => (
+          {sortedRows.map((row) => (
             <Card
               key={row.id}
               className="min-w-0 border-none border-r-4 border-r-primary bg-background/70 p-0 shadow-sm"

@@ -53,6 +53,7 @@ interface UserRow {
   district: string;
   defaultAddress: string;
   createdAt: string;
+  createdAtValue: number;
 }
 
 interface DashboardUser {
@@ -324,6 +325,17 @@ function getColumns({
       ),
     },
     {
+      id: "createdAtValue",
+      accessorKey: "createdAtValue",
+      header: ({ column }) => (
+        <DataTableColumnHeader
+          column={column}
+          title="Latest"
+          label="Latest signup"
+        />
+      ),
+    },
+    {
       id: "createdAt",
       accessorKey: "createdAt",
       header: ({ column }) => (
@@ -344,9 +356,19 @@ export function RoshalUsersTable({
 }) {
   const [isMounted, setIsMounted] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<UserRow | null>(null);
+  const sortedUsers = useMemo(
+    () =>
+      [...users].sort(
+        (left, right) =>
+          new Date(right.createdAt).getTime() -
+            new Date(left.createdAt).getTime() ||
+          left.name.localeCompare(right.name),
+      ),
+    [users],
+  );
   const rows: UserRow[] = useMemo(
     () =>
-      users.map((user) => {
+      sortedUsers.map((user) => {
         const defaultAddress = user.defaultAddress || "";
         const district = getDistrictFromAddress(defaultAddress);
 
@@ -361,9 +383,10 @@ export function RoshalUsersTable({
           district,
           defaultAddress,
           createdAt: formatUserDate(user.createdAt, _locale),
+          createdAtValue: new Date(user.createdAt).getTime(),
         };
       }),
-    [users, _locale],
+    [sortedUsers, _locale],
   );
 
   const columns = useMemo(
@@ -381,8 +404,9 @@ export function RoshalUsersTable({
     pageCount: Math.ceil(Math.max(rows.length, 1) / 10),
     initialState: {
       pagination: { pageIndex: 0, pageSize: 10 },
-      sorting: [{ id: "name", desc: false }],
+      sorting: [{ id: "createdAtValue", desc: true }],
       columnVisibility: {
+        createdAtValue: false,
         email: false,
         defaultAddress: false,
       },
@@ -468,7 +492,7 @@ export function RoshalUsersTable({
         </div>
 
         <div className="grid gap-2.5 p-3 pt-0 sm:grid-cols-2 sm:p-4 sm:pt-0 md:hidden">
-          {users.map((user) => {
+          {sortedUsers.map((user) => {
             const row = rows.find((item) => item.id === user.id);
             const Icon = user.role === "admin" ? ShieldCheck : UserRound;
 

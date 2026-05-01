@@ -49,6 +49,8 @@ function mapCategory(
     showInNavigation: Boolean(row.showInNavigation),
     showOnHomepage: Boolean(row.showOnHomepage),
     sortOrder: row.sortOrder,
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
   };
 }
 
@@ -80,6 +82,8 @@ function mapSubcategory(
     isEnabled: Boolean(row.isEnabled),
     showInNavigation: Boolean(row.showInNavigation),
     sortOrder: row.sortOrder,
+    createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
   };
 }
 

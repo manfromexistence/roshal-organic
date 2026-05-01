@@ -52,6 +52,11 @@ export default async function DashboardCategoriesPage({
         id: category.id,
         key: category.key,
         label: getLocalizedValue(locale, category.label),
+        latestAt: (
+          category.updatedAt ||
+          category.createdAt ||
+          new Date(0)
+        ).getTime(),
         productCount,
         showInNavigation: category.showInNavigation && category.isEnabled,
         showOnHomepage: category.showOnHomepage && category.isEnabled,

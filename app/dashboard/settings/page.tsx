@@ -102,6 +102,7 @@ export default async function DashboardSystemSettingsPage() {
               <DashboardDeliveryZonesEditor
                 locale={locale}
                 name="deliveryZonesJson"
+                settings={siteSettings.deliverySettings}
                 value={siteSettings.deliveryZones}
               />
             </AccordionContent>

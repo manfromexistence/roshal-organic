@@ -1617,3 +1617,21 @@
 ✓ Compiled in 987ms
  GET / 200 in 1914ms (next.js: 458ms, application-code: 1456ms)
  GET / 200 in 822ms (next.js: 10ms, application-code: 812ms)
+ GET / 200 in 992ms (next.js: 15ms, application-code: 977ms)
+ GET /api/auth/get-session 200 in 413ms (next.js: 278ms, application-code: 135ms)
+✓ Compiled in 828ms
+ GET / 200 in 1033ms (next.js: 285ms, application-code: 748ms)
+ GET / 200 in 618ms (next.js: 2ms, application-code: 616ms)
+ GET / 200 in 904ms (next.js: 10ms, application-code: 894ms)
+ GET /api/auth/get-session 200 in 711ms (next.js: 593ms, application-code: 119ms)
+ GET /api/auth/get-session 200 in 371ms (next.js: 18ms, application-code: 353ms)
+ GET /api/auth/get-session 200 in 230ms (next.js: 11ms, application-code: 219ms)
+ GET /api/auth/get-session 200 in 457ms (next.js: 12ms, application-code: 445ms)
+ GET /api/auth/get-session 200 in 107ms (next.js: 4ms, application-code: 103ms)
+ GET /api/auth/get-session 200 in 383ms (next.js: 18ms, application-code: 365ms)
+ GET /api/auth/get-session 200 in 120ms (next.js: 5ms, application-code: 115ms)
+ GET /api/auth/get-session 200 in 195ms (next.js: 13ms, application-code: 183ms)
+ GET /api/auth/get-session 200 in 98ms (next.js: 3ms, application-code: 96ms)
+ GET /api/auth/get-session 200 in 552ms (next.js: 36ms, application-code: 516ms)
+ GET /api/auth/get-session 200 in 141ms (next.js: 8ms, application-code: 134ms)
+[?25h

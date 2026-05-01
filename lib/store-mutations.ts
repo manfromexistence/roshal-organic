@@ -22,11 +22,16 @@ import {
   defaultRoshalSiteSettings,
 } from "@/lib/store-defaults";
 import {
+  normalizeRoshalDeliverySettings,
   normalizeRoshalTwoZoneDeliveryZones,
   resolveRoshalDeliveryEstimate,
 } from "@/lib/store-delivery";
 import { sendRoshalNewOrderEmail } from "@/lib/store-email";
 import { safeJsonParse } from "@/lib/store-format";
+import {
+  isRoshalManualPaymentReferenceRequired,
+  normalizeRoshalPaymentMethodKey,
+} from "@/lib/store-payment-methods";
 import {
   createRoshalGatewayCheckoutSession,
   hasRoshalGatewayIntegration,
@@ -47,6 +52,7 @@ import {
 import { ensureRoshalSiteSettingsSchema } from "@/lib/store-site-settings-schema";
 import { ensureRoshalTaxonomySchema } from "@/lib/store-taxonomy-schema";
 import type {
+  RoshalDeliverySettings,
   RoshalDeliveryZone,
   RoshalOrderItem,
   RoshalPaymentGatewayProvider,
@@ -176,13 +182,12 @@ function getRoshalPaymentWorkflowState(
 }
 
 function shouldRequireRoshalWalletReference(
-  option: Pick<RoshalPaymentOption, "key" | "mode" | "requiresProof">,
+  option: Pick<
+    RoshalPaymentOption,
+    "accountNumber" | "accountType" | "key" | "mode" | "requiresProof"
+  >,
 ) {
-  if (option.mode !== "manual") {
-    return false;
-  }
-
-  return option.key === "bkash" || option.key === "nagad";
+  return isRoshalManualPaymentReferenceRequired(option);
 }
 
 function toGatewayMetaJson(value: Record<string, string> | null | undefined) {
@@ -415,7 +420,12 @@ const roshalCheckoutRequestSchema = z.object({
     .or(z.literal(""))
     .or(z.null())
     .transform((value) => value || undefined),
-  paymentMethod: z.enum(["cash_on_delivery", "card", "bkash", "nagad"]),
+  paymentMethod: z
+    .string()
+    .trim()
+    .min(1)
+    .max(80)
+    .transform((value) => normalizeRoshalPaymentMethodKey(value)),
   paymentReference: z
     .string()
     .trim()
@@ -537,6 +547,7 @@ export interface UpsertRoshalSiteSettingsInput {
   primaryCtaLabelBn: string;
   primaryCtaLabelEn: string;
   deliveryZones: RoshalDeliveryZone[];
+  deliverySettings: RoshalDeliverySettings;
 }
 
 export async function upsertRoshalSiteSettings(
@@ -549,6 +560,10 @@ export async function upsertRoshalSiteSettings(
   const deliveryZones = normalizeRoshalTwoZoneDeliveryZones(
     input.deliveryZones,
     defaultRoshalSiteSettings.deliveryZones,
+  );
+  const deliverySettings = normalizeRoshalDeliverySettings(
+    input.deliverySettings,
+    defaultRoshalSiteSettings.deliverySettings,
   );
 
   await db
@@ -571,6 +586,8 @@ export async function upsertRoshalSiteSettings(
       primaryCtaLabelBn: input.primaryCtaLabelBn,
       primaryCtaLabelEn: input.primaryCtaLabelEn,
       deliveryZonesJson: JSON.stringify(deliveryZones),
+      freeDeliveryEnabled: deliverySettings.enableFreeDelivery,
+      freeDeliveryThreshold: deliverySettings.freeDeliveryThreshold,
       createdAt: timestamp,
       updatedAt: timestamp,
     })
@@ -593,6 +610,8 @@ export async function upsertRoshalSiteSettings(
         primaryCtaLabelBn: input.primaryCtaLabelBn,
         primaryCtaLabelEn: input.primaryCtaLabelEn,
         deliveryZonesJson: JSON.stringify(deliveryZones),
+        freeDeliveryEnabled: deliverySettings.enableFreeDelivery,
+        freeDeliveryThreshold: deliverySettings.freeDeliveryThreshold,
         updatedAt: timestamp,
       },
     });
@@ -1763,12 +1782,16 @@ export async function createValidatedRoshalOrder(
   await ensureRoshalSiteSettingsSchema();
   let siteSettings: {
     deliveryZonesJson: string | null;
+    freeDeliveryEnabled: boolean;
+    freeDeliveryThreshold: number;
   } | null = null;
 
   try {
     const [siteSettingsRow] = await db
       .select({
         deliveryZonesJson: roshalSiteSettings.deliveryZonesJson,
+        freeDeliveryEnabled: roshalSiteSettings.freeDeliveryEnabled,
+        freeDeliveryThreshold: roshalSiteSettings.freeDeliveryThreshold,
       })
       .from(roshalSiteSettings)
       .limit(1);
@@ -1783,12 +1806,23 @@ export async function createValidatedRoshalOrder(
     ),
     defaultRoshalSiteSettings.deliveryZones,
   );
+  const deliverySettings = normalizeRoshalDeliverySettings(
+    siteSettings
+      ? {
+          enableFreeDelivery: siteSettings.freeDeliveryEnabled,
+          freeDeliveryThreshold: siteSettings.freeDeliveryThreshold,
+        }
+      : defaultRoshalSiteSettings.deliverySettings,
+    defaultRoshalSiteSettings.deliverySettings,
+  );
   const shippingFee = resolveRoshalDeliveryEstimate({
     addressLine1: parsed.addressLine1,
     addressLine2: parsed.addressLine2,
     city: parsed.city,
+    deliverySettings,
     postalCode: parsed.postalCode,
     itemCount: items.length,
+    subtotal,
     zones: deliveryZones,
   }).fee;
   const paymentWorkflow = getRoshalPaymentWorkflowState(paymentOption);
@@ -1869,7 +1903,11 @@ async function notifyRoshalNewOrderAdmins(
     sent: false,
   }));
 
-  if (!result.sent && result.reason !== "missing-api-key") {
+  if (
+    !result.sent &&
+    result.reason !== "missing-api-key" &&
+    result.reason !== "missing-email-provider"
+  ) {
     console.warn("Roshal new order email was not sent:", result.reason);
   }
 }

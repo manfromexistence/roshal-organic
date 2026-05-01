@@ -11,8 +11,8 @@ Roshal Organic is a bilingual Bangla/English ecommerce CMS built on Next.js 16, 
 - Admin routes: `/dashboard`, `/dashboard/products`, `/dashboard/categories`, `/dashboard/orders`, `/dashboard/payments`, `/dashboard/users`, `/dashboard/pages`, `/dashboard/theme`
 - Auth roles: `admin`, `user`
 - Languages: Bangla and English
-- Payment options: `cash_on_delivery`, `card`, `bkash`, `nagad`
-- Wallet reference flow: bKash and Nagad customers submit transaction ID plus sender number; no screenshot proof is required
+- Payment options: dashboard-configured providers, seeded by default with `cash_on_delivery`, `card`, `bkash`, and `nagad`
+- Wallet reference flow: enabled manual providers with a payment number can collect transaction ID plus sender number; no screenshot proof is required
 - Checkout enforcement: pricing, delivery fee, enabled payment methods, wallet-reference requirements, and inventory are validated on the server before an order is created
 - Payment-review workflow now follows each payment option's dashboard-configured mode, so manual/gateway changes affect order intake correctly
 - Gateway-mode checkout now makes the template limitation explicit: until a real processor is wired, `card` orders fall back to admin follow-up instead of pretending a live gateway exists
@@ -46,7 +46,8 @@ Roshal Organic is a bilingual Bangla/English ecommerce CMS built on Next.js 16, 
 - Generic marketing-page sections now honor dashboard `stylesJson` product sourcing (`featured`, `all`, `reverse`, `limit`, `offset`) instead of falling back to a fixed featured-product slice
 - Safe fallback merging for the built-in home/about/contact CMS pages and sections, so partial dashboard edits do not wipe out the rest of the default storefront composition
 - Storefront brand settings such as CTA labels, hero layout, card style, spacing, and contact information
-- Payment method enablement, instructions, merchant/account details, and wallet reference guidance
+- Payment provider add/remove controls, enablement, instructions, merchant/account details, and wallet reference guidance
+- New-order email notifications to `roshalorganic@gmail.com` through Resend or SMTP/Nodemailer configuration
 
 ## Environment Variables
 
@@ -67,7 +68,21 @@ AAMARPAY_SIGNATURE_KEY=your-aamarpay-signature-key
 IMGBB=your-imgbb-api-key
 IMGBB_API_KEY=your-imgbb-api-key
 CATBOX_USERHASH=optional-catbox-userhash
+RESEND_API_KEY=optional-resend-api-key
+ROSHAL_ORDER_NOTIFICATION_EMAILS=roshalorganic@gmail.com
+ROSHAL_ORDER_EMAIL_FROM="Roshal Organic <orders@your-domain.com>"
+SMTP_SERVICE=gmail
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_SECURE=true
+SMTP_USER=your-smtp-user
+SMTP_PASS=your-smtp-or-app-password
+SMTP_FROM="Roshal Organic <your-smtp-user@gmail.com>"
 ```
+
+`RESEND_API_KEY` is preferred when configured. Without Resend, the app uses
+Nodemailer with `SMTP_URL`/`NODEMAILER_SMTP_URL` or the `SMTP_*` variables
+above. Email volume is limited by the chosen SMTP provider.
 
 ## Local Setup
 
@@ -115,7 +130,8 @@ bun run scripts/seed-users.ts
 - The live component tree is now reduced to the active app-facing groups: `components/dashboard`, `components/data-table`, `components/marketing`, `components/providers`, `components/shared`, `components/storefront`, and `components/ui`.
 - The legacy Quadra EDMS route tree and namespaces have been removed from the live app surface; the current code now lives under generic shared locations such as `components/dashboard`, `components/storefront`, `components/shared`, `lib/store-*`, `actions/admin.ts`, and `/api/{cms,orders,payments,upload}`.
 - The old root-level `marketting` source app has been removed after transplanting its landing page, header/footer shell, and mobile bottom navigation into the active storefront.
-- Manual wallet reference review is in place for bKash and Nagad payments and can be managed from `/dashboard/payments` and `/dashboard/orders`.
+- Manual wallet reference review is in place for configured manual payment providers and can be managed from `/dashboard/payments` and `/dashboard/orders`.
+- Inside/outside Dhaka delivery charges and the free-delivery threshold are dashboard-managed and are recomputed on the server during checkout.
 - AamarPay is the active live gateway abstraction for `card`, `bkash`, and `nagad` when its merchant credentials are configured.
 - Gateway-mode checkout currently falls back to manual admin follow-up for any payment option whose live gateway path is not configured yet.
 - The local env files now point at the real `roshal-organic` Turso database instead of the old Quadra database.

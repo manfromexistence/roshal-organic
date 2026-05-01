@@ -462,6 +462,24 @@ export function StorefrontHeader({
             <div className="ml-auto flex items-center gap-2 lg:hidden">
               <LocaleSwitcher locale={locale} />
               <Button
+                asChild
+                variant="ghost"
+                size="icon"
+                className="relative hidden rounded-sm md:inline-flex"
+              >
+                <Link
+                  href="/cart"
+                  aria-label={locale === "bn" ? "কার্ট" : "Cart"}
+                >
+                  <ShoppingBag className="size-5" />
+                  {cartCount > 0 ? (
+                    <span className="absolute right-0 top-0 inline-flex min-w-5 items-center justify-center rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-semibold text-primary-foreground">
+                      {cartCount}
+                    </span>
+                  ) : null}
+                </Link>
+              </Button>
+              <Button
                 variant="ghost"
                 size="icon"
                 className="rounded-sm"

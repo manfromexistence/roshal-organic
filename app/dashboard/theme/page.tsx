@@ -175,6 +175,7 @@ export default async function DashboardThemePage() {
               <DashboardDeliveryZonesEditor
                 locale={locale}
                 name="deliveryZonesJson"
+                settings={siteSettings.deliverySettings}
                 value={siteSettings.deliveryZones}
               />
             </div>

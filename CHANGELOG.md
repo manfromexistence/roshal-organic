@@ -5,11 +5,19 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Fixed
+- Fixed narrow storefront homepage special-offer cards so image/text content stacks safely instead of squeezing and overlapping on smaller screens.
+- Fixed dashboard admin table defaults so product, category, marketing-page, and user listings surface the latest changed records first while keeping storefront merchandising order intact.
+- Fixed payment settings normalization so admin-removed payment providers stay removed instead of being restored from the old fixed default list.
 - Fixed dashboard data-table dark-mode row contrast so Marketing Pages rows such as Home stay readable.
 - Fixed the custom storefront homepage CMS visibility path so disabled homepage sections stay hidden instead of falling back to default section content.
 
 ### Changed
-- Increased storefront language switcher label size/weight and removed the duplicate mobile header cart action now that the mobile bottom bar already includes Cart.
+- Added Nodemailer SMTP order-notification support as a Resend fallback and always includes `roshalorganic@gmail.com` in new-order notification recipients.
+- Tightened homepage brand logo cards and footer bottom spacing so the marketing homepage uses space better on narrow storefront widths.
+- Added a dynamic dashboard payment-provider editor for adding, removing, enabling, disabling, and reordering checkout payment providers.
+- Wired custom payment providers through checkout validation, order creation, dashboard order filters, and new-order email labels.
+- Added free-delivery threshold controls to the main delivery settings editor and applied the saved rule to both checkout totals and server-side order creation.
+- Increased storefront language switcher label size/weight and removed the duplicate cart action from the true mobile top header while keeping a tablet fallback where the bottom bar is hidden.
 - Filtered the dashboard Marketing page shortcuts, metrics, and page table to the same client-handoff pages shown in the sidebar: Home, About, Contact, Terms & Conditions, and Privacy Policy.
 - Compact dashboard table shells and mobile fallback cards across pages, products, categories, orders, and users so lower dashboard cards no longer render as oversized blocks on narrow admin viewports.
 - Matched the shared top dashboard metric cards to the compact overview-card sizing and aligned metric grid breakpoints so dashboard sections show two cards per row from the same width as the overview page.

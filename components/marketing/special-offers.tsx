@@ -45,14 +45,14 @@ export function SpecialOffers({
           description={description?.[language]}
         />
 
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3.5 md:grid-cols-2 md:gap-4">
           {deals.slice(0, 2).map((deal) => (
             <Card
               key={`${deal.title.en}-${deal.image}`}
-              className="overflow-hidden border-border/70 bg-card shadow-sm p-0"
+              className="min-w-0 overflow-hidden border-border/70 bg-card p-0 shadow-sm"
             >
-              <CardContent className="grid gap-0 p-0 sm:grid-cols-[1.05fr_0.95fr]">
-                <div className="relative aspect-[4/4] overflow-hidden border-b border-border/70 bg-muted/40 md:h-full md:min-h-[15rem] md:border-r md:border-b-0">
+              <CardContent className="grid min-w-0 gap-0 p-0 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+                <div className="relative aspect-[16/10] min-w-0 overflow-hidden border-b border-border/70 bg-muted/40 lg:h-full lg:min-h-[13rem] lg:border-r lg:border-b-0">
                   <Image
                     src={deal.image}
                     alt={deal.title[language]}
@@ -61,22 +61,26 @@ export function SpecialOffers({
                     sizes="(max-width: 768px) 100vw, 50vw"
                   />
                 </div>
-                <div className="flex flex-col justify-between gap-4 p-5 sm:gap-6 sm:p-6">
-                  <div className="space-y-3 sm:space-y-4">
-                    <div className="inline-flex rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
+                <div className="flex min-w-0 flex-col justify-between gap-3 p-4 sm:p-5">
+                  <div className="min-w-0 space-y-3">
+                    <div className="inline-flex max-w-full rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
                       {deal.discount}
                     </div>
-                    <div className="space-y-2 sm:space-y-3">
-                      <h3 className="text-lg font-semibold tracking-tight sm:text-2xl">
+                    <div className="min-w-0 space-y-2">
+                      <h3 className="break-words text-lg font-semibold leading-6 tracking-tight sm:text-xl">
                         {deal.title[language]}
                       </h3>
-                      <p className="text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
+                      <p className="break-words text-sm leading-6 text-muted-foreground">
                         {deal.description[language]}
                       </p>
                     </div>
                   </div>
 
-                  <Button asChild className="w-fit rounded-full px-6">
+                  <Button
+                    asChild
+                    className="w-full rounded-full px-5 sm:w-fit"
+                    size="sm"
+                  >
                     <Link href={deal.href || "/products"}>
                       {deal.ctaLabel
                         ? deal.ctaLabel[language]

@@ -7,19 +7,11 @@ import {
   createValidatedRoshalOrder,
   RoshalCheckoutError,
 } from "@/lib/store-mutations";
+import { normalizeRoshalPaymentMethodKey } from "@/lib/store-payment-methods";
 import type { RoshalPaymentMethod } from "@/lib/store-types";
 
 function normalizePaymentMethod(value: string): RoshalPaymentMethod {
-  if (
-    value === "cash_on_delivery" ||
-    value === "card" ||
-    value === "bkash" ||
-    value === "nagad"
-  ) {
-    return value;
-  }
-
-  return "cash_on_delivery";
+  return normalizeRoshalPaymentMethodKey(value);
 }
 
 export async function POST(request: Request) {

@@ -3,11 +3,42 @@ import { db } from "@/lib/db";
 import { users } from "@/lib/schema";
 import { getRoshalSiteSettings } from "@/lib/store-content";
 import { formatBdt } from "@/lib/store-format";
+import { humanizeRoshalPaymentMethodKey } from "@/lib/store-payment-methods";
 import { getRoshalAbsoluteUrl } from "@/lib/store-site";
 import type { RoshalOrderItem, RoshalPaymentMethod } from "@/lib/store-types";
 
 const RESEND_EMAIL_ENDPOINT = "https://api.resend.com/emails";
 const MAX_RESEND_RECIPIENTS = 50;
+const ROSHAL_CLIENT_ORDER_EMAIL = "roshalorganic@gmail.com";
+
+type SmtpTransportConfig =
+  | string
+  | {
+      auth?: {
+        pass: string;
+        user: string;
+      };
+      host?: string;
+      maxConnections?: number;
+      maxMessages?: number;
+      pool?: boolean;
+      port?: number;
+      secure?: boolean;
+      service?: string;
+    };
+
+type SmtpTransporter = {
+  sendMail: (message: {
+    from: string;
+    headers?: Record<string, string>;
+    html: string;
+    subject: string;
+    text: string;
+    to: string[];
+  }) => Promise<unknown>;
+};
+
+let smtpTransporter: SmtpTransporter | null = null;
 
 export interface RoshalNewOrderEmailInput {
   orderId: string;
@@ -41,6 +72,10 @@ function parseEmailList(value: string) {
     .split(/[,\n;]/)
     .map((item) => item.trim())
     .filter(isDeliverableEmail);
+}
+
+function envFlag(key: string) {
+  return ["1", "true", "yes", "on"].includes(envValue(key).toLowerCase());
 }
 
 function uniqueEmails(values: string[]) {
@@ -78,49 +113,199 @@ function paymentMethodLabel(method: RoshalPaymentMethod) {
     case "card":
       return "Card";
     default:
-      return method;
+      return humanizeRoshalPaymentMethodKey(method);
   }
 }
 
 async function getRoshalOrderNotificationRecipients() {
-  const configuredRecipients = uniqueEmails(
-    parseEmailList(
-      envValue("ROSHAL_ORDER_NOTIFICATION_EMAILS") ||
-        envValue("ROSHAL_ADMIN_EMAIL") ||
-        envValue("ADMIN_EMAIL"),
-    ),
+  const configuredRecipients = parseEmailList(
+    envValue("ROSHAL_ORDER_NOTIFICATION_EMAILS") ||
+      envValue("ROSHAL_ADMIN_EMAIL") ||
+      envValue("ADMIN_EMAIL"),
   );
+  const fallbackRecipients: string[] = [ROSHAL_CLIENT_ORDER_EMAIL];
 
-  if (configuredRecipients.length > 0) {
-    return configuredRecipients.slice(0, MAX_RESEND_RECIPIENTS);
+  if (configuredRecipients.length === 0) {
+    try {
+      const siteSettings = await getRoshalSiteSettings();
+      fallbackRecipients.push(siteSettings.contactEmail);
+    } catch {
+      // Keep checkout reliable even when settings cannot be read.
+    }
+
+    try {
+      const adminRows = await db
+        .select({
+          email: users.email,
+        })
+        .from(users)
+        .where(and(eq(users.role, "admin"), eq(users.isActive, true)));
+
+      fallbackRecipients.push(...adminRows.map((admin) => admin.email));
+    } catch {
+      // Email notification is best-effort and must not block order creation.
+    }
   }
 
-  const fallbackRecipients: string[] = [];
+  return uniqueEmails(
+    [...configuredRecipients, ...fallbackRecipients].filter(isDeliverableEmail),
+  ).slice(0, MAX_RESEND_RECIPIENTS);
+}
 
-  try {
-    const siteSettings = await getRoshalSiteSettings();
-    fallbackRecipients.push(siteSettings.contactEmail);
-  } catch {
-    // Keep checkout reliable even when settings cannot be read.
+function getSmtpTransportConfig(): SmtpTransportConfig | null {
+  const smtpUrl = envValue("SMTP_URL") || envValue("NODEMAILER_SMTP_URL");
+
+  if (smtpUrl) {
+    return smtpUrl;
   }
 
-  try {
-    const adminRows = await db
-      .select({
-        email: users.email,
-      })
-      .from(users)
-      .where(and(eq(users.role, "admin"), eq(users.isActive, true)));
+  const service = envValue("SMTP_SERVICE") || envValue("EMAIL_SERVICE");
+  const host = envValue("SMTP_HOST") || envValue("EMAIL_HOST");
 
-    fallbackRecipients.push(...adminRows.map((admin) => admin.email));
-  } catch {
-    // Email notification is best-effort and must not block order creation.
+  if (!service && !host) {
+    return null;
   }
 
-  return uniqueEmails(fallbackRecipients.filter(isDeliverableEmail)).slice(
-    0,
-    MAX_RESEND_RECIPIENTS,
+  const user = envValue("SMTP_USER") || envValue("EMAIL_USER");
+  const pass =
+    envValue("SMTP_PASS") ||
+    envValue("SMTP_PASSWORD") ||
+    envValue("EMAIL_PASS") ||
+    envValue("EMAIL_PASSWORD");
+  const configuredPort = Number.parseInt(
+    envValue("SMTP_PORT") || envValue("EMAIL_PORT"),
+    10,
   );
+  const secure = envFlag("SMTP_SECURE") || configuredPort === 465;
+  const port = Number.isFinite(configuredPort)
+    ? configuredPort
+    : secure
+      ? 465
+      : 587;
+  const config: Exclude<SmtpTransportConfig, string> = {
+    maxConnections: 3,
+    maxMessages: 100,
+    pool: true,
+    port,
+    secure,
+  };
+
+  if (service) {
+    config.service = service;
+  }
+
+  if (host) {
+    config.host = host;
+  }
+
+  if (user && pass) {
+    config.auth = { pass, user };
+  }
+
+  return config;
+}
+
+function getOrderEmailFromAddress() {
+  const explicitFrom =
+    envValue("ROSHAL_ORDER_EMAIL_FROM") ||
+    envValue("SMTP_FROM") ||
+    envValue("EMAIL_FROM");
+
+  if (explicitFrom) {
+    return explicitFrom;
+  }
+
+  const smtpUser = envValue("SMTP_USER") || envValue("EMAIL_USER");
+
+  return smtpUser
+    ? `Roshal Organic <${smtpUser}>`
+    : "Roshal Organic <roshalorganic@gmail.com>";
+}
+
+async function getSmtpTransporter() {
+  const config = getSmtpTransportConfig();
+
+  if (!config) {
+    return null;
+  }
+
+  if (!smtpTransporter) {
+    const nodemailer = await import("nodemailer");
+    smtpTransporter = nodemailer.createTransport(
+      config,
+    ) as unknown as SmtpTransporter;
+  }
+
+  return smtpTransporter;
+}
+
+async function sendOrderEmailViaSmtp(input: {
+  from: string;
+  html: string;
+  orderNumber: string;
+  subject: string;
+  text: string;
+  to: string[];
+}) {
+  const transporter = await getSmtpTransporter();
+
+  if (!transporter) {
+    return { reason: "missing-email-provider", sent: false };
+  }
+
+  await transporter.sendMail({
+    from: input.from,
+    headers: {
+      "X-Roshal-Order": input.orderNumber,
+    },
+    html: input.html,
+    subject: input.subject,
+    text: input.text,
+    to: input.to,
+  });
+
+  return { provider: "smtp", sent: true };
+}
+
+async function sendOrderEmailViaResend(input: {
+  apiKey: string;
+  from: string;
+  html: string;
+  orderNumber: string;
+  subject: string;
+  text: string;
+  to: string[];
+}) {
+  const response = await fetch(RESEND_EMAIL_ENDPOINT, {
+    body: JSON.stringify({
+      from: input.from,
+      html: input.html,
+      subject: input.subject,
+      tags: [
+        { name: "type", value: "new_order" },
+        { name: "order", value: input.orderNumber.replaceAll("-", "_") },
+      ],
+      text: input.text,
+      to: input.to,
+    }),
+    headers: {
+      Authorization: `Bearer ${input.apiKey}`,
+      "Content-Type": "application/json",
+      "Idempotency-Key": `roshal-new-order-${input.orderNumber}`,
+      "User-Agent": "roshal-organic/1.0",
+    },
+    method: "POST",
+  });
+
+  if (!response.ok) {
+    const detail = await response.text().catch(() => "");
+    return {
+      reason: `resend-${response.status}${detail ? `: ${detail}` : ""}`,
+      sent: false,
+    };
+  }
+
+  return { provider: "resend", sent: true };
 }
 
 function buildOrderEmail(input: RoshalNewOrderEmailInput) {
@@ -222,52 +407,37 @@ function buildOrderEmail(input: RoshalNewOrderEmailInput) {
 
 export async function sendRoshalNewOrderEmail(input: RoshalNewOrderEmailInput) {
   const apiKey = envValue("RESEND_API_KEY");
-
-  if (!apiKey) {
-    return { reason: "missing-api-key", sent: false };
-  }
-
   const to = await getRoshalOrderNotificationRecipients();
 
   if (to.length === 0) {
     return { reason: "missing-recipient", sent: false };
   }
 
-  const from =
-    envValue("ROSHAL_ORDER_EMAIL_FROM") ||
-    "Roshal Organic <orders@roshalorganic.bd>";
+  const from = getOrderEmailFromAddress();
   const { html, text } = buildOrderEmail(input);
-  const response = await fetch(RESEND_EMAIL_ENDPOINT, {
-    body: JSON.stringify({
+  const subject = `New order ${input.orderNumber} - ${formatBdt(
+    input.total,
+    "en",
+  )}`;
+
+  if (apiKey) {
+    return sendOrderEmailViaResend({
+      apiKey,
       from,
       html,
-      subject: `New order ${input.orderNumber} - ${formatBdt(
-        input.total,
-        "en",
-      )}`,
-      tags: [
-        { name: "type", value: "new_order" },
-        { name: "order", value: input.orderNumber.replaceAll("-", "_") },
-      ],
+      orderNumber: input.orderNumber,
+      subject,
       text,
       to,
-    }),
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-      "Idempotency-Key": `roshal-new-order-${input.orderNumber}`,
-      "User-Agent": "roshal-organic/1.0",
-    },
-    method: "POST",
-  });
-
-  if (!response.ok) {
-    const detail = await response.text().catch(() => "");
-    return {
-      reason: `resend-${response.status}${detail ? `: ${detail}` : ""}`,
-      sent: false,
-    };
+    });
   }
 
-  return { sent: true };
+  return sendOrderEmailViaSmtp({
+    from,
+    html,
+    orderNumber: input.orderNumber,
+    subject,
+    text,
+    to,
+  });
 }

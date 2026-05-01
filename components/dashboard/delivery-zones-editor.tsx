@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -10,8 +11,14 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
-import type { RoshalDeliveryZone, RoshalLocale } from "@/lib/store-types";
+import { defaultRoshalDeliverySettings } from "@/lib/store-delivery";
+import type {
+  RoshalDeliverySettings,
+  RoshalDeliveryZone,
+  RoshalLocale,
+} from "@/lib/store-types";
 
 interface DeliveryZoneFormState {
   id: string;
@@ -77,14 +84,22 @@ function normalizeFormState(zones: DeliveryZoneFormState[]) {
 export function DashboardDeliveryZonesEditor({
   locale,
   name,
+  settings,
   value,
 }: {
   locale: RoshalLocale;
   name: string;
+  settings: RoshalDeliverySettings;
   value: RoshalDeliveryZone[];
 }) {
   const [zones, setZones] = useState<DeliveryZoneFormState[]>(
     normalizeFormState(value.map(toFormState)),
+  );
+  const [freeDeliveryEnabled, setFreeDeliveryEnabled] = useState(
+    settings.enableFreeDelivery,
+  );
+  const [freeDeliveryThreshold, setFreeDeliveryThreshold] = useState(
+    String(settings.freeDeliveryThreshold),
   );
 
   const serializedValue = useMemo(
@@ -111,6 +126,16 @@ export function DashboardDeliveryZonesEditor({
   return (
     <div className="space-y-4">
       <input type="hidden" name={name} value={serializedValue} />
+      <input
+        type="hidden"
+        name="enableFreeDelivery"
+        value={freeDeliveryEnabled ? "true" : "false"}
+      />
+      <input
+        type="hidden"
+        name="freeDeliveryThreshold"
+        value={String(Math.max(0, Number(freeDeliveryThreshold) || 0))}
+      />
 
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
@@ -268,6 +293,51 @@ export function DashboardDeliveryZonesEditor({
           </Card>
         ))}
       </div>
+
+      <Separator />
+
+      <Card className="border-border/70">
+        <CardHeader className="gap-2">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div className="space-y-1">
+              <CardTitle>Free delivery threshold</CardTitle>
+              <CardDescription>
+                Waive delivery charge when the order subtotal reaches the
+                configured amount.
+              </CardDescription>
+            </div>
+            <div className="flex items-center gap-3 rounded-md border bg-muted/30 px-3 py-2">
+              <Switch
+                checked={freeDeliveryEnabled}
+                onCheckedChange={setFreeDeliveryEnabled}
+              />
+              <Label>{freeDeliveryEnabled ? "Enabled" : "Disabled"}</Label>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
+          <Field
+            label="Free delivery from subtotal (BDT)"
+            type="number"
+            value={freeDeliveryThreshold}
+            onChange={setFreeDeliveryThreshold}
+          />
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              setFreeDeliveryEnabled(
+                defaultRoshalDeliverySettings.enableFreeDelivery,
+              );
+              setFreeDeliveryThreshold(
+                String(defaultRoshalDeliverySettings.freeDeliveryThreshold),
+              );
+            }}
+          >
+            Reset defaults
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   );
 }

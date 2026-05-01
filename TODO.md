@@ -19,6 +19,12 @@
 | 17 | Track Order | Login sarao order track korte parbe public. | | | 🔶 Pending | Order number diye sudhu public Track korte parbe public view te. |
 | 18 | Payment | 1. User order deoar somoy Payment method select korbe Ghorerbazar system a, bortomane card space beshi khay.<br>2. Home Delivery naki Office delivery ta Redial system a jekono 1 ta select kora jabe. | | | 🔶 Pending | Checkout page aro easy & simple korte hobe. see ghorerbazar for demo.<br>r Screenshot proof deoar system rakhar dorkar nei. |
 
+## 2026-05-02 Latest admin sorting, homepage responsive, and order email
+
+- [x] Keep dashboard products, categories, marketing pages, and users latest-first in their admin tables without changing storefront merchandising order.
+- [x] Tighten homepage special-offer card breakpoints, brand logo-card padding, and footer bottom spacing for narrow storefront widths.
+- [x] Add Nodemailer SMTP fallback for new-order notifications and always include `roshalorganic@gmail.com` as a recipient.
+
 ## 2026-05-02 Dashboard metric-card sizing
 
 - [x] Match shared dashboard top metric cards to the compact dashboard overview card sizing.
@@ -36,7 +42,15 @@
 ## 2026-05-02 Storefront mobile header cleanup
 
 - [x] Make the storefront language switcher labels larger and bold.
-- [x] Remove the duplicate Cart action from the mobile top header while keeping the mobile bottom-bar Cart action.
+- [x] Remove the duplicate Cart action from the true mobile top header while keeping the mobile bottom-bar Cart action and a tablet fallback.
+
+## 2026-05-02 Dynamic payment and delivery settings
+
+- [x] Let admins add, remove, enable, disable, and reorder payment providers from Dashboard Payment Settings.
+- [x] Preserve removed payment providers instead of re-adding the old fixed default list during settings normalization.
+- [x] Wire custom payment provider keys through checkout validation, order creation, order-table filtering, and new-order email labels.
+- [x] Port the reference dashboard free-delivery threshold controls into the main delivery settings editor.
+- [x] Apply free-delivery threshold logic in both checkout UI totals and server-side order total creation.
 
 ## 2026-04-30 Payment follow-up
 

@@ -81,8 +81,8 @@ export function StorefrontFooter({
   );
 
   return (
-    <footer className="min-w-0 overflow-x-clip border-t border-primary-foreground/12 bg-primary pb-16 text-primary-foreground md:pb-0">
-      <div className="container mx-auto space-y-2 px-4 py-2 sm:px-6 md:px-8">
+    <footer className="min-w-0 overflow-x-clip border-t border-primary-foreground/12 bg-primary pb-20 text-primary-foreground md:pb-6">
+      <div className="container mx-auto space-y-2 px-4 pt-3 pb-4 sm:px-6 md:px-8 md:py-4">
         <div className="grid min-w-0 gap-4 sm:grid-cols-2 xl:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)_minmax(0,0.75fr)]">
           <div className="min-w-0 space-y-2">
             <Link

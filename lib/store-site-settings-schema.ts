@@ -19,11 +19,15 @@ const siteSettingsStatements = [
     primary_cta_label_bn TEXT NOT NULL,
     primary_cta_label_en TEXT NOT NULL,
     delivery_zones_json TEXT,
+    free_delivery_enabled INTEGER NOT NULL DEFAULT 0,
+    free_delivery_threshold INTEGER NOT NULL DEFAULT 2000,
     created_at INTEGER NOT NULL,
     updated_at INTEGER NOT NULL
   )`,
   `ALTER TABLE roshal_site_settings ADD COLUMN delivery_zones_json TEXT`,
   `ALTER TABLE roshal_site_settings ADD COLUMN facebook_url TEXT`,
+  `ALTER TABLE roshal_site_settings ADD COLUMN free_delivery_enabled INTEGER NOT NULL DEFAULT 0`,
+  `ALTER TABLE roshal_site_settings ADD COLUMN free_delivery_threshold INTEGER NOT NULL DEFAULT 2000`,
 ];
 
 let ensurePromise: Promise<void> | null = null;

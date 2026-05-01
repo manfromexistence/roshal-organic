@@ -22,22 +22,22 @@ export function HomeBrandStrip({ brands }: { brands: BrandItem[] }) {
       opts={{ align: "start", dragFree: true, loop: brands.length > 4 }}
       className="max-w-full overflow-x-clip"
     >
-      <CarouselContent className="-ml-3 md:-ml-4">
+      <CarouselContent className="-ml-2 md:-ml-3">
         {brands.map((brand) => (
           <CarouselItem
             key={brand.key}
-            className="basis-[30%] pl-3 min-[420px]:basis-[30%] sm:basis-1/4 md:pl-6 lg:basis-1/8"
+            className="basis-[38%] pl-2 min-[420px]:basis-[30%] sm:basis-1/5 md:basis-1/6 md:pl-3 lg:basis-1/8"
           >
             <Link href={brand.href} className="block h-full">
-              <Card className="py-2 h-full rounded-md border-border/70 bg-card shadow-sm hover:bg-accent/60">
-                <CardContent className="flex h-16 items-center justify-center p-2 sm:h-20 sm:p-3">
-                  <div className="relative flex h-10 w-auto items-center justify-center rounded-md bg-muted/40 sm:h-12">
+              <Card className="h-full rounded-md border-border/70 bg-card p-0 shadow-sm hover:bg-accent/60">
+                <CardContent className="flex h-14 items-center justify-center p-1 sm:h-16 sm:p-1.5">
+                  <div className="relative h-full w-full overflow-hidden rounded-md bg-muted/40">
                     <Image
                       src={brand.image}
                       alt={brand.name}
-                      width={180}
-                      height={60}
-                      className="h-full w-auto object-cover rounded-md"
+                      fill
+                      className="object-contain p-0.5"
+                      sizes="(max-width: 640px) 38vw, (max-width: 1024px) 16vw, 12vw"
                     />
                   </div>
                 </CardContent>

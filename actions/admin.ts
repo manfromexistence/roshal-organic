@@ -27,8 +27,12 @@ import {
   upsertRoshalSiteSettings,
   upsertRoshalSubcategory,
 } from "@/lib/store-mutations";
+import { normalizeRoshalPaymentMethodKey } from "@/lib/store-payment-methods";
 import { normalizeRoshalRouteSlug } from "@/lib/store-routes";
-import type { RoshalPaymentMethod } from "@/lib/store-types";
+import type {
+  RoshalPaymentMethod,
+  RoshalPaymentOption,
+} from "@/lib/store-types";
 
 function textValue(formData: FormData, key: string) {
   return String(formData.get(key) || "").trim();
@@ -123,6 +127,87 @@ function buildPaymentOption(
   } as const;
 }
 
+function normalizePaymentOptionsInput(
+  options: Partial<RoshalPaymentOption>[],
+  fallbackOptions: RoshalPaymentOption[],
+) {
+  const fallbackByKey = new Map(
+    fallbackOptions.map((option) => [
+      normalizeRoshalPaymentMethodKey(option.key),
+      option,
+    ]),
+  );
+  const seenKeys = new Set<string>();
+
+  return options
+    .map((option, index) => {
+      const key = normalizeRoshalPaymentMethodKey(
+        option.key,
+        `payment_provider_${index + 1}`,
+      );
+
+      if (seenKeys.has(key)) {
+        return null;
+      }
+
+      seenKeys.add(key);
+
+      const fallback = fallbackByKey.get(key);
+      const labelBn =
+        option.label?.bn?.trim() ||
+        fallback?.label.bn ||
+        option.label?.en?.trim() ||
+        key;
+      const labelEn =
+        option.label?.en?.trim() ||
+        fallback?.label.en ||
+        option.label?.bn?.trim() ||
+        key;
+
+      const normalizedOption: RoshalPaymentOption = {
+        key,
+        enabled: option.enabled !== false,
+        mode: option.mode === "gateway" ? "gateway" : "manual",
+        label: {
+          bn: labelBn,
+          en: labelEn,
+        },
+        merchantLabel: {
+          bn:
+            option.merchantLabel?.bn?.trim() ||
+            fallback?.merchantLabel.bn ||
+            "",
+          en:
+            option.merchantLabel?.en?.trim() ||
+            fallback?.merchantLabel.en ||
+            "",
+        },
+        accountType:
+          option.accountType?.trim() ||
+          fallback?.accountType ||
+          "mobile-wallet",
+        accountNumber:
+          option.accountNumber?.trim() || fallback?.accountNumber || "",
+        instructions: {
+          bn:
+            option.instructions?.bn?.trim() || fallback?.instructions.bn || "",
+          en:
+            option.instructions?.en?.trim() || fallback?.instructions.en || "",
+        },
+        guideImageUrl:
+          option.guideImageUrl?.trim() || fallback?.guideImageUrl || "",
+        requiresProof: false,
+        sortOrder: Number.isFinite(Number(option.sortOrder))
+          ? Number(option.sortOrder)
+          : index,
+      };
+
+      return normalizedOption;
+    })
+    .filter((option): option is RoshalPaymentOption => option !== null)
+    .sort((left, right) => left.sortOrder - right.sortOrder);
+}
+
 function finishAction(
   defaultPath: string,
   formData: FormData,
@@ -157,6 +242,10 @@ export async function saveRoshalSiteSettings(formData: FormData) {
     primaryCtaLabelBn: textValue(formData, "primaryCtaLabelBn"),
     primaryCtaLabelEn: textValue(formData, "primaryCtaLabelEn"),
     deliveryZones: jsonValue(formData, "deliveryZonesJson", []),
+    deliverySettings: {
+      enableFreeDelivery: boolValue(formData, "enableFreeDelivery"),
+      freeDeliveryThreshold: numberValue(formData, "freeDeliveryThreshold"),
+    },
   });
 
   finishAction("/dashboard/theme", formData, [
@@ -180,6 +269,16 @@ export async function saveRoshalPaymentSettings(formData: FormData) {
     "bkash",
     "nagad",
   ];
+  const submittedOptions = formData.has("paymentOptionsJson")
+    ? normalizePaymentOptionsInput(
+        jsonValue<Partial<RoshalPaymentOption>[]>(
+          formData,
+          "paymentOptionsJson",
+          [],
+        ),
+        existingSettings.options,
+      )
+    : null;
 
   await upsertRoshalPaymentSettings({
     id: textValue(formData, "id") || undefined,
@@ -195,14 +294,17 @@ export async function saveRoshalPaymentSettings(formData: FormData) {
     supportMessageEn: formData.has("supportMessageEn")
       ? textValue(formData, "supportMessageEn")
       : existingSettings.supportMessage.en,
-    options: paymentMethodOrder.map((key, index) =>
-      buildPaymentOption(
-        formData,
-        key,
-        index,
-        existingSettings.options.find((option) => option.key === key),
-      ),
-    ),
+    options:
+      submittedOptions !== null
+        ? submittedOptions
+        : paymentMethodOrder.map((key, index) =>
+            buildPaymentOption(
+              formData,
+              key,
+              index,
+              existingSettings.options.find((option) => option.key === key),
+            ),
+          ),
   });
 
   finishAction("/dashboard/payments", formData, [

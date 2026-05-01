@@ -1,14 +1,23 @@
 import type {
   LocalizedValue,
+  RoshalDeliverySettings,
   RoshalDeliveryZone,
   RoshalLocale,
 } from "@/lib/store-types";
 
 export interface RoshalDeliveryEstimate {
   fee: number;
+  baseFee: number;
+  freeDeliveryApplied: boolean;
+  freeDeliveryThreshold: number;
   matchedBy: "postal" | "city" | "keyword" | "default" | "none";
   zone: RoshalDeliveryZone | null;
 }
+
+export const defaultRoshalDeliverySettings: RoshalDeliverySettings = {
+  enableFreeDelivery: false,
+  freeDeliveryThreshold: 2000,
+};
 
 function normalizeText(value: string | null | undefined) {
   return value?.trim().toLowerCase() || "";
@@ -159,6 +168,20 @@ export function normalizeRoshalTwoZoneDeliveryZones(
   );
 }
 
+export function normalizeRoshalDeliverySettings(
+  input: Partial<RoshalDeliverySettings> | null | undefined,
+  fallback: RoshalDeliverySettings = defaultRoshalDeliverySettings,
+): RoshalDeliverySettings {
+  const threshold = Number(input?.freeDeliveryThreshold);
+
+  return {
+    enableFreeDelivery: Boolean(input?.enableFreeDelivery),
+    freeDeliveryThreshold: Number.isFinite(threshold)
+      ? Math.max(0, threshold)
+      : fallback.freeDeliveryThreshold,
+  };
+}
+
 export function getRoshalDefaultDeliveryZone(zones: RoshalDeliveryZone[]) {
   return (
     zones.find((zone) => zone.isEnabled && zone.isDefault) ||
@@ -217,13 +240,18 @@ export function resolveRoshalDeliveryEstimate(input: {
   addressLine1?: string | null;
   addressLine2?: string | null;
   city?: string | null;
+  deliverySettings?: RoshalDeliverySettings | null;
   postalCode?: string | null;
   itemCount?: number;
+  subtotal?: number;
   zones: RoshalDeliveryZone[];
 }): RoshalDeliveryEstimate {
   if ((input.itemCount || 0) <= 0) {
     return {
       fee: 0,
+      baseFee: 0,
+      freeDeliveryApplied: false,
+      freeDeliveryThreshold: 0,
       matchedBy: "none",
       zone: null,
     };
@@ -245,9 +273,20 @@ export function resolveRoshalDeliveryEstimate(input: {
     });
   const bestMatch = matches.find((match) => match.score > 0);
   const zone = bestMatch?.zone || fallbackZone;
+  const deliverySettings = normalizeRoshalDeliverySettings(
+    input.deliverySettings,
+  );
+  const baseFee = zone?.fee || 0;
+  const freeDeliveryApplied =
+    deliverySettings.enableFreeDelivery &&
+    deliverySettings.freeDeliveryThreshold > 0 &&
+    (input.subtotal || 0) >= deliverySettings.freeDeliveryThreshold;
 
   return {
-    fee: zone?.fee || 0,
+    fee: freeDeliveryApplied ? 0 : baseFee,
+    baseFee,
+    freeDeliveryApplied,
+    freeDeliveryThreshold: deliverySettings.freeDeliveryThreshold,
     matchedBy: bestMatch?.matchedBy || (zone ? "default" : "none"),
     zone: zone || null,
   };

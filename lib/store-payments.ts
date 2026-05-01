@@ -1,15 +1,10 @@
+import { ROSHAL_GATEWAY_PAYMENT_METHODS } from "@/lib/store-payment-methods";
 import { getRoshalAbsoluteUrl } from "@/lib/store-site";
 import type {
   RoshalPaymentGatewayProvider,
   RoshalPaymentGatewaySummary,
   RoshalPaymentMethod,
 } from "@/lib/store-types";
-
-const ROSHAL_GATEWAY_METHODS: RoshalPaymentMethod[] = [
-  "card",
-  "bkash",
-  "nagad",
-];
 
 interface AamarPayCheckoutSessionInput {
   amount: number;
@@ -62,17 +57,17 @@ function parseBoolean(value: string | undefined, fallback: boolean) {
 
 function parseSupportedGatewayMethods(value: string | undefined) {
   if (!value?.trim()) {
-    return [...ROSHAL_GATEWAY_METHODS];
+    return [...ROSHAL_GATEWAY_PAYMENT_METHODS];
   }
 
   const values = value
     .split(",")
     .map((item) => item.trim().toLowerCase())
     .filter((item): item is RoshalPaymentMethod =>
-      ROSHAL_GATEWAY_METHODS.includes(item as RoshalPaymentMethod),
+      ROSHAL_GATEWAY_PAYMENT_METHODS.includes(item as RoshalPaymentMethod),
     );
 
-  return values.length ? values : [...ROSHAL_GATEWAY_METHODS];
+  return values.length ? values : [...ROSHAL_GATEWAY_PAYMENT_METHODS];
 }
 
 function getRoshalGatewayProvider(): RoshalPaymentGatewayProvider | null {
