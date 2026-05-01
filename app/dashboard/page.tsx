@@ -53,27 +53,33 @@ function DashboardStatCard({
 
   return (
     <Card
-      className={`group border-none border-r-[6px] bg-card/50 shadow-sm backdrop-blur transition duration-200 hover:-translate-y-0.5 hover:bg-card hover:shadow-md ${accentClassName}`}
+      className={`group min-w-0 overflow-hidden border-none border-r-[6px] bg-card/50 shadow-sm backdrop-blur transition duration-200 hover:-translate-y-0.5 hover:bg-card hover:shadow-md ${accentClassName}`}
     >
-      <CardContent className="p-5">
-        <div className="flex items-start justify-between gap-4">
-          <div className="space-y-1">
-            <p className="text-sm font-medium text-muted-foreground">{title}</p>
-            <p className="text-2xl font-bold tracking-tight">{value}</p>
-            <p className="text-xs text-muted-foreground">{description}</p>
+      <CardContent className="min-w-0 p-4 sm:p-5">
+        <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0 space-y-1">
+            <p className="break-words text-sm font-medium text-muted-foreground">
+              {title}
+            </p>
+            <p className="break-words text-2xl font-bold leading-tight tracking-tight">
+              {value}
+            </p>
+            <p className="break-words text-xs text-muted-foreground">
+              {description}
+            </p>
           </div>
-          <div className="flex shrink-0 items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2 self-start sm:self-auto">
             <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-lg">
               {emoji}
             </span>
-            <span className="rounded-full bg-primary/10 p-2 text-primary transition group-hover:bg-primary group-hover:text-primary-foreground">
+            <span className="hidden rounded-full bg-primary/10 p-2 text-primary transition group-hover:bg-primary group-hover:text-primary-foreground sm:flex">
               <Icon className="h-4 w-4" />
             </span>
           </div>
         </div>
-        <div className="mt-4 flex items-center gap-1 text-xs text-muted-foreground">
-          <TrendIcon className="h-3.5 w-3.5 text-primary" />
-          <span>{trend}</span>
+        <div className="mt-4 flex min-w-0 items-start gap-1 text-xs text-muted-foreground">
+          <TrendIcon className="h-3.5 w-3.5 shrink-0 text-primary" />
+          <span className="min-w-0 break-words">{trend}</span>
         </div>
       </CardContent>
     </Card>
@@ -204,7 +210,7 @@ export default async function DashboardHomePage() {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 lg:grid-cols-2 2xl:grid-cols-4">
         <DashboardStatCard
           title="Total revenue"
           value={formatBdt(totalRevenue, locale)}
@@ -253,7 +259,7 @@ export default async function DashboardHomePage() {
         />
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 lg:grid-cols-2 2xl:grid-cols-4">
         <DashboardStatCard
           title="Pending orders"
           value={snapshot.pendingOrderCount}

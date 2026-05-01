@@ -63,12 +63,12 @@ export function DashboardMetricCard({
   return (
     <Card
       className={cn(
-        "min-w-0 border-none border-r-[6px] bg-card/50 shadow-sm backdrop-blur transition duration-200 hover:-translate-y-0.5 hover:bg-card hover:shadow-md",
+        "min-w-0 overflow-hidden border-none border-r-[6px] bg-card/50 shadow-sm backdrop-blur transition duration-200 hover:-translate-y-0.5 hover:bg-card hover:shadow-md",
         getAccentClass(title),
       )}
     >
       <CardHeader className="flex flex-row items-start justify-between gap-3 space-y-0 pb-2">
-        <CardTitle className="min-w-0 text-sm font-medium leading-5 text-muted-foreground">
+        <CardTitle className="min-w-0 break-words text-sm font-medium leading-5 text-muted-foreground">
           {title}
         </CardTitle>
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-lg">
@@ -80,9 +80,11 @@ export function DashboardMetricCard({
           {value}
         </div>
         {hint ? (
-          <p className="mt-1 text-xs leading-5 text-muted-foreground">{hint}</p>
+          <p className="mt-1 break-words text-xs leading-5 text-muted-foreground">
+            {hint}
+          </p>
         ) : (
-          <p className="mt-1 text-xs leading-5 text-muted-foreground">
+          <p className="mt-1 break-words text-xs leading-5 text-muted-foreground">
             Live dashboard data
           </p>
         )}

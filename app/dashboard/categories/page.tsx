@@ -32,6 +32,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import { getAllRoshalProducts } from "@/lib/store-content";
@@ -50,6 +52,7 @@ export default async function DashboardCategoriesPage({
     error?: string;
     key?: string;
     subcategory?: string;
+    view?: string;
   }>;
 }) {
   const resolvedSearchParams = searchParams ? await searchParams : {};
@@ -130,6 +133,8 @@ export default async function DashboardCategoriesPage({
     ).length,
   }));
   const firstCategoryId = taxonomy.categories[0]?.id;
+  const activeView =
+    resolvedSearchParams.view === "create" ? "create" : "categories";
 
   return (
     <div className="min-w-0 space-y-6 p-6">
@@ -269,7 +274,9 @@ export default async function DashboardCategoriesPage({
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
-                        <Link href={`#edit-category-${category.id}`}>
+                        <Link
+                          href={`/dashboard/categories?view=categories#edit-category-${category.id}`}
+                        >
                           <Pencil className="size-4" />
                           {locale === "bn"
                             ? "ক্যাটাগরি এডিট করুন"
@@ -278,7 +285,7 @@ export default async function DashboardCategoriesPage({
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
                         <Link
-                          href={`#delete-category-${category.id}`}
+                          href={`/dashboard/categories?view=categories#delete-category-${category.id}`}
                           className="text-destructive focus:text-destructive"
                         >
                           <Trash2 className="size-4" />
@@ -314,7 +321,7 @@ export default async function DashboardCategoriesPage({
                       {categorySubcategories.slice(0, 8).map((subcategory) => (
                         <Link
                           key={subcategory.id}
-                          href={`#subcategory-${subcategory.id}`}
+                          href={`/dashboard/categories?view=categories#subcategory-${subcategory.id}`}
                           className="group/sub inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[11px] text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary"
                         >
                           {getLocalizedValue(locale, subcategory.label)}
@@ -384,243 +391,282 @@ export default async function DashboardCategoriesPage({
         />
       </div>
 
-      <Card id="create-category">
-        <CardHeader>
-          <CardTitle>
-            {locale === "bn" ? "নতুন ক্যাটাগরি তৈরি করুন" : "Create category"}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form
-            action={saveRoshalCategory}
-            className="grid min-w-0 gap-5 md:grid-cols-2"
+      <Tabs
+        id="category-workspace"
+        defaultValue={activeView}
+        className="space-y-4"
+      >
+        <div className="overflow-x-auto rounded-lg border border-border/70 bg-card p-1 shadow-sm">
+          <TabsList className="grid h-auto w-full min-w-[520px] grid-cols-2 bg-muted/60">
+            <TabsTrigger value="create" className="h-10 gap-2">
+              <Plus className="size-4" />
+              Create
+              <Badge variant="secondary" className="rounded-full">
+                1
+              </Badge>
+            </TabsTrigger>
+            <TabsTrigger value="categories" className="h-10 gap-2">
+              <Pencil className="size-4" />
+              Manage taxonomy
+              <Badge variant="secondary" className="rounded-full">
+                {taxonomy.categories.length + taxonomy.subcategories.length}
+              </Badge>
+            </TabsTrigger>
+          </TabsList>
+        </div>
+
+        <TabsContent value="create">
+          <Card id="create-category" className="border-none shadow-sm">
+            <CardHeader>
+              <CardTitle>
+                {locale === "bn" ? "নতুন ক্যাটাগরি তৈরি করুন" : "Create category"}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form
+                action={saveRoshalCategory}
+                className="grid min-w-0 gap-5 md:grid-cols-2"
+              >
+                <CategoryFields
+                  locale={locale}
+                  bucketOptions={bucketOptions}
+                  defaults={{
+                    key: "",
+                    labelBn: "",
+                    labelEn: "",
+                    descriptionBn: "",
+                    descriptionEn: "",
+                    imageUrl: "",
+                    sourceKeys: [],
+                    isEnabled: true,
+                    showInNavigation: true,
+                    showOnHomepage: true,
+                    sortOrder: String(taxonomy.categories.length),
+                  }}
+                  submitLabel={
+                    locale === "bn" ? "ক্যাটাগরি তৈরি করুন" : "Create category"
+                  }
+                />
+              </form>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="categories">
+          <ScrollArea
+            className="h-[64vh] min-h-[360px] rounded-lg"
+            viewportClassName="pr-3"
           >
-            <CategoryFields
-              locale={locale}
-              bucketOptions={bucketOptions}
-              defaults={{
-                key: "",
-                labelBn: "",
-                labelEn: "",
-                descriptionBn: "",
-                descriptionEn: "",
-                imageUrl: "",
-                sourceKeys: [],
-                isEnabled: true,
-                showInNavigation: true,
-                showOnHomepage: true,
-                sortOrder: String(taxonomy.categories.length),
-              }}
-              submitLabel={
-                locale === "bn" ? "ক্যাটাগরি তৈরি করুন" : "Create category"
-              }
-            />
-          </form>
-        </CardContent>
-      </Card>
+            <div className="space-y-6">
+              {taxonomy.categories.map((category) => {
+                const categorySubcategories = taxonomy.subcategories.filter(
+                  (subcategory) => subcategory.categoryId === category.id,
+                );
+                const categoryProductCount = products.filter((product) =>
+                  productMatchesCategory(product, category),
+                ).length;
 
-      <div className="space-y-6">
-        {taxonomy.categories.map((category) => {
-          const categorySubcategories = taxonomy.subcategories.filter(
-            (subcategory) => subcategory.categoryId === category.id,
-          );
-          const categoryProductCount = products.filter((product) =>
-            productMatchesCategory(product, category),
-          ).length;
-
-          return (
-            <Card key={category.id} id={`edit-category-${category.id}`}>
-              <CardHeader className="gap-3">
-                <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                  <div className="space-y-1">
-                    <CardTitle>
-                      {getLocalizedValue(locale, category.label)}
-                    </CardTitle>
-                    <p className="text-sm text-muted-foreground">
-                      {locale === "bn"
-                        ? `${categoryProductCount}টি প্রোডাক্ট মিলে এই ক্যাটাগরিতে পড়ছে।`
-                        : `${categoryProductCount} products currently resolve into this category.`}
-                    </p>
-                  </div>
-                  <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-                    <span>{category.key}</span>
-                    <span>•</span>
-                    <span>
-                      {locale === "bn"
-                        ? `${categorySubcategories.length}টি সাবক্যাটাগরি`
-                        : `${categorySubcategories.length} subcategories`}
-                    </span>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <form
-                  action={saveRoshalCategory}
-                  className="grid min-w-0 gap-5 md:grid-cols-2"
-                >
-                  <input type="hidden" name="id" value={category.id} />
-                  <CategoryFields
-                    locale={locale}
-                    bucketOptions={bucketOptions}
-                    defaults={{
-                      key: category.key,
-                      labelBn: category.label.bn,
-                      labelEn: category.label.en,
-                      descriptionBn: category.description.bn,
-                      descriptionEn: category.description.en,
-                      imageUrl: category.imageUrl,
-                      sourceKeys: category.sourceKeys,
-                      isEnabled: category.isEnabled,
-                      showInNavigation: category.showInNavigation,
-                      showOnHomepage: category.showOnHomepage,
-                      sortOrder: String(category.sortOrder),
-                    }}
-                    submitLabel={
-                      locale === "bn" ? "ক্যাটাগরি সেভ করুন" : "Save category"
-                    }
-                  />
-                </form>
-
-                <form
-                  action={removeRoshalCategory}
-                  id={`delete-category-${category.id}`}
-                >
-                  <input type="hidden" name="id" value={category.id} />
-                  <Button type="submit" variant="destructive">
-                    {locale === "bn" ? "ক্যাটাগরি ডিলিট করুন" : "Delete category"}
-                  </Button>
-                </form>
-
-                <div className="space-y-4 rounded-2xl border border-border/70 bg-muted/10 p-4">
-                  <div className="space-y-1">
-                    <h2 className="text-lg font-semibold">
-                      {locale === "bn" ? "সাবক্যাটাগরি" : "Subcategories"}
-                    </h2>
-                    <p className="text-sm text-muted-foreground">
-                      {locale === "bn"
-                        ? "ড্রপডাউন নেভিগেশন, ক্যাটাগরি ফিল্টার এবং আরও নির্দিষ্ট প্রোডাক্ট ম্যাচিংয়ের জন্য।"
-                        : "Used by the navigation dropdown, deeper filters, and more specific product matching."}
-                    </p>
-                  </div>
-
-                  <div className="space-y-4">
-                    {categorySubcategories.map((subcategory) => (
-                      <Card
-                        key={subcategory.id}
-                        id={`subcategory-${subcategory.id}`}
-                        className="border-border/60"
-                      >
-                        <CardContent className="pt-6">
-                          <form
-                            action={saveRoshalSubcategory}
-                            className="grid min-w-0 gap-5 md:grid-cols-2"
-                          >
-                            <input
-                              type="hidden"
-                              name="id"
-                              value={subcategory.id}
-                            />
-                            <SubcategoryFields
-                              locale={locale}
-                              bucketOptions={bucketOptions}
-                              categoryOptions={categoryOptions}
-                              productCount={
-                                products.filter((product) =>
-                                  productMatchesSubcategory(
-                                    product,
-                                    subcategory,
-                                  ),
-                                ).length
-                              }
-                              defaults={{
-                                categoryId: subcategory.categoryId,
-                                key: subcategory.key,
-                                labelBn: subcategory.label.bn,
-                                labelEn: subcategory.label.en,
-                                descriptionBn: subcategory.description.bn,
-                                descriptionEn: subcategory.description.en,
-                                imageUrl: subcategory.imageUrl,
-                                sourceKeys: subcategory.sourceKeys,
-                                isEnabled: subcategory.isEnabled,
-                                showInNavigation: subcategory.showInNavigation,
-                                sortOrder: String(subcategory.sortOrder),
-                              }}
-                              submitLabel={
-                                locale === "bn"
-                                  ? "সাবক্যাটাগরি সেভ করুন"
-                                  : "Save subcategory"
-                              }
-                            />
-                          </form>
-                          <form
-                            action={removeRoshalSubcategory}
-                            className="mt-4"
-                          >
-                            <input
-                              type="hidden"
-                              name="id"
-                              value={subcategory.id}
-                            />
-                            <Button type="submit" variant="destructive">
-                              {locale === "bn"
-                                ? "সাবক্যাটাগরি ডিলিট করুন"
-                                : "Delete subcategory"}
-                            </Button>
-                          </form>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-
-                  <Card
-                    id={`add-subcategory-${category.id}`}
-                    className="border-dashed border-border/70"
-                  >
-                    <CardHeader>
-                      <CardTitle className="text-base">
-                        {locale === "bn"
-                          ? "নতুন সাবক্যাটাগরি যোগ করুন"
-                          : "Add subcategory"}
-                      </CardTitle>
+                return (
+                  <Card key={category.id} id={`edit-category-${category.id}`}>
+                    <CardHeader className="gap-3">
+                      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                        <div className="space-y-1">
+                          <CardTitle>
+                            {getLocalizedValue(locale, category.label)}
+                          </CardTitle>
+                          <p className="text-sm text-muted-foreground">
+                            {locale === "bn"
+                              ? `${categoryProductCount}টি প্রোডাক্ট মিলে এই ক্যাটাগরিতে পড়ছে।`
+                              : `${categoryProductCount} products currently resolve into this category.`}
+                          </p>
+                        </div>
+                        <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                          <span>{category.key}</span>
+                          <span>•</span>
+                          <span>
+                            {locale === "bn"
+                              ? `${categorySubcategories.length}টি সাবক্যাটাগরি`
+                              : `${categorySubcategories.length} subcategories`}
+                          </span>
+                        </div>
+                      </div>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="space-y-6">
                       <form
-                        action={saveRoshalSubcategory}
+                        action={saveRoshalCategory}
                         className="grid min-w-0 gap-5 md:grid-cols-2"
                       >
-                        <SubcategoryFields
+                        <input type="hidden" name="id" value={category.id} />
+                        <CategoryFields
                           locale={locale}
                           bucketOptions={bucketOptions}
-                          categoryOptions={categoryOptions}
-                          productCount={0}
                           defaults={{
-                            categoryId: category.id,
-                            key: "",
-                            labelBn: "",
-                            labelEn: "",
-                            descriptionBn: "",
-                            descriptionEn: "",
-                            imageUrl: "",
+                            key: category.key,
+                            labelBn: category.label.bn,
+                            labelEn: category.label.en,
+                            descriptionBn: category.description.bn,
+                            descriptionEn: category.description.en,
+                            imageUrl: category.imageUrl,
                             sourceKeys: category.sourceKeys,
-                            isEnabled: true,
-                            showInNavigation: true,
-                            sortOrder: String(categorySubcategories.length),
+                            isEnabled: category.isEnabled,
+                            showInNavigation: category.showInNavigation,
+                            showOnHomepage: category.showOnHomepage,
+                            sortOrder: String(category.sortOrder),
                           }}
                           submitLabel={
-                            locale === "bn"
-                              ? "সাবক্যাটাগরি তৈরি করুন"
-                              : "Create subcategory"
+                            locale === "bn" ? "ক্যাটাগরি সেভ করুন" : "Save category"
                           }
                         />
                       </form>
+
+                      <form
+                        action={removeRoshalCategory}
+                        id={`delete-category-${category.id}`}
+                      >
+                        <input type="hidden" name="id" value={category.id} />
+                        <Button type="submit" variant="destructive">
+                          {locale === "bn"
+                            ? "ক্যাটাগরি ডিলিট করুন"
+                            : "Delete category"}
+                        </Button>
+                      </form>
+
+                      <div className="space-y-4 rounded-2xl border border-border/70 bg-muted/10 p-4">
+                        <div className="space-y-1">
+                          <h2 className="text-lg font-semibold">
+                            {locale === "bn" ? "সাবক্যাটাগরি" : "Subcategories"}
+                          </h2>
+                          <p className="text-sm text-muted-foreground">
+                            {locale === "bn"
+                              ? "ড্রপডাউন নেভিগেশন, ক্যাটাগরি ফিল্টার এবং আরও নির্দিষ্ট প্রোডাক্ট ম্যাচিংয়ের জন্য।"
+                              : "Used by the navigation dropdown, deeper filters, and more specific product matching."}
+                          </p>
+                        </div>
+
+                        <div className="space-y-4">
+                          {categorySubcategories.map((subcategory) => (
+                            <Card
+                              key={subcategory.id}
+                              id={`subcategory-${subcategory.id}`}
+                              className="border-border/60"
+                            >
+                              <CardContent className="pt-6">
+                                <form
+                                  action={saveRoshalSubcategory}
+                                  className="grid min-w-0 gap-5 md:grid-cols-2"
+                                >
+                                  <input
+                                    type="hidden"
+                                    name="id"
+                                    value={subcategory.id}
+                                  />
+                                  <SubcategoryFields
+                                    locale={locale}
+                                    bucketOptions={bucketOptions}
+                                    categoryOptions={categoryOptions}
+                                    productCount={
+                                      products.filter((product) =>
+                                        productMatchesSubcategory(
+                                          product,
+                                          subcategory,
+                                        ),
+                                      ).length
+                                    }
+                                    defaults={{
+                                      categoryId: subcategory.categoryId,
+                                      key: subcategory.key,
+                                      labelBn: subcategory.label.bn,
+                                      labelEn: subcategory.label.en,
+                                      descriptionBn: subcategory.description.bn,
+                                      descriptionEn: subcategory.description.en,
+                                      imageUrl: subcategory.imageUrl,
+                                      sourceKeys: subcategory.sourceKeys,
+                                      isEnabled: subcategory.isEnabled,
+                                      showInNavigation:
+                                        subcategory.showInNavigation,
+                                      sortOrder: String(subcategory.sortOrder),
+                                    }}
+                                    submitLabel={
+                                      locale === "bn"
+                                        ? "সাবক্যাটাগরি সেভ করুন"
+                                        : "Save subcategory"
+                                    }
+                                  />
+                                </form>
+                                <form
+                                  action={removeRoshalSubcategory}
+                                  className="mt-4"
+                                >
+                                  <input
+                                    type="hidden"
+                                    name="id"
+                                    value={subcategory.id}
+                                  />
+                                  <Button type="submit" variant="destructive">
+                                    {locale === "bn"
+                                      ? "সাবক্যাটাগরি ডিলিট করুন"
+                                      : "Delete subcategory"}
+                                  </Button>
+                                </form>
+                              </CardContent>
+                            </Card>
+                          ))}
+                        </div>
+
+                        <Card
+                          id={`add-subcategory-${category.id}`}
+                          className="border-dashed border-border/70"
+                        >
+                          <CardHeader>
+                            <CardTitle className="text-base">
+                              {locale === "bn"
+                                ? "নতুন সাবক্যাটাগরি যোগ করুন"
+                                : "Add subcategory"}
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <form
+                              action={saveRoshalSubcategory}
+                              className="grid min-w-0 gap-5 md:grid-cols-2"
+                            >
+                              <SubcategoryFields
+                                locale={locale}
+                                bucketOptions={bucketOptions}
+                                categoryOptions={categoryOptions}
+                                productCount={0}
+                                defaults={{
+                                  categoryId: category.id,
+                                  key: "",
+                                  labelBn: "",
+                                  labelEn: "",
+                                  descriptionBn: "",
+                                  descriptionEn: "",
+                                  imageUrl: "",
+                                  sourceKeys: category.sourceKeys,
+                                  isEnabled: true,
+                                  showInNavigation: true,
+                                  sortOrder: String(
+                                    categorySubcategories.length,
+                                  ),
+                                }}
+                                submitLabel={
+                                  locale === "bn"
+                                    ? "সাবক্যাটাগরি তৈরি করুন"
+                                    : "Create subcategory"
+                                }
+                              />
+                            </form>
+                          </CardContent>
+                        </Card>
+                      </div>
                     </CardContent>
                   </Card>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+                );
+              })}
+            </div>
+          </ScrollArea>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

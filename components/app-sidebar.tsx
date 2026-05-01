@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/sidebar";
 import {
   buildDashboardPrimaryNavigation,
+  type DashboardNavItem,
   dashboardPrimaryNavigation,
   dashboardSecondaryNavigation,
   dashboardSectionNavigation,
@@ -26,6 +27,8 @@ import {
 import type { RoshalMarketingPage } from "@/lib/store-types";
 
 const SCROLL_KEY = "sidebar-scroll";
+const HIDDEN_SIDEBAR_URLS = new Set(["/dashboard/theme"]);
+const HIDDEN_SIDEBAR_TITLES = new Set(["Storefront Theme"]);
 
 interface AppSidebarProps
   extends Omit<React.ComponentProps<typeof Sidebar>, "navInitialState"> {
@@ -41,6 +44,33 @@ interface AppSidebarProps
     email: string;
     avatar?: string;
   };
+}
+
+function shouldHideSidebarItem(item: { title: string; url: string }) {
+  return (
+    HIDDEN_SIDEBAR_URLS.has(item.url) || HIDDEN_SIDEBAR_TITLES.has(item.title)
+  );
+}
+
+function stripHiddenSidebarItems(
+  items: DashboardNavItem[],
+): DashboardNavItem[] {
+  return items
+    .filter((item) => !shouldHideSidebarItem(item))
+    .map((item) => {
+      if (!item.items) {
+        return item;
+      }
+
+      const visibleItems = item.items.filter(
+        (subItem) => !shouldHideSidebarItem(subItem),
+      );
+
+      return {
+        ...item,
+        items: visibleItems.length > 0 ? visibleItems : undefined,
+      };
+    });
 }
 
 export function AppSidebar({
@@ -79,10 +109,11 @@ export function AppSidebar({
     }
   };
 
-  const resolvedPrimaryNavigation =
+  const resolvedPrimaryNavigation = stripHiddenSidebarItems(
     marketingPages && marketingPages.length > 0
       ? buildDashboardPrimaryNavigation(marketingPages)
-      : dashboardPrimaryNavigation;
+      : dashboardPrimaryNavigation,
+  );
 
   return (
     <Sidebar {...sidebarProps} className="dashboard-primary-sidebar">

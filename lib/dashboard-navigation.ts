@@ -148,11 +148,6 @@ const primaryNavigationTemplate: DashboardNavItem[] = [
         keywords: ["delivery charges", "contact info", "brand"],
       },
       {
-        title: "Storefront Theme",
-        url: "/dashboard/theme",
-        keywords: ["theme", "layout", "delivery zones"],
-      },
-      {
         title: "Payment Settings",
         url: "/dashboard/payments",
         keywords: ["cash on delivery", "bkash", "nagad", "card"],

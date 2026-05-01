@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Changed
+- Made the dashboard overview cards responsive inside the sidebar layout, delaying the four-column view until very wide screens and forcing long card copy to wrap inside each card.
+- Removed the always-visible horizontal scrollbar strip from the dashboard content shell so pages such as Marketing Pages no longer show a useless bottom bar.
+- Added a sidebar-level guard so the Storefront Theme route cannot render as a dashboard sidebar item even if older navigation data is present.
+- Removed the Storefront Theme child link from the dashboard sidebar settings group while keeping the theme route available by direct link.
+- Removed bottom page padding on dashboard Payment Settings and Marketing Pages while keeping the existing top and side spacing.
+- Split the dashboard category editor into Create and Manage taxonomy submenus with a bounded shadcn scroll workspace so the page no longer expands into one very long editor surface.
 - Compared the live dashboard UI against the `roshal-organic-dashboard-ui` reference and normalized page padding, card shells, category-card sizing, and create/settings form cards to better match the client-preferred dashboard mockup.
 - Tightened shared dashboard table cards to use borderless shadow shells with flush desktop table content and padded mobile fallback cards.
 - Added a functional dashboard system-settings page for brand/contact fields, storefront defaults, and delivery-zone fee controls using the existing site-settings save action.

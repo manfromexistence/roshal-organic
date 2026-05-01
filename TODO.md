@@ -176,3 +176,16 @@
 - [x] Normalize dashboard page padding to the reference-style `p-6` rhythm across list/detail dashboard pages.
 - [x] Tighten shared table-card shells to borderless shadow cards with flush table content and padded mobile fallback cards.
 - [x] Align category cards, add-category tile height, and category create/subcategory create cards with the reference card/action sizing while preserving real dashboard actions.
+
+## 2026-05-01 Dashboard category workspace submenu
+
+- [x] Add Create and Manage taxonomy submenus to the dashboard category page.
+- [x] Keep the full category/subcategory mutation surface available while placing the long editor area inside a bounded shadcn scroll workspace.
+
+## 2026-05-01 Dashboard sidebar and bottom padding cleanup
+
+- [x] Remove Storefront Theme from the dashboard sidebar settings submenu.
+- [x] Remove useless bottom padding on Payment Settings and Marketing Pages while keeping top and side padding.
+- [x] Add a sidebar-level guard so Storefront Theme cannot reappear from older navigation data.
+- [x] Remove the dashboard content shell's always-visible horizontal scrollbar strip.
+- [x] Make dashboard overview cards wrap cleanly and delay four-column layout until very wide screens.

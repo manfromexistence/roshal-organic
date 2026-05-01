@@ -101,7 +101,6 @@ export function DashboardLayout({
         <ScrollArea
           type="always"
           scrollHideDelay={0}
-          showHorizontalScrollbar
           className="min-h-0 min-w-0 flex-1 pt-16"
           viewportRef={scrollRef}
           viewportProps={{
