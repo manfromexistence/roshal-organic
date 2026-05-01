@@ -85,7 +85,7 @@ export function AppSidebar({
       : dashboardPrimaryNavigation;
 
   return (
-    <Sidebar {...sidebarProps}>
+    <Sidebar {...sidebarProps} className="!bg-primary">
       <SidebarHeader className="px-3 py-4">
         <SidebarMenu>
           <SidebarMenuItem>

@@ -155,11 +155,6 @@
     scrollbar-width: thin;
   }
 
-  /* Prevent sidebar flash on reload */
-  [data-slot="sidebar-inner"] {
-    background-color: var(--sidebar) !important;
-  }
-
   html::-webkit-scrollbar,
   body::-webkit-scrollbar {
     width: 12px;

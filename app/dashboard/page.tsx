@@ -107,12 +107,12 @@ export default async function DashboardHomePage() {
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
         <DashboardMetricCard
-          title={locale === "bn" ? "🛍️ মোট পণ্য" : "🛍️ Products"}
+          title={locale === "bn" ? "মোট পণ্য" : "Products"}
           value={snapshot.productCount}
           hint={locale === "bn" ? "লাইভ ক্যাটালগ গুনতি" : "Live catalog count"}
         />
         <DashboardMetricCard
-          title={locale === "bn" ? "⚠️ লো স্টক" : "⚠️ Low stock"}
+          title={locale === "bn" ? "লো স্টক" : "Low stock"}
           value={snapshot.lowStockProductCount}
           hint={
             locale === "bn"
@@ -121,7 +121,7 @@ export default async function DashboardHomePage() {
           }
         />
         <DashboardMetricCard
-          title={locale === "bn" ? "❌ স্টক শেষ" : "❌ Out of stock"}
+          title={locale === "bn" ? "স্টক শেষ" : "Out of stock"}
           value={snapshot.outOfStockProductCount}
           hint={
             locale === "bn"
@@ -130,7 +130,7 @@ export default async function DashboardHomePage() {
           }
         />
         <DashboardMetricCard
-          title={locale === "bn" ? "📋 চলমান অর্ডার" : "📋 Pending orders"}
+          title={locale === "bn" ? "চলমান অর্ডার" : "Pending orders"}
           value={snapshot.pendingOrderCount}
           hint={
             locale === "bn"
@@ -139,7 +139,7 @@ export default async function DashboardHomePage() {
           }
         />
         <DashboardMetricCard
-          title={locale === "bn" ? "👥 ব্যবহারকারী" : "👥 Users"}
+          title={locale === "bn" ? "ব্যবহারকারী" : "Users"}
           value={snapshot.userCount}
           hint={
             locale === "bn"
@@ -148,7 +148,7 @@ export default async function DashboardHomePage() {
           }
         />
         <DashboardMetricCard
-          title={locale === "bn" ? "📄 মার্কেটিং পেজ" : "📄 Marketing pages"}
+          title={locale === "bn" ? "মার্কেটিং পেজ" : "Marketing pages"}
           value={snapshot.marketingPageCount}
           hint={
             locale === "bn"

@@ -52,13 +52,13 @@ const fallbackMarketingPageItems: DashboardNavChildItem[] = [
 
 const primaryNavigationTemplate: DashboardNavItem[] = [
   {
-    title: "📊 Overview",
+    title: "Overview",
     url: "/dashboard",
     icon: "overview",
     keywords: ["dashboard", "overview", "summary"],
   },
   {
-    title: "🛍️ Products",
+    title: "Products",
     url: "/dashboard/products",
     icon: "products",
     keywords: ["catalog", "inventory", "shop"],
@@ -76,31 +76,31 @@ const primaryNavigationTemplate: DashboardNavItem[] = [
     ],
   },
   {
-    title: "📁 Categories",
+    title: "Categories",
     url: "/dashboard/categories",
     icon: "categories",
     keywords: ["taxonomy", "subcategory", "navigation"],
   },
   {
-    title: "📦 Orders",
+    title: "Orders",
     url: "/dashboard/orders",
     icon: "orders",
     keywords: ["checkout", "purchases", "sales"],
   },
   {
-    title: "💳 Payments",
+    title: "Payments",
     url: "/dashboard/payments",
     icon: "payments",
     keywords: ["cash on delivery", "bkash", "nagad", "card"],
   },
   {
-    title: "👥 Users",
+    title: "Users",
     url: "/dashboard/users",
     icon: "users",
     keywords: ["accounts", "roles", "customers"],
   },
   {
-    title: "📝 Marketing Pages",
+    title: "Marketing Pages",
     url: "/dashboard/pages",
     icon: "pages",
     keywords: ["content", "cms", "landing pages"],
@@ -175,7 +175,7 @@ export const dashboardSectionNavigation: DashboardNavItem[] = [];
 
 export const dashboardSecondaryNavigation: DashboardNavItem[] = [
   {
-    title: "🏪 Storefront",
+    title: "Storefront",
     url: "/",
     icon: "storefront",
     keywords: ["home", "shop", "website"],

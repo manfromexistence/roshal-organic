@@ -101,11 +101,7 @@ export function DashboardLayout({
         <ScrollArea
           type="always"
           scrollHideDelay={0}
-          style={{
-            paddingTop: "calc(var(--header-height) + var(--spacing) * 4)",
-            paddingBottom: "calc(var(--spacing) * 10)",
-          }}
-          className="min-h-0 min-w-0 flex-1"
+          className="min-h-0 min-w-0 flex-1 pt-16"
           viewportRef={scrollRef}
           viewportProps={{
             className: "min-w-0 overscroll-contain",
