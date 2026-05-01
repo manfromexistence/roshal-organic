@@ -61,7 +61,7 @@ export function DashboardLayout({
 
   return (
     <SidebarProvider
-      className="h-svh overflow-hidden"
+      className="h-svh w-full max-w-full overflow-hidden"
       style={
         {
           "--sidebar-width": "calc(var(--spacing) * 72)",
@@ -75,19 +75,7 @@ export function DashboardLayout({
         collapsible="icon"
         navInitialState={navInitialState}
         marketingPages={marketingPages}
-        user={
-          user
-            ? {
-                name: user.name,
-                email: user.email,
-                avatar: user.avatar,
-              }
-            : {
-                name: "Guest",
-                email: "guest@example.com",
-                avatar: undefined,
-              }
-        }
+        user={user || undefined}
         organization={
           organization || {
             name: "Roshal Organic",
@@ -96,19 +84,21 @@ export function DashboardLayout({
           }
         }
       />
-      <SidebarInset className="dashboard-admin-surface relative flex h-svh min-h-0 min-w-0 flex-col overflow-hidden">
+      <SidebarInset className="dashboard-admin-surface relative flex h-svh min-h-0 min-w-0 max-w-full flex-col overflow-hidden md:w-[calc(100vw_-_var(--sidebar-width))] md:max-w-[calc(100vw_-_var(--sidebar-width))] md:flex-none group-has-data-[collapsible=icon]/sidebar-wrapper:md:w-[calc(100vw_-_var(--sidebar-width-icon))] group-has-data-[collapsible=icon]/sidebar-wrapper:md:max-w-[calc(100vw_-_var(--sidebar-width-icon))]">
         <SiteHeader user={user} />
         <ScrollArea
           type="always"
           scrollHideDelay={0}
-          className="min-h-0 min-w-0 flex-1 pt-16"
+          className="min-h-0 min-w-0 w-full flex-1 pt-16"
           viewportRef={scrollRef}
           viewportProps={{
             className: "min-w-0 max-w-full overscroll-contain",
             onScroll: handleScroll,
           }}
         >
-          <div className="min-w-full w-full">{children}</div>
+          <div className="dashboard-page-shell min-w-0 max-w-full">
+            {children}
+          </div>
         </ScrollArea>
       </SidebarInset>
     </SidebarProvider>

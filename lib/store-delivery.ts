@@ -86,6 +86,79 @@ export function normalizeRoshalDeliveryZones(
   }));
 }
 
+function isInsideDhakaZone(zone: RoshalDeliveryZone) {
+  const searchable = [
+    zone.id,
+    zone.label.bn,
+    zone.label.en,
+    ...zone.cityPatterns,
+    ...zone.addressKeywords,
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  return (
+    zone.id === "delivery-inside-dhaka" ||
+    searchable.includes("inside dhaka") ||
+    searchable.includes("dhaka") ||
+    searchable.includes("ঢাকা")
+  );
+}
+
+export function normalizeRoshalTwoZoneDeliveryZones(
+  input: unknown,
+  fallbackZones: RoshalDeliveryZone[],
+) {
+  const fallback = normalizeRoshalDeliveryZones([], fallbackZones);
+  const fallbackInside =
+    fallback.find((zone) => zone.id === "delivery-inside-dhaka") || fallback[0];
+  const fallbackOutside =
+    fallback.find((zone) => zone.id === "delivery-outside-dhaka") ||
+    fallback.find((zone) => zone.id.includes("outside")) ||
+    fallback[1] ||
+    fallbackInside;
+  const sourceZones = normalizeRoshalDeliveryZones(input, fallbackZones);
+  const explicitInside =
+    sourceZones.find((zone) => zone.id === "delivery-inside-dhaka") ||
+    sourceZones.find(isInsideDhakaZone) ||
+    fallbackInside;
+  const explicitOutside =
+    sourceZones.find((zone) => zone.id === "delivery-outside-dhaka") ||
+    sourceZones.find((zone) => zone.id.includes("outside")) ||
+    fallbackOutside;
+
+  return normalizeRoshalDeliveryZones(
+    [
+      {
+        ...fallbackInside,
+        ...explicitInside,
+        id: "delivery-inside-dhaka",
+        label: fallbackInside.label,
+        cityPatterns: explicitInside.cityPatterns.length
+          ? explicitInside.cityPatterns
+          : fallbackInside.cityPatterns,
+        addressKeywords: explicitInside.addressKeywords.length
+          ? explicitInside.addressKeywords
+          : fallbackInside.addressKeywords,
+        isDefault: false,
+        sortOrder: 0,
+      },
+      {
+        ...fallbackOutside,
+        ...explicitOutside,
+        id: "delivery-outside-dhaka",
+        label: fallbackOutside.label,
+        cityPatterns: [],
+        postalCodes: explicitOutside.postalCodes,
+        addressKeywords: [],
+        isDefault: true,
+        sortOrder: 1,
+      },
+    ],
+    fallbackZones,
+  );
+}
+
 export function getRoshalDefaultDeliveryZone(zones: RoshalDeliveryZone[]) {
   return (
     zones.find((zone) => zone.isEnabled && zone.isDefault) ||

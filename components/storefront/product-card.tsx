@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import {
   ImageCard,
   ImageCardContent,
-  ImageCardDescription,
   ImageCardFooter,
   ImageCardHeader,
   ImageCardTitle,
@@ -36,12 +35,13 @@ function resolveDiscountLabel(product: RoshalProduct, locale: RoshalLocale) {
 export function RoshalProductCard({
   product,
   locale,
+  priority = false,
 }: {
   product: RoshalProduct;
   locale: RoshalLocale;
+  priority?: boolean;
 }) {
   const name = getLocalizedValue(locale, product.name);
-  const summary = getLocalizedValue(locale, product.summary);
   const categoryLabel = getLocalizedValue(locale, product.categoryLabel);
   const badgeLabel = resolveDiscountLabel(product, locale);
 
@@ -53,12 +53,14 @@ export function RoshalProductCard({
             href={`/products/${product.slug}`}
             className="block rounded-t-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
-            <div className="relative aspect-[11/10] overflow-hidden border-b border-border/70 bg-muted/35">
+            <div className="relative aspect-[4/3] overflow-hidden border-b border-border/70 bg-muted/35">
               <Image
                 src={product.heroImage}
                 alt={name}
                 fill
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
+                loading={priority ? "eager" : "lazy"}
+                priority={priority}
                 sizes="(max-width: 640px) 50vw, (max-width: 1280px) 25vw, 20vw"
               />
             </div>
@@ -83,7 +85,7 @@ export function RoshalProductCard({
         </div>
       </ImageCardHeader>
 
-      <ImageCardContent className="flex flex-1 flex-col items-start gap-0.5 px-2 pb-1.5 pt-1.5 text-left">
+      <ImageCardContent className="flex flex-1 flex-col items-start gap-0.5 px-2 pb-1 pt-1.5 text-left">
         <div className="w-full space-y-0.5">
           <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
             {categoryLabel}
@@ -96,12 +98,9 @@ export function RoshalProductCard({
               {name}
             </ImageCardTitle>
           </Link>
-          <ImageCardDescription className="line-clamp-2 text-[11px] leading-[1.25]">
-            {summary}
-          </ImageCardDescription>
         </div>
 
-        <div className="mt-auto flex w-full flex-col items-start gap-0.5 pt-1">
+        <div className="mt-auto flex w-full flex-col items-start gap-0.5 pt-0.5">
           <div className="space-y-0">
             <p className="price-emphasis text-base font-semibold text-primary dark:[color:color-mix(in_oklch,var(--foreground)_68%,var(--primary))]">
               {formatBdt(product.price, locale)}

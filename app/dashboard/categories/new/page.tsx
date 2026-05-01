@@ -2,8 +2,14 @@ import { ArrowLeft, ImageIcon, Save, X } from "lucide-react";
 import Link from "next/link";
 import { saveRoshalCategory } from "@/actions/admin";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
-import { DashboardFormCheckboxGroup } from "@/components/dashboard/form-checkbox-group";
+import { DashboardSourceKeySelect } from "@/components/dashboard/source-key-select";
 import { ImageUploadField } from "@/components/shared/image-upload-field";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -97,36 +103,42 @@ export default async function NewCategoryPage() {
               placeholder="অর্গানিক সার্টিফায়েড"
             />
             <div className="md:col-span-2">
-              <ImageUploadField
-                name="imageUrl"
-                label="Category image"
-                helperText="Used by homepage category cards and future category landing surfaces."
-                value=""
-              />
-            </div>
-            <div className="md:col-span-2">
-              <TextField
-                name="descriptionEn"
-                label="Description (EN)"
-                placeholder="Describe what products belong in this category."
-              />
-            </div>
-            <div className="md:col-span-2">
-              <TextField
-                name="descriptionBn"
-                label="Description (BN)"
-                placeholder="এই ক্যাটাগরির পণ্য সম্পর্কে লিখুন।"
-              />
-            </div>
-            <div className="md:col-span-2">
-              <DashboardFormCheckboxGroup
+              <DashboardSourceKeySelect
                 name="sourceKeysJson"
-                label="Linked product buckets"
+                label="Existing product bucket"
                 options={bucketOptions}
                 defaultValue={[]}
-                helperText="Choose which existing product category keys should resolve into this storefront category."
+                helperText="Select the existing product group that should appear in this storefront category."
               />
             </div>
+            <Accordion type="single" collapsible className="md:col-span-2">
+              <AccordionItem value="optional-category-details">
+                <AccordionTrigger>
+                  Optional image and description
+                </AccordionTrigger>
+                <AccordionContent
+                  forceMount
+                  className="grid gap-5 data-[state=closed]:hidden"
+                >
+                  <ImageUploadField
+                    name="imageUrl"
+                    label="Category image"
+                    helperText="Used by homepage category cards and future category landing surfaces."
+                    value=""
+                  />
+                  <TextField
+                    name="descriptionEn"
+                    label="Description (EN)"
+                    placeholder="Describe what products belong in this category."
+                  />
+                  <TextField
+                    name="descriptionBn"
+                    label="Description (BN)"
+                    placeholder="এই ক্যাটাগরির পণ্য সম্পর্কে লিখুন।"
+                  />
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
             <div className="flex flex-wrap gap-6 md:col-span-2">
               <DashboardFormCheckbox
                 name="isEnabled"

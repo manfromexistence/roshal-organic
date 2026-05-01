@@ -1,8 +1,6 @@
 "use client";
 
-import { Plus, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -58,29 +56,15 @@ function toFormState(zone: RoshalDeliveryZone): DeliveryZoneFormState {
   };
 }
 
-function createBlankZone(nextIndex: number): DeliveryZoneFormState {
-  return {
-    id: `delivery-zone-${crypto.randomUUID()}`,
-    labelBn: "",
-    labelEn: "",
-    fee: "0",
-    cityPatterns: "",
-    postalCodes: "",
-    addressKeywords: "",
-    isEnabled: true,
-    isDefault: nextIndex === 0,
-    sortOrder: String(nextIndex),
-  };
-}
-
 function normalizeFormState(zones: DeliveryZoneFormState[]) {
-  const nextZones = zones.map((zone, index) => ({
+  const nextZones = zones.slice(0, 2).map((zone, index) => ({
     ...zone,
-    sortOrder: zone.sortOrder || String(index),
+    isDefault: false,
+    sortOrder: String(index),
   }));
   const enabledZones = nextZones.filter((zone) => zone.isEnabled);
   const defaultZoneId =
-    enabledZones.find((zone) => zone.isDefault)?.id ||
+    enabledZones.find((zone) => zone.id === "delivery-outside-dhaka")?.id ||
     enabledZones[0]?.id ||
     "";
 
@@ -100,13 +84,13 @@ export function DashboardDeliveryZonesEditor({
   value: RoshalDeliveryZone[];
 }) {
   const [zones, setZones] = useState<DeliveryZoneFormState[]>(
-    value.length > 0 ? value.map(toFormState) : [createBlankZone(0)],
+    normalizeFormState(value.map(toFormState)),
   );
 
   const serializedValue = useMemo(
     () =>
       JSON.stringify(
-        zones.map((zone, index) => ({
+        normalizeFormState(zones).map((zone, index) => ({
           id: zone.id,
           label: {
             bn: zone.labelBn.trim(),
@@ -135,24 +119,10 @@ export function DashboardDeliveryZonesEditor({
           </h2>
           <p className="text-sm text-muted-foreground">
             {locale === "bn"
-              ? "কার্ট এবং চেকআউটে লোকেশন অনুযায়ী ডেলিভারি চার্জ মিলিয়ে দিন। প্রতিটি জোনে শহর, পোস্ট কোড, অথবা ঠিকানার কীওয়ার্ড দিন।"
-              : "Control cart and checkout delivery charges by location. Match each zone by city, postal code, or address keywords."}
+              ? "Inside Dhaka এবং Outside Dhaka - এই দুই ডেলিভারি চার্জ এখান থেকে নিয়ন্ত্রণ করুন।"
+              : "Edit the two checkout delivery charges: Inside Dhaka and Outside Dhaka. Dhaka district uses the inside charge; every other district uses the outside charge."}
           </p>
         </div>
-
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() =>
-            setZones((current) => [
-              ...normalizeFormState(current),
-              createBlankZone(current.length),
-            ])
-          }
-        >
-          <Plus className="size-4" />
-          {locale === "bn" ? "জোন যোগ করুন" : "Add zone"}
-        </Button>
       </div>
 
       <div className="space-y-4">
@@ -173,25 +143,9 @@ export function DashboardDeliveryZonesEditor({
                   </CardDescription>
                 </div>
 
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() =>
-                    setZones((current) => {
-                      const nextZones = current.filter(
-                        (currentZone) => currentZone.id !== zone.id,
-                      );
-
-                      return nextZones.length > 0
-                        ? normalizeFormState(nextZones)
-                        : [createBlankZone(0)];
-                    })
-                  }
-                >
-                  <Trash2 className="size-4" />
-                  {locale === "bn" ? "মুছুন" : "Remove"}
-                </Button>
+                <div className="rounded-md border bg-muted/30 px-3 py-1.5 text-xs font-medium text-muted-foreground">
+                  {index === 0 ? "Dhaka district" : "All other districts"}
+                </div>
               </div>
             </CardHeader>
 
@@ -308,22 +262,6 @@ export function DashboardDeliveryZonesEditor({
                       ),
                     )
                   }
-                />
-                <ToggleField
-                  label={locale === "bn" ? "ডিফল্ট জোন" : "Default zone"}
-                  checked={zone.isDefault}
-                  onCheckedChange={(checked) => {
-                    if (!checked) {
-                      return;
-                    }
-
-                    setZones((current) =>
-                      current.map((currentZone) => ({
-                        ...currentZone,
-                        isDefault: currentZone.id === zone.id,
-                      })),
-                    );
-                  }}
                 />
               </div>
             </CardContent>

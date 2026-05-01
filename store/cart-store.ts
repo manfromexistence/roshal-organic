@@ -31,6 +31,10 @@ export const useCartStore = create<CartState>()(
     (set, get) => ({
       items: [],
       addItem: (product, quantity = 1) => {
+        if (product.inventory <= 0 || !product.isPublished) {
+          return;
+        }
+
         const existing = get().items.find(
           (item) => item.productId === product.id,
         );

@@ -33,13 +33,256 @@ function downloadBlob(blob: Blob, filename: string) {
   window.URL.revokeObjectURL(objectUrl);
 }
 
-function escapeHtml(value: string) {
+function sanitizePdfText(value: string | number | null | undefined) {
+  return serializeValue(value)
+    .normalize("NFKD")
+    .replace(/[^\x20-\x7E]/g, "?")
+    .trim();
+}
+
+function escapePdfText(value: string) {
   return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
+    .replace(/\\/g, "\\\\")
+    .replace(/\(/g, "\\(")
+    .replace(/\)/g, "\\)");
+}
+
+function pdfNumber(value: number) {
+  return Number.isInteger(value) ? String(value) : value.toFixed(2);
+}
+
+function wrapPdfText(
+  value: string | number | null | undefined,
+  maxChars: number,
+) {
+  const text = sanitizePdfText(value);
+
+  if (!text) {
+    return [""];
+  }
+
+  const words = text.split(/\s+/);
+  const lines: string[] = [];
+  let currentLine = "";
+
+  for (const word of words) {
+    if (word.length > maxChars) {
+      if (currentLine) {
+        lines.push(currentLine);
+        currentLine = "";
+      }
+
+      for (let index = 0; index < word.length; index += maxChars) {
+        lines.push(word.slice(index, index + maxChars));
+      }
+      continue;
+    }
+
+    const nextLine = currentLine ? `${currentLine} ${word}` : word;
+
+    if (nextLine.length > maxChars && currentLine) {
+      lines.push(currentLine);
+      currentLine = word;
+    } else {
+      currentLine = nextLine;
+    }
+  }
+
+  if (currentLine) {
+    lines.push(currentLine);
+  }
+
+  if (lines.length <= 4) {
+    return lines;
+  }
+
+  return [...lines.slice(0, 3), `${lines[3].slice(0, maxChars - 3)}...`];
+}
+
+function addPdfText(
+  operations: string[],
+  value: string,
+  x: number,
+  y: number,
+  size: number,
+  style: "regular" | "bold" = "regular",
+) {
+  operations.push(
+    `BT /${style === "bold" ? "F2" : "F1"} ${size} Tf ${pdfNumber(x)} ${pdfNumber(y)} Td (${escapePdfText(value)}) Tj ET`,
+  );
+}
+
+function buildSimplePdf(
+  data: ExportData[],
+  columns: ExportColumn[],
+  options?: ExportOptions,
+) {
+  const isLandscape = options?.orientation === "landscape";
+  const pageWidth = isLandscape ? 842 : 595;
+  const pageHeight = isLandscape ? 595 : 842;
+  const margin = 32;
+  const title = sanitizePdfText(options?.title || "Export");
+  const metadata = options?.metadata || [];
+  const fontSize = isLandscape ? 7 : 8;
+  const lineHeight = fontSize + 2;
+  const cellPadding = 3;
+  const availableWidth = pageWidth - margin * 2;
+  const totalWeight = columns.reduce(
+    (sum, column) => sum + (column.width || 16),
+    0,
+  );
+  const columnWidths = columns.map(
+    (column) => (availableWidth * (column.width || 16)) / totalWeight,
+  );
+  const pages: string[] = [];
+  let operations: string[] = [];
+  let y = pageHeight - margin;
+
+  const drawHeader = (continued = false) => {
+    operations = [];
+    y = pageHeight - margin;
+    addPdfText(
+      operations,
+      continued ? `${title} (continued)` : title,
+      margin,
+      y,
+      16,
+      "bold",
+    );
+    y -= 22;
+
+    if (!continued && metadata.length > 0) {
+      for (const item of metadata) {
+        addPdfText(
+          operations,
+          `${sanitizePdfText(item.label)}: ${sanitizePdfText(item.value)}`,
+          margin,
+          y,
+          9,
+        );
+        y -= 12;
+      }
+      y -= 4;
+    }
+
+    operations.push(
+      `0.94 g ${pdfNumber(margin)} ${pdfNumber(y - 18)} ${pdfNumber(availableWidth)} 18 re f 0 g`,
+    );
+
+    let x = margin;
+    columns.forEach((column, index) => {
+      addPdfText(
+        operations,
+        sanitizePdfText(column.header).toUpperCase(),
+        x + cellPadding,
+        y - 12,
+        fontSize,
+        "bold",
+      );
+      x += columnWidths[index];
+    });
+
+    y -= 22;
+  };
+
+  const finishPage = () => {
+    pages.push(operations.join("\n"));
+  };
+
+  drawHeader(false);
+
+  const rows = data.length > 0 ? data : [{} as ExportData];
+
+  rows.forEach((row) => {
+    const rowLines = columns.map((column, index) =>
+      wrapPdfText(
+        row[column.key] ?? (data.length > 0 ? "" : "No records available."),
+        Math.max(6, Math.floor(columnWidths[index] / (fontSize * 0.55))),
+      ),
+    );
+    const rowHeight =
+      Math.max(...rowLines.map((lines) => lines.length)) * lineHeight +
+      cellPadding * 2;
+
+    if (y - rowHeight < margin) {
+      finishPage();
+      drawHeader(true);
+    }
+
+    operations.push(
+      `0.82 G ${pdfNumber(margin)} ${pdfNumber(y - rowHeight)} ${pdfNumber(availableWidth)} ${pdfNumber(rowHeight)} re S 0 G`,
+    );
+
+    let x = margin;
+    rowLines.forEach((lines, columnIndex) => {
+      lines.forEach((line, lineIndex) => {
+        addPdfText(
+          operations,
+          line,
+          x + cellPadding,
+          y - cellPadding - fontSize - lineIndex * lineHeight,
+          fontSize,
+        );
+      });
+      x += columnWidths[columnIndex];
+    });
+
+    y -= rowHeight;
+  });
+
+  finishPage();
+
+  const objects: string[] = ["", "", "", ""];
+  const addObject = (content: string) => {
+    objects.push(content);
+    return objects.length;
+  };
+
+  const pageIds: number[] = [];
+  pages.forEach((content) => {
+    const contentId = addObject(
+      `<< /Length ${content.length} >>\nstream\n${content}\nendstream`,
+    );
+    const pageId = addObject(
+      `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents ${contentId} 0 R >>`,
+    );
+    pageIds.push(pageId);
+  });
+
+  objects[0] = "<< /Type /Catalog /Pages 2 0 R >>";
+  objects[1] = `<< /Type /Pages /Kids [${pageIds.map((id) => `${id} 0 R`).join(" ")}] /Count ${pageIds.length} >>`;
+  objects[2] = "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>";
+  objects[3] = "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>";
+
+  const header = "%PDF-1.4\n";
+  let body = "";
+  let offset = header.length;
+  const offsets: number[] = [0];
+
+  objects.forEach((object, index) => {
+    const objectNumber = index + 1;
+    const serialized = `${objectNumber} 0 obj\n${object}\nendobj\n`;
+    offsets.push(offset);
+    body += serialized;
+    offset += serialized.length;
+  });
+
+  const xrefOffset = offset;
+  const xref = [
+    "xref",
+    `0 ${objects.length + 1}`,
+    "0000000000 65535 f ",
+    ...offsets
+      .slice(1)
+      .map((item) => `${String(item).padStart(10, "0")} 00000 n `),
+    "trailer",
+    `<< /Size ${objects.length + 1} /Root 1 0 R >>`,
+    "startxref",
+    String(xrefOffset),
+    "%%EOF",
+  ].join("\n");
+
+  return `${header}${body}${xref}`;
 }
 
 export async function exportToExcel(
@@ -93,74 +336,13 @@ export async function exportToPDF(
     return;
   }
 
-  const printWindow = window.open("", "_blank", "noopener,noreferrer");
+  const pdf = buildSimplePdf(data, columns, options);
+  const filename = options?.filename || `${options?.title || "export"}.pdf`;
 
-  if (!printWindow) {
-    throw new Error("The export window was blocked by the browser.");
-  }
-
-  const title = options?.title || "Export";
-  const metadata = options?.metadata || [];
-  const orientation = options?.orientation || "portrait";
-  const tableHeaders = columns
-    .map((column) => `<th>${escapeHtml(column.header)}</th>`)
-    .join("");
-  const tableRows = data
-    .map(
-      (row) =>
-        `<tr>${columns
-          .map(
-            (column) =>
-              `<td>${escapeHtml(serializeValue(row[column.key]))}</td>`,
-          )
-          .join("")}</tr>`,
-    )
-    .join("");
-  const metadataRows = metadata
-    .map(
-      (item) =>
-        `<div class="meta-item"><span class="meta-label">${escapeHtml(item.label)}</span><span>${escapeHtml(item.value)}</span></div>`,
-    )
-    .join("");
-
-  const html = `<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>${escapeHtml(title)}</title>
-    <style>
-      @page { size: ${orientation}; margin: 16mm; }
-      body { font-family: "JetBrains Mono", monospace; color: #111827; margin: 0; }
-      .page { padding: 24px; }
-      h1 { font-size: 20px; margin: 0 0 16px; }
-      .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; margin-bottom: 20px; }
-      .meta-item { border: 1px solid #d4d4d8; border-radius: 8px; padding: 10px 12px; }
-      .meta-label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em; color: #6b7280; margin-bottom: 4px; }
-      table { width: 100%; border-collapse: collapse; font-size: 12px; }
-      th, td { border: 1px solid #d4d4d8; padding: 8px 10px; text-align: left; vertical-align: top; }
-      th { background: #f4f4f5; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
-      tbody tr:nth-child(even) { background: #fafafa; }
-    </style>
-  </head>
-  <body>
-    <div class="page">
-      <h1>${escapeHtml(title)}</h1>
-      ${metadataRows ? `<div class="meta">${metadataRows}</div>` : ""}
-      <table>
-        <thead>
-          <tr>${tableHeaders}</tr>
-        </thead>
-        <tbody>
-          ${tableRows || `<tr><td colspan="${columns.length}">No records available.</td></tr>`}
-        </tbody>
-      </table>
-    </div>
-  </body>
-</html>`;
-
-  printWindow.document.open();
-  printWindow.document.write(html);
-  printWindow.document.close();
-  printWindow.focus();
-  printWindow.print();
+  downloadBlob(
+    new Blob([pdf], {
+      type: "application/pdf",
+    }),
+    filename,
+  );
 }

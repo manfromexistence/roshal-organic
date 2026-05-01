@@ -55,28 +55,28 @@ export default async function DashboardMarketingPage() {
   const homepage = pages.find((page) => page.slug === "home");
 
   return (
-    <div className="mx-auto min-w-0 max-w-5xl space-y-6 p-6">
+    <div className="mx-auto min-w-0 max-w-6xl space-y-5 overflow-x-clip px-4 py-4 sm:px-6 md:space-y-6 md:py-6">
       <div className="flex min-w-0 flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div className="min-w-0 space-y-2">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-primary">
             Marketing workspace
           </p>
-          <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+          <h1 className="break-words text-3xl font-semibold tracking-tight sm:text-4xl">
             Storefront content center
           </h1>
-          <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
+          <p className="max-w-3xl break-words text-sm leading-6 text-muted-foreground">
             Manage the public homepage, content sections, navigation pages, and
             storefront copy through real CMS controls.
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Button asChild variant="outline">
+        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap">
+          <Button asChild variant="outline" className="w-full sm:w-auto">
             <Link href="/" target="_blank" rel="noreferrer">
               <Eye className="size-4" />
               Open storefront
             </Link>
           </Button>
-          <Button asChild>
+          <Button asChild className="w-full sm:w-auto">
             <Link href="/dashboard/pages#create-marketing-page">
               <Plus className="size-4" />
               New page
@@ -85,7 +85,7 @@ export default async function DashboardMarketingPage() {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-4">
         <DashboardMetricCard
           title="Marketing pages"
           value={pages.length}
@@ -108,8 +108,8 @@ export default async function DashboardMarketingPage() {
         />
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-[0.9fr_1.1fr]">
-        <Card className="border-none bg-card shadow-sm">
+      <div className="grid min-w-0 gap-4 xl:grid-cols-[0.9fr_1.1fr]">
+        <Card className="min-w-0 overflow-hidden border-none bg-card shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Home className="size-5 text-primary" />
@@ -156,7 +156,7 @@ export default async function DashboardMarketingPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-none bg-card shadow-sm">
+        <Card className="min-w-0 overflow-hidden border-none bg-card shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <LayoutTemplate className="size-5 text-primary" />
@@ -166,11 +166,11 @@ export default async function DashboardMarketingPage() {
               Fast access to the most important public marketing pages.
             </CardDescription>
           </CardHeader>
-          <CardContent className="grid gap-3 sm:grid-cols-2">
+          <CardContent className="grid min-w-0 gap-3 sm:grid-cols-2">
             {pages.slice(0, 6).map((page) => (
               <div
                 key={page.id}
-                className="rounded-md border bg-background/70 p-3 transition hover:bg-accent/50"
+                className="min-w-0 rounded-md border bg-background/70 p-3 transition hover:bg-accent/50"
               >
                 <p className="truncate text-sm font-semibold">
                   {getLocalizedValue(locale, page.title)}

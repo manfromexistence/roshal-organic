@@ -8,18 +8,28 @@ import {
 import { getRoshalLocale } from "@/lib/store-i18n";
 import { buildRoshalMarketingMetadata } from "@/lib/store-seo";
 
+const canonicalMarketingSlugs: Record<string, string> = {
+  "about-us": "about",
+  "contact-us": "contact",
+};
+
+function resolveCanonicalMarketingSlug(slug: string) {
+  return canonicalMarketingSlugs[slug] || slug;
+}
+
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const [{ slug }, locale] = await Promise.all([params, getRoshalLocale()]);
+  const canonicalSlug = resolveCanonicalMarketingSlug(slug);
 
-  if (slug === "home") {
+  if (canonicalSlug === "home") {
     return undefined;
   }
 
-  const pageBundle = await getRoshalPageBundle(slug);
+  const pageBundle = await getRoshalPageBundle(canonicalSlug);
 
   if (!pageBundle) {
     return undefined;
@@ -44,7 +54,13 @@ export default async function MarketingContentPage({
     redirect("/");
   }
 
-  const pageBundle = await getRoshalPageBundle(slug);
+  const canonicalSlug = resolveCanonicalMarketingSlug(slug);
+
+  if (canonicalSlug !== slug) {
+    redirect(`/${canonicalSlug}`);
+  }
+
+  const pageBundle = await getRoshalPageBundle(canonicalSlug);
 
   if (!pageBundle) {
     notFound();

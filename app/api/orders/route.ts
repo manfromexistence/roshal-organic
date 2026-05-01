@@ -47,7 +47,6 @@ export async function POST(request: Request) {
       paymentMethod: normalizePaymentMethod(String(body.paymentMethod || "")),
       paymentReference: body.paymentReference,
       paymentSender: body.paymentSender,
-      paymentProofUrl: body.paymentProofUrl,
       items: Array.isArray(body.items) ? body.items : [],
     });
 

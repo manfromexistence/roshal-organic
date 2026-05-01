@@ -47,6 +47,9 @@ next-env.d.ts
 
 # Reference folder
 tablecn/
+hexed/
+resources/
+roshal-organic-dashboard-ui/
 
 # Documentation (optional - remove if you want these deployed)
 AGENTS.md

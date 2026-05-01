@@ -67,7 +67,7 @@ export default async function TrackOrderPage({
                 id="orderNumber"
                 name="orderNumber"
                 defaultValue={orderNumber}
-                placeholder="RO-20260429124922-76E2EF"
+                placeholder="RO-260430123"
                 className="rounded-md"
               />
             </div>

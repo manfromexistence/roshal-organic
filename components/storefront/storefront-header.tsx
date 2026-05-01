@@ -273,15 +273,18 @@ export function StorefrontHeader({
       >
         <div className="h-14 border-b border-border/60 lg:h-[4.1rem]">
           <div className="container mx-auto flex h-full min-w-0 items-center gap-3 px-4 py-1 lg:grid lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-4">
-            <Link href="/" className="flex min-w-0 items-center gap-2">
-              <div className="min-w-0 flex items-center">
+            <Link
+              href="/"
+              className="flex min-w-0 flex-1 items-center gap-2 lg:flex-none"
+            >
+              <div className="flex min-w-0 items-center">
                 <Image
                   src="/logo.png"
                   alt={siteSettings.brandName}
                   width={340}
                   height={110}
                   priority
-                  className="h-[3.35rem] w-auto object-contain object-left lg:h-[3.95rem]"
+                  className="h-[3.35rem] w-auto max-w-[min(13rem,calc(100vw-8.5rem))] object-contain object-left sm:max-w-[16rem] lg:h-[3.95rem] lg:max-w-none"
                 />
               </div>
             </Link>
@@ -398,13 +401,16 @@ export function StorefrontHeader({
                     <span>{locale === "bn" ? "আরও" : "More"}</span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-72">
-                  <DropdownMenuLabel>
+                <DropdownMenuContent
+                  align="end"
+                  className="w-72 max-w-[calc(100vw-2rem)]"
+                >
+                  <DropdownMenuLabel className="break-words [overflow-wrap:anywhere]">
                     {locale === "bn" ? "দ্রুত লিংক" : "Quick links"}
                   </DropdownMenuLabel>
                   <div className="space-y-3 px-2 py-2">
                     <div className="flex items-center justify-between gap-3 rounded-md border border-border/60 bg-muted/30 p-3">
-                      <span className="text-sm font-medium">
+                      <span className="min-w-0 break-words text-sm font-medium [overflow-wrap:anywhere]">
                         {locale === "bn" ? "থিম" : "Theme"}
                       </span>
                       <StorefrontThemeToggle />
@@ -412,12 +418,19 @@ export function StorefrontHeader({
                   </div>
                   <DropdownMenuSeparator />
                   {navLinks.map((link) => (
-                    <DropdownMenuItem key={link.href} asChild>
+                    <DropdownMenuItem
+                      key={link.href}
+                      asChild
+                      className="h-auto whitespace-normal break-words leading-5 [overflow-wrap:anywhere]"
+                    >
                       <Link href={link.href}>{link.label}</Link>
                     </DropdownMenuItem>
                   ))}
                   {sessionUser?.role === "admin" ? (
-                    <DropdownMenuItem asChild>
+                    <DropdownMenuItem
+                      asChild
+                      className="h-auto whitespace-normal break-words leading-5 [overflow-wrap:anywhere]"
+                    >
                       <Link href="/dashboard">
                         <LayoutDashboard className="mr-2 size-4" />
                         {locale === "bn" ? "ড্যাশবোর্ড" : "Dashboard"}
@@ -430,6 +443,7 @@ export function StorefrontHeader({
                       <DropdownMenuItem
                         onClick={handleLogout}
                         disabled={isLoggingOut}
+                        className="h-auto whitespace-normal break-words leading-5 [overflow-wrap:anywhere]"
                       >
                         {isLoggingOut
                           ? locale === "bn"
@@ -485,12 +499,12 @@ export function StorefrontHeader({
           hideTopBar ? "top-0" : "top-14 lg:top-[4.1rem]",
         )}
       >
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto min-w-0 overflow-x-auto px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <NavigationMenu
             viewport={false}
-            className="flex max-w-none flex-none justify-start"
+            className="flex w-max max-w-none flex-none justify-start"
           >
-            <NavigationMenuList className="w-full flex-nowrap items-center justify-start gap-1 py-1.5">
+            <NavigationMenuList className="w-max min-w-full flex-nowrap items-center justify-start gap-1 py-1.5">
               {visibleDesktopTaxonomy.map((group) => {
                 const triggerActive =
                   pathname === "/products" && activeCategory === group.key;
@@ -520,7 +534,7 @@ export function StorefrontHeader({
                               activeCategory === group.key &&
                               activeSubcategory === child.key
                             }
-                            className="rounded-sm px-3 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted hover:text-foreground data-[active=true]:bg-primary/10 data-[active=true]:text-primary"
+                            className="rounded-sm px-3 py-2.5 text-sm font-medium whitespace-normal break-words text-foreground transition-colors hover:bg-muted hover:text-foreground data-[active=true]:bg-primary/10 data-[active=true]:text-primary [overflow-wrap:anywhere]"
                           >
                             <Link href={child.href}>
                               {getLocalizedValue(locale, child.label)}
@@ -553,13 +567,13 @@ export function StorefrontHeader({
                           value={group.key}
                           className="rounded-sm border border-border/60 px-3"
                         >
-                          <AccordionTrigger className="py-3 text-sm font-semibold text-foreground hover:no-underline">
+                          <AccordionTrigger className="py-3 text-left text-sm font-semibold whitespace-normal break-words text-foreground hover:no-underline [overflow-wrap:anywhere]">
                             {getLocalizedValue(locale, group.label)}
                           </AccordionTrigger>
                           <AccordionContent className="space-y-1 pb-3">
                             <Link
                               href={group.href}
-                              className="block rounded-sm px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/10"
+                              className="block rounded-sm px-3 py-2 text-sm font-medium break-words text-primary transition-colors hover:bg-primary/10 [overflow-wrap:anywhere]"
                             >
                               {locale === "bn"
                                 ? `${getLocalizedValue(locale, group.label)} দেখুন`
@@ -575,7 +589,7 @@ export function StorefrontHeader({
                                     activeCategory === group.key &&
                                     activeSubcategory === child.key
                                   }
-                                  className="rounded-sm px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted data-[active=true]:bg-primary/10 data-[active=true]:text-primary"
+                                  className="rounded-sm px-3 py-2 text-sm font-medium whitespace-normal break-words text-foreground transition-colors hover:bg-muted data-[active=true]:bg-primary/10 data-[active=true]:text-primary [overflow-wrap:anywhere]"
                                 >
                                   <Link href={child.href}>
                                     {getLocalizedValue(locale, child.label)}
@@ -596,7 +610,10 @@ export function StorefrontHeader({
       </div>
 
       <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-        <SheetContent side="right" className="w-80 px-4 py-6 z-100">
+        <SheetContent
+          side="right"
+          className="z-100 min-w-0 w-[min(20rem,calc(100vw-1rem))] overflow-x-hidden px-4 py-6"
+        >
           <SheetHeader className="sr-only">
             <SheetTitle>
               {locale === "bn" ? "মোবাইল মেনু" : "Mobile menu"}
@@ -607,10 +624,10 @@ export function StorefrontHeader({
                 : "Browse quick navigation, categories, and account actions."}
             </SheetDescription>
           </SheetHeader>
-          <ScrollArea className="h-full pr-4">
-            <div className="space-y-6 pb-6">
-              <div className="flex items-center justify-between">
-                <span className="text-lg font-semibold">
+          <ScrollArea className="h-full min-w-0 pr-4">
+            <div className="min-w-0 space-y-6 pb-6">
+              <div className="flex min-w-0 items-center justify-between gap-3">
+                <span className="min-w-0 break-words text-lg font-semibold [overflow-wrap:anywhere]">
                   {locale === "bn" ? "দ্রুত নেভিগেশন" : "Quick navigation"}
                 </span>
                 <StorefrontThemeToggle />
@@ -623,7 +640,7 @@ export function StorefrontHeader({
                     href={link.href}
                     onClick={() => setMobileMenuOpen(false)}
                     className={cn(
-                      "rounded-sm border px-4 py-3 text-sm font-medium transition-colors",
+                      "rounded-sm border px-4 py-3 text-sm font-medium break-words transition-colors [overflow-wrap:anywhere]",
                       pathname === link.href
                         ? "border-primary/40 bg-primary/10 text-primary"
                         : "border-border/60 hover:bg-muted/40",
@@ -635,7 +652,7 @@ export function StorefrontHeader({
                 <Link
                   href="/track-order"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="rounded-sm border border-border/60 px-4 py-3 text-sm font-medium transition-colors hover:bg-muted/40"
+                  className="rounded-sm border border-border/60 px-4 py-3 text-sm font-medium break-words transition-colors hover:bg-muted/40 [overflow-wrap:anywhere]"
                 >
                   {locale === "bn" ? "ট্র্যাক অর্ডার" : "Track Order"}
                 </Link>
@@ -646,7 +663,7 @@ export function StorefrontHeader({
                   <Button
                     asChild
                     variant="outline"
-                    className="justify-start rounded-md"
+                    className="h-auto min-h-9 justify-start whitespace-normal rounded-md text-left leading-5 [overflow-wrap:anywhere]"
                   >
                     <Link
                       href="/profile"
@@ -658,7 +675,7 @@ export function StorefrontHeader({
                   <Button
                     asChild
                     variant="outline"
-                    className="justify-start rounded-md"
+                    className="h-auto min-h-9 justify-start whitespace-normal rounded-md text-left leading-5 [overflow-wrap:anywhere]"
                   >
                     <Link
                       href="/favorites"
@@ -668,7 +685,10 @@ export function StorefrontHeader({
                     </Link>
                   </Button>
                   {sessionUser.role === "admin" ? (
-                    <Button asChild className="justify-start rounded-md">
+                    <Button
+                      asChild
+                      className="h-auto min-h-9 justify-start whitespace-normal rounded-md text-left leading-5 [overflow-wrap:anywhere]"
+                    >
                       <Link
                         href="/dashboard"
                         onClick={() => setMobileMenuOpen(false)}
@@ -679,7 +699,7 @@ export function StorefrontHeader({
                   ) : null}
                   <Button
                     variant="outline"
-                    className="rounded-md"
+                    className="h-auto min-h-9 whitespace-normal rounded-md text-left leading-5 [overflow-wrap:anywhere]"
                     onClick={handleLogout}
                     disabled={isLoggingOut}
                   >
@@ -694,7 +714,11 @@ export function StorefrontHeader({
                 </div>
               ) : (
                 <div className="grid gap-2">
-                  <Button asChild variant="outline" className="rounded-md">
+                  <Button
+                    asChild
+                    variant="outline"
+                    className="h-auto min-h-9 whitespace-normal rounded-md text-left leading-5 [overflow-wrap:anywhere]"
+                  >
                     <Link
                       href="/login"
                       onClick={() => setMobileMenuOpen(false)}
@@ -702,7 +726,10 @@ export function StorefrontHeader({
                       {locale === "bn" ? "লগইন" : "Login"}
                     </Link>
                   </Button>
-                  <Button asChild className="rounded-md">
+                  <Button
+                    asChild
+                    className="h-auto min-h-9 whitespace-normal rounded-md text-left leading-5 [overflow-wrap:anywhere]"
+                  >
                     <Link
                       href="/login?mode=signup"
                       onClick={() => setMobileMenuOpen(false)}

@@ -76,7 +76,7 @@ export function NavOrganization({
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <Link href="/admin/organizations">
+                  <Link href="/dashboard/settings">
                     <span className="font-wordmark truncate text-[0.92rem] hover:text-primary">
                       {organization.name}
                     </span>
@@ -85,7 +85,7 @@ export function NavOrganization({
                     {organization.email}
                   </span>
                   <span className="truncate text-xs text-muted-foreground">
-                    Admin's organization
+                    Storefront admin
                   </span>
                 </div>
               </div>

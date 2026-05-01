@@ -19,12 +19,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/hooks/use-toast";
 import { authClient } from "@/lib/auth-client";
-import {
-  bangladeshDistrictOptions,
-  getBangladeshDistrictByValue,
-} from "@/lib/bangladesh-locations";
+import { bangladeshDistrictOptions } from "@/lib/bangladesh-locations";
 import {
   isBangladeshPhoneComplete,
   normalizeBangladeshPhoneInput,
@@ -53,16 +51,18 @@ function toSyntheticEmail(phoneOrEmail: string) {
     return normalized;
   }
 
-  const digits = stripPhoneDecorators(normalized).replace(/\D/g, "");
+  const digits = stripPhoneDecorators(
+    normalizeBangladeshPhoneInput(normalized),
+  ).replace(/\D/g, "");
   return `customer+${digits}@roshalorganic.app`;
 }
 
 function AuthHeader({ title, subtitle }: { title: string; subtitle: string }) {
   return (
-    <div className="flex flex-col items-center gap-3 text-center">
-      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-sm">
+    <div className="flex flex-col items-center gap-2 text-center">
+      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm">
         <svg
-          className="size-7"
+          className="size-6"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -74,10 +74,10 @@ function AuthHeader({ title, subtitle }: { title: string; subtitle: string }) {
         </svg>
       </div>
       <div className="space-y-1">
-        <h1 className="text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
           {title}
         </h1>
-        <p className="text-sm text-muted-foreground md:text-base">{subtitle}</p>
+        <p className="text-sm text-muted-foreground">{subtitle}</p>
       </div>
     </div>
   );
@@ -111,6 +111,7 @@ export default function LoginPage() {
   const [authMode, setAuthMode] = useState<AuthMode>(requestedMode);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [mobileError, setMobileError] = useState<string | null>(null);
   const [rememberMe, setRememberMe] = useState(true);
   const [showSignInPassword, setShowSignInPassword] = useState(false);
   const [showSignUpPassword, setShowSignUpPassword] = useState(false);
@@ -122,10 +123,8 @@ export default function LoginPage() {
   const [mobile, setMobile] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
-  const [district, setDistrict] = useState(bangladeshDistrictOptions[0].value);
-  const [thana, setThana] = useState(
-    bangladeshDistrictOptions[0].thanas[0] || "",
-  );
+  const [district, setDistrict] = useState("");
+  const [thana, setThana] = useState("");
 
   const signInPasswordRef = useRef<HTMLInputElement | null>(null);
 
@@ -134,13 +133,20 @@ export default function LoginPage() {
   }, [requestedMode]);
 
   const districtOption = useMemo(
-    () => getBangladeshDistrictByValue(district),
+    () =>
+      bangladeshDistrictOptions.find((option) => option.value === district) ||
+      null,
     [district],
   );
 
   useEffect(() => {
-    if (!districtOption.thanas.includes(thana)) {
-      setThana(districtOption.thanas[0] || "");
+    if (!districtOption) {
+      setThana("");
+      return;
+    }
+
+    if (thana && !districtOption.thanas.includes(thana)) {
+      setThana("");
     }
   }, [districtOption, thana]);
 
@@ -152,11 +158,17 @@ export default function LoginPage() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrorMessage(null);
+    setMobileError(null);
 
     if (!isSignIn) {
       const phone = normalizeBangladeshPhoneInput(mobile);
       if (!isBangladeshPhoneComplete(phone)) {
-        setErrorMessage("Mobile number must be exactly 11 digits.");
+        setMobileError("Mobile number must be 11 digits and start with 01.");
+        return;
+      }
+
+      if (!districtOption || !district || !thana) {
+        setErrorMessage("Please select district and thana.");
         return;
       }
     }
@@ -185,7 +197,7 @@ export default function LoginPage() {
               password,
               phone: normalizeBangladeshPhoneInput(mobile),
               preferredLanguage: "en",
-              defaultAddress: [address, thana, districtOption.label]
+              defaultAddress: [address, thana, districtOption?.label || ""]
                 .map((value) => value.trim())
                 .filter(Boolean)
                 .join(", "),
@@ -239,10 +251,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-muted/20 px-4 py-10 sm:px-6 md:py-14 lg:px-8 lg:py-16">
-      <div className="mx-auto max-w-3xl">
-        <div className="rounded-2xl border border-border/60 bg-background shadow-xl shadow-black/5 md:rounded-[2rem]">
-          <div className="px-4 py-7 sm:px-6 md:px-10 md:py-10 lg:px-12">
+    <div className="min-h-screen bg-muted/20 px-4 py-6 sm:px-6 md:py-10 lg:px-8">
+      <div className="mx-auto max-w-xl">
+        <div className="rounded-xl border border-border/60 bg-background shadow-xl shadow-black/5 md:rounded-2xl">
+          <div className="px-4 py-6 sm:px-6 md:px-8 md:py-8">
             <AuthHeader
               title={isSignIn ? "Signin" : "Create New Account"}
               subtitle={
@@ -252,21 +264,22 @@ export default function LoginPage() {
               }
             />
 
-            <div className="mt-8 md:mt-10">
-              <Card className="rounded-3xl border-0 bg-muted/35 p-0 shadow-none">
-                <CardContent className="space-y-5 px-4 py-5 sm:px-6 sm:py-6 md:px-7 md:py-7">
-                  <div className="space-y-1">
-                    <h2 className="text-2xl font-semibold text-foreground">
-                      {isSignIn
-                        ? "Login With Credentials"
-                        : "Register a new account"}
-                    </h2>
-                    <p className="text-sm text-muted-foreground">
-                      {isSignIn
-                        ? "Use your email or phone number and password."
-                        : "Complete the form below to create your account."}
-                    </p>
-                  </div>
+            <div className="mt-6 md:mt-7">
+              <Card className="rounded-2xl border-0 bg-muted/35 p-0 shadow-none">
+                <CardContent className="space-y-4 px-4 py-4 sm:px-5 sm:py-5 md:px-6">
+                  <Tabs
+                    value={authMode}
+                    onValueChange={(value) => {
+                      setAuthMode(value === "signup" ? "signup" : "signin");
+                      setErrorMessage(null);
+                      setMobileError(null);
+                    }}
+                  >
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="signin">Sign In</TabsTrigger>
+                      <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                    </TabsList>
+                  </Tabs>
 
                   <form onSubmit={handleSubmit} className="space-y-4">
                     {errorMessage ? (
@@ -284,10 +297,11 @@ export default function LoginPage() {
                             autoComplete="username"
                             onChange={(event) => {
                               setErrorMessage(null);
+                              setMobileError(null);
                               setSignInIdentifier(event.target.value);
                             }}
-                            placeholder="Email or phone number"
-                            className="h-14 rounded-xl border-border/70 bg-background pl-12 text-base"
+                            placeholder="Email or 017XXXXXXXX"
+                            className="h-12 rounded-lg border-border/70 bg-background pl-12 text-base"
                             required
                           />
                         </FieldShell>
@@ -304,10 +318,11 @@ export default function LoginPage() {
                             autoComplete="current-password"
                             onChange={(event) => {
                               setErrorMessage(null);
+                              setMobileError(null);
                               setPassword(event.target.value);
                             }}
                             placeholder="Password"
-                            className="h-14 rounded-xl border-border/70 bg-background pr-12 pl-12 text-base"
+                            className="h-12 rounded-lg border-border/70 bg-background pr-12 pl-12 text-base"
                             minLength={6}
                             required
                           />
@@ -367,10 +382,11 @@ export default function LoginPage() {
                             autoComplete="name"
                             onChange={(event) => {
                               setErrorMessage(null);
+                              setMobileError(null);
                               setName(event.target.value);
                             }}
                             placeholder="Full Name"
-                            className="h-14 rounded-xl border-border/70 bg-background pl-12 text-base"
+                            className="h-12 rounded-lg border-border/70 bg-background pl-12 text-base"
                             required
                           />
                         </FieldShell>
@@ -381,12 +397,13 @@ export default function LoginPage() {
                             value={email}
                             onChange={(event) => {
                               setErrorMessage(null);
+                              setMobileError(null);
                               setEmail(event.target.value);
                             }}
                             autoComplete="email"
                             type="email"
                             placeholder="Email (Optional)"
-                            className="h-14 rounded-xl border-border/70 bg-background pl-12 text-base"
+                            className="h-12 rounded-lg border-border/70 bg-background pl-12 text-base"
                           />
                         </FieldShell>
 
@@ -401,10 +418,11 @@ export default function LoginPage() {
                             autoComplete="new-password"
                             onChange={(event) => {
                               setErrorMessage(null);
+                              setMobileError(null);
                               setPassword(event.target.value);
                             }}
                             placeholder="Password"
-                            className="h-14 rounded-xl border-border/70 bg-background pr-12 pl-12 text-base"
+                            className="h-12 rounded-lg border-border/70 bg-background pr-12 pl-12 text-base"
                             minLength={6}
                             required
                           />
@@ -437,15 +455,16 @@ export default function LoginPage() {
                             autoComplete="street-address"
                             onChange={(event) => {
                               setErrorMessage(null);
+                              setMobileError(null);
                               setAddress(event.target.value);
                             }}
                             placeholder="Address"
-                            className="h-14 rounded-xl border-border/70 bg-background pl-12 text-base"
+                            className="h-12 rounded-lg border-border/70 bg-background pl-12 text-base"
                             required
                           />
                         </FieldShell>
 
-                        <div className="grid grid-cols-2 gap-3">
+                        <div className="grid gap-3 sm:grid-cols-2">
                           <div className="min-w-0 space-y-2">
                             <Label className="px-1 text-sm text-muted-foreground">
                               District
@@ -454,10 +473,12 @@ export default function LoginPage() {
                               value={district}
                               onValueChange={(value) => {
                                 setErrorMessage(null);
+                                setMobileError(null);
                                 setDistrict(value);
+                                setThana("");
                               }}
                             >
-                              <SelectTrigger className="h-14 min-w-0 rounded-xl border-border/70 bg-background text-sm">
+                              <SelectTrigger className="h-12 min-w-0 rounded-lg border-border/70 bg-background text-sm">
                                 <SelectValue placeholder="Select district" />
                               </SelectTrigger>
                               <SelectContent>
@@ -481,18 +502,22 @@ export default function LoginPage() {
                               value={thana}
                               onValueChange={(value) => {
                                 setErrorMessage(null);
+                                setMobileError(null);
                                 setThana(value);
                               }}
+                              disabled={!districtOption}
                             >
-                              <SelectTrigger className="h-14 min-w-0 rounded-xl border-border/70 bg-background text-sm">
+                              <SelectTrigger className="h-12 min-w-0 rounded-lg border-border/70 bg-background text-sm">
                                 <SelectValue placeholder="Select thana" />
                               </SelectTrigger>
                               <SelectContent>
-                                {districtOption.thanas.map((option) => (
-                                  <SelectItem key={option} value={option}>
-                                    {option}
-                                  </SelectItem>
-                                ))}
+                                {(districtOption?.thanas || []).map(
+                                  (option) => (
+                                    <SelectItem key={option} value={option}>
+                                      {option}
+                                    </SelectItem>
+                                  ),
+                                )}
                               </SelectContent>
                             </Select>
                           </div>
@@ -508,19 +533,25 @@ export default function LoginPage() {
                             autoComplete="tel"
                             onChange={(value) => {
                               setErrorMessage(null);
+                              setMobileError(null);
                               setMobile(value);
                             }}
-                            placeholder="01805-767300"
-                            className="[&_button]:h-14 [&_button]:border-border/70 [&_button]:bg-background [&_input]:h-14 [&_input]:rounded-s-none [&_input]:border-border/70 [&_input]:bg-background [&_input]:text-base"
+                            placeholder="017XXXXXXXX"
+                            className="h-12 rounded-lg border-border/70 bg-background text-base"
                             required
                           />
+                          {mobileError ? (
+                            <p className="px-1 text-xs font-medium text-destructive">
+                              {mobileError}
+                            </p>
+                          ) : null}
                         </div>
                       </div>
                     )}
 
                     <Button
                       type="submit"
-                      className="h-14 w-full rounded-xl text-base font-semibold"
+                      className="h-12 w-full rounded-lg text-base font-semibold"
                       disabled={isLoading}
                     >
                       {isLoading
@@ -534,20 +565,6 @@ export default function LoginPage() {
                   </form>
                 </CardContent>
               </Card>
-            </div>
-
-            <div className="mt-6 text-center">
-              <p className="text-sm text-muted-foreground md:text-base">
-                {isSignIn
-                  ? "Don't have any account?"
-                  : "Already have an account?"}{" "}
-                <Link
-                  href={isSignIn ? "/login?mode=signup" : "/login"}
-                  className="font-medium text-primary underline-offset-4 transition-colors hover:text-primary/80 hover:underline"
-                >
-                  {isSignIn ? "Register account" : "Sign in"}
-                </Link>
-              </p>
             </div>
           </div>
         </div>

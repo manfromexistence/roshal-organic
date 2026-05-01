@@ -337,7 +337,7 @@ export function MarketingHeader() {
           {session ? (
             <>
               {/* Watchlist Button */}
-              <Link href="/watchlist">
+              <Link href="/favorites">
                 <Button variant="ghost" size="icon" className="relative">
                   <Heart className="h-5 w-5" />
                   {watchlistCount > 0 && (
@@ -408,7 +408,7 @@ export function MarketingHeader() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/watchlist" className="cursor-pointer">
+                    <Link href="/favorites" className="cursor-pointer">
                       <Heart className="mr-2 h-4 w-4" />
                       {language === "bn" ? "ওয়াচলিস্ট" : "Watchlist"}
                     </Link>

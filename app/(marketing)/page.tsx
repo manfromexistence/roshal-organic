@@ -520,43 +520,55 @@ export default async function LandingPage() {
   const categoriesDescription = sectionDescription(categoriesSection);
   const brandsDescription = sectionDescription(brandsSection);
   const testimonialsDescription = sectionDescription(testimonialsSection);
+  const heroEnabled = isSectionEnabled(heroSection);
+  const categoriesEnabled = isSectionEnabled(categoriesSection);
+  const topSellersEnabled = isSectionEnabled(topSellersSection);
+  const brandsEnabled = isSectionEnabled(brandsSection);
+  const specialOffersEnabled = isSectionEnabled(specialOffersSection);
+  const testimonialsEnabled = isSectionEnabled(testimonialsSection);
 
   return (
     <div className="flex w-full min-w-0 flex-col overflow-hidden">
-      <LandingHero banners={heroBanners} language={language} />
+      {heroEnabled ? (
+        <LandingHero banners={heroBanners} language={language} />
+      ) : null}
 
-      <section className="bg-background py-4 md:py-6">
-        <div className="container mx-auto space-y-4 px-4 sm:px-6 md:space-y-5 md:px-8">
-          <div className="space-y-2.5 text-center">
-            <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
-              {getLocalizedValue(
-                language,
-                sectionTitle(
-                  categoriesSection,
-                  localizedValue("বিশেষ ক্যাটাগরি", "Featured Categories"),
-                ),
-              )}
-            </h2>
-            {categoriesDescription ? (
-              <p className="mx-auto max-w-3xl text-sm leading-6 text-muted-foreground md:text-base">
-                {getLocalizedValue(language, categoriesDescription)}
-              </p>
-            ) : null}
+      {categoriesEnabled && categories.length > 0 ? (
+        <section className="bg-background py-4 md:py-6">
+          <div className="container mx-auto space-y-4 px-4 sm:px-6 md:space-y-5 md:px-8">
+            <div className="space-y-2.5 text-center">
+              <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
+                {getLocalizedValue(
+                  language,
+                  sectionTitle(
+                    categoriesSection,
+                    localizedValue("বিশেষ ক্যাটাগরি", "Featured Categories"),
+                  ),
+                )}
+              </h2>
+              {categoriesDescription ? (
+                <p className="mx-auto max-w-3xl text-sm leading-6 text-muted-foreground md:text-base">
+                  {getLocalizedValue(language, categoriesDescription)}
+                </p>
+              ) : null}
+            </div>
+
+            <HomeCategoryStrip categories={categories} language={language} />
           </div>
+        </section>
+      ) : null}
 
-          <HomeCategoryStrip categories={categories} language={language} />
-        </div>
-      </section>
-
-      <TopSellers
-        products={topSellerCards}
-        language={language}
-        title={sectionTitle(
-          topSellersSection,
-          localizedValue("শীর্ষ বিক্রিত পণ্য", "Top Selling Products"),
-        )}
-        description={sectionDescription(topSellersSection)}
-      />
+      {topSellersEnabled && topSellerCards.length > 0 ? (
+        <TopSellers
+          products={topSellerCards}
+          language={language}
+          title={sectionTitle(
+            topSellersSection,
+            localizedValue("শীর্ষ বিক্রিত পণ্য", "Top Selling Products"),
+          )}
+          description={sectionDescription(topSellersSection)}
+        />
+      ) : null}
 
       {isSectionEnabled(newArrivalsSection) && newArrivalCards.length > 0 ? (
         <FeaturedProducts
@@ -576,7 +588,7 @@ export default async function LandingPage() {
         />
       ) : null}
 
-      {brands.length > 0 ? (
+      {brandsEnabled && brands.length > 0 ? (
         <section className="bg-background py-4 md:py-6">
           <div className="container mx-auto space-y-4 px-4 sm:px-6 md:space-y-5 md:px-8">
             <ScrollReveal>
@@ -603,15 +615,17 @@ export default async function LandingPage() {
         </section>
       ) : null}
 
-      <SpecialOffers
-        deals={deals}
-        language={language}
-        title={sectionTitle(
-          specialOffersSection,
-          localizedValue("বিশেষ অফার", "Special Offers"),
-        )}
-        description={sectionDescription(specialOffersSection)}
-      />
+      {specialOffersEnabled && deals.length > 0 ? (
+        <SpecialOffers
+          deals={deals}
+          language={language}
+          title={sectionTitle(
+            specialOffersSection,
+            localizedValue("বিশেষ অফার", "Special Offers"),
+          )}
+          description={sectionDescription(specialOffersSection)}
+        />
+      ) : null}
 
       {isSectionEnabled(freshPicksSection) && freshPickCards.length > 0 ? (
         <FeaturedProducts
@@ -631,7 +645,7 @@ export default async function LandingPage() {
         />
       ) : null}
 
-      {testimonials.length > 0 ? (
+      {testimonialsEnabled && testimonials.length > 0 ? (
         <section className="bg-background py-4 md:py-6">
           <div className="container mx-auto space-y-4 px-4 sm:px-6 md:space-y-5 md:px-8">
             <ScrollReveal>

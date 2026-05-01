@@ -1,11 +1,9 @@
 "use client";
 
-import { Loader2, LocateFixed } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import type { HTMLAttributes, HTMLInputTypeAttribute } from "react";
 import { useEffect, useId, useMemo, useState } from "react";
-import { ImageUploadField } from "@/components/shared/image-upload-field";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,9 +17,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PhoneInput2 } from "@/components/ui/phone-input-2";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
+import { bangladeshDistrictOptions } from "@/lib/bangladesh-locations";
 import {
   getRoshalDeliveryMatchLabel,
   getRoshalDeliveryZoneLabel,
@@ -30,6 +36,7 @@ import {
 import { formatBdt } from "@/lib/store-format";
 import { getLocalizedValue } from "@/lib/store-locale";
 import { getRoshalPaymentMethodLabel } from "@/lib/store-orders";
+import { isBangladeshPhoneComplete } from "@/lib/store-phone";
 import type {
   RoshalDeliveryZone,
   RoshalLocale,
@@ -39,114 +46,6 @@ import type {
   RoshalProduct,
 } from "@/lib/store-types";
 import { useCartStore } from "@/store/cart-store";
-
-interface RoshalReverseGeocodeResponse {
-  display_name?: string;
-  address?: {
-    house_number?: string;
-    road?: string;
-    suburb?: string;
-    neighbourhood?: string;
-    quarter?: string;
-    village?: string;
-    town?: string;
-    city?: string;
-    municipality?: string;
-    county?: string;
-    state_district?: string;
-    state?: string;
-    postcode?: string;
-  };
-}
-
-function getCurrentBrowserPosition() {
-  return new Promise<GeolocationPosition>((resolve, reject) => {
-    if (!navigator.geolocation) {
-      reject(new Error("Geolocation is not supported by this browser."));
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(resolve, reject, {
-      enableHighAccuracy: true,
-      timeout: 12000,
-      maximumAge: 5 * 60 * 1000,
-    });
-  });
-}
-
-function joinUniqueValues(values: Array<string | undefined>) {
-  const seen = new Set<string>();
-
-  return values
-    .map((value) => value?.trim())
-    .filter((value): value is string => Boolean(value))
-    .filter((value) => {
-      const normalized = value.toLowerCase();
-
-      if (seen.has(normalized)) {
-        return false;
-      }
-
-      seen.add(normalized);
-      return true;
-    });
-}
-
-async function reverseGeocodeCurrentLocation(
-  locale: RoshalLocale,
-  latitude: number,
-  longitude: number,
-) {
-  const url = new URL("https://nominatim.openstreetmap.org/reverse");
-  url.searchParams.set("format", "jsonv2");
-  url.searchParams.set("addressdetails", "1");
-  url.searchParams.set("zoom", "18");
-  url.searchParams.set("lat", String(latitude));
-  url.searchParams.set("lon", String(longitude));
-
-  const response = await fetch(url.toString(), {
-    headers: {
-      Accept: "application/json",
-      "Accept-Language": locale === "bn" ? "bn,en" : "en,bn",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Could not reverse geocode the current location.");
-  }
-
-  const payload = (await response.json()) as RoshalReverseGeocodeResponse;
-  const address = payload.address || {};
-  const city =
-    address.city ||
-    address.town ||
-    address.municipality ||
-    address.county ||
-    address.state_district ||
-    address.state ||
-    "";
-  const addressLine1 =
-    joinUniqueValues([
-      [address.house_number, address.road].filter(Boolean).join(" ").trim(),
-      address.road,
-      address.neighbourhood,
-      address.suburb,
-      payload.display_name?.split(",")[0],
-    ])[0] || "";
-  const addressLine2 = joinUniqueValues([
-    address.suburb,
-    address.neighbourhood,
-    address.quarter,
-    address.village,
-  ]).join(", ");
-
-  return {
-    addressLine1,
-    addressLine2,
-    city,
-    postalCode: address.postcode || "",
-  };
-}
 
 function getDefaultCheckoutPaymentMethod(
   options: RoshalPaymentSettings["options"],
@@ -159,10 +58,8 @@ function getDefaultCheckoutPaymentMethod(
     sortedOptions.find(
       (option) => option.enabled && option.key === "cash_on_delivery",
     )?.key ||
-    sortedOptions.find(
-      (option) =>
-        option.enabled && (option.mode === "manual" || option.requiresProof),
-    )?.key ||
+    sortedOptions.find((option) => option.enabled && option.mode === "manual")
+      ?.key ||
     sortedOptions.find((option) => option.enabled)?.key ||
     "cash_on_delivery"
   );
@@ -174,6 +71,43 @@ const checkoutPaymentLogos: Partial<Record<RoshalPaymentMethod, string>> = {
   bkash: "/logos/bkash-com.png",
   nagad: "/logos/nagad-com-bd.png",
 };
+
+function parseDefaultCheckoutAddress(defaultAddress: string) {
+  const parts = defaultAddress
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean);
+  const normalizedParts = parts.map((part) => part.toLowerCase());
+  const district =
+    bangladeshDistrictOptions.find((option) =>
+      normalizedParts.some(
+        (part) =>
+          part === option.value.toLowerCase() ||
+          part === option.label.toLowerCase(),
+      ),
+    ) || null;
+  const thana =
+    district?.thanas.find((option) =>
+      normalizedParts.some((part) => part === option.toLowerCase()),
+    ) || "";
+  const addressLine1 = parts
+    .filter((part) => {
+      const normalizedPart = part.toLowerCase();
+
+      return (
+        normalizedPart !== thana.toLowerCase() &&
+        normalizedPart !== district?.value.toLowerCase() &&
+        normalizedPart !== district?.label.toLowerCase()
+      );
+    })
+    .join(", ");
+
+  return {
+    addressLine1: addressLine1 || defaultAddress,
+    district: district?.value || "",
+    thana,
+  };
+}
 
 function sortCheckoutPaymentOptions(options: RoshalPaymentSettings["options"]) {
   return [...options]
@@ -226,9 +160,12 @@ export function CheckoutPageClient({
     () => sortCheckoutPaymentOptions(paymentSettings.options),
     [paymentSettings.options],
   );
+  const defaultAddress = useMemo(
+    () => parseDefaultCheckoutAddress(user.defaultAddress),
+    [user.defaultAddress],
+  );
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isLocating, setIsLocating] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [syncMessage, setSyncMessage] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<RoshalPaymentMethod>(
@@ -239,15 +176,22 @@ export function CheckoutPageClient({
     customerName: user.name,
     phone: user.phone,
     email: user.email,
-    addressLine1: user.defaultAddress,
-    addressLine2: "",
-    city: "Dhaka",
+    addressLine1: defaultAddress.addressLine1,
+    addressLine2: defaultAddress.thana,
+    city: defaultAddress.district,
     postalCode: "",
     notes: "",
     paymentReference: "",
     paymentSender: "",
-    paymentProofUrl: "",
   });
+
+  const selectedDistrict = useMemo(
+    () =>
+      bangladeshDistrictOptions.find(
+        (option) => option.value === formState.city,
+      ) || null,
+    [formState.city],
+  );
 
   useEffect(() => {
     setIsHydrated(true);
@@ -261,6 +205,16 @@ export function CheckoutPageClient({
       setPaymentMethod(paymentOptions[0].key);
     }
   }, [paymentMethod, paymentOptions]);
+
+  useEffect(() => {
+    if (
+      formState.addressLine2 &&
+      selectedDistrict &&
+      !selectedDistrict.thanas.includes(formState.addressLine2)
+    ) {
+      setFormState((state) => ({ ...state, addressLine2: "" }));
+    }
+  }, [formState.addressLine2, selectedDistrict]);
 
   useEffect(() => {
     if (!isHydrated) {
@@ -333,67 +287,6 @@ export function CheckoutPageClient({
     setFormState((state) => ({ ...state, [field]: value }));
   };
 
-  const useCurrentLocation = async () => {
-    if (typeof window === "undefined") {
-      return;
-    }
-
-    setSubmitError(null);
-    setIsLocating(true);
-
-    try {
-      const position = await getCurrentBrowserPosition();
-      const resolvedAddress = await reverseGeocodeCurrentLocation(
-        locale,
-        position.coords.latitude,
-        position.coords.longitude,
-      );
-
-      setFormState((state) => ({
-        ...state,
-        addressLine1: resolvedAddress.addressLine1 || state.addressLine1,
-        addressLine2: resolvedAddress.addressLine2 || state.addressLine2,
-        city: resolvedAddress.city || state.city,
-        postalCode: resolvedAddress.postalCode || state.postalCode,
-      }));
-
-      toast({
-        title:
-          locale === "bn"
-            ? "বর্তমান লোকেশন ব্যবহার করা হয়েছে"
-            : "Current location applied",
-        description:
-          locale === "bn"
-            ? "ডেলিভারি ঠিকানা, শহর, এবং পোস্ট কোড আপডেট করা হয়েছে।"
-            : "The delivery address, city, and postal code have been updated.",
-      });
-    } catch (error) {
-      console.error("Current location autofill failed:", error);
-
-      const message =
-        error &&
-        typeof error === "object" &&
-        "code" in error &&
-        typeof error.code === "number"
-          ? error.code === 1
-            ? locale === "bn"
-              ? "লোকেশন পারমিশন দেওয়া হয়নি। ব্রাউজার থেকে লোকেশন অনুমতি দিন।"
-              : "Location permission was denied. Please allow location access in the browser."
-            : locale === "bn"
-              ? "বর্তমান লোকেশন পাওয়া যায়নি। আবার চেষ্টা করুন।"
-              : "Could not determine the current location. Please try again."
-          : error instanceof Error
-            ? error.message
-            : locale === "bn"
-              ? "বর্তমান লোকেশন পাওয়া যায়নি।"
-              : "Could not determine the current location.";
-
-      showCheckoutError(message);
-    } finally {
-      setIsLocating(false);
-    }
-  };
-
   const showCheckoutError = (message: string) => {
     setSubmitError(message);
     toast({
@@ -425,6 +318,10 @@ export function CheckoutPageClient({
         return locale === "bn"
           ? "চেকআউট তথ্য অসম্পূর্ণ। ডেলিভারি ও পেমেন্ট তথ্য আবার যাচাই করুন।"
           : "The checkout information is incomplete. Please review your delivery and payment details.";
+      case "payment-reference-required":
+        return locale === "bn"
+          ? "ওয়ালেট পেমেন্টের জন্য সেন্ডার নম্বর ও ট্রানজেকশন আইডি দিন।"
+          : "For wallet payment, please provide the sender number and transaction ID.";
       case "gateway-init-failed":
         return locale === "bn"
           ? "সিকিউর পেমেন্ট সেশন চালু করা যায়নি। আবার চেষ্টা করুন।"
@@ -446,26 +343,35 @@ export function CheckoutPageClient({
     if (
       !formState.customerName ||
       !formState.phone ||
-      !formState.addressLine1
+      !formState.addressLine1 ||
+      !formState.city ||
+      !formState.addressLine2
     ) {
       showCheckoutError(
         locale === "bn"
-          ? "নাম, ফোন এবং ঠিকানা দিন।"
-          : "Please provide your name, phone number, and address.",
+          ? "নাম, ফোন, ঠিকানা, জেলা এবং থানা দিন।"
+          : "Please provide your name, phone, address, district, and thana.",
+      );
+      return;
+    }
+
+    if (!isBangladeshPhoneComplete(formState.phone)) {
+      showCheckoutError(
+        locale === "bn"
+          ? "সঠিক ১১ সংখ্যার মোবাইল নম্বর দিন।"
+          : "Please enter a valid 11 digit mobile number.",
       );
       return;
     }
 
     if (
       selectedWalletNeedsVerification &&
-      (!formState.paymentSender.trim() ||
-        !formState.paymentReference.trim() ||
-        !formState.paymentProofUrl.trim())
+      (!formState.paymentSender.trim() || !formState.paymentReference.trim())
     ) {
       showCheckoutError(
         locale === "bn"
-          ? "\u09ae\u09be\u09a8\u09c1\u09af\u09bc\u09be\u09b2 \u09aa\u09c7\u09ae\u09c7\u09a8\u09cd\u099f\u09c7\u09b0 \u099c\u09a8\u09cd\u09af \u09b8\u09c7\u09a8\u09cd\u09a1\u09be\u09b0 \u09a8\u09be\u09ae\u09cd\u09ac\u09be\u09b0, \u099f\u09cd\u09b0\u09be\u09a8\u099c\u09be\u0995\u09b6\u09a8 \u0986\u0987\u09a1\u09bf \u098f\u09ac\u0982 \u09aa\u09c7\u09ae\u09c7\u09a8\u09cd\u099f \u09aa\u09cd\u09b0\u09c1\u09ab \u0985\u09aa\u09b2\u09cb\u09a1 \u0995\u09b0\u09c1\u09a8\u0964"
-          : "For wallet payment, please provide the sender number, transaction ID, and payment proof.",
+          ? "ম্যানুয়াল পেমেন্টের জন্য সেন্ডার নাম্বার এবং ট্রানজাকশন আইডি দিন।"
+          : "For wallet payment, please provide the sender number and transaction ID.",
       );
       return;
     }
@@ -515,17 +421,15 @@ export function CheckoutPageClient({
 
   return (
     <div className="container mx-auto space-y-8 px-4 py-8 md:py-10">
-      <div className="space-y-5">
-        <div className="space-y-3">
+      <div className="space-y-4">
+        <div className="space-y-2">
           <p className="text-xs font-medium uppercase tracking-[0.22em] text-primary">
             {locale === "bn" ? "নিরাপদ চেকআউট" : "Secure Checkout"}
           </p>
           <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
             <div className="space-y-2">
               <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-                {locale === "bn"
-                  ? "ডেলিভারি ও পেমেন্ট সম্পন্ন করুন"
-                  : "Complete delivery and payment"}
+                {locale === "bn" ? "চেকআউট" : "Checkout"}
               </h1>
               <p className="max-w-3xl text-sm leading-6 text-muted-foreground md:text-base">
                 {locale === "bn"
@@ -695,36 +599,7 @@ export function CheckoutPageClient({
                 <CardTitle className="text-2xl">
                   {locale === "bn" ? "ডেলিভারি তথ্য" : "Delivery details"}
                 </CardTitle>
-                <p className="text-sm leading-6 text-muted-foreground">
-                  {locale === "bn"
-                    ? "\u09ac\u09cd\u09b0\u09be\u0989\u099c\u09be\u09b0 \u0985\u099f\u09cb\u09ab\u09bf\u09b2 \u09ac\u09cd\u09af\u09ac\u09b9\u09be\u09b0 \u0995\u09b0\u09c1\u09a8 \u0985\u09a5\u09ac\u09be \u09ac\u09b0\u09cd\u09a4\u09ae\u09be\u09a8 \u09b2\u09cb\u0995\u09c7\u09b6\u09a8 \u0986\u09a8\u09c7 \u09a0\u09bf\u0995\u09be\u09a8\u09be, \u09b6\u09b9\u09b0 \u098f\u09ac\u0982 \u09aa\u09cb\u09b8\u09cd\u099f \u0995\u09cb\u09a1 \u09a6\u09cd\u09b0\u09c1\u09a4 \u09aa\u09c2\u09b0\u09a3 \u0995\u09b0\u09c1\u09a8\u0964"
-                    : "Use browser autofill or pull your current location to quickly fill the address, city, and postal code."}
-                </p>
               </div>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="w-full shrink-0 sm:w-auto"
-                onClick={useCurrentLocation}
-                disabled={isLocating}
-              >
-                {isLocating ? (
-                  <>
-                    <Loader2 className="size-4 animate-spin" />
-                    {locale === "bn"
-                      ? "\u09b2\u09cb\u0995\u09c7\u09b6\u09a8 \u0986\u09a8\u09be \u09b9\u099a\u09cd\u099b\u09c7..."
-                      : "Locating..."}
-                  </>
-                ) : (
-                  <>
-                    <LocateFixed className="size-4" />
-                    {locale === "bn"
-                      ? "\u09ac\u09b0\u09cd\u09a4\u09ae\u09be\u09a8 \u09b2\u09cb\u0995\u09c7\u09b6\u09a8 \u09ac\u09cd\u09af\u09ac\u09b9\u09be\u09b0 \u0995\u09b0\u09c1\u09a8"
-                      : "Use current location"}
-                  </>
-                )}
-              </Button>
             </CardHeader>
             <CardContent className="grid gap-4 grid-cols-1 md:grid-cols-2">
               <Field
@@ -747,13 +622,6 @@ export function CheckoutPageClient({
                 inputMode="email"
                 type="email"
               />
-              <Field
-                label={locale === "bn" ? "পোস্ট কোড" : "Postal code"}
-                value={formState.postalCode}
-                onChange={(value) => updateFormValue("postalCode", value)}
-                autoComplete="postal-code"
-                inputMode="numeric"
-              />
               <div className="col-span-1 md:col-span-2">
                 <Field
                   label={locale === "bn" ? "ঠিকানা" : "Address"}
@@ -762,20 +630,56 @@ export function CheckoutPageClient({
                   autoComplete="address-line1"
                 />
               </div>
-              <div className="col-span-1 md:col-span-2">
-                <Field
-                  label={locale === "bn" ? "অতিরিক্ত ঠিকানা" : "Address line 2"}
-                  value={formState.addressLine2}
-                  onChange={(value) => updateFormValue("addressLine2", value)}
-                  autoComplete="address-line2"
-                />
+              <div className="min-w-0 space-y-2">
+                <Label className="block truncate">
+                  {locale === "bn" ? "জেলা" : "District"}
+                </Label>
+                <Select
+                  value={formState.city}
+                  onValueChange={(value) => {
+                    setSubmitError(null);
+                    setFormState((state) => ({
+                      ...state,
+                      city: value,
+                      addressLine2: "",
+                    }));
+                  }}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select district" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {bangladeshDistrictOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-              <Field
-                label={locale === "bn" ? "শহর" : "City"}
-                value={formState.city}
-                onChange={(value) => updateFormValue("city", value)}
-                autoComplete="address-level2"
-              />
+              <div className="min-w-0 space-y-2">
+                <Label className="block truncate">
+                  {locale === "bn" ? "থানা" : "Thana"}
+                </Label>
+                <Select
+                  value={formState.addressLine2}
+                  onValueChange={(value) =>
+                    updateFormValue("addressLine2", value)
+                  }
+                  disabled={!selectedDistrict}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select thana" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(selectedDistrict?.thanas || []).map((option) => (
+                      <SelectItem key={option} value={option}>
+                        {option}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               <div className="min-w-0 space-y-2 md:col-span-2">
                 <Label className="block truncate">
                   {locale === "bn" ? "ডেলিভারি ধরন" : "Delivery type"}
@@ -831,8 +735,8 @@ export function CheckoutPageClient({
                       </p>
                       <p className="text-xs leading-5 text-muted-foreground">
                         {locale === "bn"
-                          ? "অফিস বা কর্মস্থলের ঠিকানায় ডেলিভারি দিন।"
-                          : "Deliver to your office or workplace."}
+                          ? "কুরিয়ার ব্রাঞ্চ অফিস থেকে পণ্য সংগ্রহ করতে হবে।"
+                          : "Collect your product from the courier branch office."}
                       </p>
                     </div>
                   </Label>
@@ -862,31 +766,24 @@ export function CheckoutPageClient({
               </CardTitle>
             </CardHeader>
 
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-4">
               <RadioGroup
                 value={paymentMethod}
                 onValueChange={(value) => {
                   setSubmitError(null);
                   setPaymentMethod(value as RoshalPaymentMethod);
                 }}
-                className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4"
+                className="grid grid-cols-2 gap-2 lg:grid-cols-4"
               >
                 {paymentOptions.map((option) => {
                   const isSelected = option.key === paymentMethod;
-                  const isCompactWalletOption = checkoutWalletKeys.includes(
-                    option.key,
-                  );
                   const logoSrc = checkoutPaymentLogos[option.key];
 
                   return (
                     <Label
                       key={option.key}
                       htmlFor={option.key}
-                      className={`flex cursor-pointer rounded-sm border transition-colors ${
-                        isCompactWalletOption
-                          ? "items-center gap-2 px-2.5 py-2"
-                          : "items-start gap-2.5 px-2.5 py-2.5"
-                      } ${
+                      className={`flex cursor-pointer items-center gap-2 rounded-sm border px-2 py-2 transition-colors ${
                         isSelected
                           ? "border-primary/50 bg-primary/5"
                           : "border-border/70 hover:bg-muted/20"
@@ -905,7 +802,7 @@ export function CheckoutPageClient({
                               alt={`${getLocalizedValue(locale, option.label)} logo`}
                               width={72}
                               height={24}
-                              className="h-6 w-auto rounded-[4px] border border-border/60"
+                              className="rounded-[4px] border border-border/60"
                             />
                           </div>
                         ) : null}
@@ -924,7 +821,7 @@ export function CheckoutPageClient({
                   selectedOption.key !== "cash_on_delivery" ? (
                     <div className="rounded-sm border border-border/60 bg-background px-3 py-2">
                       <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                        Payment number
+                        Send Money (personal)
                       </p>
                       <p className="mt-1 break-all text-base font-semibold leading-tight text-foreground">
                         {selectedOption.accountNumber}
@@ -957,36 +854,6 @@ export function CheckoutPageClient({
                           updateFormValue("paymentReference", value)
                         }
                       />
-                      <div className="md:col-span-2">
-                        <ImageUploadField
-                          compact
-                          showPreview={false}
-                          label={
-                            locale === "bn"
-                              ? "\u09aa\u09c7\u09ae\u09c7\u09a8\u09cd\u099f \u09aa\u09cd\u09b0\u09c1\u09ab"
-                              : "Payment proof"
-                          }
-                          uploadLabel={
-                            locale === "bn"
-                              ? "\u09b8\u09cd\u0995\u09cd\u09b0\u09bf\u09a8\u09b6\u099f \u0986\u09aa\u09b2\u09cb\u09a1"
-                              : "Upload proof"
-                          }
-                          uploadingLabel={
-                            locale === "bn"
-                              ? "\u0986\u09aa\u09b2\u09cb\u09a1 \u09b9\u099a\u09cd\u099b\u09c7"
-                              : "Uploading"
-                          }
-                          clearLabel={
-                            locale === "bn"
-                              ? "\u09b8\u09b0\u09be\u09a8"
-                              : "Clear"
-                          }
-                          value={formState.paymentProofUrl}
-                          onChange={(value) =>
-                            updateFormValue("paymentProofUrl", value)
-                          }
-                        />
-                      </div>
                     </div>
                   ) : null}
                 </div>

@@ -10,7 +10,7 @@ import {
   Search,
 } from "lucide-react";
 import Link from "next/link";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -147,6 +147,7 @@ export function HomepageControlCenter({ locale }: HomepageControlCenterProps) {
   const setSelectedSectionKey = useMarketingDashboardStore(
     (state) => state.setSelectedSectionKey,
   );
+  const [toggleError, setToggleError] = useState<string | null>(null);
   const { data, error, isFetching, isLoading, refetch } = useQuery({
     queryKey,
     queryFn: fetchHomeControlCenter,
@@ -155,6 +156,7 @@ export function HomepageControlCenter({ locale }: HomepageControlCenterProps) {
   const toggleMutation = useMutation({
     mutationFn: updateSectionState,
     onMutate: async (input) => {
+      setToggleError(null);
       await queryClient.cancelQueries({
         queryKey,
       });
@@ -189,10 +191,15 @@ export function HomepageControlCenter({ locale }: HomepageControlCenterProps) {
 
       return { previous };
     },
-    onError: (_error, _variables, context) => {
+    onError: (mutationError, _variables, context) => {
       if (context?.previous) {
         queryClient.setQueryData(queryKey, context.previous);
       }
+      setToggleError(
+        mutationError instanceof Error
+          ? mutationError.message
+          : "Could not update section visibility.",
+      );
     },
     onSettled: async () => {
       await queryClient.invalidateQueries({
@@ -251,23 +258,25 @@ export function HomepageControlCenter({ locale }: HomepageControlCenterProps) {
   }, [data?.sections, selectedSectionKey, setSelectedSectionKey]);
 
   return (
-    <Card>
-      <CardHeader className="gap-4">
-        <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
-          <div className="space-y-2">
-            <CardTitle className="text-2xl">{copy.title}</CardTitle>
-            <CardDescription className="max-w-3xl text-sm leading-6">
+    <Card className="min-w-0 overflow-hidden">
+      <CardHeader className="gap-4 p-4 sm:p-6">
+        <div className="flex min-w-0 flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+          <div className="min-w-0 space-y-2">
+            <CardTitle className="break-words text-xl sm:text-2xl">
+              {copy.title}
+            </CardTitle>
+            <CardDescription className="max-w-3xl break-words text-sm leading-6">
               {copy.description}
             </CardDescription>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <Button asChild variant="outline">
+          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap">
+            <Button asChild variant="outline" className="w-full sm:w-auto">
               <Link href={data?.homePage.liveHref || "/"}>
                 <Eye className="size-4" />
                 {copy.openLive}
               </Link>
             </Button>
-            <Button asChild variant="outline">
+            <Button asChild variant="outline" className="w-full sm:w-auto">
               <Link href={data?.homePage.editorHref || "/dashboard/pages"}>
                 <FilePenLine className="size-4" />
                 {copy.openEditor}
@@ -276,6 +285,7 @@ export function HomepageControlCenter({ locale }: HomepageControlCenterProps) {
             <Button
               type="button"
               variant="outline"
+              className="w-full sm:w-auto"
               onClick={() => refetch()}
               disabled={isFetching}
             >
@@ -289,14 +299,19 @@ export function HomepageControlCenter({ locale }: HomepageControlCenterProps) {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="min-w-0 space-y-5 p-4 sm:space-y-6 sm:p-6">
         {error ? (
           <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-foreground">
             {error instanceof Error ? error.message : copy.error}
           </div>
         ) : null}
+        {toggleError ? (
+          <div className="rounded-2xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-foreground">
+            {toggleError}
+          </div>
+        ) : null}
 
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-4">
           <MetricCard
             label={copy.metrics.sections}
             value={
@@ -331,10 +346,10 @@ export function HomepageControlCenter({ locale }: HomepageControlCenterProps) {
           />
         </div>
 
-        <div className="grid gap-4 rounded-2xl border border-border/70 bg-muted/20 p-4 md:grid-cols-[1fr_auto] md:items-center">
-          <div className="space-y-2">
+        <div className="grid min-w-0 gap-4 rounded-2xl border border-border/70 bg-muted/20 p-4 md:grid-cols-[1fr_auto] md:items-center">
+          <div className="min-w-0 space-y-2">
             <p className="text-sm font-medium">{copy.liveModelTitle}</p>
-            <p className="text-sm text-muted-foreground">
+            <p className="break-words text-sm text-muted-foreground">
               {data
                 ? copy.liveModelBody
                     .replace("{heroLayout}", data.siteSettings.heroLayout)
@@ -349,7 +364,7 @@ export function HomepageControlCenter({ locale }: HomepageControlCenterProps) {
           <Button
             asChild
             variant="ghost"
-            className="justify-self-start md:justify-self-end"
+            className="w-full justify-self-start sm:w-auto md:justify-self-end"
           >
             <Link href="/dashboard/theme">
               {copy.openTheme}
@@ -363,15 +378,15 @@ export function HomepageControlCenter({ locale }: HomepageControlCenterProps) {
           onValueChange={(value) =>
             setActiveTab(value === "guides" ? "guides" : "sections")
           }
-          className="space-y-4"
+          className="min-w-0 space-y-4"
         >
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <TabsList>
+          <div className="flex min-w-0 flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <TabsList className="w-full justify-start overflow-x-auto sm:w-auto">
               <TabsTrigger value="sections">{copy.tabs.sections}</TabsTrigger>
               <TabsTrigger value="guides">{copy.tabs.guides}</TabsTrigger>
             </TabsList>
 
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-center">
               <div className="relative min-w-0 sm:w-72">
                 <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
@@ -381,7 +396,7 @@ export function HomepageControlCenter({ locale }: HomepageControlCenterProps) {
                   className="pl-9"
                 />
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex min-w-0 items-center gap-3">
                 <Switch
                   id="show-disabled-sections"
                   checked={showDisabled}
@@ -395,8 +410,8 @@ export function HomepageControlCenter({ locale }: HomepageControlCenterProps) {
           </div>
 
           <TabsContent value="sections" className="space-y-4">
-            <div className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
-              <div className="space-y-3">
+            <div className="grid min-w-0 gap-4 xl:grid-cols-[1.15fr_0.85fr]">
+              <div className="min-w-0 space-y-3">
                 {sections.length ? (
                   sections.map((section) => {
                     const isSelected =
@@ -406,16 +421,21 @@ export function HomepageControlCenter({ locale }: HomepageControlCenterProps) {
                       <Card
                         key={section.id}
                         className={cn(
-                          "border-border/70 transition-colors",
+                          "min-w-0 overflow-hidden border-border/70 transition-colors",
                           isSelected && "border-primary/50 bg-primary/5",
                         )}
                       >
-                        <CardContent className="space-y-4 p-4">
-                          <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                            <div className="space-y-2">
+                        <CardContent className="min-w-0 space-y-4 p-4">
+                          <div className="flex min-w-0 flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                            <div className="min-w-0 space-y-2">
                               <div className="flex flex-wrap items-center gap-2">
-                                <p className="font-medium">{section.title}</p>
-                                <Badge variant="secondary">
+                                <p className="break-words font-medium">
+                                  {section.title}
+                                </p>
+                                <Badge
+                                  variant="secondary"
+                                  className="max-w-full truncate"
+                                >
                                   {section.sectionKey}
                                 </Badge>
                                 <Badge
@@ -428,14 +448,14 @@ export function HomepageControlCenter({ locale }: HomepageControlCenterProps) {
                                     : copy.disabled}
                                 </Badge>
                               </div>
-                              <p className="text-sm text-muted-foreground">
+                              <p className="break-words text-sm text-muted-foreground">
                                 {section.guide?.summary ||
                                   section.body ||
                                   copy.noGuide}
                               </p>
                             </div>
 
-                            <div className="flex items-center gap-3">
+                            <div className="flex shrink-0 items-center gap-3">
                               <div className="text-right text-xs text-muted-foreground">
                                 <p>
                                   {copy.items}: {section.itemCount}
@@ -457,12 +477,16 @@ export function HomepageControlCenter({ locale }: HomepageControlCenterProps) {
                             </div>
                           </div>
 
-                          <div className="flex flex-wrap gap-2">
+                          <div className="flex min-w-0 flex-wrap gap-2">
                             <Badge variant="outline">{section.type}</Badge>
                             <Badge variant="outline">{section.layout}</Badge>
                             <Badge variant="outline">{section.variant}</Badge>
                             {section.styleKeys.map((styleKey) => (
-                              <Badge key={styleKey} variant="outline">
+                              <Badge
+                                key={styleKey}
+                                variant="outline"
+                                className="max-w-full truncate"
+                              >
                                 {styleKey}: {section.styleValues[styleKey]}
                               </Badge>
                             ))}
@@ -498,20 +522,23 @@ export function HomepageControlCenter({ locale }: HomepageControlCenterProps) {
                 )}
               </div>
 
-              <Card>
+              <Card className="min-w-0 overflow-hidden">
                 <CardHeader>
-                  <CardTitle>
+                  <CardTitle className="break-words">
                     {selectedSection?.title || copy.sectionDetails}
                   </CardTitle>
-                  <CardDescription>
+                  <CardDescription className="break-words">
                     {selectedSection?.guide?.summary || copy.sectionDetailsHint}
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-5">
+                <CardContent className="min-w-0 space-y-5">
                   {selectedSection ? (
                     <>
-                      <div className="flex flex-wrap gap-2">
-                        <Badge variant="secondary">
+                      <div className="flex min-w-0 flex-wrap gap-2">
+                        <Badge
+                          variant="secondary"
+                          className="max-w-full truncate"
+                        >
                           {selectedSection.sectionKey}
                         </Badge>
                         <Badge variant="outline">{selectedSection.type}</Badge>
@@ -544,7 +571,7 @@ export function HomepageControlCenter({ locale }: HomepageControlCenterProps) {
 
                       <div className="space-y-2">
                         <p className="text-sm font-medium">{copy.styleKeys}</p>
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex min-w-0 flex-wrap gap-2">
                           {selectedSection.guide?.styleKeys.length ? (
                             selectedSection.guide.styleKeys.map((styleKey) => (
                               <Badge key={styleKey} variant="outline">
@@ -561,10 +588,14 @@ export function HomepageControlCenter({ locale }: HomepageControlCenterProps) {
                         <p className="text-sm font-medium">
                           {copy.currentStyles}
                         </p>
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex min-w-0 flex-wrap gap-2">
                           {selectedSection.styleKeys.length ? (
                             selectedSection.styleKeys.map((styleKey) => (
-                              <Badge key={styleKey} variant="secondary">
+                              <Badge
+                                key={styleKey}
+                                variant="secondary"
+                                className="max-w-full truncate"
+                              >
                                 {styleKey}:{" "}
                                 {selectedSection.styleValues[styleKey]}
                               </Badge>
@@ -592,15 +623,24 @@ export function HomepageControlCenter({ locale }: HomepageControlCenterProps) {
           </TabsContent>
 
           <TabsContent value="guides" className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
+            <div className="grid min-w-0 gap-4 md:grid-cols-2 2xl:grid-cols-3">
               {(data?.guides || []).map((guide) => (
-                <Card key={guide.sectionKey}>
+                <Card key={guide.sectionKey} className="min-w-0">
                   <CardHeader className="space-y-3">
                     <div className="flex flex-wrap items-center gap-2">
-                      <CardTitle className="text-lg">{guide.label}</CardTitle>
-                      <Badge variant="secondary">{guide.sectionKey}</Badge>
+                      <CardTitle className="break-words text-lg">
+                        {guide.label}
+                      </CardTitle>
+                      <Badge
+                        variant="secondary"
+                        className="max-w-full truncate"
+                      >
+                        {guide.sectionKey}
+                      </Badge>
                     </div>
-                    <CardDescription>{guide.summary}</CardDescription>
+                    <CardDescription className="break-words">
+                      {guide.summary}
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <DetailBlock
@@ -615,7 +655,7 @@ export function HomepageControlCenter({ locale }: HomepageControlCenterProps) {
                       <p className="text-sm font-medium">
                         {copy.recommendedTypes}
                       </p>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex min-w-0 flex-wrap gap-2">
                         {guide.recommendedTypes.map((type) => (
                           <Badge key={type} variant="outline">
                             {type}
@@ -625,10 +665,14 @@ export function HomepageControlCenter({ locale }: HomepageControlCenterProps) {
                     </div>
                     <div className="space-y-2">
                       <p className="text-sm font-medium">{copy.styleKeys}</p>
-                      <div className="flex flex-wrap gap-2">
+                      <div className="flex min-w-0 flex-wrap gap-2">
                         {guide.styleKeys.length ? (
                           guide.styleKeys.map((styleKey) => (
-                            <Badge key={styleKey} variant="outline">
+                            <Badge
+                              key={styleKey}
+                              variant="outline"
+                              className="max-w-full truncate"
+                            >
                               {styleKey}
                             </Badge>
                           ))
@@ -658,11 +702,13 @@ function MetricCard({
   hint: string;
 }) {
   return (
-    <Card className="border-border/70">
-      <CardContent className="space-y-2 p-4">
-        <p className="text-sm text-muted-foreground">{label}</p>
-        <p className="text-2xl font-semibold tracking-tight">{value}</p>
-        <p className="text-xs text-muted-foreground">{hint}</p>
+    <Card className="min-w-0 border-border/70">
+      <CardContent className="min-w-0 space-y-2 p-4">
+        <p className="break-words text-sm text-muted-foreground">{label}</p>
+        <p className="break-words text-2xl font-semibold tracking-tight">
+          {value}
+        </p>
+        <p className="break-words text-xs text-muted-foreground">{hint}</p>
       </CardContent>
     </Card>
   );
@@ -670,9 +716,11 @@ function MetricCard({
 
 function DetailBlock({ label, value }: { label: string; value: string }) {
   return (
-    <div className="space-y-1">
-      <p className="text-sm font-medium">{label}</p>
-      <p className="text-sm leading-6 text-muted-foreground">{value}</p>
+    <div className="min-w-0 space-y-1">
+      <p className="break-words text-sm font-medium">{label}</p>
+      <p className="break-words text-sm leading-6 text-muted-foreground">
+        {value}
+      </p>
     </div>
   );
 }

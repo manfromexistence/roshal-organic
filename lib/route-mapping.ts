@@ -5,9 +5,11 @@
 export const ROUTE_NAMES: Record<string, string> = {
   "": "Home",
   about: "About",
+  "about-us": "About",
   cart: "Cart",
   checkout: "Checkout",
   contact: "Contact",
+  "contact-us": "Contact",
   dashboard: "Dashboard",
   login: "Login",
   orders: "Orders",

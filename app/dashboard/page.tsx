@@ -160,7 +160,13 @@ export default async function DashboardHomePage() {
     getRoshalUsers(),
   ]);
 
-  const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
+  const deliveredOrders = orders.filter(
+    (order) => order.status === "delivered",
+  );
+  const deliveredRevenue = deliveredOrders.reduce(
+    (sum, order) => sum + order.total,
+    0,
+  );
   const publishedPages = pages.filter(
     (page) => page.status === "published",
   ).length;
@@ -213,10 +219,10 @@ export default async function DashboardHomePage() {
       <div className="grid gap-4 lg:grid-cols-2 2xl:grid-cols-4">
         <DashboardStatCard
           title="Total revenue"
-          value={formatBdt(totalRevenue, locale)}
-          description={`${snapshot.orderCount} order${
-            snapshot.orderCount === 1 ? "" : "s"
-          } recorded`}
+          value={formatBdt(deliveredRevenue, locale)}
+          description={`${deliveredOrders.length} delivered order${
+            deliveredOrders.length === 1 ? "" : "s"
+          } counted`}
           trend={`${fulfillmentOrders} need fulfillment`}
           icon={ShoppingBag}
           accentClassName="border-r-primary"

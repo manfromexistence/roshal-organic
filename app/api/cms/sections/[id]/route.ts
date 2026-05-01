@@ -6,6 +6,10 @@ import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { roshalPages, roshalSections } from "@/lib/schema";
+import {
+  defaultRoshalPages,
+  defaultRoshalSections,
+} from "@/lib/store-defaults";
 
 const sectionToggleSchema = z.object({
   isEnabled: z.boolean(),
@@ -35,7 +39,7 @@ export async function PATCH(
 
   try {
     const body = sectionToggleSchema.parse(await request.json());
-    const [section] = await db
+    let [section] = await db
       .select({
         id: roshalSections.id,
         pageId: roshalSections.pageId,
@@ -46,7 +50,114 @@ export async function PATCH(
       .limit(1);
 
     if (!section) {
-      return NextResponse.json({ error: "Section not found" }, { status: 404 });
+      const defaultSection = defaultRoshalSections.find(
+        (item) => item.id === id,
+      );
+
+      if (!defaultSection) {
+        return NextResponse.json(
+          { error: "Section not found" },
+          { status: 404 },
+        );
+      }
+
+      const defaultPage = defaultRoshalPages.find(
+        (pageItem) => pageItem.id === defaultSection.pageId,
+      );
+
+      if (!defaultPage) {
+        return NextResponse.json(
+          { error: "Section page not found" },
+          { status: 404 },
+        );
+      }
+
+      let [page] = await db
+        .select({
+          id: roshalPages.id,
+          slug: roshalPages.slug,
+        })
+        .from(roshalPages)
+        .where(eq(roshalPages.id, defaultPage.id))
+        .limit(1);
+
+      if (!page) {
+        [page] = await db
+          .select({
+            id: roshalPages.id,
+            slug: roshalPages.slug,
+          })
+          .from(roshalPages)
+          .where(eq(roshalPages.slug, defaultPage.slug))
+          .limit(1);
+      }
+
+      if (!page) {
+        const timestamp = new Date();
+
+        await db.insert(roshalPages).values({
+          id: defaultPage.id,
+          slug: defaultPage.slug,
+          navigationLabelBn: defaultPage.navigationLabel.bn,
+          navigationLabelEn: defaultPage.navigationLabel.en,
+          titleBn: defaultPage.title.bn,
+          titleEn: defaultPage.title.en,
+          descriptionBn: defaultPage.description.bn,
+          descriptionEn: defaultPage.description.en,
+          heroImage: defaultPage.heroImage,
+          status: defaultPage.status,
+          showInNavigation: defaultPage.showInNavigation,
+          createdAt: timestamp,
+          updatedAt: timestamp,
+        });
+
+        page = {
+          id: defaultPage.id,
+          slug: defaultPage.slug,
+        };
+      }
+
+      const timestamp = new Date();
+
+      await db
+        .insert(roshalSections)
+        .values({
+          id: defaultSection.id,
+          pageId: page.id,
+          sectionKey: defaultSection.sectionKey,
+          type: defaultSection.type,
+          sortOrder: defaultSection.sortOrder,
+          layout: defaultSection.layout,
+          variant: defaultSection.variant,
+          isEnabled: body.isEnabled,
+          eyebrowBn: defaultSection.eyebrow.bn,
+          eyebrowEn: defaultSection.eyebrow.en,
+          titleBn: defaultSection.title.bn,
+          titleEn: defaultSection.title.en,
+          bodyBn: defaultSection.body.bn,
+          bodyEn: defaultSection.body.en,
+          ctaLabelBn: defaultSection.ctaLabel.bn,
+          ctaLabelEn: defaultSection.ctaLabel.en,
+          ctaHref: defaultSection.ctaHref,
+          imageUrl: defaultSection.imageUrl,
+          itemsJson: JSON.stringify(defaultSection.items),
+          stylesJson: JSON.stringify(defaultSection.styles),
+          createdAt: timestamp,
+          updatedAt: timestamp,
+        })
+        .onConflictDoUpdate({
+          target: roshalSections.id,
+          set: {
+            isEnabled: body.isEnabled,
+            updatedAt: timestamp,
+          },
+        });
+
+      section = {
+        id: defaultSection.id,
+        pageId: page.id,
+        sectionKey: defaultSection.sectionKey,
+      };
     }
 
     const [page] = await db
@@ -64,7 +175,7 @@ export async function PATCH(
         isEnabled: body.isEnabled,
         updatedAt: new Date(),
       })
-      .where(eq(roshalSections.id, id));
+      .where(eq(roshalSections.id, section.id));
 
     if (page) {
       revalidatePath(storefrontPathFromSlug(page.slug));
@@ -72,6 +183,7 @@ export async function PATCH(
     }
 
     revalidatePath("/dashboard/pages");
+    revalidatePath("/dashboard/marketing");
 
     return NextResponse.json({
       ok: true,

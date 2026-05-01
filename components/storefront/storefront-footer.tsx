@@ -15,7 +15,6 @@ import type {
 const infoPageSlugs = [
   "about",
   "contact",
-  "company-information",
   "privacy-policy",
   "terms-and-conditions",
 ] as const;
@@ -38,6 +37,8 @@ const supportLinkConfig = [
     fallbackLabel: localizedValue("ডেলিভারি", "Delivery"),
   },
 ] as const;
+
+const wrappingTextClass = "break-words [overflow-wrap:anywhere]";
 
 function resolvePageLink(
   pages: RoshalMarketingPage[],
@@ -80,12 +81,15 @@ export function StorefrontFooter({
   );
 
   return (
-    <footer className="border-t border-primary-foreground/12 bg-primary text-primary-foreground pb-16 md:pb-0">
+    <footer className="min-w-0 overflow-x-clip border-t border-primary-foreground/12 bg-primary pb-16 text-primary-foreground md:pb-0">
       <div className="container mx-auto space-y-2 px-4 py-2 sm:px-6 md:px-8">
-        <div className="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-[1.25fr_0.75fr_0.75fr]">
-          <div className="space-y-2">
-            <Link href="/" className="inline-flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-md border border-primary-foreground/18 bg-primary-foreground/10 shadow-sm">
+        <div className="grid min-w-0 gap-4 sm:grid-cols-2 xl:grid-cols-[minmax(0,1.25fr)_minmax(0,0.75fr)_minmax(0,0.75fr)]">
+          <div className="min-w-0 space-y-2">
+            <Link
+              href="/"
+              className="inline-flex max-w-full min-w-0 items-center gap-3"
+            >
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-primary-foreground/18 bg-primary-foreground/10 shadow-sm">
                 <Image
                   src="/apple-touch-icon.png"
                   alt={siteSettings.brandName}
@@ -94,70 +98,82 @@ export function StorefrontFooter({
                   className="h-9 w-9 rounded-md object-contain"
                 />
               </div>
-              <div className="space-y-0">
-                <p className="font-wordmark text-[15px] text-primary-foreground">
+              <div className="min-w-0 space-y-0">
+                <p
+                  className={`${wrappingTextClass} font-wordmark text-[15px] text-primary-foreground`}
+                >
                   {siteSettings.brandName}
                 </p>
               </div>
             </Link>
 
-            <p className="max-w-sm text-xs leading-5 text-primary-foreground/80">
+            <p
+              className={`${wrappingTextClass} max-w-sm text-xs leading-5 text-primary-foreground/80`}
+            >
               {locale === "bn"
-                ? "খাঁটি মধু, ঘি, তেল, গুড়, ফল এবং দৈনন্দিন অর্গানিক প্রয়োজনীয় পণ্য এখন এক জায়গায়।"
-                : "Pure honey, ghee, oils, jaggery, fruit, and trusted organic essentials in one storefront."}
+                ? "খাঁটি মধু, ঘি, তেল, গুড় ও অর্গানিক পণ্য।"
+                : "Pure honey, ghee, oils, jaggery, and organic essentials."}
             </p>
 
-            <div className="space-y-1 text-xs text-primary-foreground/80">
+            <div className="min-w-0 space-y-1 text-xs text-primary-foreground/80">
               <Link
                 href={`tel:${siteSettings.contactPhone}`}
-                className="flex items-center gap-2 transition-colors hover:text-primary-foreground"
+                className="flex min-w-0 items-center gap-2 transition-colors hover:text-primary-foreground"
               >
-                <Phone className="size-4" />
-                <span>{siteSettings.contactPhone}</span>
+                <Phone className="size-4 shrink-0" />
+                <span className={wrappingTextClass}>
+                  {siteSettings.contactPhone}
+                </span>
               </Link>
               <Link
                 href={`mailto:${siteSettings.contactEmail}`}
-                className="flex items-center gap-2 transition-colors hover:text-primary-foreground"
+                className="flex min-w-0 items-center gap-2 transition-colors hover:text-primary-foreground"
               >
-                <Mail className="size-4" />
-                <span>{siteSettings.contactEmail}</span>
+                <Mail className="size-4 shrink-0" />
+                <span className={wrappingTextClass}>
+                  {siteSettings.contactEmail}
+                </span>
               </Link>
-              <div className="flex items-start gap-2">
+              <div className="flex min-w-0 items-start gap-2">
                 <MapPin className="mt-0.5 size-4 shrink-0" />
-                <span>{getLocalizedValue(locale, siteSettings.address)}</span>
+                <span className={wrappingTextClass}>
+                  {getLocalizedValue(locale, siteSettings.address)}
+                </span>
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex min-w-0 flex-wrap gap-1.5">
               <Link
                 href={whatsappHref}
-                className="inline-flex items-center gap-2 rounded-sm border border-primary-foreground/10 bg-primary-foreground/12 px-2.5 py-1 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary-foreground/20"
+                className={`inline-flex max-w-full items-center gap-2 rounded-sm border border-primary-foreground/10 bg-primary-foreground/12 px-2.5 py-1 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary-foreground/20 ${wrappingTextClass}`}
               >
-                <IconBrandWhatsapp className="size-4" />
+                <IconBrandWhatsapp className="size-4 shrink-0" />
                 {locale === "bn" ? "WhatsApp" : "WhatsApp"}
               </Link>
               {siteSettings.facebookUrl ? (
                 <Link
                   href={siteSettings.facebookUrl}
-                  className="inline-flex items-center gap-2 rounded-sm border border-primary-foreground/10 bg-primary-foreground/12 px-2.5 py-1 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary-foreground/20"
+                  className={`inline-flex max-w-full items-center gap-2 rounded-sm border border-primary-foreground/10 bg-primary-foreground/12 px-2.5 py-1 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary-foreground/20 ${wrappingTextClass}`}
                 >
-                  <IconBrandFacebook className="size-4" />
+                  <IconBrandFacebook className="size-4 shrink-0" />
                   Facebook
                 </Link>
               ) : null}
             </div>
           </div>
 
-          <div className="space-y-1">
-            <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/80">
+          <div className="min-w-0 space-y-1">
+            <h3
+              className={`${wrappingTextClass} text-xs font-semibold uppercase tracking-[0.14em] text-primary-foreground/80 sm:tracking-[0.18em]`}
+            >
               {locale === "bn" ? "তথ্য" : "Information"}
             </h3>
-            <div className="space-y-1 text-xs text-primary-foreground/80">
+            <div className="min-w-0 space-y-1 text-xs text-primary-foreground/80">
               {informationalPages.map((page) => (
                 <Link
                   key={page.id}
                   href={`/${page.slug}`}
-                  className="block transition-colors hover:text-primary-foreground"
+                  className={`${wrappingTextClass} block transition-colors hover:text-primary-foreground`}
                 >
                   {getLocalizedValue(locale, page.navigationLabel)}
                 </Link>
@@ -165,16 +181,18 @@ export function StorefrontFooter({
             </div>
           </div>
 
-          <div className="space-y-1">
-            <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-foreground/80">
+          <div className="min-w-0 space-y-1">
+            <h3
+              className={`${wrappingTextClass} text-xs font-semibold uppercase tracking-[0.14em] text-primary-foreground/80 sm:tracking-[0.18em]`}
+            >
               {locale === "bn" ? "সাপোর্ট" : "Support"}
             </h3>
-            <div className="space-y-1 text-xs text-primary-foreground/80">
+            <div className="min-w-0 space-y-1 text-xs text-primary-foreground/80">
               {supportLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="block transition-colors hover:text-primary-foreground"
+                  className={`${wrappingTextClass} block transition-colors hover:text-primary-foreground`}
                 >
                   {getLocalizedValue(locale, link.label)}
                 </Link>
@@ -185,21 +203,21 @@ export function StorefrontFooter({
 
         <Separator className="bg-primary-foreground/12" />
 
-        <div className="flex flex-col gap-1 text-[11px] text-primary-foreground/70 sm:flex-row sm:items-center sm:justify-between">
-          <p>
+        <div className="flex min-w-0 flex-col gap-1 text-[11px] text-primary-foreground/70 sm:flex-row sm:items-center sm:justify-between">
+          <p className={wrappingTextClass}>
             © 2026 {siteSettings.brandName}.{" "}
             {locale === "bn" ? "সর্বস্ব সংরক্ষিত।" : "All rights reserved."}
           </p>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex min-w-0 flex-wrap gap-3">
             <Link
               href="/track-order"
-              className="transition-colors hover:text-primary-foreground"
+              className={`${wrappingTextClass} transition-colors hover:text-primary-foreground`}
             >
               {locale === "bn" ? "অর্ডার ট্র্যাক" : "Track order"}
             </Link>
             <Link
               href="/contact"
-              className="transition-colors hover:text-primary-foreground"
+              className={`${wrappingTextClass} transition-colors hover:text-primary-foreground`}
             >
               {locale === "bn" ? "যোগাযোগ" : "Contact"}
             </Link>

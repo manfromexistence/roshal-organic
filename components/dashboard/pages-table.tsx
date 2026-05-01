@@ -209,7 +209,7 @@ export function RoshalPagesTable({
           })}
         </div>
 
-        <div className="hidden min-w-0 md:block">
+        <div className="hidden min-w-0 overflow-x-auto md:block">
           <DataTable table={table}>
             <DataTableToolbar table={table}>
               <DataTableSortList table={table} align="end" />

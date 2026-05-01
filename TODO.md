@@ -31,6 +31,24 @@
 - [x] Add compact `bKash` and `Nagad` logos to the checkout payment selector.
 - [x] Add a visible border to the floating WhatsApp chat bubble.
 
+## 2026-05-01 Delivery hardening pass
+
+- [x] Remove stale payment-proof/screenshot wording from checkout-facing payment settings and CMS defaults.
+- [x] Remove Rocket/Upay and screenshot-era wording from payment defaults, CMS payment-page fallback copy, dashboard CMS guidance, and README notes.
+- [x] Enforce Bangladesh 11-digit phone validation on the server checkout mutation, not only in the browser UI.
+- [x] Replace stale dashboard/navigation fallbacks such as guest email, `/watchlist`, and `/admin/organizations` with real routes.
+- [x] Remove mock database fallback behavior so missing Turso configuration fails clearly instead of pretending data exists.
+- [x] Stop new checkout/API submissions from carrying payment proof image fields, hide legacy proof-image panels, and exclude reference/demo folders from production deploy uploads.
+- [x] Respect disabled Home page CMS sections on the custom storefront homepage route.
+- [x] Add best-effort new-order admin email notifications through Resend environment configuration.
+- [x] Harden user deletion with a fallback anonymized delete path and visible dashboard success feedback.
+- [x] Browser-test local storefront, cart, checkout, login, and protected dashboard pages with the in-app browser.
+- [x] Fix local Better Auth trusted origins so dashboard login works on both `localhost` and `127.0.0.1`.
+- [x] Clamp dashboard content width and orders summary cards so expanded-sidebar pages no longer cut off the right side.
+- [x] Move dashboard user row actions next to role/status so edit and delete are visible in the default table viewport.
+- [x] Prioritize first visible product images to clear the storefront LCP image warning found during browser QA.
+- [x] Remove checkout wallet-logo CSS sizing overrides that caused Next image aspect-ratio warnings for bKash and Nagad.
+
 ## 2026-04-30 Header follow-up
 
 - [x] Keep the sub-header visible while scrolling down and hide only the main header on both desktop and mobile.
@@ -119,6 +137,22 @@
 - [x] Redesign the login and sign-up page to match the provided two-panel auth references while keeping the current credential, signup-field, and redirect logic intact.
 - [x] Lower the fixed storefront sub-header shell to `z-10` while keeping the overflow popovers above it.
 
+## 2026-05-01 Client pending feedback cleanup
+
+- [x] Tighten featured category imagery, homepage product-card height, contact cards, footer copy, login tabs, signup district/thana selection, and checkout payment/delivery fields for the latest client feedback.
+- [x] Force customer phone entry into local Bangladesh 11-digit format and show signup mobile errors directly below the mobile field.
+- [x] Guard the shared cart action against out-of-stock or unpublished products so checkout cannot proceed with unavailable stock.
+
+## 2026-05-01 Dashboard client-delivery readiness pass
+
+- [x] Add order filters for order/mobile, customer, payment method, amount, status, payment status, and placed date.
+- [x] Add order summary cards for total, paid, and unpaid amounts with All time/custom date range controls.
+- [x] Keep selected dashboard sidebar items visibly highlighted.
+- [x] Add COD labeling and editable Inside Dhaka / Outside Dhaka delivery charges on Payment Settings.
+- [x] Expand user columns, mobile/district filters, delete action, and Excel/PDF exports.
+- [x] Fix default marketing section toggle persistence.
+- [x] Switch new order numbers to `RO-YYMMDD123` format.
+
 ## 2026-05-01 Dashboard overview and CMS verification pass
 
 - [x] Add hoverable dashboard overview metric cards with deterministic right-edge accent colors so the overview feels more active without breaking the current theme system.
@@ -181,6 +215,14 @@
 
 - [x] Add Create and Manage taxonomy submenus to the dashboard category page.
 - [x] Keep the full category/subcategory mutation surface available while placing the long editor area inside a bounded shadcn scroll workspace.
+- [x] Simplify the All Categories dashboard page to only render the top metric cards and bottom categories table.
+
+## 2026-05-02 Dashboard simplification pass
+
+- [x] Hide mid-page insight panels from Pages, Products, Orders, and Payment Settings so the pages stay focused on metric cards, filters, and tables/forms.
+- [x] Move optional product copy, features, gallery, category image, and subcategory image fields behind collapsed advanced sections instead of showing everything at once.
+- [x] Add compact select controls for product category/subcategory assignment and category/subcategory product-bucket linking.
+- [x] Normalize Payment Settings page spacing with standard top/side dashboard padding and no bottom padding.
 
 ## 2026-05-01 Dashboard sidebar and bottom padding cleanup
 
@@ -189,3 +231,20 @@
 - [x] Add a sidebar-level guard so Storefront Theme cannot reappear from older navigation data.
 - [x] Remove the dashboard content shell's always-visible horizontal scrollbar strip.
 - [x] Make dashboard overview cards wrap cleanly and delay four-column layout until very wide screens.
+
+## 2026-05-01 Dashboard pending client corrections
+
+- [x] Add the selected checkout delivery type to the dashboard orders table and filters.
+- [x] Change dashboard overview total revenue to count delivered orders only.
+- [x] Prevent the expanded dashboard sidebar from cutting off the right-side content area.
+- [x] Show save confirmation feedback on Payment Settings for delivery-charge and payment-method saves.
+- [x] Harden dashboard user deletion against linked orders, reviews, sessions, accounts, and files.
+- [x] Replace the user PDF export print-window flow with a direct PDF file download.
+- [x] Improve marketing section toggle persistence and show an inline toggle error when a section update fails.
+
+## 2026-05-01 Marketing about/contact responsive pass
+
+- [x] Tighten the shared CMS marketing page hero and story spacing for About and Contact pages.
+- [x] Make simple Contact cards fit as a compact one-row desktop grid while staying two-column/tablet and one-column/mobile friendly.
+- [x] Remove stacked card padding from CMS feature and contact cards so page sections are not oversized.
+- [x] Adjust large Bangla marketing headings so wrapped lines stay readable at desktop and smaller widths.

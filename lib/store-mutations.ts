@@ -1,15 +1,19 @@
-import { and, eq, gte, inArray, ne, sql } from "drizzle-orm";
+import { and, eq, gte, inArray, like, ne, sql } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import {
+  accounts,
+  files,
   roshalCategories,
   roshalOrders,
   roshalPages,
   roshalPaymentSettings,
+  roshalProductReviews,
   roshalProducts,
   roshalSections,
   roshalSiteSettings,
   roshalSubcategories,
+  sessions,
   users,
 } from "@/lib/schema";
 import { getRoshalPaymentSettings } from "@/lib/store-content";
@@ -18,9 +22,10 @@ import {
   defaultRoshalSiteSettings,
 } from "@/lib/store-defaults";
 import {
-  normalizeRoshalDeliveryZones,
+  normalizeRoshalTwoZoneDeliveryZones,
   resolveRoshalDeliveryEstimate,
 } from "@/lib/store-delivery";
+import { sendRoshalNewOrderEmail } from "@/lib/store-email";
 import { safeJsonParse } from "@/lib/store-format";
 import {
   createRoshalGatewayCheckoutSession,
@@ -28,6 +33,10 @@ import {
   readRoshalGatewayCallbackPayload,
   verifyRoshalGatewayTransaction,
 } from "@/lib/store-payments";
+import {
+  isBangladeshPhoneComplete,
+  normalizeBangladeshPhoneInput,
+} from "@/lib/store-phone";
 import {
   isRoshalReservedPageSlug,
   isValidRoshalRouteSlug,
@@ -59,14 +68,53 @@ function nextId(prefix: string) {
   return `${prefix}-${crypto.randomUUID()}`;
 }
 
-function nextRoshalOrderNumber(timestamp: Date) {
-  const compactTimestamp = timestamp
-    .toISOString()
-    .replaceAll(/[-:TZ.]/g, "")
-    .slice(0, 14);
-  const randomSuffix = crypto.randomUUID().replaceAll("-", "").slice(0, 6);
+function isForeignKeyConstraintError(error: unknown) {
+  const message = error instanceof Error ? error.message.toLowerCase() : "";
 
-  return `RO-${compactTimestamp}-${randomSuffix}`.toUpperCase();
+  return message.includes("foreign key") || message.includes("constraint");
+}
+
+async function nextRoshalOrderNumber(timestamp: Date) {
+  const dateParts = new Intl.DateTimeFormat("en-CA", {
+    day: "2-digit",
+    month: "2-digit",
+    timeZone: "Asia/Dhaka",
+    year: "2-digit",
+  })
+    .formatToParts(timestamp)
+    .reduce<Record<string, string>>((parts, part) => {
+      parts[part.type] = part.value;
+      return parts;
+    }, {});
+  const year = dateParts.year;
+  const month = dateParts.month;
+  const day = dateParts.day;
+  const datePart = `${year}${month}${day}`;
+  const prefix = `RO-${datePart}`;
+  const existingOrders = await db
+    .select({
+      orderNumber: roshalOrders.orderNumber,
+    })
+    .from(roshalOrders)
+    .where(like(roshalOrders.orderNumber, `${prefix}%`));
+  const usedSequences = new Set(
+    existingOrders
+      .map((order) => {
+        const match = order.orderNumber.match(
+          new RegExp(`^${prefix}(\\d{3})$`),
+        );
+        return match ? Number(match[1]) : null;
+      })
+      .filter((value): value is number => Number.isInteger(value)),
+  );
+
+  for (let sequence = 1; sequence <= 999; sequence += 1) {
+    if (!usedSequences.has(sequence)) {
+      return `${prefix}${String(sequence).padStart(3, "0")}`;
+    }
+  }
+
+  return `${prefix}${String(Math.floor(Math.random() * 1000)).padStart(3, "0")}`;
 }
 
 type RoshalTransaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
@@ -127,18 +175,14 @@ function getRoshalPaymentWorkflowState(
   };
 }
 
-function shouldRequireRoshalPaymentProof(
+function shouldRequireRoshalWalletReference(
   option: Pick<RoshalPaymentOption, "key" | "mode" | "requiresProof">,
 ) {
-  if (option.key === "cash_on_delivery") {
+  if (option.mode !== "manual") {
     return false;
   }
 
-  if (option.mode !== "gateway") {
-    return false;
-  }
-
-  return false;
+  return option.key === "bkash" || option.key === "nagad";
 }
 
 function toGatewayMetaJson(value: Record<string, string> | null | undefined) {
@@ -329,7 +373,13 @@ const roshalOrderItemRequestSchema = z.object({
 const roshalCheckoutRequestSchema = z.object({
   userId: z.string().trim().min(1).nullable().optional(),
   customerName: z.string().trim().min(2).max(120),
-  phone: z.string().trim().min(6).max(40),
+  phone: z
+    .string()
+    .trim()
+    .transform((value) => normalizeBangladeshPhoneInput(value))
+    .refine((value) => isBangladeshPhoneComplete(value), {
+      message: "A valid 11 digit Bangladesh mobile number is required.",
+    }),
   email: z
     .string()
     .trim()
@@ -378,15 +428,6 @@ const roshalCheckoutRequestSchema = z.object({
     .string()
     .trim()
     .max(120)
-    .optional()
-    .or(z.literal(""))
-    .or(z.null())
-    .transform((value) => value || undefined),
-  paymentProofUrl: z
-    .string()
-    .trim()
-    .url()
-    .max(500)
     .optional()
     .or(z.literal(""))
     .or(z.null())
@@ -505,7 +546,7 @@ export async function upsertRoshalSiteSettings(
 
   const id = input.id || "site-settings";
   const timestamp = new Date();
-  const deliveryZones = normalizeRoshalDeliveryZones(
+  const deliveryZones = normalizeRoshalTwoZoneDeliveryZones(
     input.deliveryZones,
     defaultRoshalSiteSettings.deliveryZones,
   );
@@ -1315,6 +1356,121 @@ export async function updateRoshalUserRole(input: {
     .where(eq(users.id, input.id));
 }
 
+export async function deleteRoshalUser(input: { id: string; actorId: string }) {
+  if (input.id === input.actorId) {
+    throw new RoshalUserRoleError(
+      "self-delete-blocked",
+      "You cannot delete your own account from the dashboard.",
+    );
+  }
+
+  const [existingUser] = await db
+    .select({
+      id: users.id,
+      role: users.role,
+      isActive: users.isActive,
+    })
+    .from(users)
+    .where(eq(users.id, input.id))
+    .limit(1);
+
+  if (!existingUser) {
+    throw new RoshalUserRoleError(
+      "user-not-found",
+      "The selected user could not be found.",
+      404,
+    );
+  }
+
+  if (existingUser.role === "admin" && existingUser.isActive) {
+    const activeAdmins = await db
+      .select({
+        id: users.id,
+      })
+      .from(users)
+      .where(and(eq(users.role, "admin"), eq(users.isActive, true)));
+
+    const hasAnotherActiveAdmin = activeAdmins.some(
+      (admin) => admin.id !== input.id,
+    );
+
+    if (!hasAnotherActiveAdmin) {
+      throw new RoshalUserRoleError(
+        "last-admin-required",
+        "At least one active admin must remain on the project.",
+      );
+    }
+  }
+
+  try {
+    await db.transaction(async (tx) => {
+      await tx
+        .update(roshalOrders)
+        .set({
+          userId: null,
+          updatedAt: new Date(),
+        })
+        .where(eq(roshalOrders.userId, input.id));
+
+      await tx
+        .update(roshalProductReviews)
+        .set({
+          userId: null,
+          updatedAt: new Date(),
+        })
+        .where(eq(roshalProductReviews.userId, input.id));
+
+      await tx.delete(files).where(eq(files.userId, input.id));
+      await tx.delete(sessions).where(eq(sessions.userId, input.id));
+      await tx.delete(accounts).where(eq(accounts.userId, input.id));
+      await tx.delete(users).where(eq(users.id, input.id));
+    });
+  } catch (error) {
+    if (!isForeignKeyConstraintError(error)) {
+      throw error;
+    }
+
+    const timestamp = new Date();
+    const deletedEmail = `deleted-${input.id}-${timestamp.getTime()}@roshal-organic.local`;
+
+    await db.transaction(async (tx) => {
+      await tx
+        .update(roshalOrders)
+        .set({
+          userId: null,
+          updatedAt: timestamp,
+        })
+        .where(eq(roshalOrders.userId, input.id));
+
+      await tx
+        .update(roshalProductReviews)
+        .set({
+          userId: null,
+          updatedAt: timestamp,
+        })
+        .where(eq(roshalProductReviews.userId, input.id));
+
+      await tx.delete(files).where(eq(files.userId, input.id));
+      await tx.delete(sessions).where(eq(sessions.userId, input.id));
+      await tx.delete(accounts).where(eq(accounts.userId, input.id));
+      await tx
+        .update(users)
+        .set({
+          defaultAddress: null,
+          email: deletedEmail,
+          image: null,
+          isActive: false,
+          name: "Deleted user",
+          organizationId: null,
+          phone: null,
+          role: "user",
+          updatedAt: timestamp,
+        })
+        .where(eq(users.id, input.id));
+    });
+  }
+}
+
 export async function updateRoshalUserProfile(input: {
   id: string;
   name: string;
@@ -1481,6 +1637,12 @@ async function createRoshalGatewayOrder(
       postalCode: input.postalCode,
     });
 
+    await notifyRoshalNewOrderAdmins({
+      ...input,
+      orderId: order.id,
+      orderNumber: order.orderNumber,
+    });
+
     return {
       id: order.id,
       orderNumber: order.orderNumber,
@@ -1554,14 +1716,12 @@ export async function createValidatedRoshalOrder(
   }
 
   if (
-    shouldRequireRoshalPaymentProof(paymentOption) &&
-    (!parsed.paymentReference ||
-      !parsed.paymentSender ||
-      !parsed.paymentProofUrl)
+    shouldRequireRoshalWalletReference(paymentOption) &&
+    (!parsed.paymentReference || !parsed.paymentSender)
   ) {
     throw new RoshalCheckoutError(
-      "payment-proof-required",
-      "Transaction ID, sender number, and payment proof are required for this payment method.",
+      "payment-reference-required",
+      "Transaction ID and sender number are required for this payment method.",
     );
   }
 
@@ -1616,7 +1776,7 @@ export async function createValidatedRoshalOrder(
     siteSettings = siteSettingsRow || null;
   } catch {}
 
-  const deliveryZones = normalizeRoshalDeliveryZones(
+  const deliveryZones = normalizeRoshalTwoZoneDeliveryZones(
     safeJsonParse(
       siteSettings?.deliveryZonesJson,
       defaultRoshalSiteSettings.deliveryZones,
@@ -1660,7 +1820,7 @@ export async function createValidatedRoshalOrder(
     });
   }
 
-  return createRoshalOrder({
+  const order = await createRoshalOrder({
     userId: parsed.userId,
     customerName: parsed.customerName,
     phone: parsed.phone,
@@ -1673,7 +1833,7 @@ export async function createValidatedRoshalOrder(
     paymentMethod: paymentOption.key,
     paymentReference: parsed.paymentReference,
     paymentSender: parsed.paymentSender,
-    paymentProofUrl: parsed.paymentProofUrl,
+    paymentProofUrl: null,
     subtotal,
     shippingFee,
     discount: 0,
@@ -1681,14 +1841,49 @@ export async function createValidatedRoshalOrder(
     items,
     paymentWorkflow,
   });
+
+  await notifyRoshalNewOrderAdmins({
+    addressLine1: parsed.addressLine1,
+    addressLine2: parsed.addressLine2,
+    city: parsed.city,
+    customerName: parsed.customerName,
+    email: parsed.email,
+    items,
+    orderId: order.id,
+    orderNumber: order.orderNumber,
+    paymentMethod: paymentOption.key,
+    phone: parsed.phone,
+    shippingFee,
+    subtotal,
+    total,
+  });
+
+  return order;
 }
+
+async function notifyRoshalNewOrderAdmins(
+  input: RoshalNewOrderEmailNotificationInput,
+) {
+  const result = await sendRoshalNewOrderEmail(input).catch((error) => ({
+    reason: error instanceof Error ? error.message : "unknown-email-error",
+    sent: false,
+  }));
+
+  if (!result.sent && result.reason !== "missing-api-key") {
+    console.warn("Roshal new order email was not sent:", result.reason);
+  }
+}
+
+type RoshalNewOrderEmailNotificationInput = Parameters<
+  typeof sendRoshalNewOrderEmail
+>[0];
 
 export async function createRoshalOrder(
   input: CreateRoshalOrderInput,
 ): Promise<RoshalOrderCreationResult> {
   const id = nextId("order");
   const timestamp = new Date();
-  const orderNumber = nextRoshalOrderNumber(timestamp);
+  const orderNumber = await nextRoshalOrderNumber(timestamp);
 
   await db.transaction(async (tx) => {
     await reserveRoshalInventory(tx, input.items);

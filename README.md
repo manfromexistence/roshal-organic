@@ -11,10 +11,10 @@ Roshal Organic is a bilingual Bangla/English ecommerce CMS built on Next.js 16, 
 - Admin routes: `/dashboard`, `/dashboard/products`, `/dashboard/categories`, `/dashboard/orders`, `/dashboard/payments`, `/dashboard/users`, `/dashboard/pages`, `/dashboard/theme`
 - Auth roles: `admin`, `user`
 - Languages: Bangla and English
-- Payment options: `card`, `bkash`, `nagad`, `rocket`, `upay`
-- Manual wallet verification flow: customers can submit transaction ID, sender number, and screenshot; admins can review and mark orders paid
-- Checkout enforcement: pricing, delivery fee, enabled payment methods, payment-proof requirements, and inventory are validated on the server before an order is created
-- Payment-review workflow now follows each payment option's dashboard-configured mode and proof requirements, so manual/gateway changes affect order intake correctly
+- Payment options: `cash_on_delivery`, `card`, `bkash`, `nagad`
+- Wallet reference flow: bKash and Nagad customers submit transaction ID plus sender number; no screenshot proof is required
+- Checkout enforcement: pricing, delivery fee, enabled payment methods, wallet-reference requirements, and inventory are validated on the server before an order is created
+- Payment-review workflow now follows each payment option's dashboard-configured mode, so manual/gateway changes affect order intake correctly
 - Gateway-mode checkout now makes the template limitation explicit: until a real processor is wired, `card` orders fall back to admin follow-up instead of pretending a live gateway exists
 - Inventory movement: confirmed order creation reserves stock in the database, and cancelled orders restore stock through the admin order workflow
 - Cart and checkout now reconcile persisted cart items against the live published catalog, reducing stale-quantity checkout failures for returning users
@@ -23,7 +23,7 @@ Roshal Organic is a bilingual Bangla/English ecommerce CMS built on Next.js 16, 
 - Storefront responsiveness: the shared marketing shell, homepage carousels/shelves, and product-details layout are width-constrained for mobile and tablet storefront browsing instead of leaking horizontal overflow
 - Customer order history now includes search, status filtering, and summary metrics on `/orders`
 - Account UX: `/profile` now includes order metrics, recent orders, quick links back to cart/order history/admin, and a working storefront logout control
-- Customer order pages now show itemized line items, delivery details, proof screenshots, payment verification timestamps, and admin/tracking notes instead of only top-level status badges
+- Customer order pages now show itemized line items, delivery details, payment reference details, payment verification timestamps, and admin/tracking notes instead of only top-level status badges
 - Shared app feedback is now mounted globally with the Roshal toaster, and checkout/login flows now show in-page errors instead of relying on raw browser alerts
 - Dashboard marketing control center: `/dashboard/pages` now includes a React Query + Zustand workspace for the live homepage, with DB-backed section visibility toggles and direct links into the full page editor
 - Login UX: `/login` now behaves like a storefront customer-account entry point with checkout/order-tracking messaging instead of a generic admin-style auth form
@@ -46,7 +46,7 @@ Roshal Organic is a bilingual Bangla/English ecommerce CMS built on Next.js 16, 
 - Generic marketing-page sections now honor dashboard `stylesJson` product sourcing (`featured`, `all`, `reverse`, `limit`, `offset`) instead of falling back to a fixed featured-product slice
 - Safe fallback merging for the built-in home/about/contact CMS pages and sections, so partial dashboard edits do not wipe out the rest of the default storefront composition
 - Storefront brand settings such as CTA labels, hero layout, card style, spacing, and contact information
-- Payment method enablement, instructions, merchant/account details, and checkout guide screenshots
+- Payment method enablement, instructions, merchant/account details, and wallet reference guidance
 
 ## Environment Variables
 
@@ -59,7 +59,7 @@ BETTER_AUTH_SECRET=your-better-auth-secret
 BETTER_AUTH_URL=http://localhost:3000
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ROSHAL_PAYMENT_GATEWAY_PROVIDER=aamarpay
-ROSHAL_PAYMENT_GATEWAY_METHODS=card,bkash,nagad,rocket,upay
+ROSHAL_PAYMENT_GATEWAY_METHODS=card,bkash,nagad
 AAMARPAY_SANDBOX=true
 AAMARPAY_BASE_URL=https://sandbox.aamarpay.com
 AAMARPAY_STORE_ID=your-aamarpay-store-id
@@ -115,8 +115,8 @@ bun run scripts/seed-users.ts
 - The live component tree is now reduced to the active app-facing groups: `components/dashboard`, `components/data-table`, `components/marketing`, `components/providers`, `components/shared`, `components/storefront`, and `components/ui`.
 - The legacy Quadra EDMS route tree and namespaces have been removed from the live app surface; the current code now lives under generic shared locations such as `components/dashboard`, `components/storefront`, `components/shared`, `lib/store-*`, `actions/admin.ts`, and `/api/{cms,orders,payments,upload}`.
 - The old root-level `marketting` source app has been removed after transplanting its landing page, header/footer shell, and mobile bottom navigation into the active storefront.
-- Temporary manual verification is in place for wallet payments and can be managed from `/dashboard/payments` and `/dashboard/orders`.
-- AamarPay is the active live gateway abstraction for `card`, `bkash`, `nagad`, `rocket`, and `upay` when its merchant credentials are configured.
+- Manual wallet reference review is in place for bKash and Nagad payments and can be managed from `/dashboard/payments` and `/dashboard/orders`.
+- AamarPay is the active live gateway abstraction for `card`, `bkash`, and `nagad` when its merchant credentials are configured.
 - Gateway-mode checkout currently falls back to manual admin follow-up for any payment option whose live gateway path is not configured yet.
 - The local env files now point at the real `roshal-organic` Turso database instead of the old Quadra database.
 - `.env.production` now expects your final live domain in `BETTER_AUTH_URL` and `NEXT_PUBLIC_APP_URL`; those should match the actual deployed Roshal storefront URL before go-live.

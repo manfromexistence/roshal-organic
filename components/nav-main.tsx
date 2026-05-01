@@ -147,7 +147,7 @@ export function NavMain({
                         <SidebarMenuSubButton
                           asChild
                           isActive={isDashboardUrlExact(pathname, subItem.url)}
-                          className="h-8 cursor-pointer transition-colors data-[active=true]:bg-sidebar-primary/15 data-[active=true]:text-sidebar-foreground"
+                          className="h-8 cursor-pointer transition-colors data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:shadow-sm"
                         >
                           <Link href={subItem.url}>
                             <span>{subItem.title}</span>

@@ -1,13 +1,17 @@
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { saveRoshalPage } from "@/actions/admin";
-import { DashboardInsightCard } from "@/components/dashboard/dashboard-insight-card";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
-import { HomepageControlCenter } from "@/components/dashboard/homepage-control-center";
 import { RoshalPagesTable } from "@/components/dashboard/pages-table";
 import { ImageUploadField } from "@/components/shared/image-upload-field";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -43,31 +47,6 @@ export default async function DashboardPagesPage({
     (page) => page.status === "published",
   ).length;
   const navigationCount = pages.filter((page) => page.showInNavigation).length;
-  const pageStatusData = [
-    {
-      key: "published",
-      label: locale === "bn" ? "প্রকাশিত" : "Published",
-      value: publishedCount,
-    },
-    {
-      key: "draft",
-      label: locale === "bn" ? "ড্রাফট" : "Draft",
-      value: pages.length - publishedCount,
-    },
-  ];
-  const navigationData = [
-    {
-      key: "visible",
-      label: locale === "bn" ? "নেভিগেশনে আছে" : "Visible in nav",
-      value: navigationCount,
-    },
-    {
-      key: "hidden",
-      label: locale === "bn" ? "নেভিগেশনে লুকানো" : "Hidden from nav",
-      value: pages.length - navigationCount,
-    },
-  ];
-
   return (
     <div className="min-w-0 space-y-6 px-6 pt-6 pb-0">
       <div className="min-w-0 space-y-2">
@@ -112,32 +91,7 @@ export default async function DashboardPagesPage({
         />
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-2">
-        <DashboardInsightCard
-          title={locale === "bn" ? "পেজ স্ট্যাটাস" : "Page status"}
-          description={
-            locale === "bn"
-              ? "পাবলিক মার্কেটিং পেজগুলোর প্রকাশ অবস্থা।"
-              : "Publication health across the public marketing pages."
-          }
-          totalLabel={locale === "bn" ? "পেজ" : "Pages"}
-          data={pageStatusData}
-        />
-        <DashboardInsightCard
-          title={
-            locale === "bn" ? "নেভিগেশন ভিজিবিলিটি" : "Navigation visibility"
-          }
-          description={
-            locale === "bn"
-              ? "কোন পেজগুলো হেডার ও ফুটারে উঠে আসছে তার দ্রুত ভিউ।"
-              : "A quick view of what is being surfaced in header and footer navigation."
-          }
-          totalLabel={locale === "bn" ? "নেভ" : "Nav"}
-          data={navigationData}
-        />
-      </div>
-
-      <HomepageControlCenter locale={locale} />
+      {/* Page status, navigation visibility, and homepage control center panels are intentionally hidden per client request. */}
 
       <Card id="create-marketing-page">
         <CardHeader>
@@ -146,88 +100,99 @@ export default async function DashboardPagesPage({
           </CardTitle>
         </CardHeader>
         <CardContent className="min-w-0">
-          <form
-            action={saveRoshalPage}
-            className="grid min-w-0 gap-5 md:grid-cols-2"
-          >
-            <Field
-              name="slug"
-              label="Slug"
-              defaultValue=""
-              placeholder="faq, wholesale, delivery-policy"
-            />
-            <div className="space-y-2">
-              <Label>Status</Label>
-              <DashboardFormSelect
-                name="status"
-                defaultValue="draft"
-                options={pageStatusOptions}
-              />
-            </div>
-            <div className="md:col-span-2">
-              <ImageUploadField
-                name="heroImage"
-                label={
-                  locale === "bn" ? "হিরো বা কভার ইমেজ" : "Hero or cover image"
-                }
-                helperText={
-                  locale === "bn"
-                    ? "নতুন পেজে hero/story সেকশন না থাকলে এই ইমেজটি উপরের কভার হিসেবে ব্যবহৃত হবে।"
-                    : "This image will be used as the top cover when the page has no hero/story section yet."
-                }
-                value=""
-              />
-            </div>
-            <Field
-              name="navigationLabelBn"
-              label="Navigation Label (BN)"
-              defaultValue=""
-            />
-            <Field
-              name="navigationLabelEn"
-              label="Navigation Label (EN)"
-              defaultValue=""
-            />
-            <Field name="titleBn" label="Title (BN)" defaultValue="" />
-            <Field name="titleEn" label="Title (EN)" defaultValue="" />
-            <div className="md:col-span-2">
-              <TextField
-                name="descriptionBn"
-                label="Description (BN)"
-                defaultValue=""
-                rows={3}
-              />
-            </div>
-            <div className="md:col-span-2">
-              <TextField
-                name="descriptionEn"
-                label="Description (EN)"
-                defaultValue=""
-                rows={3}
-              />
-            </div>
-            <div className="md:col-span-2">
-              <DashboardFormCheckbox
-                name="showInNavigation"
-                defaultChecked
-                label={
-                  locale === "bn"
-                    ? "স্টোরফ্রন্ট নেভিগেশনে দেখান"
-                    : "Show in storefront navigation"
-                }
-              />
-            </div>
-            <div className="md:col-span-2 rounded-xl border border-border/70 bg-muted/25 p-4 text-sm text-muted-foreground">
-              {locale === "bn"
-                ? "সিস্টেম রুট যেমন products, cart, checkout, orders, profile, login, dashboard, collections, payment-return ব্যবহার করবেন না। পেজ তৈরি হওয়ার পর সেটির সেকশন ও লেআউট `/dashboard/pages/[id]` থেকে সম্পাদনা করতে পারবেন।"
-                : "Avoid system slugs such as products, cart, checkout, orders, profile, login, dashboard, collections, and payment-return. After creation, you can edit the page sections and layout from `/dashboard/pages/[id]`."}
-            </div>
-            <div className="md:col-span-2">
-              <Button type="submit">
-                {locale === "bn" ? "পেজ তৈরি করুন" : "Create page"}
-              </Button>
-            </div>
-          </form>
+          <Accordion type="single" collapsible>
+            <AccordionItem value="create-page-form">
+              <AccordionTrigger>
+                {locale === "bn" ? "নতুন পেজ ফর্ম খুলুন" : "Open new page form"}
+              </AccordionTrigger>
+              <AccordionContent>
+                <form
+                  action={saveRoshalPage}
+                  className="grid min-w-0 gap-5 md:grid-cols-2"
+                >
+                  <Field
+                    name="slug"
+                    label="Slug"
+                    defaultValue=""
+                    placeholder="faq, wholesale, delivery-policy"
+                  />
+                  <div className="space-y-2">
+                    <Label>Status</Label>
+                    <DashboardFormSelect
+                      name="status"
+                      defaultValue="draft"
+                      options={pageStatusOptions}
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <ImageUploadField
+                      name="heroImage"
+                      label={
+                        locale === "bn"
+                          ? "হিরো বা কভার ইমেজ"
+                          : "Hero or cover image"
+                      }
+                      helperText={
+                        locale === "bn"
+                          ? "নতুন পেজে hero/story সেকশন না থাকলে এই ইমেজটি উপরের কভার হিসেবে ব্যবহৃত হবে।"
+                          : "This image will be used as the top cover when the page has no hero/story section yet."
+                      }
+                      value=""
+                    />
+                  </div>
+                  <Field
+                    name="navigationLabelBn"
+                    label="Navigation Label (BN)"
+                    defaultValue=""
+                  />
+                  <Field
+                    name="navigationLabelEn"
+                    label="Navigation Label (EN)"
+                    defaultValue=""
+                  />
+                  <Field name="titleBn" label="Title (BN)" defaultValue="" />
+                  <Field name="titleEn" label="Title (EN)" defaultValue="" />
+                  <div className="md:col-span-2">
+                    <TextField
+                      name="descriptionBn"
+                      label="Description (BN)"
+                      defaultValue=""
+                      rows={3}
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <TextField
+                      name="descriptionEn"
+                      label="Description (EN)"
+                      defaultValue=""
+                      rows={3}
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <DashboardFormCheckbox
+                      name="showInNavigation"
+                      defaultChecked
+                      label={
+                        locale === "bn"
+                          ? "স্টোরফ্রন্ট নেভিগেশনে দেখান"
+                          : "Show in storefront navigation"
+                      }
+                    />
+                  </div>
+                  <div className="md:col-span-2 rounded-xl border border-border/70 bg-muted/25 p-4 text-sm text-muted-foreground">
+                    {locale === "bn"
+                      ? "সিস্টেম রুট যেমন products, cart, checkout, orders, profile, login, dashboard, collections, payment-return ব্যবহার করবেন না। পেজ তৈরি হওয়ার পর সেটির সেকশন ও লেআউট `/dashboard/pages/[id]` থেকে সম্পাদনা করতে পারবেন।"
+                      : "Avoid system slugs such as products, cart, checkout, orders, profile, login, dashboard, collections, and payment-return. After creation, you can edit the page sections and layout from `/dashboard/pages/[id]`."}
+                  </div>
+                  <div className="md:col-span-2">
+                    <Button type="submit">
+                      {locale === "bn" ? "পেজ তৈরি করুন" : "Create page"}
+                    </Button>
+                  </div>
+                </form>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </CardContent>
       </Card>
 

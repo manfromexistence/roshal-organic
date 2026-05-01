@@ -14,10 +14,6 @@ export function normalizeBangladeshPhoneInput(value: string) {
     return `0${digitsOnly.slice(3, 13)}`;
   }
 
-  if (digitsOnly.startsWith("1") && digitsOnly.length === 10) {
-    return `0${digitsOnly}`;
-  }
-
   if (digitsOnly.startsWith("0") && digitsOnly.length >= 11) {
     return digitsOnly.slice(0, 11);
   }

@@ -73,7 +73,7 @@ export function getRoshalPaymentMethodLabel(
 ): LocalizedValue {
   switch (method) {
     case "cash_on_delivery":
-      return localizedValue("ক্যাশ অন ডেলিভারি", "Cash on delivery");
+      return localizedValue("ক্যাশ অন ডেলিভারি (COD)", "Cash On Delivery (COD)");
     case "card":
       return localizedValue("কার্ড", "Card");
     case "nagad":
@@ -84,6 +84,32 @@ export function getRoshalPaymentMethodLabel(
       return localizedValue("উপায়", "Upay");
     default:
       return localizedValue("বিকাশ", "bKash");
+  }
+}
+
+export function getRoshalDeliveryType(order: Pick<RoshalOrder, "notes">) {
+  const notes = order.notes.toLowerCase();
+  const match = notes.match(/delivery\s*type:\s*(home|office)/i);
+
+  if (match?.[1] === "office") {
+    return "office";
+  }
+
+  if (match?.[1] === "home") {
+    return "home";
+  }
+
+  return "unknown";
+}
+
+export function getRoshalDeliveryTypeLabel(type: string): LocalizedValue {
+  switch (type) {
+    case "office":
+      return localizedValue("কুরিয়ার অফিস", "Office delivery");
+    case "home":
+      return localizedValue("হোম ডেলিভারি", "Home delivery");
+    default:
+      return localizedValue("সেট করা নেই", "Not set");
   }
 }
 
@@ -140,7 +166,7 @@ export function getRoshalOrderTrackingSteps(
       },
       {
         key: "payment",
-        label: localizedValue("ক্যাশ অন ডেলিভারি", "Cash on delivery"),
+        label: localizedValue("ক্যাশ অন ডেলিভারি (COD)", "Cash On Delivery (COD)"),
         description: localizedValue(
           order.paymentStatus === "paid"
             ? "ডেলিভারির সময় ক্যাশ পেমেন্ট সংগ্রহ করা হয়েছে।"

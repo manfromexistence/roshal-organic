@@ -906,11 +906,12 @@ export function ProductsPageClient({
             </Card>
           ) : (
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-              {filteredProducts.map((product) => (
+              {filteredProducts.map((product, index) => (
                 <RoshalProductCard
                   key={product.id}
                   product={product}
                   locale={locale}
+                  priority={index < 2}
                 />
               ))}
             </div>

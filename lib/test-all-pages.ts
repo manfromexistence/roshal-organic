@@ -2,49 +2,48 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 
 const pages = [
-  // Main nav
   "/",
-  "/projects",
-  "/documents",
-  "/workflows",
-  "/bulk-upload",
-  "/schedule",
-  "/databook",
-  "/matrix",
-  "/audit",
-  "/technical-queries",
-  "/reports",
-  "/theme",
   "/about",
-  "/terms",
-  "/privacy",
-  // Clouds nav
-  "/transmittals",
-  "/transmittals/new",
-  "/letters",
-  "/letters/new",
-  "/meetings",
-  "/meetings/new",
-  "/submittals",
-  "/change-orders",
-  "/inspections",
-  "/extension-of-time",
-  "/daily-reports",
-  "/safety-observations",
-  "/commissioning",
-  "/warranty",
-  "/notifications",
-  "/config",
-  // Admin pages
-  "/admin/users",
-  "/admin/organizations",
+  "/account",
+  "/cart",
+  "/checkout",
+  "/collections",
+  "/contact",
+  "/favorites",
+  "/login",
+  "/orders",
+  "/payment-return",
+  "/products",
+  "/profile",
+  "/track-order",
+  "/dashboard",
+  "/dashboard/categories",
+  "/dashboard/categories/new",
+  "/dashboard/categories/sub/new",
+  "/dashboard/marketing",
+  "/dashboard/orders",
+  "/dashboard/pages",
+  "/dashboard/payments",
+  "/dashboard/products",
+  "/dashboard/products/new",
+  "/dashboard/settings",
+  "/dashboard/theme",
+  "/dashboard/users",
 ];
 
 function getPagePath(url: string): string {
   if (url === "/") {
-    return join(process.cwd(), "app", "page.tsx");
+    return join(process.cwd(), "app", "(marketing)", "page.tsx");
   }
-  return join(process.cwd(), "app", url.replace(/^\//, ""), "page.tsx");
+
+  const routePath = url.replace(/^\//, "");
+  const candidates = [
+    join(process.cwd(), "app", routePath, "page.tsx"),
+    join(process.cwd(), "app", "(marketing)", routePath, "page.tsx"),
+    join(process.cwd(), "app", "(login)", routePath, "page.tsx"),
+  ];
+
+  return candidates.find((candidate) => existsSync(candidate)) || candidates[0];
 }
 
 function testPageExists(url: string): { exists: boolean; path: string } {
@@ -63,9 +62,9 @@ async function testAllPages() {
     results.push({ url, ...result });
 
     if (result.exists) {
-      console.log(`✓ ${url} - EXISTS`);
+      console.log(`[OK] ${url} - EXISTS`);
     } else {
-      console.log(`✗ ${url} - MISSING`);
+      console.log(`[MISSING] ${url} - MISSING`);
     }
   }
 
@@ -96,10 +95,10 @@ if (require.main === module) {
   testAllPages()
     .then((result) => {
       if (result.missing === 0) {
-        console.log("\n✓ All pages exist");
+        console.log("\n[OK] All pages exist");
         process.exit(0);
       } else {
-        console.log(`\n✗ ${result.missing} pages are missing`);
+        console.log(`\n[MISSING] ${result.missing} pages are missing`);
         process.exit(1);
       }
     })

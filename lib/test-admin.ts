@@ -3,7 +3,7 @@ import { db } from "./db";
 import { organizations, users } from "./schema";
 
 async function testAdminUsersPage() {
-  console.log("Testing /admin/users page...");
+  console.log("Testing /dashboard/users data...");
 
   try {
     // Test database query
@@ -35,7 +35,7 @@ async function testAdminUsersPage() {
 }
 
 async function testAdminOrganizationsPage() {
-  console.log("Testing /admin/organizations page...");
+  console.log("Testing storefront organization data...");
 
   try {
     // Test database query
@@ -75,7 +75,7 @@ async function testAdminOrganizationsPage() {
 }
 
 async function runAllTests() {
-  console.log("=== Testing Admin Dashboard Pages ===\n");
+  console.log("=== Testing Roshal Dashboard Data ===\n");
 
   const usersResult = await testAdminUsersPage();
   console.log();

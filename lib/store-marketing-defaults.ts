@@ -63,8 +63,8 @@ export const defaultRoshalExtendedPages: RoshalMarketingPage[] = [
     navigationLabel: localizedValue("পেমেন্ট", "Payment"),
     title: localizedValue("পেমেন্ট গাইড", "Payment Guide"),
     description: localizedValue(
-      "কার্ড, bKash, Nagad, Rocket, Upay এবং ম্যানুয়াল ভেরিফিকেশন ফ্লো সম্পর্কে জানুন।",
-      "Understand card, bKash, Nagad, Rocket, Upay, and manual verification payment flows.",
+      "Cash on Delivery, কার্ড, bKash এবং Nagad পেমেন্ট সম্পর্কে জানুন।",
+      "Understand Cash on Delivery, card, bKash, and Nagad payment flows.",
     ),
     heroImage: "/oil-2.jpg",
     status: "published",
@@ -215,8 +215,8 @@ const defaultRoshalExtendedPageEnhancements: RoshalMarketingSection[] = [
       {
         title: localizedValue("১. issue record", "1. Issue recorded"),
         body: localizedValue(
-          "অর্ডার নম্বর, সমস্যা, payment proof বা receiving note সংগ্রহ করা হয়।",
-          "The order number, issue summary, payment proof, or receiving note is collected first.",
+          "অর্ডার নম্বর, সমস্যা, payment reference বা receiving note সংগ্রহ করা হয়।",
+          "The order number, issue summary, payment reference, or receiving note is collected first.",
         ),
       },
       {
@@ -253,8 +253,8 @@ const defaultRoshalExtendedPageEnhancements: RoshalMarketingSection[] = [
       "One support surface for orders, payments, delivery, and returns",
     ),
     body: localizedValue(
-      "Roshal Organic support experience এমনভাবে সাজানো যে checkout-এর পরে customer journey ভেঙে না গিয়ে একটানা থাকে। তাই অর্ডার স্ট্যাটাস, wallet proof review, delivery follow-up এবং return discussion আলাদা আলাদা টিমে আটকে না থেকে একটি coordinated flow-তে কাজ করে।",
-      "The Roshal Organic support experience is designed so the post-checkout journey stays continuous. Order status, wallet-proof review, delivery follow-up, and return discussions are coordinated instead of feeling split across disconnected teams.",
+      "Roshal Organic support experience এমনভাবে সাজানো যে checkout-এর পরে customer journey ভেঙে না গিয়ে একটানা থাকে। তাই অর্ডার স্ট্যাটাস, payment review, delivery follow-up এবং return discussion আলাদা আলাদা টিমে আটকে না থেকে একটি coordinated flow-তে কাজ করে।",
+      "The Roshal Organic support experience is designed so the post-checkout journey stays continuous. Order status, payment review, delivery follow-up, and return discussions are coordinated instead of feeling split across disconnected teams.",
     ),
     ctaLabel: localizedValue("Order Tracking", "Order Tracking"),
     ctaHref: "/orders",
@@ -290,8 +290,8 @@ const defaultRoshalExtendedPageEnhancements: RoshalMarketingSection[] = [
         label: localizedValue("Payment", "Payment"),
         title: localizedValue("Payment Guide", "Payment Guide"),
         body: localizedValue(
-          "wallet proof, transaction ID, admin verification বা gateway flow বুঝতে।",
-          "For wallet proof, transaction ID, admin verification, or gateway guidance.",
+          "wallet payment, transaction ID, admin verification বা gateway flow বুঝতে।",
+          "For wallet payment, transaction ID, admin verification, or gateway guidance.",
         ),
         href: "/payment",
       },
@@ -328,9 +328,9 @@ const defaultRoshalExtendedPageEnhancements: RoshalMarketingSection[] = [
     },
   },
   {
-    id: "section-payment-proof-checklist",
+    id: "section-payment-reference-checklist",
     pageId: "page-payment",
-    sectionKey: "payment-proof-checklist",
+    sectionKey: "payment-reference-checklist",
     type: "contact-cards",
     sortOrder: 1,
     layout: "grid",
@@ -342,8 +342,8 @@ const defaultRoshalExtendedPageEnhancements: RoshalMarketingSection[] = [
       "What to keep ready for wallet-payment verification",
     ),
     body: localizedValue(
-      "bKash, Nagad বা Rocket payment-এর ক্ষেত্রে admin review দ্রুত করতে প্রয়োজনীয় তথ্যগুলো আলাদা করে দেখান।",
-      "Show the exact details customers should keep ready for faster admin review on bKash, Nagad, or Rocket payments.",
+      "bKash বা Nagad payment-এর ক্ষেত্রে admin review দ্রুত করতে প্রয়োজনীয় তথ্যগুলো আলাদা করে দেখান।",
+      "Show the exact details customers should keep ready for faster admin review on bKash or Nagad payments.",
     ),
     ctaLabel: localizedValue("Checkout", "Checkout"),
     ctaHref: "/checkout",
@@ -366,19 +366,19 @@ const defaultRoshalExtendedPageEnhancements: RoshalMarketingSection[] = [
         ),
       },
       {
-        label: localizedValue("Screenshot", "Screenshot"),
-        title: localizedValue("Payment proof", "Payment proof"),
+        label: localizedValue("Amount", "Amount"),
+        title: localizedValue("Paid amount", "Paid amount"),
         body: localizedValue(
-          "confirmation screen বা transaction history screenshot আপলোড করুন।",
-          "Upload the confirmation screen or a screenshot from the transaction history.",
+          "payment amount, transaction ID এবং sender number প্রস্তুত রাখুন।",
+          "Keep the paid amount available so support can match it with the order total.",
         ),
       },
       {
         label: localizedValue("Order number", "Order number"),
         title: localizedValue("Match the order", "Match the order"),
         body: localizedValue(
-          "payment proof যেন সঠিক order-এর সঙ্গে review করা যায় সেই তথ্য দিন।",
-          "Include enough detail so the proof can be matched to the correct order.",
+          "payment reference যেন সঠিক order-এর সঙ্গে review করা যায় সেই তথ্য দিন।",
+          "Include enough detail so the payment reference can be matched to the correct order.",
         ),
       },
     ],
@@ -418,8 +418,8 @@ const defaultRoshalExtendedPageEnhancements: RoshalMarketingSection[] = [
       {
         title: localizedValue("অ্যাডমিন যাচাই", "Admin verification"),
         body: localizedValue(
-          "dashboard থেকে proof, sender number, amount এবং order data মিলিয়ে দেখা হয়।",
-          "The admin reviews the proof, sender number, amount, and order details from the dashboard.",
+          "dashboard থেকে transaction ID, sender number, amount এবং order data মিলিয়ে দেখা হয়।",
+          "The admin reviews the transaction ID, sender number, amount, and order details from the dashboard.",
         ),
       },
       {
@@ -551,10 +551,10 @@ const defaultRoshalExtendedPageEnhancements: RoshalMarketingSection[] = [
         ),
       },
       {
-        title: localizedValue("ওয়ালেট proof", "Wallet proof"),
+        title: localizedValue("ওয়ালেট রেফারেন্স", "Wallet reference"),
         body: localizedValue(
-          "ম্যানুয়াল wallet payment-এর ক্ষেত্রে screenshot ও transaction ID জমা দিতে হবে।",
-          "Manual wallet payments require a screenshot and transaction ID.",
+          "ম্যানুয়াল wallet payment-এর ক্ষেত্রে transaction ID ও sender number দিতে হবে।",
+          "Manual wallet payments require the transaction ID and sender number.",
         ),
       },
       {
@@ -652,15 +652,15 @@ const defaultRoshalExtendedPageEnhancements: RoshalMarketingSection[] = [
     sortOrder: 0,
     layout: "split",
     variant: "muted",
-    isEnabled: true,
+    isEnabled: false,
     eyebrow: localizedValue("সুরক্ষা প্রতিশ্রুতি", "Security commitment"),
     title: localizedValue(
       "অর্ডার ও payment-related তথ্যকে সীমিত ব্যবহার ও সুরক্ষার মধ্যে রাখা হয়",
       "Order and payment-related data is kept within a limited and protected workflow",
     ),
     body: localizedValue(
-      "Roshal Organic storefront, checkout এবং admin review flow-এ শুধু প্রয়োজনীয় order, address, payment reference এবং support history ব্যবহার করা হয়। manual verification proof কেবল order confirmation বা dispute resolution-এর প্রয়োজনেই দেখা হয়।",
-      "Across the storefront, checkout, and admin-review flow, Roshal Organic uses only the order, address, payment reference, and support history needed to complete the purchase. Manual-verification proof is reviewed only for order confirmation or dispute resolution.",
+      "Roshal Organic storefront, checkout এবং admin review flow-এ শুধু প্রয়োজনীয় order, address, payment reference এবং support history ব্যবহার করা হয়।",
+      "Across the storefront, checkout, and admin-review flow, Roshal Organic uses only the order, address, payment reference, and support history needed to complete the purchase.",
     ),
     ctaLabel: localizedValue("Support Center", "Support Center"),
     ctaHref: "/support-center",
@@ -1011,10 +1011,10 @@ export const defaultRoshalExtendedSections: RoshalMarketingSection[] = [
         ),
       },
       {
-        title: localizedValue("৩. পেমেন্ট ও প্রুফ", "3. Payment and proof"),
+        title: localizedValue("৩. পেমেন্ট রেফারেন্স", "3. Payment reference"),
         body: localizedValue(
-          "ম্যানুয়াল পেমেন্ট হলে ট্রানজেকশন আইডি, সেন্ডার নম্বর এবং স্ক্রিনশট দিন।",
-          "For manual payment, submit the transaction ID, sender number, and screenshot.",
+          "ম্যানুয়াল পেমেন্ট হলে ট্রানজেকশন আইডি ও সেন্ডার নম্বর দিন।",
+          "For manual payment, submit the transaction ID and sender number.",
         ),
       },
       {
@@ -1074,8 +1074,8 @@ export const defaultRoshalExtendedSections: RoshalMarketingSection[] = [
           "Which payment methods are available?",
         ),
         body: localizedValue(
-          "কার্ড, bKash, Nagad, Rocket, Upay এবং ম্যানুয়াল ভেরিফিকেশন ফ্লো সমর্থিত।",
-          "Card, bKash, Nagad, Rocket, Upay, and manual verification flows are supported.",
+          "Cash on Delivery, কার্ড, bKash এবং Nagad পেমেন্ট সমর্থিত।",
+          "Cash on Delivery, card, bKash, and Nagad payments are supported.",
         ),
       },
       {
@@ -1122,28 +1122,25 @@ export const defaultRoshalExtendedSections: RoshalMarketingSection[] = [
     eyebrow: localizedValue("চেকআউট পেমেন্ট", "Checkout payments"),
     title: localizedValue("সমর্থিত পেমেন্ট ফ্লো", "Supported payment flows"),
     body: localizedValue(
-      "লাইভ গেটওয়ে বা ম্যানুয়াল ভেরিফিকেশন – দুই ধরনের পেমেন্ট ফ্লোই স্টোরফ্রন্ট থেকে চালানো যায়।",
-      "Both live gateway and manual verification payment flows can run from the storefront.",
+      "Cash on Delivery, কার্ড গেটওয়ে, bKash এবং Nagad wallet reference ফ্লো স্টোরফ্রন্ট থেকে চালানো যায়।",
+      "Cash on Delivery, card gateway, bKash, and Nagad wallet-reference flows can run from the storefront.",
     ),
     ctaLabel: localizedValue("চেকআউট দেখুন", "Open checkout"),
     ctaHref: "/checkout",
     imageUrl: "",
     items: [
       {
-        title: localizedValue("কার্ড ও Upay গেটওয়ে", "Card and Upay gateway"),
+        title: localizedValue("কার্ড গেটওয়ে", "Card gateway"),
         body: localizedValue(
           "গেটওয়ে মোড চালু থাকলে গ্রাহক নিরাপদ পেমেন্ট সেশনে রিডাইরেক্ট হবে।",
           "When gateway mode is enabled, the customer is redirected to a secure payment session.",
         ),
       },
       {
-        title: localizedValue(
-          "bKash / Nagad / Rocket",
-          "bKash / Nagad / Rocket",
-        ),
+        title: localizedValue("bKash / Nagad", "bKash / Nagad"),
         body: localizedValue(
-          "ম্যানুয়াল মোডে লেনদেনের প্রুফ, সেন্ডার নম্বর এবং ট্রানজেকশন আইডি সংরক্ষণ করা হয়।",
-          "In manual mode, payment proof, sender number, and transaction ID are collected and stored.",
+          "ম্যানুয়াল মোডে সেন্ডার নম্বর এবং ট্রানজেকশন আইডি সংরক্ষণ করা হয়।",
+          "In manual mode, sender number and transaction ID are collected and stored.",
         ),
       },
       {
@@ -1152,8 +1149,8 @@ export const defaultRoshalExtendedSections: RoshalMarketingSection[] = [
           "Dashboard-controlled options",
         ),
         body: localizedValue(
-          "কোন পেমেন্ট অপশন চালু থাকবে, কোনটি প্রুফ চাইবে – সব ড্যাশবোর্ড থেকে নিয়ন্ত্রিত।",
-          "Enabled methods and proof requirements are fully controlled from the dashboard.",
+          "কোন পেমেন্ট অপশন চালু থাকবে, কোনটি admin review লাগবে – সব ড্যাশবোর্ড থেকে নিয়ন্ত্রিত।",
+          "Enabled methods and admin-review behavior are controlled from the dashboard.",
         ),
       },
     ],
@@ -1279,8 +1276,8 @@ export const defaultRoshalExtendedSections: RoshalMarketingSection[] = [
       {
         title: localizedValue("যোগ্যতার যাচাই", "Eligibility review"),
         body: localizedValue(
-          "রিফান্ডের আগে অর্ডার অবস্থা, সমস্যার ধরন এবং প্রুফ যাচাই করা হবে।",
-          "Order status, issue type, and supporting proof are reviewed before refund approval.",
+          "রিফান্ডের আগে অর্ডার অবস্থা, সমস্যার ধরন এবং সাপোর্ট তথ্য যাচাই করা হবে।",
+          "Order status, issue type, and support details are reviewed before refund approval.",
         ),
       },
       {
@@ -1431,8 +1428,8 @@ export const defaultRoshalExtendedSections: RoshalMarketingSection[] = [
       {
         title: localizedValue("পেমেন্ট শর্ত", "Payment terms"),
         body: localizedValue(
-          "নির্বাচিত পেমেন্ট মোড অনুযায়ী প্রুফ, ট্রানজ্যাকশন আইডি বা গেটওয়ে কনফার্মেশন লাগতে পারে।",
-          "Proof, transaction ID, or gateway confirmation may be required based on the selected payment mode.",
+          "নির্বাচিত পেমেন্ট মোড অনুযায়ী ট্রানজ্যাকশন আইডি, সেন্ডার নম্বর বা গেটওয়ে কনফার্মেশন লাগতে পারে।",
+          "Transaction ID, sender number, or gateway confirmation may be required based on the selected payment mode.",
         ),
       },
       {

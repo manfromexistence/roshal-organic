@@ -19,19 +19,28 @@ import type {
   RoshalProduct,
   RoshalSiteSettings,
 } from "@/lib/store-types";
+import { cn } from "@/lib/utils";
 
 const spacingMap: Record<string, string> = {
-  compact: "py-10",
-  comfortable: "py-16",
-  spacious: "py-24",
+  compact: "py-8 sm:py-10",
+  comfortable: "py-10 sm:py-12 md:py-16",
+  spacious: "py-12 sm:py-16 md:py-24",
 };
 
 const columnsMap: Record<string, string> = {
   "2": "grid-cols-1 md:grid-cols-2",
   "3": "grid-cols-1 md:grid-cols-2 xl:grid-cols-3",
-  "4": "grid-cols-1 sm:grid-cols-2 xl:grid-cols-4",
+  "4": "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4",
   "5": "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5",
 };
+
+const primaryButtonClass =
+  "h-auto min-h-10 max-w-full whitespace-normal px-4 py-2 text-center leading-5 sm:px-6";
+
+const compactButtonClass =
+  "h-auto min-h-8 max-w-full whitespace-normal px-3 py-1.5 text-center leading-4";
+
+const wrappingTextClass = "break-words [overflow-wrap:anywhere]";
 
 function parseLimit(value: string | undefined, fallback: number) {
   const parsed = Number.parseInt(value || "", 10);
@@ -66,7 +75,44 @@ function resolveLocalizedItemValue(
   return value ? getLocalizedValue(locale, value) : "";
 }
 
-function resolveSectionColumns(section: RoshalMarketingSection) {
+function isCompactMarketingPage(slug?: string) {
+  return slug === "about" || slug === "contact";
+}
+
+function resolveSectionSpacing(
+  section: RoshalMarketingSection,
+  pageSlug: string | undefined,
+  sectionSpacing: string,
+) {
+  if (isCompactMarketingPage(pageSlug)) {
+    if (section.type === "hero" || section.type === "story") {
+      return "py-6 sm:py-8 lg:py-10";
+    }
+
+    return "py-5 sm:py-7 lg:py-9";
+  }
+
+  return spacingMap[sectionSpacing] || spacingMap.comfortable;
+}
+
+function resolveSectionColumns(
+  section: RoshalMarketingSection,
+  pageSlug?: string,
+) {
+  const hasDetailedCards = section.items.some(
+    (item) =>
+      Boolean(resolveLocalizedItemValue("en", item.body)) || Boolean(item.href),
+  );
+
+  if (
+    pageSlug === "contact" &&
+    section.type === "contact-cards" &&
+    section.items.length >= 4 &&
+    !hasDetailedCards
+  ) {
+    return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4";
+  }
+
   if (section.styles.columns && columnsMap[section.styles.columns]) {
     return columnsMap[section.styles.columns];
   }
@@ -172,23 +218,25 @@ export function RoshalSectionRenderer({
   const primarySectionId = sortedSections.find(
     (section) => section.type === "hero" || section.type === "story",
   )?.id;
+  const pageSlug = page?.slug;
 
   return (
     <>
       {sortedSections.map((section) => (
         <section
           key={section.id}
-          className={`${spacingMap[siteSettings.sectionSpacing] || spacingMap.comfortable} ${
+          className={`overflow-x-clip ${resolveSectionSpacing(section, pageSlug, siteSettings.sectionSpacing)} ${
             section.variant === "muted" ? "bg-muted/35" : "bg-transparent"
           }`}
         >
-          <div className="container mx-auto px-4">
+          <div className="container mx-auto min-w-0 px-4 sm:px-6 md:px-8">
             <SectionContent
               section={section}
               locale={locale}
               products={products}
               siteSettings={siteSettings}
               page={section.id === primarySectionId ? page : undefined}
+              pageSlug={pageSlug}
             />
           </div>
         </section>
@@ -203,12 +251,14 @@ function SectionContent({
   products,
   siteSettings,
   page,
+  pageSlug,
 }: {
   section: RoshalMarketingSection;
   locale: RoshalLocale;
   products: RoshalProduct[];
   siteSettings: RoshalSiteSettings;
   page?: RoshalMarketingPage;
+  pageSlug?: string;
 }) {
   const eyebrow = getLocalizedValue(locale, section.eyebrow);
   const title = getLocalizedValue(locale, section.title);
@@ -223,34 +273,53 @@ function SectionContent({
   const heroTitle = title || pageTitle;
   const heroBody = body || pageBody;
   const heroImage = section.imageUrl || page?.heroImage;
-  const sectionColumns = resolveSectionColumns(section);
+  const sectionColumns = resolveSectionColumns(section, pageSlug);
+  const compactInfoPage = isCompactMarketingPage(pageSlug);
 
   if (section.type === "hero" || section.type === "story") {
     return (
       <MarketingReveal
-        className={`grid items-center gap-8 rounded-[2rem] border border-border/60 bg-gradient-to-br from-background via-background to-muted/60 p-6 shadow-sm lg:p-10 ${
+        className={cn(
+          "grid min-w-0 items-center overflow-hidden border border-border/60 bg-gradient-to-br from-background via-background to-muted/60 shadow-sm",
+          compactInfoPage
+            ? "gap-5 rounded-xl p-4 sm:p-5 md:gap-6 lg:p-8"
+            : "gap-6 rounded-2xl p-4 sm:p-6 md:gap-8 lg:p-10",
           siteSettings.heroLayout === "split"
-            ? "lg:grid-cols-[1.1fr_0.9fr]"
-            : "mx-auto max-w-4xl"
-        }`}
+            ? "lg:grid-cols-[minmax(0,1.08fr)_minmax(18rem,0.92fr)]"
+            : "mx-auto max-w-4xl",
+        )}
       >
-        <div className="space-y-5">
+        <div
+          className={cn("min-w-0", compactInfoPage ? "space-y-4" : "space-y-5")}
+        >
           {heroEyebrow ? (
-            <p className="text-xs uppercase tracking-[0.24em] text-primary dark:[color:color-mix(in_oklch,var(--foreground)_68%,var(--primary))]">
+            <p
+              className={`${wrappingTextClass} text-xs uppercase tracking-[0.16em] text-primary sm:tracking-[0.24em] dark:[color:color-mix(in_oklch,var(--foreground)_68%,var(--primary))]`}
+            >
               {heroEyebrow}
             </p>
           ) : null}
-          <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-foreground md:text-5xl">
+          <h1
+            className={cn(
+              wrappingTextClass,
+              "max-w-3xl font-semibold leading-[1.16] tracking-tight text-foreground",
+              compactInfoPage
+                ? "text-3xl sm:text-4xl xl:text-5xl"
+                : "text-3xl sm:text-4xl md:text-5xl",
+            )}
+          >
             {heroTitle}
           </h1>
-          <p className="max-w-2xl text-base leading-7 text-muted-foreground md:text-lg">
+          <p
+            className={`${wrappingTextClass} max-w-2xl text-base leading-7 text-muted-foreground md:text-lg`}
+          >
             {heroBody}
           </p>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Button
               asChild
               size="lg"
-              className="transition-transform duration-200 hover:-translate-y-0.5"
+              className={`w-full transition-transform duration-200 hover:-translate-y-0.5 sm:w-auto ${primaryButtonClass}`}
             >
               <Link href={section.ctaHref || siteSettings.primaryCtaHref}>
                 {ctaLabel ||
@@ -261,7 +330,7 @@ function SectionContent({
               asChild
               variant="outline"
               size="lg"
-              className="transition-colors duration-200 hover:border-primary/40 hover:bg-primary/5"
+              className={`w-full transition-colors duration-200 hover:border-primary/40 hover:bg-primary/5 sm:w-auto ${primaryButtonClass}`}
             >
               <Link href="/contact">
                 {locale === "bn" ? "যোগাযোগ করুন" : "Contact us"}
@@ -270,7 +339,14 @@ function SectionContent({
           </div>
         </div>
         {heroImage ? (
-          <MarketingMediaSurface className="relative min-h-80 overflow-hidden rounded-[1.5rem] border bg-muted">
+          <MarketingMediaSurface
+            className={cn(
+              "relative overflow-hidden rounded-xl border bg-muted",
+              compactInfoPage
+                ? "min-h-48 sm:min-h-60 lg:min-h-72"
+                : "min-h-56 sm:min-h-72 md:min-h-80 md:rounded-[1.5rem]",
+            )}
+          >
             <Image
               src={heroImage}
               alt={heroTitle}
@@ -288,9 +364,22 @@ function SectionContent({
 
   if (section.type === "feature-grid") {
     return (
-      <div className="space-y-8">
-        <SectionHeading eyebrow={eyebrow} title={title} body={body} />
-        <div className={`grid gap-4 ${sectionColumns}`}>
+      <div
+        className={cn("min-w-0", compactInfoPage ? "space-y-4" : "space-y-5")}
+      >
+        <SectionHeading
+          eyebrow={eyebrow}
+          title={title}
+          body={body}
+          compact={compactInfoPage}
+        />
+        <div
+          className={cn(
+            "grid min-w-0 items-stretch",
+            compactInfoPage ? "gap-3 sm:gap-4" : "gap-3",
+            sectionColumns,
+          )}
+        >
           {section.items.map((item, index) => {
             const itemTitle = resolveLocalizedItemValue(locale, item.title);
             const itemBody = resolveLocalizedItemValue(locale, item.body);
@@ -299,9 +388,10 @@ function SectionContent({
             return (
               <MarketingHoverSurface
                 key={`${section.id}-${index}`}
+                className="h-full min-w-0"
                 delay={index * 0.04}
               >
-                <Card className="overflow-hidden border-border/60 bg-card/95 shadow-sm transition-colors duration-200 hover:border-primary/25 dark:hover:bg-card">
+                <Card className="h-full min-w-0 overflow-hidden border-border/60 bg-card/95 p-0 shadow-sm transition-colors duration-200 hover:border-primary/25 dark:hover:bg-card">
                   {item.imageUrl ? (
                     <MarketingMediaSurface className="relative aspect-[4/3] overflow-hidden bg-muted">
                       <Image
@@ -313,20 +403,38 @@ function SectionContent({
                       />
                     </MarketingMediaSurface>
                   ) : null}
-                  <CardContent className="space-y-3 p-6">
+                  <CardContent
+                    className={cn(
+                      "min-w-0 space-y-3",
+                      compactInfoPage ? "p-4 sm:p-5" : "p-4 sm:p-6",
+                    )}
+                  >
                     {itemLabel ? (
-                      <Badge variant="secondary">{itemLabel}</Badge>
+                      <Badge
+                        variant="secondary"
+                        className={`max-w-full whitespace-normal text-left leading-5 ${wrappingTextClass}`}
+                      >
+                        {itemLabel}
+                      </Badge>
                     ) : null}
                     {itemTitle ? (
-                      <h3 className="text-lg font-semibold">{itemTitle}</h3>
+                      <h3
+                        className={`${wrappingTextClass} text-lg font-semibold`}
+                      >
+                        {itemTitle}
+                      </h3>
                     ) : null}
                     {itemBody ? (
-                      <p className="text-sm leading-6 text-muted-foreground">
+                      <p
+                        className={`${wrappingTextClass} text-sm leading-6 text-muted-foreground`}
+                      >
                         {itemBody}
                       </p>
                     ) : null}
                     {item.value ? (
-                      <p className="text-lg font-semibold text-primary">
+                      <p
+                        className={`${wrappingTextClass} text-lg font-semibold text-primary`}
+                      >
                         {item.value}
                       </p>
                     ) : null}
@@ -335,7 +443,7 @@ function SectionContent({
                         asChild
                         variant="outline"
                         size="sm"
-                        className="transition-colors duration-200 hover:border-primary/40 hover:bg-primary/5"
+                        className={`w-full transition-colors duration-200 hover:border-primary/40 hover:bg-primary/5 sm:w-auto ${compactButtonClass}`}
                       >
                         <Link href={item.href}>
                           {itemLabel ||
@@ -354,7 +462,7 @@ function SectionContent({
             <Button
               asChild
               variant="outline"
-              className="transition-colors duration-200 hover:border-primary/40 hover:bg-primary/5"
+              className={`w-full transition-colors duration-200 hover:border-primary/40 hover:bg-primary/5 sm:w-auto ${primaryButtonClass}`}
             >
               <Link href={section.ctaHref}>{ctaLabel}</Link>
             </Button>
@@ -368,9 +476,9 @@ function SectionContent({
     const sectionProducts = getSectionProducts(section, products);
 
     return (
-      <div className="space-y-8">
+      <div className="min-w-0 space-y-8">
         <SectionHeading eyebrow={eyebrow} title={title} body={body} />
-        <MarketingReveal className="grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <MarketingReveal className="grid min-w-0 grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {sectionProducts.map((product) => (
             <RoshalProductCard
               key={product.id}
@@ -384,7 +492,7 @@ function SectionContent({
             <Button
               asChild
               variant="outline"
-              className="transition-colors duration-200 hover:border-primary/40 hover:bg-primary/5"
+              className={`w-full transition-colors duration-200 hover:border-primary/40 hover:bg-primary/5 sm:w-auto ${primaryButtonClass}`}
             >
               <Link href={section.ctaHref || "/products"}>{ctaLabel}</Link>
             </Button>
@@ -400,9 +508,22 @@ function SectionContent({
       : section.ctaHref;
 
     return (
-      <div className="space-y-8">
-        <SectionHeading eyebrow={eyebrow} title={title} body={body} />
-        <div className={`grid gap-4 ${sectionColumns}`}>
+      <div
+        className={cn("min-w-0", compactInfoPage ? "space-y-4" : "space-y-5")}
+      >
+        <SectionHeading
+          eyebrow={eyebrow}
+          title={title}
+          body={body}
+          compact={compactInfoPage}
+        />
+        <div
+          className={cn(
+            "grid min-w-0 items-stretch",
+            compactInfoPage ? "gap-3 sm:gap-4" : "gap-3",
+            sectionColumns,
+          )}
+        >
           {section.items.map((item, index) => {
             const itemLabel = resolveLocalizedItemValue(locale, item.label);
             const itemTitle = resolveContactCardValue(
@@ -427,23 +548,41 @@ function SectionContent({
             return (
               <MarketingHoverSurface
                 key={`${section.id}-${index}`}
+                className="h-full min-w-0"
                 delay={index * 0.04}
               >
-                <Card className="border-border/60 bg-card/95 shadow-sm transition-colors duration-200 hover:border-primary/25 dark:hover:bg-card">
-                  <CardContent className="space-y-3 p-5">
+                <Card className="h-full min-w-0 border-border/60 bg-card/95 p-0 shadow-sm transition-colors duration-200 hover:border-primary/25 dark:hover:bg-card">
+                  <CardContent
+                    className={cn(
+                      "min-w-0 space-y-2",
+                      compactInfoPage ? "p-4" : "p-3 sm:p-3.5",
+                    )}
+                  >
                     {itemLabel ? (
-                      <p className="text-sm font-medium text-muted-foreground">
+                      <p
+                        className={`${wrappingTextClass} text-xs font-medium text-muted-foreground`}
+                      >
                         {itemLabel}
                       </p>
                     ) : null}
                     {itemTitle && itemTitle !== itemValue ? (
-                      <p className="text-lg font-semibold">{itemTitle}</p>
+                      <p
+                        className={`${wrappingTextClass} text-sm font-semibold leading-5`}
+                      >
+                        {itemTitle}
+                      </p>
                     ) : null}
                     {itemValue ? (
-                      <p className="text-lg font-semibold">{itemValue}</p>
+                      <p
+                        className={`${wrappingTextClass} text-sm font-semibold leading-5`}
+                      >
+                        {itemValue}
+                      </p>
                     ) : null}
                     {itemBody ? (
-                      <p className="text-sm leading-6 text-muted-foreground">
+                      <p
+                        className={`${wrappingTextClass} text-xs leading-5 text-muted-foreground`}
+                      >
                         {itemBody}
                       </p>
                     ) : null}
@@ -452,7 +591,7 @@ function SectionContent({
                         asChild
                         variant="outline"
                         size="sm"
-                        className="transition-colors duration-200 hover:border-primary/40 hover:bg-primary/5"
+                        className={`w-full rounded-sm text-xs transition-colors duration-200 hover:border-primary/40 hover:bg-primary/5 sm:w-auto ${compactButtonClass}`}
                       >
                         <Link href={itemHref}>
                           {itemLabel || (locale === "bn" ? "খুলুন" : "Open")}
@@ -470,7 +609,7 @@ function SectionContent({
             <Button
               asChild
               size="lg"
-              className="transition-transform duration-200 hover:-translate-y-0.5"
+              className={`w-full transition-transform duration-200 hover:-translate-y-0.5 sm:w-auto ${primaryButtonClass}`}
             >
               <Link href={resolvedCtaHref}>{ctaLabel}</Link>
             </Button>
@@ -487,23 +626,41 @@ function SectionHeading({
   eyebrow,
   title,
   body,
+  compact = false,
 }: {
   eyebrow: string;
   title: string;
   body: string;
+  compact?: boolean;
 }) {
   return (
-    <MarketingReveal className="max-w-3xl space-y-3">
+    <MarketingReveal
+      className={cn("min-w-0 max-w-3xl", compact ? "space-y-2.5" : "space-y-3")}
+    >
       {eyebrow ? (
-        <p className="text-xs uppercase tracking-[0.24em] text-primary dark:[color:color-mix(in_oklch,var(--foreground)_68%,var(--primary))]">
+        <p
+          className={`${wrappingTextClass} text-xs uppercase tracking-[0.16em] text-primary sm:tracking-[0.24em] dark:[color:color-mix(in_oklch,var(--foreground)_68%,var(--primary))]`}
+        >
           {eyebrow}
         </p>
       ) : null}
-      <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
+      <h2
+        className={cn(
+          wrappingTextClass,
+          "font-semibold leading-[1.18] tracking-tight",
+          compact
+            ? "text-2xl sm:text-3xl xl:text-4xl"
+            : "text-2xl sm:text-3xl md:text-4xl",
+        )}
+      >
         {title}
       </h2>
       {body ? (
-        <p className="text-base leading-7 text-muted-foreground">{body}</p>
+        <p
+          className={`${wrappingTextClass} text-base leading-7 text-muted-foreground`}
+        >
+          {body}
+        </p>
       ) : null}
     </MarketingReveal>
   );

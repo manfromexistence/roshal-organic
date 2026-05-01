@@ -11,7 +11,14 @@ import Link from "next/link";
 import { saveRoshalProduct } from "@/actions/admin";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
 import { JsonFieldEditor } from "@/components/dashboard/json-field-editor";
+import { ProductTaxonomySelect } from "@/components/dashboard/product-taxonomy-select";
 import { ImageUploadField } from "@/components/shared/image-upload-field";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,6 +33,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import { getAllRoshalProducts } from "@/lib/store-content";
+import {
+  productMatchesCategory,
+  productMatchesSubcategory,
+} from "@/lib/store-taxonomy";
+import { getRoshalTaxonomy } from "@/lib/store-taxonomy-content";
 import { cn } from "@/lib/utils";
 
 export default async function ProductEditorRoute({
@@ -63,9 +75,10 @@ export async function ProductEditorPage({
   errorSlug?: string;
   errorSku?: string;
 }) {
-  const [, products] = await Promise.all([
+  const [, products, taxonomy] = await Promise.all([
     requireRoshalAdmin(),
     getAllRoshalProducts(),
+    getRoshalTaxonomy(),
   ]);
   const product = productId
     ? products.find((item) => item.id === productId) || null
@@ -76,6 +89,16 @@ export async function ProductEditorPage({
     errorSku,
   );
   const displayName = product?.name.en || product?.name.bn || "New product";
+  const initialCategory =
+    product &&
+    taxonomy.categories.find((category) =>
+      productMatchesCategory(product, category),
+    );
+  const initialSubcategory =
+    product &&
+    taxonomy.subcategories.find((subcategory) =>
+      productMatchesSubcategory(product, subcategory),
+    );
 
   return (
     <div
@@ -156,22 +179,6 @@ export async function ProductEditorPage({
                   label="SKU"
                   defaultValue={product?.sku || ""}
                 />
-                <div className="md:col-span-2">
-                  <TextField
-                    name="summaryEn"
-                    label="Summary (EN)"
-                    defaultValue={product?.summary.en || ""}
-                    rows={3}
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <TextField
-                    name="summaryBn"
-                    label="Summary (BN)"
-                    defaultValue={product?.summary.bn || ""}
-                    rows={3}
-                  />
-                </div>
               </CardContent>
             </Card>
 
@@ -192,14 +199,7 @@ export async function ProductEditorPage({
                   helperText="Used in product cards, product details, checkout, and related product blocks."
                   value={product?.heroImage || ""}
                 />
-                <JsonFieldEditor
-                  name="galleryJson"
-                  label="Gallery"
-                  defaultValue={JSON.stringify(product?.gallery || [], null, 2)}
-                  mode="array-string"
-                  itemLabel="Image"
-                  hint="Each entry should be an image URL. Use the uploader above, then paste or reorder gallery URLs here."
-                />
+                {/* Gallery URL management moved into the optional details dropdown per client request. */}
               </CardContent>
             </Card>
 
@@ -207,50 +207,84 @@ export async function ProductEditorPage({
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-xl">
                   <Package className="size-5 text-primary" />
-                  Storefront content
+                  Optional product details
                 </CardTitle>
                 <CardDescription>
-                  Descriptions and feature bullets shown on the product details
-                  page.
+                  Open only when the product needs long descriptions, feature
+                  bullets, or gallery URLs.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="grid min-w-0 gap-5">
-                <TextField
-                  name="descriptionEn"
-                  label="Description (EN)"
-                  defaultValue={product?.description.en || ""}
-                  rows={5}
-                />
-                <TextField
-                  name="descriptionBn"
-                  label="Description (BN)"
-                  defaultValue={product?.description.bn || ""}
-                  rows={5}
-                />
-                <JsonFieldEditor
-                  name="featuresEnJson"
-                  label="Features (EN)"
-                  defaultValue={JSON.stringify(
-                    product?.features.map((item) => item.en) || [],
-                    null,
-                    2,
-                  )}
-                  mode="array-string"
-                  itemLabel="Feature"
-                  hint="Each row becomes one English feature bullet on the storefront."
-                />
-                <JsonFieldEditor
-                  name="featuresBnJson"
-                  label="Features (BN)"
-                  defaultValue={JSON.stringify(
-                    product?.features.map((item) => item.bn) || [],
-                    null,
-                    2,
-                  )}
-                  mode="array-string"
-                  itemLabel="Feature"
-                  hint="Each row becomes one Bangla feature bullet on the storefront."
-                />
+              <CardContent>
+                <Accordion type="single" collapsible>
+                  <AccordionItem value="optional-details">
+                    <AccordionTrigger>More product details</AccordionTrigger>
+                    <AccordionContent
+                      forceMount
+                      className="grid min-w-0 gap-5 data-[state=closed]:hidden"
+                    >
+                      <TextField
+                        name="summaryEn"
+                        label="Summary (EN)"
+                        defaultValue={product?.summary.en || ""}
+                        rows={3}
+                      />
+                      <TextField
+                        name="summaryBn"
+                        label="Summary (BN)"
+                        defaultValue={product?.summary.bn || ""}
+                        rows={3}
+                      />
+                      <TextField
+                        name="descriptionEn"
+                        label="Description (EN)"
+                        defaultValue={product?.description.en || ""}
+                        rows={5}
+                      />
+                      <TextField
+                        name="descriptionBn"
+                        label="Description (BN)"
+                        defaultValue={product?.description.bn || ""}
+                        rows={5}
+                      />
+                      <JsonFieldEditor
+                        name="galleryJson"
+                        label="Gallery"
+                        defaultValue={JSON.stringify(
+                          product?.gallery || [],
+                          null,
+                          2,
+                        )}
+                        mode="array-string"
+                        itemLabel="Image"
+                        hint="Each entry should be an image URL."
+                      />
+                      <JsonFieldEditor
+                        name="featuresEnJson"
+                        label="Features (EN)"
+                        defaultValue={JSON.stringify(
+                          product?.features.map((item) => item.en) || [],
+                          null,
+                          2,
+                        )}
+                        mode="array-string"
+                        itemLabel="Feature"
+                        hint="Each row becomes one English feature bullet."
+                      />
+                      <JsonFieldEditor
+                        name="featuresBnJson"
+                        label="Features (BN)"
+                        defaultValue={JSON.stringify(
+                          product?.features.map((item) => item.bn) || [],
+                          null,
+                          2,
+                        )}
+                        mode="array-string"
+                        itemLabel="Feature"
+                        hint="Each row becomes one Bangla feature bullet."
+                      />
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
               </CardContent>
             </Card>
           </div>
@@ -297,20 +331,11 @@ export async function ProductEditorPage({
                 </CardDescription>
               </CardHeader>
               <CardContent className="grid min-w-0 gap-5">
-                <Field
-                  name="categoryLabelEn"
-                  label="Category label (EN)"
-                  defaultValue={product?.categoryLabel.en || ""}
-                />
-                <Field
-                  name="categoryLabelBn"
-                  label="Category label (BN)"
-                  defaultValue={product?.categoryLabel.bn || ""}
-                />
-                <Field
-                  name="categoryKey"
-                  label="Category key"
-                  defaultValue={product?.categoryKey || ""}
+                <ProductTaxonomySelect
+                  categories={taxonomy.categories}
+                  subcategories={taxonomy.subcategories}
+                  initialCategoryId={initialCategory?.id || ""}
+                  initialSubcategoryId={initialSubcategory?.id || ""}
                 />
                 <Field
                   name="badge"

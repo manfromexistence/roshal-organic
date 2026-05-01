@@ -1,12 +1,27 @@
 import { DashboardInsightCard } from "@/components/dashboard/dashboard-insight-card";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { RoshalUsersTable } from "@/components/dashboard/users-table";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import { getRoshalUsers } from "@/lib/store-content";
 import { getRoshalLocale } from "@/lib/store-i18n";
 
-export default async function DashboardUsersPage() {
-  const [locale, users] = await Promise.all([
+const userErrorCopy: Record<string, string> = {
+  "last-admin-required": "At least one active admin must remain.",
+  "self-delete-blocked": "You cannot delete your own account.",
+  "user-not-found": "The selected user could not be found.",
+};
+
+export default async function DashboardUsersPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{
+    deleted?: string;
+    error?: string;
+  }>;
+}) {
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const [locale, users, sessionUser] = await Promise.all([
     getRoshalLocale(),
     getRoshalUsers(),
     requireRoshalAdmin(),
@@ -64,6 +79,20 @@ export default async function DashboardUsersPage() {
         </h1>
       </div>
 
+      {resolvedSearchParams.error ? (
+        <Alert variant="destructive">
+          <AlertDescription>
+            {userErrorCopy[resolvedSearchParams.error] ||
+              "Could not complete the user action."}
+          </AlertDescription>
+        </Alert>
+      ) : null}
+      {resolvedSearchParams.deleted ? (
+        <Alert>
+          <AlertDescription>User deleted successfully.</AlertDescription>
+        </Alert>
+      ) : null}
+
       <div className="grid gap-4 md:grid-cols-3">
         <DashboardMetricCard
           title={locale === "bn" ? "মোট ব্যবহারকারী" : "Total users"}
@@ -116,7 +145,11 @@ export default async function DashboardUsersPage() {
         />
       </div>
 
-      <RoshalUsersTable users={users} locale={locale} />
+      <RoshalUsersTable
+        users={users}
+        locale={locale}
+        currentUserId={sessionUser.id}
+      />
     </div>
   );
 }

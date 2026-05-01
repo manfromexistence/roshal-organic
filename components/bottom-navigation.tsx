@@ -23,14 +23,14 @@ export function BottomNavigation() {
             <span className="text-xs">Search</span>
           </Link>
           <Link
-            href="/watchlist"
+            href="/favorites"
             className="flex flex-col items-center gap-1 text-muted-foreground hover:text-primary transition-colors"
           >
             <Heart className="h-5 w-5" />
             <span className="text-xs">Wishlist</span>
           </Link>
           <Link
-            href="/checkout"
+            href="/cart"
             className="flex flex-col items-center gap-1 text-muted-foreground hover:text-primary transition-colors"
           >
             <ShoppingBag className="h-5 w-5" />

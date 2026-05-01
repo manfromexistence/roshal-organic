@@ -291,6 +291,40 @@
     color: var(--sidebar-primary-foreground);
   }
 
+  @media (width >= 48rem) {
+    .dashboard-admin-surface {
+      flex: 0 0 calc(100vw - var(--sidebar-width));
+      width: calc(100vw - var(--sidebar-width));
+      max-width: calc(100vw - var(--sidebar-width));
+    }
+
+    .group\/sidebar-wrapper:has([data-collapsible="icon"])
+      .dashboard-admin-surface {
+      flex-basis: calc(100vw - var(--sidebar-width-icon));
+      width: calc(100vw - var(--sidebar-width-icon));
+      max-width: calc(100vw - var(--sidebar-width-icon));
+    }
+  }
+
+  .dashboard-page-shell {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  @media (width >= 48rem) {
+    .dashboard-page-shell {
+      width: calc(100vw - var(--sidebar-width));
+      max-width: calc(100vw - var(--sidebar-width));
+    }
+
+    .group\/sidebar-wrapper:has([data-collapsible="icon"])
+      .dashboard-page-shell {
+      width: calc(100vw - var(--sidebar-width-icon));
+      max-width: calc(100vw - var(--sidebar-width-icon));
+    }
+  }
+
   html:not(.dark) .storefront-shell [data-slot="card"] {
     background-color: color-mix(in oklch, var(--card) 90%, var(--primary) 10%);
     border-color: color-mix(in oklch, var(--border) 82%, var(--primary) 18%);

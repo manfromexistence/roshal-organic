@@ -5,12 +5,28 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Changed
+- Reworked the current client-feedback batch for storefront auth, signup, checkout, featured categories, product cards, contact cards, and footer spacing toward a more compact Ghore-Bazar-style flow.
+- Switched customer-facing phone entry to local Bangladesh mobile numbers only, with `017XXXXXXXX` placeholders and inline mobile validation on signup.
+- Added dashboard order date-range filtering with All time support, paid/unpaid amount totals, and richer per-column order filters for order/mobile, customer, payment method, total, status, payment status, and placed date.
+- Added the selected checkout delivery type as a dashboard order-management column and filter.
+- Expanded dashboard user management with mobile/district/status/role/language filters, fuller customer columns, delete actions, and Excel/PDF exports.
+- Converted storefront delivery fees to the requested two-zone model, Inside Dhaka and Outside Dhaka, and exposed those editable fees directly on Payment Settings.
+- Updated new Roshal order numbers to the `RO-YYMMDD123` sequence format using the Bangladesh date.
+- Strengthened selected dashboard sidebar states so active submenu items stay visibly highlighted.
+- Updated dashboard overview revenue so the total only counts delivered orders.
+- Added Payment Settings save confirmations for delivery-charge and payment-method saves.
+- Tightened the CMS-backed About and Contact marketing page layouts with compact page-aware spacing, safer large-heading wrapping, and smaller feature/contact cards.
+- Made simple Contact page cards switch to a compact one-row desktop grid while preserving tablet and mobile stacking.
 - Made the dashboard overview cards responsive inside the sidebar layout, delaying the four-column view until very wide screens and forcing long card copy to wrap inside each card.
 - Removed the always-visible horizontal scrollbar strip from the dashboard content shell so pages such as Marketing Pages no longer show a useless bottom bar.
 - Added a sidebar-level guard so the Storefront Theme route cannot render as a dashboard sidebar item even if older navigation data is present.
 - Removed the Storefront Theme child link from the dashboard sidebar settings group while keeping the theme route available by direct link.
 - Removed bottom page padding on dashboard Payment Settings and Marketing Pages while keeping the existing top and side spacing.
 - Split the dashboard category editor into Create and Manage taxonomy submenus with a bounded shadcn scroll workspace so the page no longer expands into one very long editor surface.
+- Simplified the dashboard All Categories page to show only the top metric cards and a bottom categories data table, hiding the larger category-card, insight, and inline taxonomy editor surfaces.
+- Simplified dashboard Pages, Products, Orders, and Payment Settings pages by hiding mid-page insight panels and keeping the primary metric cards, filters, tables, and core forms visible.
+- Reworked product/category creation controls so admins choose existing category, subcategory, and product-bucket values from compact select controls, with optional details moved behind collapsed sections.
+- Normalized Payment Settings page spacing to use the standard dashboard top/side padding while keeping bottom padding removed.
 - Compared the live dashboard UI against the `roshal-organic-dashboard-ui` reference and normalized page padding, card shells, category-card sizing, and create/settings form cards to better match the client-preferred dashboard mockup.
 - Tightened shared dashboard table cards to use borderless shadow shells with flush desktop table content and padded mobile fallback cards.
 - Added a functional dashboard system-settings page for brand/contact fields, storefront defaults, and delivery-zone fee controls using the existing site-settings save action.
@@ -31,6 +47,14 @@ All notable changes to this project will be documented in this file.
 - Limited the visible payment methods across checkout and dashboard settings to Cash on Delivery, Card, bKash, and Nagad.
 - Added compact bKash and Nagad logos to the checkout payment selector and a visible border to the floating WhatsApp chat bubble.
 - Simplified the storefront checkout flow so customers can place orders without payment-proof upload, using a cleaner delivery-type and payment selection layout.
+- Removed stale payment-proof/screenshot controls and default copy from payment settings and CMS payment guidance, keeping wallet checkout to transaction ID plus sender number.
+- Removed Rocket/Upay and screenshot-era wording from payment defaults, CMS payment-page fallback copy, dashboard CMS guidance, and README configuration notes so future seeds stay aligned with the current COD/Card/bKash/Nagad flow.
+- Removed payment-proof image fields from new checkout/API submissions, hid legacy proof-image panels from order detail pages, and excluded reference/demo folders from the production Vercel upload.
+- Fixed Home page CMS section visibility so disabled sections no longer render on the custom storefront homepage.
+- Added best-effort new-order admin email notifications using Resend environment settings.
+- Hardened dashboard user deletion with a fallback anonymized removal path and visible success feedback.
+- Added a browser-QA polish pass for local auth, dashboard width clamping, visible user row actions, and first-visible storefront product image loading.
+- Replaced stale fallback navigation targets and dummy dashboard identity fallbacks with real Roshal routes and sign-in behavior.
 - Tightened the homepage merchandising surfaces, product cards, testimonial cards, footer spacing, and floating WhatsApp placement for the client delivery pass.
 - Updated the public order-tracking flow to use order number lookup only.
 - Upgraded the login and signup surface with real Bangladesh district and thana data, an 11-digit mobile flow, and the requested customer registration fields.
@@ -56,6 +80,20 @@ All notable changes to this project will be documented in this file.
 - Restyled the dashboard payment method editor cards with compact status/mode badges around the existing Cash on Delivery, Card, bKash, and Nagad settings.
 
 ### Fixed
+- Removed the checkout wallet-logo size override that triggered Next image aspect-ratio warnings for bKash and Nagad during browser QA.
+- Allowed Better Auth requests from both localhost and `127.0.0.1`, plus Roshal production and Vercel preview origins, so local dashboard QA no longer fails with `Invalid origin`.
+- Prevented the dashboard orders page from overflowing horizontally when the sidebar is expanded.
+- Moved dashboard user actions beside the core role/status columns so edit/delete stays visible without horizontal table hunting.
+- Prevented out-of-stock or unpublished products from being added through the shared cart store, not just through disabled buttons.
+- Enforced Bangladesh 11-digit mobile validation in the server-side checkout mutation so invalid API requests cannot bypass the UI phone check.
+- Removed mock Turso fallback behavior and normalized database/base URL environment values so production configuration errors fail clearly.
+- Kept checkout address defaults useful by parsing a saved address into address, district, and thana when possible.
+- Fixed dashboard CMS section toggles for default marketing sections by persisting missing default page/section rows on first toggle instead of returning 404.
+- Fixed marketing CMS section toggles to update the resolved default-backed section row, refresh the marketing dashboard, and surface inline toggle failures.
+- Fixed dashboard user deletion for accounts with linked orders, reviews, sessions, accounts, or files by preserving order/review history and clearing dependent records before deleting the user.
+- Fixed dashboard user PDF export by replacing the blocked print-window export path with a direct PDF file download.
+- Fixed the expanded dashboard sidebar layout so the main content area can shrink instead of being pushed off-screen.
+- Kept Cash On Delivery labeled with COD even when older stored payment settings still contain the previous label.
 - Hardened dashboard and checkout image uploads so invalid ImgBB keys and Catbox provider rejection no longer break uploads; small images now fall back to inline data URLs.
 - Removed remaining mojibake from order/payment labels, homepage fallback section labels, and storefront contact-card matching so live customer copy stays readable in Bangla and English.
 - Fixed dashboard sidebar accordion triggers so clicking a parent section only expands or collapses it instead of navigating to the first child page.

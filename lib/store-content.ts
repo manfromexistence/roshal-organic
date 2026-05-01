@@ -16,7 +16,7 @@ import {
   defaultRoshalSections,
   defaultRoshalSiteSettings,
 } from "@/lib/store-defaults";
-import { normalizeRoshalDeliveryZones } from "@/lib/store-delivery";
+import { normalizeRoshalTwoZoneDeliveryZones } from "@/lib/store-delivery";
 import { safeJsonParse } from "@/lib/store-format";
 import {
   normalizeRoshalAssetPath,
@@ -279,9 +279,21 @@ function sanitizePaymentOption(
   option: RoshalPaymentSettings["options"][number],
 ): RoshalPaymentSettings["options"][number] {
   const key = normalizePaymentMethod(option.key);
+  const label =
+    key === "cash_on_delivery" && !/cod/i.test(option.label.en)
+      ? {
+          bn: option.label.bn.includes("COD")
+            ? option.label.bn
+            : `${option.label.bn} (COD)`,
+          en: `${option.label.en} (COD)`,
+        }
+      : option.label;
+
   return {
     ...option,
     key,
+    label,
+    requiresProof: false,
   };
 }
 
@@ -411,7 +423,7 @@ function mapSiteSettings(
       bn: row.primaryCtaLabelBn,
       en: row.primaryCtaLabelEn,
     },
-    deliveryZones: normalizeRoshalDeliveryZones(
+    deliveryZones: normalizeRoshalTwoZoneDeliveryZones(
       safeJsonParse(
         row.deliveryZonesJson,
         defaultRoshalSiteSettings.deliveryZones,
@@ -730,10 +742,18 @@ export async function getRoshalUsers() {
       .from(users)
       .orderBy(asc(users.name));
 
-    return records.map((record) => ({
-      ...record,
-      role: record.role === "admin" ? "admin" : "user",
-    }));
+    return records
+      .filter(
+        (record) =>
+          !(
+            record.email.startsWith("deleted-") &&
+            record.email.endsWith("@roshal-organic.local")
+          ),
+      )
+      .map((record) => ({
+        ...record,
+        role: record.role === "admin" ? "admin" : "user",
+      }));
   } catch {
     return [];
   }

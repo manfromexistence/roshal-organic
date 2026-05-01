@@ -9,6 +9,7 @@ import {
   createValidatedRoshalOrder,
   deleteRoshalCategory,
   deleteRoshalSubcategory,
+  deleteRoshalUser,
   RoshalOrderStatusError,
   RoshalPageError,
   RoshalProductError,
@@ -115,9 +116,7 @@ function buildPaymentOption(
     guideImageUrl: formData.has(`${key}GuideImageUrl`)
       ? textValue(formData, `${key}GuideImageUrl`)
       : (fallback?.guideImageUrl ?? ""),
-    requiresProof: formData.has(`${key}RequiresProof`)
-      ? boolValue(formData, `${key}RequiresProof`)
-      : (fallback?.requiresProof ?? false),
+    requiresProof: false,
     sortOrder: formData.has(`${key}SortOrder`)
       ? numberValue(formData, `${key}SortOrder`) || sortOrder
       : (fallback?.sortOrder ?? sortOrder),
@@ -168,6 +167,7 @@ export async function saveRoshalSiteSettings(formData: FormData) {
     "/checkout",
     "/dashboard/settings",
     "/dashboard/theme",
+    "/dashboard/payments",
   ]);
 }
 
@@ -542,6 +542,29 @@ export async function saveRoshalUserRole(formData: FormData) {
   ]);
 }
 
+export async function removeRoshalUser(formData: FormData) {
+  const sessionUser = await requireRoshalAdmin();
+  const id = textValue(formData, "id");
+
+  try {
+    await deleteRoshalUser({
+      id,
+      actorId: sessionUser.id,
+    });
+  } catch (error) {
+    if (error instanceof RoshalUserRoleError) {
+      redirect(`/dashboard/users?error=${encodeURIComponent(error.code)}`);
+    }
+
+    throw error;
+  }
+
+  finishAction("/dashboard/users?deleted=1", formData, [
+    "/dashboard",
+    "/dashboard/users",
+  ]);
+}
+
 export async function saveRoshalUserProfile(formData: FormData) {
   const sessionUser = await requireRoshalUser();
   const id = textValue(formData, "id") || sessionUser.id;
@@ -585,8 +608,6 @@ export async function submitRoshalCheckoutOrder(formData: FormData) {
     paymentReference:
       optionalTextValue(formData, "paymentReference") || undefined,
     paymentSender: optionalTextValue(formData, "paymentSender") || undefined,
-    paymentProofUrl:
-      optionalTextValue(formData, "paymentProofUrl") || undefined,
     items,
   });
 

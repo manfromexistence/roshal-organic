@@ -265,17 +265,17 @@ export function SiteHeader({ user }: SiteHeaderProps) {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-40 flex h-(--header-height) shrink-0 items-center gap-0 border-b border-border/70 bg-background/90 bg-clip-padding shadow-sm backdrop-filter backdrop-blur-xl transition-[width,height] ease-linear lg:left-[var(--sidebar-width)] group-has-data-[collapsible=icon]/sidebar-wrapper:lg:left-[var(--sidebar-width-icon)]">
-        <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
+      <header className="fixed top-0 left-0 right-0 z-40 flex h-(--header-height) shrink-0 items-center gap-0 border-b border-border/70 bg-background/90 bg-clip-padding shadow-sm backdrop-filter backdrop-blur-xl transition-[width,height] ease-linear md:left-[var(--sidebar-width)] group-has-data-[collapsible=icon]/sidebar-wrapper:md:left-[var(--sidebar-width-icon)]">
+        <div className="flex w-full items-center gap-1 px-4 md:gap-2 md:px-6">
           <SidebarTrigger className="-ml-1" />
           <Separator
             orientation="vertical"
             className="mx-2 data-[orientation=vertical]:h-4"
           />
-          <div className="min-w-0 flex-1 lg:hidden">
+          <div className="min-w-0 flex-1 md:hidden">
             <p className="truncate text-sm font-medium">{currentPageTitle}</p>
           </div>
-          <div className="hidden min-w-0 flex-1 lg:block">
+          <div className="hidden min-w-0 flex-1 md:block">
             <Breadcrumb>
               <BreadcrumbList>
                 <BreadcrumbItem>
@@ -344,13 +344,9 @@ export function SiteHeader({ user }: SiteHeaderProps) {
             {user ? (
               <AvatarDropdown user={user} />
             ) : (
-              <AvatarDropdown
-                user={{
-                  name: "Guest",
-                  email: "guest@example.com",
-                  avatar: undefined,
-                }}
-              />
+              <Button asChild variant="outline" size="sm">
+                <Link href="/login">Sign in</Link>
+              </Button>
             )}
           </div>
         </div>

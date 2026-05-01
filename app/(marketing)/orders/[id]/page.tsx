@@ -241,33 +241,6 @@ export default async function OrderTrackingPage({
               />
             </CardContent>
           </Card>
-
-          {order.paymentProofUrl ? (
-            <Card>
-              <CardHeader>
-                <CardTitle>
-                  {locale === "bn"
-                    ? "পেমেন্ট স্ক্রিনশট"
-                    : "Payment proof screenshot"}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border/70 bg-muted">
-                  <Image
-                    src={resolveImageUrl(order.paymentProofUrl)}
-                    alt={
-                      locale === "bn"
-                        ? "পেমেন্ট স্ক্রিনশট"
-                        : "Payment proof screenshot"
-                    }
-                    fill
-                    sizes="(max-width: 1280px) 100vw, 520px"
-                    className="object-cover"
-                  />
-                </div>
-              </CardContent>
-            </Card>
-          ) : null}
         </div>
       </div>
     </div>

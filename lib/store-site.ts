@@ -2,11 +2,16 @@ function trimTrailingSlash(value: string) {
   return value.endsWith("/") ? value.slice(0, -1) : value;
 }
 
+function normalizedEnvUrl(value: string | undefined) {
+  const trimmed = value?.trim().replace(/^["']|["']$/g, "");
+  return trimmed || "";
+}
+
 export function getRoshalBaseUrl() {
   const candidate =
-    process.env.NEXT_PUBLIC_APP_URL ||
-    process.env.BETTER_AUTH_URL ||
-    "http://localhost:3000";
+    normalizedEnvUrl(process.env.NEXT_PUBLIC_APP_URL) ||
+    normalizedEnvUrl(process.env.BETTER_AUTH_URL) ||
+    "https://roshalorganic.bd";
 
   return trimTrailingSlash(candidate);
 }

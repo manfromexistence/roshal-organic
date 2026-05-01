@@ -272,17 +272,17 @@ export const roshalMarketingPageGuides: RoshalMarketingPageGuide[] = [
     slug: "payment",
     label: localizedValue("Payment page", "Payment page"),
     summary: localizedValue(
-      "ম্যানুয়াল wallet verification, gateway checkout এবং payment proof flow-এর ব্যাখ্যা এখানে দিন।",
-      "Use this page to explain manual wallet verification, gateway checkout, and payment-proof flows.",
+      "Cash on Delivery, card gateway, bKash এবং Nagad reference flow-এর ব্যাখ্যা এখানে দিন।",
+      "Use this page to explain Cash on Delivery, card gateway, bKash, and Nagad reference flows.",
     ),
     editingTips: [
       localizedValue(
-        "একটি overview grid, একটি proof checklist, এবং একটি admin-review steps block রাখুন।",
-        "Use an overview grid, a proof checklist, and an admin-review steps block.",
+        "একটি overview grid, একটি wallet reference checklist, এবং একটি support CTA block রাখুন।",
+        "Use an overview grid, a wallet-reference checklist, and a support CTA block.",
       ),
       localizedValue(
-        "bKash, Nagad, Rocket, Card, Upay – এগুলো আলাদা item হিসেবে রাখলে ক্লায়েন্ট update করতে সহজ হয়।",
-        "Keep bKash, Nagad, Rocket, Card, and Upay as separate items so admins can update them clearly.",
+        "Cash on Delivery, Card, bKash এবং Nagad – এগুলো আলাদা item হিসেবে রাখলে ক্লায়েন্ট update করতে সহজ হয়।",
+        "Keep Cash on Delivery, Card, bKash, and Nagad as separate items so admins can update them clearly.",
       ),
       localizedValue(
         "Checkout CTA এবং support CTA দুইটিই রাখুন।",

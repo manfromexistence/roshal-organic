@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { saveRoshalOrderStatus } from "@/actions/admin";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
@@ -9,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { resolveImageUrl } from "@/lib/storage-utils";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import { getRoshalOrderById } from "@/lib/store-content";
 import { formatBdt, formatOrderDate } from "@/lib/store-format";
@@ -132,25 +130,6 @@ export default async function DashboardOrderDetailsPage({
                 />
               </div>
             </div>
-
-            {order.paymentProofUrl ? (
-              <div className="space-y-3">
-                <p className="text-sm font-medium">
-                  {locale === "bn"
-                    ? "পেমেন্ট স্ক্রিনশট"
-                    : "Payment proof screenshot"}
-                </p>
-                <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-border/70 bg-muted">
-                  <Image
-                    src={resolveImageUrl(order.paymentProofUrl)}
-                    alt="Payment proof"
-                    fill
-                    sizes="(max-width: 1280px) 100vw, 720px"
-                    className="object-cover"
-                  />
-                </div>
-              </div>
-            ) : null}
 
             <OrderTrackingTimeline order={order} locale={locale} />
           </CardContent>
