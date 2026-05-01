@@ -467,7 +467,7 @@ export function RoshalUsersTable({
           </Button>
         </div>
 
-        <div className="grid gap-3 p-3 pt-0 sm:p-4 sm:pt-0 md:hidden">
+        <div className="grid gap-2.5 p-3 pt-0 sm:grid-cols-2 sm:p-4 sm:pt-0 md:hidden">
           {users.map((user) => {
             const row = rows.find((item) => item.id === user.id);
             const Icon = user.role === "admin" ? ShieldCheck : UserRound;
@@ -475,13 +475,13 @@ export function RoshalUsersTable({
             return (
               <Card
                 key={user.id}
-                className="min-w-0 border-none border-r-[6px] border-r-primary bg-background/70 shadow-sm"
+                className="min-w-0 border-none border-r-4 border-r-primary bg-background/70 p-0 shadow-sm"
               >
-                <CardContent className="flex min-w-0 gap-3 p-3">
-                  <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                    <Icon className="size-5" />
+                <CardContent className="flex min-w-0 gap-2.5 p-2.5">
+                  <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <Icon className="size-4" />
                   </div>
-                  <div className="min-w-0 flex-1 space-y-2">
+                  <div className="min-w-0 flex-1 space-y-1.5">
                     <div className="min-w-0">
                       <p className="truncate text-sm font-semibold">
                         {user.name}
@@ -490,7 +490,7 @@ export function RoshalUsersTable({
                         {user.phone || user.email}
                       </p>
                     </div>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-1.5">
                       <Badge
                         variant={
                           user.role === "admin" ? "default" : "secondary"
@@ -509,7 +509,7 @@ export function RoshalUsersTable({
                         {row?.district || "No district"}
                       </Badge>
                     </div>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-1.5">
                       <Button
                         asChild
                         variant="outline"

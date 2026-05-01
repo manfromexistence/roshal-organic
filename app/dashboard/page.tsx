@@ -17,7 +17,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import {
   getAllRoshalProducts,
-  getRoshalDashboardSnapshot,
   getRoshalOrders,
   getRoshalPages,
   getRoshalUsers,
@@ -37,6 +36,7 @@ type StatCardProps = {
   icon: ComponentType<{ className?: string }>;
   accentClassName: string;
   emoji: string;
+  href: string;
 };
 
 function DashboardStatCard({
@@ -48,41 +48,47 @@ function DashboardStatCard({
   icon: Icon,
   accentClassName,
   emoji,
+  href,
 }: StatCardProps) {
   const TrendIcon = trendDirection === "up" ? ArrowUpRight : ArrowDownRight;
 
   return (
-    <Card
-      className={`group min-w-0 overflow-hidden border-none border-r-[6px] bg-card/50 shadow-sm backdrop-blur transition duration-200 hover:-translate-y-0.5 hover:bg-card hover:shadow-md ${accentClassName}`}
+    <Link
+      href={href}
+      className="block min-w-0 rounded-md outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
     >
-      <CardContent className="min-w-0 p-4 sm:p-5">
-        <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div className="min-w-0 space-y-1">
-            <p className="break-words text-sm font-medium text-muted-foreground">
-              {title}
-            </p>
-            <p className="break-words text-2xl font-bold leading-tight tracking-tight">
-              {value}
-            </p>
-            <p className="break-words text-xs text-muted-foreground">
-              {description}
-            </p>
+      <Card
+        className={`group h-full min-w-0 overflow-hidden border-none border-r-[6px] bg-card/50 p-0 shadow-sm backdrop-blur transition duration-200 hover:-translate-y-0.5 hover:bg-card hover:shadow-md ${accentClassName}`}
+      >
+        <CardContent className="min-w-0 p-3">
+          <div className="flex min-w-0 items-start justify-between gap-3">
+            <div className="min-w-0 space-y-1">
+              <p className="break-words text-xs font-medium text-muted-foreground">
+                {title}
+              </p>
+              <p className="break-words text-lg font-bold leading-tight tracking-tight">
+                {value}
+              </p>
+              <p className="break-words text-xs text-muted-foreground">
+                {description}
+              </p>
+            </div>
+            <div className="flex shrink-0 items-center gap-2">
+              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-sm">
+                {emoji}
+              </span>
+              <span className="hidden rounded-full bg-primary/10 p-1 text-primary transition group-hover:bg-primary group-hover:text-primary-foreground sm:flex">
+                <Icon className="h-3.5 w-3.5" />
+              </span>
+            </div>
           </div>
-          <div className="flex shrink-0 items-center gap-2 self-start sm:self-auto">
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-lg">
-              {emoji}
-            </span>
-            <span className="hidden rounded-full bg-primary/10 p-2 text-primary transition group-hover:bg-primary group-hover:text-primary-foreground sm:flex">
-              <Icon className="h-4 w-4" />
-            </span>
+          <div className="mt-2.5 flex min-w-0 items-start gap-1 text-xs text-muted-foreground">
+            <TrendIcon className="h-3.5 w-3.5 shrink-0 text-primary" />
+            <span className="min-w-0 break-words">{trend}</span>
           </div>
-        </div>
-        <div className="mt-4 flex min-w-0 items-start gap-1 text-xs text-muted-foreground">
-          <TrendIcon className="h-3.5 w-3.5 shrink-0 text-primary" />
-          <span className="min-w-0 break-words">{trend}</span>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }
 
@@ -94,8 +100,11 @@ function RecentOrderRow({
   locale: Awaited<ReturnType<typeof getRoshalLocale>>;
 }) {
   return (
-    <div className="flex items-center gap-4 rounded-md border bg-background/60 p-3 transition hover:bg-accent/50">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+    <Link
+      href={`/dashboard/orders/${order.id}`}
+      className="flex items-center gap-3 rounded-md border bg-background/60 p-2.5 transition hover:bg-accent/50"
+    >
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
         {order.orderNumber.slice(-2)}
       </div>
       <div className="min-w-0 flex-1 space-y-1">
@@ -112,7 +121,7 @@ function RecentOrderRow({
       <p className="shrink-0 text-sm font-semibold">
         {formatBdt(order.total, locale)}
       </p>
-    </div>
+    </Link>
   );
 }
 
@@ -124,8 +133,11 @@ function FeaturedProductRow({
   locale: Awaited<ReturnType<typeof getRoshalLocale>>;
 }) {
   return (
-    <div className="flex items-center gap-4 rounded-md border bg-background/60 p-3 transition hover:bg-accent/50">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+    <Link
+      href={`/dashboard/products/${product.id}`}
+      className="flex items-center gap-3 rounded-md border bg-background/60 p-2.5 transition hover:bg-accent/50"
+    >
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
         <Package className="h-4 w-4" />
       </div>
       <div className="min-w-0 flex-1 space-y-1">
@@ -144,16 +156,15 @@ function FeaturedProductRow({
           {product.inventory} stock
         </p>
       </div>
-    </div>
+    </Link>
   );
 }
 
 export default async function DashboardHomePage() {
   await requireRoshalAdmin();
 
-  const [locale, snapshot, products, orders, pages, users] = await Promise.all([
+  const [locale, products, orders, pages, users] = await Promise.all([
     getRoshalLocale(),
-    getRoshalDashboardSnapshot(),
     getAllRoshalProducts(),
     getRoshalOrders(),
     getRoshalPages(),
@@ -175,6 +186,19 @@ export default async function DashboardHomePage() {
   ).length;
   const customerCount = users.filter((user) => user.role !== "admin").length;
   const publishedProducts = products.filter((product) => product.isPublished);
+  const lowStockProducts = publishedProducts.filter(
+    (product) => product.inventory > 0 && product.inventory <= 10,
+  );
+  const outOfStockProducts = publishedProducts.filter(
+    (product) => product.inventory <= 0,
+  );
+  const featuredProducts = publishedProducts
+    .filter((product) => product.isFeatured)
+    .slice(0, 4);
+  const recentOrders = orders.slice(0, 5);
+  const pendingReviewOrders = orders.filter((order) =>
+    ["pending", "payment-review"].includes(order.status),
+  );
   const publishedProductRatio =
     products.length > 0
       ? Math.round((publishedProducts.length / products.length) * 100)
@@ -185,14 +209,14 @@ export default async function DashboardHomePage() {
     ),
   ).length;
   const storefrontHealth =
-    snapshot.outOfStockProductCount === 0
+    outOfStockProducts.length === 0
       ? "No stock blockers"
-      : `${snapshot.outOfStockProductCount} stock blocker${
-          snapshot.outOfStockProductCount === 1 ? "" : "s"
+      : `${outOfStockProducts.length} stock blocker${
+          outOfStockProducts.length === 1 ? "" : "s"
         }`;
 
   return (
-    <div className="min-w-0 space-y-6 p-6">
+    <div className="min-w-0 space-y-5 px-6 pt-6 pb-4">
       <div className="flex min-w-0 flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div className="min-w-0 space-y-2">
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
@@ -216,7 +240,7 @@ export default async function DashboardHomePage() {
         </div>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2 2xl:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <DashboardStatCard
           title="Total revenue"
           value={formatBdt(deliveredRevenue, locale)}
@@ -227,21 +251,22 @@ export default async function DashboardHomePage() {
           icon={ShoppingBag}
           accentClassName="border-r-primary"
           emoji={"\u{1F4B0}"}
+          href="/dashboard/orders"
         />
         <DashboardStatCard
           title="Products"
-          value={snapshot.productCount}
+          value={products.length}
           description={`${publishedProductRatio}% published catalog`}
-          trend={`${snapshot.lowStockProductCount} low-stock items`}
+          trend={`${lowStockProducts.length} low-stock items`}
           trendDirection={
-            snapshot.lowStockProductCount > 0 ||
-            snapshot.outOfStockProductCount > 0
+            lowStockProducts.length > 0 || outOfStockProducts.length > 0
               ? "down"
               : "up"
           }
           icon={Package}
           accentClassName="border-r-secondary"
           emoji={"\u{1F6CD}\uFE0F"}
+          href="/dashboard/products"
         />
         <DashboardStatCard
           title="Customers"
@@ -253,66 +278,72 @@ export default async function DashboardHomePage() {
           icon={Users}
           accentClassName="border-r-accent"
           emoji={"\u{1F465}"}
+          href="/dashboard/users"
         />
         <DashboardStatCard
           title="CMS pages"
-          value={snapshot.marketingPageCount}
+          value={pages.length}
           description={`${publishedPages} published pages`}
           trend={`${visibleNavigationPages} visible in navigation`}
           icon={FileText}
           accentClassName="border-r-muted-foreground"
           emoji={"\u{1F4C4}"}
+          href="/dashboard/pages"
         />
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2 2xl:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <DashboardStatCard
           title="Pending orders"
-          value={snapshot.pendingOrderCount}
-          description="Orders awaiting review"
-          trend="Review before fulfillment"
-          trendDirection={snapshot.pendingOrderCount > 0 ? "down" : "up"}
+          value={pendingReviewOrders.length}
+          description="Pending or payment-review orders"
+          trend={`${fulfillmentOrders} active fulfillment orders`}
+          trendDirection={pendingReviewOrders.length > 0 ? "down" : "up"}
           icon={Clock}
           accentClassName="border-r-destructive"
           emoji={"\u23F1\uFE0F"}
+          href="/dashboard/orders"
         />
         <DashboardStatCard
           title="Storefront health"
           value={storefrontHealth}
-          description={`${snapshot.outOfStockProductCount} out-of-stock item${
-            snapshot.outOfStockProductCount === 1 ? "" : "s"
+          description={`${outOfStockProducts.length} live out-of-stock item${
+            outOfStockProducts.length === 1 ? "" : "s"
           }`}
           trend="Keep catalog availability clean"
-          trendDirection={snapshot.outOfStockProductCount > 0 ? "down" : "up"}
+          trendDirection={outOfStockProducts.length > 0 ? "down" : "up"}
           icon={AlertTriangle}
           accentClassName="border-r-primary"
           emoji={"\u26A0\uFE0F"}
+          href="/dashboard/products"
         />
         <DashboardStatCard
           title="Featured products"
-          value={snapshot.featuredProducts.length}
-          description="Highlighted on storefront shelves"
+          value={featuredProducts.length}
+          description="Published storefront highlights"
           trend="Managed from product editor"
           icon={Store}
           accentClassName="border-r-secondary"
           emoji={"\u2B50"}
+          href="/dashboard/products"
         />
         <DashboardStatCard
           title="Published products"
-          value={snapshot.publishedProductCount}
-          description={`${products.length - snapshot.publishedProductCount} draft item${
-            products.length - snapshot.publishedProductCount === 1 ? "" : "s"
+          value={publishedProducts.length}
+          description={`${products.length - publishedProducts.length} draft item${
+            products.length - publishedProducts.length === 1 ? "" : "s"
           }`}
           trend="Catalog visibility signal"
           icon={Package}
           accentClassName="border-r-accent"
           emoji={"\u2705"}
+          href="/dashboard/products"
         />
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
-        <Card className="border-none bg-card shadow-sm">
-          <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
+        <Card className="border-none bg-card p-0 shadow-sm">
+          <CardHeader className="flex flex-col gap-3 p-4 pb-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <CardTitle>Recent orders</CardTitle>
               <p className="mt-1 text-sm text-muted-foreground">
@@ -323,9 +354,9 @@ export default async function DashboardHomePage() {
               <Link href="/dashboard/orders">View all</Link>
             </Button>
           </CardHeader>
-          <CardContent className="space-y-3">
-            {snapshot.recentOrders.length > 0 ? (
-              snapshot.recentOrders.map((order) => (
+          <CardContent className="space-y-2.5 p-4 pt-0">
+            {recentOrders.length > 0 ? (
+              recentOrders.map((order) => (
                 <RecentOrderRow key={order.id} order={order} locale={locale} />
               ))
             ) : (
@@ -336,8 +367,8 @@ export default async function DashboardHomePage() {
           </CardContent>
         </Card>
 
-        <Card className="border-none bg-card shadow-sm">
-          <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <Card className="border-none bg-card p-0 shadow-sm">
+          <CardHeader className="flex flex-col gap-3 p-4 pb-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <CardTitle>Featured products</CardTitle>
               <p className="mt-1 text-sm text-muted-foreground">
@@ -348,9 +379,9 @@ export default async function DashboardHomePage() {
               <Link href="/dashboard/products">Catalog</Link>
             </Button>
           </CardHeader>
-          <CardContent className="space-y-3">
-            {snapshot.featuredProducts.length > 0 ? (
-              snapshot.featuredProducts.map((product) => (
+          <CardContent className="space-y-2.5 p-4 pt-0">
+            {featuredProducts.length > 0 ? (
+              featuredProducts.map((product) => (
                 <FeaturedProductRow
                   key={product.id}
                   product={product}

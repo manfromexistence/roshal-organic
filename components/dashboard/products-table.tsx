@@ -212,7 +212,7 @@ export function RoshalProductsTable({
       description="Search, sort, and edit the live storefront catalog."
     >
       <div className="min-w-0">
-        <div className="grid gap-3 p-3 pt-0 sm:p-4 sm:pt-0 md:hidden">
+        <div className="grid gap-2.5 p-3 pt-0 sm:grid-cols-2 sm:p-4 sm:pt-0 md:hidden">
           {products.map((product) => {
             const name = getLocalizedValue(locale, product.name);
             const category = getLocalizedValue(locale, product.categoryLabel);
@@ -221,26 +221,26 @@ export function RoshalProductsTable({
             return (
               <Card
                 key={product.id}
-                className="min-w-0 border-none border-r-[6px] border-r-primary bg-background/70 shadow-sm"
+                className="min-w-0 border-none border-r-4 border-r-primary bg-background/70 p-0 shadow-sm"
               >
-                <CardContent className="flex min-w-0 gap-3 p-3">
-                  <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md border bg-background">
+                <CardContent className="flex min-w-0 gap-2.5 p-2.5">
+                  <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md border bg-background">
                     <Image
                       src={product.heroImage || "/logo.png"}
                       alt={name}
                       fill
-                      sizes="64px"
+                      sizes="56px"
                       className="object-cover"
                     />
                   </div>
-                  <div className="min-w-0 flex-1 space-y-2">
+                  <div className="min-w-0 flex-1 space-y-1.5">
                     <div className="min-w-0">
                       <p className="truncate text-sm font-semibold">{name}</p>
                       <p className="truncate text-xs text-muted-foreground">
                         {category}
                       </p>
                     </div>
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-1.5">
                       <Badge variant="secondary" className="rounded-sm">
                         {formatBdt(product.price, locale)}
                       </Badge>
@@ -263,7 +263,7 @@ export function RoshalProductsTable({
                         {product.isPublished ? "Published" : "Draft"}
                       </Badge>
                     </div>
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-1.5">
                       <Button
                         asChild
                         variant="outline"

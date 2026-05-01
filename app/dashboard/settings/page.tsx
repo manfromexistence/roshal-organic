@@ -36,7 +36,7 @@ export default async function DashboardSystemSettingsPage() {
   );
 
   return (
-    <div className="mx-auto w-full max-w-4xl space-y-6 px-6 pt-6 pb-0">
+    <div className="mx-auto w-full max-w-4xl space-y-6 px-6 pt-6 pb-4">
       <div className="min-w-0 space-y-2">
         <p className="text-xs font-semibold uppercase tracking-[0.24em] text-primary">
           System settings
@@ -50,7 +50,7 @@ export default async function DashboardSystemSettingsPage() {
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <DashboardMetricCard
           title="Delivery zones"
           value={siteSettings.deliveryZones.length}

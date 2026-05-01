@@ -28,7 +28,7 @@ export default async function DashboardUsersPage({
   const adminCount = users.filter((user) => user.role === "admin").length;
   const activeCount = users.filter((user) => user.isActive).length;
   return (
-    <div className="min-w-0 space-y-6 p-6">
+    <div className="min-w-0 space-y-6 px-6 pt-6 pb-4">
       <div className="min-w-0 space-y-2">
         <p className="text-xs uppercase tracking-[0.24em] text-primary">
           {locale === "bn" ? "ব্যবহারকারী" : "Users"}
@@ -52,7 +52,7 @@ export default async function DashboardUsersPage({
         </Alert>
       ) : null}
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <DashboardMetricCard
           title={locale === "bn" ? "মোট ব্যবহারকারী" : "Total users"}
           value={users.length}

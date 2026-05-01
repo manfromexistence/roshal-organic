@@ -20,6 +20,8 @@ export function ImageUploadField({
   uploadLabel = "Upload",
   uploadingLabel = "Uploading",
   value,
+  previewClassName,
+  previewValue = "",
   onChange,
 }: {
   clearLabel?: string;
@@ -31,10 +33,13 @@ export function ImageUploadField({
   uploadLabel?: string;
   uploadingLabel?: string;
   value: string;
+  previewClassName?: string;
+  previewValue?: string;
   onChange?: (value: string) => void;
 }) {
   const [isUploading, setIsUploading] = useState(false);
   const [currentValue, setCurrentValue] = useState(value);
+  const displayPreviewValue = currentValue || previewValue;
   const inputId = useId();
   const fileInputId = `${inputId}-file`;
 
@@ -168,14 +173,18 @@ export function ImageUploadField({
         disabled={isUploading}
       />
 
-      {currentValue && showPreview ? (
+      {displayPreviewValue && showPreview ? (
         <Card
-          className={cn("overflow-hidden rounded-sm", compact && "shadow-xs")}
+          className={cn(
+            "overflow-hidden rounded-sm",
+            compact && "shadow-xs",
+            previewClassName,
+          )}
         >
           <CardContent className="p-0">
             <div className="relative aspect-[4/3] w-full bg-muted">
               <Image
-                src={currentValue}
+                src={displayPreviewValue}
                 alt={label}
                 fill
                 sizes="(max-width: 768px) 100vw, 480px"

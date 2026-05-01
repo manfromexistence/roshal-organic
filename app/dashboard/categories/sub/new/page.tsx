@@ -77,7 +77,7 @@ export default async function NewSubcategoryPage({
     : 0;
 
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 p-6">
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-6 pt-6 pb-4">
       <div className="space-y-3">
         <Button asChild variant="ghost" size="sm" className="-ml-3">
           <Link href="/dashboard/categories">

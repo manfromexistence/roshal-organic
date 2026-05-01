@@ -24,15 +24,15 @@ export function DashboardTableShell({
   return (
     <Card
       className={cn(
-        "min-w-0 overflow-hidden border-none bg-card shadow-sm",
+        "min-w-0 overflow-hidden border-none bg-card p-0 shadow-sm",
         className,
       )}
     >
-      <CardHeader className="flex flex-col gap-3 p-6 sm:flex-row sm:items-start sm:justify-between">
+      <CardHeader className="flex flex-col gap-2 p-4 pb-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 space-y-1">
-          <CardTitle className="font-headline text-lg">{title}</CardTitle>
+          <CardTitle className="font-headline text-base">{title}</CardTitle>
           {description ? (
-            <CardDescription className="leading-6">
+            <CardDescription className="text-sm leading-5">
               {description}
             </CardDescription>
           ) : null}

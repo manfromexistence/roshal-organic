@@ -23,7 +23,7 @@ export default async function DashboardProductsPage() {
     (product) => product.inventory <= 0,
   ).length;
   return (
-    <div className="min-w-0 space-y-6 p-6">
+    <div className="min-w-0 space-y-6 px-6 pt-6 pb-4">
       <div className="flex min-w-0 flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div className="min-w-0 space-y-2">
           <p className="text-xs uppercase tracking-[0.24em] text-primary">
@@ -41,7 +41,7 @@ export default async function DashboardProductsPage() {
         </Button>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <DashboardMetricCard
           title={locale === "bn" ? "মোট পণ্য" : "Products"}
           value={products.length}

@@ -63,7 +63,7 @@ export default async function DashboardCategoriesPage({
   );
 
   return (
-    <div className="min-w-0 space-y-6 p-6">
+    <div className="min-w-0 space-y-6 px-6 pt-6 pb-4">
       <div className="min-w-0 space-y-2">
         <p className="text-xs uppercase tracking-[0.24em] text-primary">
           {locale === "bn" ? "ক্যাটাগরি ও সাবক্যাটাগরি" : "Categories & subcategories"}
@@ -84,7 +84,7 @@ export default async function DashboardCategoriesPage({
         </Alert>
       ) : null}
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <DashboardMetricCard
           title={locale === "bn" ? "মোট ক্যাটাগরি" : "Categories"}
           value={String(taxonomy.categories.length)}

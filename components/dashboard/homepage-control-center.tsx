@@ -311,7 +311,7 @@ export function HomepageControlCenter({ locale }: HomepageControlCenterProps) {
           </div>
         ) : null}
 
-        <div className="grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <MetricCard
             label={copy.metrics.sections}
             value={
@@ -702,13 +702,17 @@ function MetricCard({
   hint: string;
 }) {
   return (
-    <Card className="min-w-0 border-border/70">
-      <CardContent className="min-w-0 space-y-2 p-4">
-        <p className="break-words text-sm text-muted-foreground">{label}</p>
-        <p className="break-words text-2xl font-semibold tracking-tight">
+    <Card className="min-w-0 border-border/70 p-0">
+      <CardContent className="min-w-0 space-y-1 p-3">
+        <p className="break-words text-xs font-medium leading-4 text-muted-foreground">
+          {label}
+        </p>
+        <p className="break-words text-lg font-semibold tracking-tight">
           {value}
         </p>
-        <p className="break-words text-xs text-muted-foreground">{hint}</p>
+        <p className="break-words text-xs leading-4 text-muted-foreground">
+          {hint}
+        </p>
       </CardContent>
     </Card>
   );

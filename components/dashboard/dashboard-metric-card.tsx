@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 const accentClasses = [
@@ -63,31 +63,27 @@ export function DashboardMetricCard({
   return (
     <Card
       className={cn(
-        "min-w-0 overflow-hidden border-none border-r-[6px] bg-card/50 shadow-sm backdrop-blur transition duration-200 hover:-translate-y-0.5 hover:bg-card hover:shadow-md",
+        "min-w-0 overflow-hidden border-none border-r-[5px] bg-card p-0 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-card hover:shadow-md",
         getAccentClass(title),
       )}
     >
-      <CardHeader className="flex flex-row items-start justify-between gap-3 space-y-0 pb-2">
-        <CardTitle className="min-w-0 break-words text-sm font-medium leading-5 text-muted-foreground">
-          {title}
-        </CardTitle>
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-lg">
-          <span aria-hidden="true">{emoji}</span>
+      <CardContent className="min-w-0 p-3">
+        <div className="flex min-w-0 items-start justify-between gap-2">
+          <div className="min-w-0 space-y-1">
+            <p className="break-words text-xs font-medium leading-4 text-muted-foreground">
+              {title}
+            </p>
+            <div className="break-words text-lg font-bold tracking-tight">
+              {value}
+            </div>
+            <p className="break-words text-xs leading-4 text-muted-foreground">
+              {hint || "Live dashboard data"}
+            </p>
+          </div>
+          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm">
+            <span aria-hidden="true">{emoji}</span>
+          </div>
         </div>
-      </CardHeader>
-      <CardContent className="min-w-0">
-        <div className="break-words text-2xl font-bold tracking-tight">
-          {value}
-        </div>
-        {hint ? (
-          <p className="mt-1 break-words text-xs leading-5 text-muted-foreground">
-            {hint}
-          </p>
-        ) : (
-          <p className="mt-1 break-words text-xs leading-5 text-muted-foreground">
-            Live dashboard data
-          </p>
-        )}
       </CardContent>
     </Card>
   );

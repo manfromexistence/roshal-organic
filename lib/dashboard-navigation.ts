@@ -49,7 +49,31 @@ const fallbackMarketingPageItems: DashboardNavChildItem[] = [
     url: "/dashboard/pages/page-contact",
     keywords: ["contact us", "support", "help"],
   },
+  {
+    title: "Terms & Conditions",
+    url: "/dashboard/pages/page-terms-and-conditions",
+    keywords: ["terms", "conditions", "policy"],
+  },
+  {
+    title: "Privacy Policy",
+    url: "/dashboard/pages/page-privacy-policy",
+    keywords: ["privacy", "policy", "data"],
+  },
 ];
+
+const dashboardHandoffMarketingSlugs = new Set([
+  "home",
+  "about",
+  "contact",
+  "terms-and-conditions",
+  "terms-conditions",
+  "terms-condition",
+  "privacy-policy",
+]);
+
+export function isDashboardHandoffMarketingSlug(slug: string) {
+  return dashboardHandoffMarketingSlugs.has(slug);
+}
 
 const primaryNavigationTemplate: DashboardNavItem[] = [
   {
@@ -178,18 +202,21 @@ export function buildDashboardPrimaryNavigation(
 ): DashboardNavItem[] {
   const marketingPageItems =
     marketingPages.length > 0
-      ? marketingPages.map((page) => ({
-          title: getMarketingPageTitle(page),
-          url: `/dashboard/pages/${page.id}`,
-          keywords: [
-            page.slug,
-            page.navigationLabel.en,
-            page.navigationLabel.bn,
-            page.title.en,
-            page.title.bn,
-            page.status,
-          ].filter(Boolean),
-        }))
+      ? marketingPages
+          // Keep the dashboard sidebar Marketing accordion short for client handoff.
+          .filter((page) => isDashboardHandoffMarketingSlug(page.slug))
+          .map((page) => ({
+            title: getMarketingPageTitle(page),
+            url: `/dashboard/pages/${page.id}`,
+            keywords: [
+              page.slug,
+              page.navigationLabel.en,
+              page.navigationLabel.bn,
+              page.title.en,
+              page.title.bn,
+              page.status,
+            ].filter(Boolean),
+          }))
       : fallbackMarketingPageItems;
 
   return primaryNavigationTemplate.map((item) =>

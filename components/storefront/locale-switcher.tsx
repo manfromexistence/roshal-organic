@@ -64,21 +64,21 @@ export function LocaleSwitcher({
       }}
       aria-label="Language switch"
       className={cn(
-        "h-8 shrink-0 overflow-hidden rounded-full border border-border/70 bg-background/90 p-2",
+        "h-9 shrink-0 overflow-hidden rounded-full border border-border/70 bg-background/90 p-1",
         className,
       )}
     >
       <ToggleGroupItem
         value="en"
         aria-label="Switch language to English"
-        className="h-6 !rounded-full !p-2 text-[7.5px] uppercase text-muted-foreground data-[state=on]:bg-primary data-[state=on]:text-primary-foreground hover:text-foreground"
+        className="h-7 !rounded-full px-2.5 text-[10px] font-bold uppercase tracking-normal text-muted-foreground data-[state=on]:bg-primary data-[state=on]:text-primary-foreground hover:text-foreground"
       >
         ENG
       </ToggleGroupItem>
       <ToggleGroupItem
         value="bn"
         aria-label="Switch language to Bangla"
-        className="h-6 !rounded-full text-[7.5px] !p-2 uppercase text-muted-foreground data-[state=on]:bg-primary data-[state=on]:text-primary-foreground hover:text-foreground"
+        className="h-7 !rounded-full px-2.5 text-[10px] font-bold uppercase tracking-normal text-muted-foreground data-[state=on]:bg-primary data-[state=on]:text-primary-foreground hover:text-foreground"
       >
         বাংলা
       </ToggleGroupItem>

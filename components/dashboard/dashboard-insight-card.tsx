@@ -60,16 +60,16 @@ export function DashboardInsightCard({
   return (
     <Card
       className={cn(
-        "border-none bg-card/50 shadow-sm backdrop-blur transition hover:bg-card hover:shadow-md",
+        "border-none bg-card/50 p-0 shadow-sm backdrop-blur transition hover:bg-card hover:shadow-md",
         className,
       )}
     >
-      <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-        <div className="space-y-2">
+      <CardHeader className="flex flex-col gap-3 p-4 pb-2 sm:flex-row sm:items-start sm:justify-between">
+        <div className="space-y-1.5">
           <div className="flex items-center gap-2">
             <span
               aria-hidden="true"
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-base"
+              className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-sm"
             >
               {emoji}
             </span>
@@ -82,7 +82,7 @@ export function DashboardInsightCard({
           ) : null}
         </div>
         <div className="space-y-1 text-left sm:text-right">
-          <p className="text-2xl font-semibold tracking-tight text-foreground">
+          <p className="text-xl font-semibold tracking-tight text-foreground">
             {valueFormatter(totalValue)}
           </p>
           {totalLabel ? (
@@ -92,7 +92,7 @@ export function DashboardInsightCard({
           ) : null}
         </div>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-2.5 p-4 pt-0">
         {data.length > 0 ? (
           data.map((item) => {
             const percentage =
@@ -101,7 +101,7 @@ export function DashboardInsightCard({
             return (
               <div
                 key={item.key}
-                className="flex items-center justify-between gap-3 rounded-md border bg-background/60 px-3 py-2.5 transition hover:bg-accent/50"
+                className="flex items-center justify-between gap-3 rounded-md border bg-background/60 px-3 py-2 transition hover:bg-accent/50"
               >
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium">{item.label}</p>
@@ -116,7 +116,7 @@ export function DashboardInsightCard({
             );
           })
         ) : (
-          <div className="rounded-md border border-dashed bg-muted/25 p-6 text-sm text-muted-foreground">
+          <div className="rounded-md border border-dashed bg-muted/25 p-4 text-sm text-muted-foreground">
             No data available for this view yet.
           </div>
         )}

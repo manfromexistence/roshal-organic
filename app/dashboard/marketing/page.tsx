@@ -24,6 +24,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { isDashboardHandoffMarketingSlug } from "@/lib/dashboard-navigation";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import { getRoshalPages, getRoshalSectionsForPage } from "@/lib/store-content";
 import { getRoshalLocale } from "@/lib/store-i18n";
@@ -39,16 +40,22 @@ export default async function DashboardMarketingPage() {
     getRoshalPages(),
     requireRoshalAdmin(),
   ]);
+  // Keep the dashboard Marketing page list aligned with the simplified sidebar for client handoff.
+  const visibleDashboardPages = pages.filter((page) =>
+    isDashboardHandoffMarketingSlug(page.slug),
+  );
   const sectionsByPage = await Promise.all(
-    pages.map(async (page) => ({
+    visibleDashboardPages.map(async (page) => ({
       page,
       sections: await getRoshalSectionsForPage(page.id),
     })),
   );
-  const publishedCount = pages.filter(
+  const publishedCount = visibleDashboardPages.filter(
     (page) => page.status === "published",
   ).length;
-  const navigationCount = pages.filter((page) => page.showInNavigation).length;
+  const navigationCount = visibleDashboardPages.filter(
+    (page) => page.showInNavigation,
+  ).length;
   const enabledSectionCount = sectionsByPage.reduce(
     (total, entry) =>
       total + entry.sections.filter((section) => section.isEnabled).length,
@@ -61,7 +68,7 @@ export default async function DashboardMarketingPage() {
   const homepage = pages.find((page) => page.slug === "home");
 
   return (
-    <div className="mx-auto min-w-0 max-w-6xl space-y-5 overflow-x-clip px-4 py-4 sm:px-6 md:space-y-6 md:py-6">
+    <div className="mx-auto min-w-0 max-w-6xl space-y-5 overflow-x-clip px-4 pt-4 pb-4 sm:px-6 md:space-y-6 md:pt-6 md:pb-4">
       <div className="flex min-w-0 flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div className="min-w-0 space-y-2">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-primary">
@@ -91,16 +98,16 @@ export default async function DashboardMarketingPage() {
         </div>
       </div>
 
-      <div className="grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <DashboardMetricCard
           title="Marketing pages"
-          value={pages.length}
+          value={visibleDashboardPages.length}
           hint={`${publishedCount} published pages`}
         />
         <DashboardMetricCard
           title="Navigation pages"
           value={navigationCount}
-          hint={`${pages.length - navigationCount} hidden from navigation`}
+          hint={`${visibleDashboardPages.length - navigationCount} hidden from navigation`}
         />
         <DashboardMetricCard
           title="Live sections"
@@ -173,7 +180,7 @@ export default async function DashboardMarketingPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="grid min-w-0 gap-3 sm:grid-cols-2">
-            {pages.slice(0, 6).map((page) => (
+            {visibleDashboardPages.map((page) => (
               <div
                 key={page.id}
                 className="min-w-0 rounded-md border bg-background/70 p-3 transition hover:bg-accent/50"
@@ -228,7 +235,7 @@ export default async function DashboardMarketingPage() {
         </AccordionItem>
       </Accordion>
 
-      <RoshalPagesTable pages={pages} locale={locale} />
+      <RoshalPagesTable pages={visibleDashboardPages} locale={locale} />
     </div>
   );
 }

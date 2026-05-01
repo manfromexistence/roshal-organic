@@ -399,13 +399,13 @@ export function RoshalOrdersTable({
       description="Filter by order number, mobile, payment method, delivery type, amount, status, payment state, and placed date."
     >
       <div className="min-w-0">
-        <div className="grid gap-3 p-3 pt-0 sm:p-4 sm:pt-0 md:hidden">
+        <div className="grid gap-2.5 p-3 pt-0 sm:grid-cols-2 sm:p-4 sm:pt-0 md:hidden">
           {orders.map((order) => (
             <Card
               key={order.id}
-              className="min-w-0 border-none border-r-[6px] border-r-primary bg-background/70 shadow-sm"
+              className="min-w-0 border-none border-r-4 border-r-primary bg-background/70 p-0 shadow-sm"
             >
-              <CardContent className="space-y-3 p-3">
+              <CardContent className="space-y-2.5 p-2.5">
                 <div className="flex min-w-0 items-start justify-between gap-3">
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold">
@@ -419,7 +419,7 @@ export function RoshalOrdersTable({
                     {formatBdt(order.total, locale)}
                   </p>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5">
                   <Badge
                     variant={getRoshalOrderStatusBadgeVariant(order.status)}
                   >
@@ -451,7 +451,7 @@ export function RoshalOrdersTable({
                     )}
                   </Badge>
                 </div>
-                <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex flex-wrap items-center justify-between gap-1.5">
                   <p className="text-xs text-muted-foreground">
                     {formatOrderDate(order.createdAt, locale)}
                   </p>

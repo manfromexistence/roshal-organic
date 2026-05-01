@@ -4,7 +4,22 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+- Fixed dashboard data-table dark-mode row contrast so Marketing Pages rows such as Home stay readable.
+- Fixed the custom storefront homepage CMS visibility path so disabled homepage sections stay hidden instead of falling back to default section content.
+
 ### Changed
+- Increased storefront language switcher label size/weight and removed the duplicate mobile header cart action now that the mobile bottom bar already includes Cart.
+- Filtered the dashboard Marketing page shortcuts, metrics, and page table to the same client-handoff pages shown in the sidebar: Home, About, Contact, Terms & Conditions, and Privacy Policy.
+- Compact dashboard table shells and mobile fallback cards across pages, products, categories, orders, and users so lower dashboard cards no longer render as oversized blocks on narrow admin viewports.
+- Matched the shared top dashboard metric cards to the compact overview-card sizing and aligned metric grid breakpoints so dashboard sections show two cards per row from the same width as the overview page.
+- Tightened shared dashboard metric and insight card spacing and limited the Marketing sidebar page links to Home, About, Contact, Terms & Conditions, and Privacy Policy for the current client handoff.
+- Made dashboard overview metric cards clickable, smaller, and consistently driven from the same live product, order, page, and user data used on the page.
+- Replaced the Order Management native date inputs with a reusable shadcn-style date picker input and kept the range filter constrained to valid From/To dates.
+- Moved the dashboard fixed-header top offset from the fixed-height scroll area into the scrollable page shell so top spacing no longer clips dashboard pages.
+- Converted the dashboard marketing page editor section list into shadcn accordions, hid the Homepage section map guidance panel, kept a small scroll-safe Marketing dashboard bottom buffer, reduced editor image previews, added preset section thumbnails, and reset dashboard route scroll so long CMS pages do not inherit another page's offset.
+- Added a small `pb-4` bottom buffer to dashboard route wrappers while keeping top/side-only spacing so pages do not feel cut off at the bottom.
+- Moved dashboard route-level spacing away from broad `p-*`/`py-*` wrappers and onto explicit top/side-only padding so pages keep breathing room without padded bottoms.
 - Normalized no-bottom-padding dashboard pages to use explicit `px-6 pt-6 pb-0` spacing so reloads cannot reintroduce bottom padding.
 - Removed bottom padding from Dashboard System Settings, kept top/side spacing, and collapsed secondary settings groups into shadcn accordions so the page is easier to scan.
 - Removed the extra Theme Settings shortcut from Dashboard System Settings so the page matches the simplified sidebar structure.

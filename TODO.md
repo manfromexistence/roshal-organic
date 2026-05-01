@@ -19,6 +19,25 @@
 | 17 | Track Order | Login sarao order track korte parbe public. | | | 🔶 Pending | Order number diye sudhu public Track korte parbe public view te. |
 | 18 | Payment | 1. User order deoar somoy Payment method select korbe Ghorerbazar system a, bortomane card space beshi khay.<br>2. Home Delivery naki Office delivery ta Redial system a jekono 1 ta select kora jabe. | | | 🔶 Pending | Checkout page aro easy & simple korte hobe. see ghorerbazar for demo.<br>r Screenshot proof deoar system rakhar dorkar nei. |
 
+## 2026-05-02 Dashboard metric-card sizing
+
+- [x] Match shared dashboard top metric cards to the compact dashboard overview card sizing.
+- [x] Align top metric-card grid breakpoints so dashboard pages show two cards per row from the same width as the overview page.
+- [x] Compact dashboard table shells and mobile fallback cards across the main dashboard data pages.
+- [x] Filter the Marketing dashboard page shortcuts and Marketing pages table to the same simplified client-handoff pages as the sidebar.
+
+## 2026-05-02 CMS, checkout, and upload QA
+
+- [x] Verify the dashboard CMS home API and marketing/page editor routes in the in-app browser.
+- [x] Fix the homepage CMS visibility path so disabled sections are not re-rendered from fallback defaults.
+- [x] Verify storefront add-to-cart, cart hydration, checkout page hydration, payment/delivery controls, and checkout client validation without submitting a real order.
+- [x] Verify upload and order API guard responses locally, then confirm the image-upload success path with a generated 1x1 PNG instead of a user file.
+
+## 2026-05-02 Storefront mobile header cleanup
+
+- [x] Make the storefront language switcher labels larger and bold.
+- [x] Remove the duplicate Cart action from the mobile top header while keeping the mobile bottom-bar Cart action.
+
 ## 2026-04-30 Payment follow-up
 
 - [x] Live checkout payment settings now merge stored dashboard options with the current default option set.
@@ -228,10 +247,23 @@
 
 - [x] Remove bottom padding from Dashboard System Settings while keeping the standard top and side page spacing.
 - [x] Replace conflicting `p-6 pb-0` dashboard spacing with explicit `px-6 pt-6 pb-0` on no-bottom-padding pages.
+- [x] Normalize dashboard route roots to top/side-only padding instead of full-container `p-*` or `py-*` padding.
+- [x] Add a small `pb-4` bottom buffer to dashboard route roots so pages do not feel cut off at the bottom.
 - [x] Collapse secondary settings groups so delivery charges stay visible first and brand/storefront defaults do not overwhelm the page.
 - [x] Remove the extra Theme Settings shortcut from System Settings to keep the simplified dashboard navigation consistent.
 - [x] Hide remaining always-visible Users and Storefront Theme insight panels.
 - [x] Move Marketing advanced homepage controls behind a collapsed accordion while keeping the real CMS controls available.
+- [x] Convert marketing page-editor section forms into collapsed accordions so long CMS pages stay manageable.
+- [x] Hide the Homepage section map panel from the marketing page editor to reduce unnecessary guidance clutter.
+- [x] Make marketing page-editor image previews compact instead of full-width.
+- [x] Add a small scroll-safe bottom buffer to Marketing Center, All Pages, and marketing page-editor routes.
+- [x] Show preset homepage section images in the dashboard editor instead of empty section-image previews.
+- [x] Reset dashboard page scroll on route changes so marketing editors do not look height-cut after moving between long pages.
+- [x] Move the dashboard fixed-header top offset into the scrollable content shell so top padding does not clip page height across dashboard routes.
+- [x] Fix dark-mode dashboard data-table row text contrast for Marketing Pages rows such as Home.
+- [x] Replace Order Management native date inputs with a shadcn-style date picker input and keep the range filter valid.
+- [x] Make dashboard overview cards smaller, clickable, and backed by consistent live product/order/page/user data.
+- [x] Tighten shared dashboard cards and limit Marketing sidebar page links to Home, About, Contact, Terms & Conditions, and Privacy Policy.
 
 ## 2026-05-01 Dashboard sidebar and bottom padding cleanup
 

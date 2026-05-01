@@ -45,7 +45,7 @@ export default async function DashboardOrderDetailsPage({
   );
 
   return (
-    <div className="min-w-0 space-y-6 p-6">
+    <div className="min-w-0 space-y-6 px-6 pt-6 pb-4">
       <div className="min-w-0 space-y-2">
         <p className="text-xs uppercase tracking-[0.24em] text-primary">
           {locale === "bn" ? "অর্ডার" : "Order"}

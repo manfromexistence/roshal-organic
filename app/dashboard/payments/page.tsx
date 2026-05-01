@@ -85,7 +85,7 @@ export default async function DashboardPaymentsPage({
       option.key !== "cash_on_delivery",
   ).length;
   return (
-    <div className="min-w-0 space-y-6 px-6 pt-6 pb-0">
+    <div className="min-w-0 space-y-6 px-6 pt-6 pb-4">
       <div className="min-w-0 space-y-2">
         <p className="text-xs uppercase tracking-[0.24em] text-primary">
           {locale === "bn" ? "পেমেন্ট সেটিংস" : "Payment settings"}
@@ -104,7 +104,7 @@ export default async function DashboardPaymentsPage({
         </Alert>
       ) : null}
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <DashboardMetricCard
           title={locale === "bn" ? "চালু অপশন" : "Enabled options"}
           value={enabledCount}

@@ -34,7 +34,7 @@ export default async function DashboardUserDetailsPage({
   }
 
   return (
-    <div className="grid min-w-0 gap-6 p-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
+    <div className="grid min-w-0 gap-6 px-6 pt-6 pb-4 xl:grid-cols-[minmax(0,1fr)_22rem]">
       <div className="min-w-0 space-y-6 xl:col-span-2">
         {error ? (
           <Alert variant="destructive">

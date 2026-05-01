@@ -34,7 +34,7 @@ export function DataTable<TData>({
       {...props}
     >
       {children}
-      <div className="min-w-0 max-w-full overflow-x-auto rounded-md border">
+      <div className="min-w-0 max-w-full overflow-x-auto rounded-md border bg-card text-card-foreground">
         <Table className="min-w-[920px]">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -64,7 +64,7 @@ export function DataTable<TData>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="hover:bg-primary-foreground"
+                  className="text-foreground"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell

@@ -4,14 +4,13 @@ import { useMemo, useState } from "react";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { RoshalOrdersTable } from "@/components/dashboard/orders-table";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { DateInput } from "@/components/ui/date-input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select";
 import { formatBdt } from "@/lib/store-format";
 import type { RoshalLocale, RoshalOrder } from "@/lib/store-types";
@@ -34,6 +33,23 @@ export function OrdersDashboardClient({
   const [rangeMode, setRangeMode] = useState<"all" | "custom">("all");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const rangeModeLabel = rangeMode === "custom" ? "Custom range" : "All time";
+
+  const handleFromDateChange = (value: string) => {
+    setFromDate(value);
+
+    if (value && toDate && value > toDate) {
+      setToDate(value);
+    }
+  };
+
+  const handleToDateChange = (value: string) => {
+    setToDate(value);
+
+    if (value && fromDate && value < fromDate) {
+      setFromDate(value);
+    }
+  };
 
   const visibleOrders = useMemo(() => {
     if (rangeMode === "all") {
@@ -74,7 +90,7 @@ export function OrdersDashboardClient({
     (order) => order.status === "delivered",
   ).length;
   return (
-    <div className="min-w-0 space-y-6 p-4 sm:p-6">
+    <div className="min-w-0 space-y-6 px-4 pt-4 pb-4 sm:px-6 sm:pt-6">
       <div className="flex min-w-0 flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
         <div className="min-w-0 space-y-2">
           <p className="text-xs uppercase tracking-[0.24em] text-primary">
@@ -95,10 +111,17 @@ export function OrdersDashboardClient({
                   setRangeMode(value === "custom" ? "custom" : "all")
                 }
               >
-                <SelectTrigger id="ordersRangeMode" className="w-full">
-                  <SelectValue />
+                <SelectTrigger
+                  id="ordersRangeMode"
+                  className="w-full text-foreground"
+                >
+                  <span className="truncate">{rangeModeLabel}</span>
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent
+                  align="start"
+                  position="popper"
+                  className="w-[var(--radix-select-trigger-width)]"
+                >
                   <SelectItem value="all">All time</SelectItem>
                   <SelectItem value="custom">Custom range</SelectItem>
                 </SelectContent>
@@ -106,29 +129,33 @@ export function OrdersDashboardClient({
             </div>
             <div className="space-y-2">
               <Label htmlFor="ordersFromDate">From</Label>
-              <Input
+              <DateInput
                 id="ordersFromDate"
-                type="date"
                 value={fromDate}
                 disabled={rangeMode === "all"}
-                onChange={(event) => setFromDate(event.target.value)}
+                maxValue={toDate}
+                onChange={handleFromDateChange}
+                placeholder="Start date"
+                clearLabel="Clear start date"
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="ordersToDate">To</Label>
-              <Input
+              <DateInput
                 id="ordersToDate"
-                type="date"
                 value={toDate}
                 disabled={rangeMode === "all"}
-                onChange={(event) => setToDate(event.target.value)}
+                minValue={fromDate}
+                onChange={handleToDateChange}
+                placeholder="End date"
+                clearLabel="Clear end date"
               />
             </div>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid min-w-0 gap-4 sm:grid-cols-2 xl:grid-cols-5">
+      <div className="grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-5">
         <DashboardMetricCard
           title="Total amount"
           value={formatBdt(totalAmount, locale)}

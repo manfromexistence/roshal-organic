@@ -471,7 +471,7 @@ export default async function LandingPage() {
     await Promise.all([
       getRoshalLocale(),
       getRoshalSiteSettings(),
-      getRoshalPageBundle("home"),
+      getRoshalPageBundle("home", { includeDisabled: true }),
       getRoshalProducts(),
       getRoshalTaxonomy(),
     ]);

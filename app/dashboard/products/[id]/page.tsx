@@ -38,7 +38,6 @@ import {
   productMatchesSubcategory,
 } from "@/lib/store-taxonomy";
 import { getRoshalTaxonomy } from "@/lib/store-taxonomy-content";
-import { cn } from "@/lib/utils";
 
 export default async function ProductEditorRoute({
   params,
@@ -101,12 +100,7 @@ export async function ProductEditorPage({
     );
 
   return (
-    <div
-      className={cn(
-        "min-w-0 space-y-6 px-4 md:px-6",
-        productId ? "py-4 md:py-6" : "pt-4 md:pt-6",
-      )}
-    >
+    <div className="min-w-0 space-y-6 px-4 pt-4 pb-4 md:px-6 md:pt-6">
       <div className="flex min-w-0 flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div className="min-w-0 space-y-2">
           <Button asChild variant="ghost" size="sm" className="-ml-3">

@@ -1,14 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useRef } from "react";
 
 import { AppSidebar } from "@/components/app-sidebar";
 import { SiteHeader } from "@/components/site-header";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import type { RoshalMarketingPage } from "@/lib/store-types";
-
-const SCROLL_KEY = "sidebar-inset-scroll";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -33,31 +32,16 @@ export function DashboardLayout({
   user,
   organization,
 }: DashboardLayoutProps) {
+  const pathname = usePathname();
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [scrollRestored, setScrollRestored] = useState(false);
 
-  const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
-    try {
-      localStorage.setItem(SCROLL_KEY, String(event.currentTarget.scrollTop));
-    } catch {
-      // ignore
-    }
-  };
-
-  // Restore scroll position on mount
+  // Reset route scroll so long dashboard editors do not inherit another page's offset.
   useEffect(() => {
+    if (!pathname) return;
     const el = scrollRef.current;
-    if (!el || scrollRestored) return;
-    try {
-      const saved = localStorage.getItem(SCROLL_KEY);
-      if (saved) {
-        el.scrollTop = Number.parseInt(saved, 10);
-      }
-    } catch {
-      // ignore
-    }
-    setScrollRestored(true);
-  }, [scrollRestored]);
+    if (!el) return;
+    el.scrollTop = 0;
+  }, [pathname]);
 
   return (
     <SidebarProvider
@@ -89,14 +73,13 @@ export function DashboardLayout({
         <ScrollArea
           type="always"
           scrollHideDelay={0}
-          className="min-h-0 min-w-0 w-full flex-1 pt-16"
+          className="min-h-0 min-w-0 w-full flex-1"
           viewportRef={scrollRef}
           viewportProps={{
             className: "min-w-0 max-w-full overscroll-contain",
-            onScroll: handleScroll,
           }}
         >
-          <div className="dashboard-page-shell min-w-0 max-w-full">
+          <div className="dashboard-page-shell min-w-0 max-w-full pt-[var(--header-height)]">
             {children}
           </div>
         </ScrollArea>

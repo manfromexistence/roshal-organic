@@ -562,7 +562,10 @@ export async function getRoshalSectionsForPage(pageId: string) {
   }
 }
 
-export async function getRoshalPageBundle(slug: string) {
+export async function getRoshalPageBundle(
+  slug: string,
+  options: { includeDisabled?: boolean } = {},
+) {
   const page = await getRoshalPageBySlug(slug);
 
   if (!page) {
@@ -571,7 +574,12 @@ export async function getRoshalPageBundle(slug: string) {
 
   const sections = await getRoshalSectionsForPage(page.id);
 
-  return { page, sections: sections.filter((section) => section.isEnabled) };
+  return {
+    page,
+    sections: options.includeDisabled
+      ? sections
+      : sections.filter((section) => section.isEnabled),
+  };
 }
 
 export async function getRoshalProducts() {

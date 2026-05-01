@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { saveRoshalPage, saveRoshalSection } from "@/actions/admin";
@@ -5,6 +6,12 @@ import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
 import { JsonFieldEditor } from "@/components/dashboard/json-field-editor";
 import { ImageUploadField } from "@/components/shared/image-upload-field";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,11 +21,11 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   getRoshalHomeSectionGuide,
   getRoshalMarketingPageGuide,
-  roshalHomeSectionGuides,
 } from "@/lib/cms-guides";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import { getRoshalPages, getRoshalSectionsForPage } from "@/lib/store-content";
 import { getRoshalLocale } from "@/lib/store-i18n";
+import type { RoshalMarketingSection } from "@/lib/store-types";
 
 const pageStatusOptions = [
   { value: "published", label: "published" },
@@ -49,6 +56,33 @@ const sectionVariantOptions = [
 
 function storefrontPathFromSlug(slug: string) {
   return slug === "home" ? "/" : `/${slug}`;
+}
+
+const homeSectionPresetImages: Record<string, string> = {
+  hero: "/special-offer.jpg",
+  "landing-categories": "/ghee.jpg",
+  "landing-top-sellers": "/deal-3.jpg",
+  "landing-new-arrivals": "/fruits.jpg",
+  "landing-brands": "/logo.png",
+  "landing-special-offers": "/deal-3.jpg",
+  "landing-fresh-picks": "/organic-vegetables.jpg",
+  "landing-organic-picks": "/oil-2.jpg",
+  "landing-seasonal-picks": "/mango-2.jpg",
+  "landing-stats": "/healthy-food.jpg",
+  "landing-testimonials": "/brand-story.jpg",
+};
+
+function getSectionEditorPreviewImage(
+  section: RoshalMarketingSection,
+  pageHeroImage: string,
+) {
+  return (
+    section.imageUrl ||
+    section.items.find((item) => item.imageUrl)?.imageUrl ||
+    (section.sectionKey === "hero" ? pageHeroImage : "") ||
+    homeSectionPresetImages[section.sectionKey] ||
+    ""
+  );
 }
 
 export default async function DashboardPageEditorRoute({
@@ -92,7 +126,7 @@ export default async function DashboardPageEditorRoute({
   );
 
   return (
-    <div className="min-w-0 space-y-6 p-6">
+    <div className="min-w-0 space-y-6 px-6 pt-6 pb-4">
       <div className="flex min-w-0 flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div className="min-w-0 space-y-2">
           <p className="text-xs uppercase tracking-[0.24em] text-primary">
@@ -151,6 +185,8 @@ export default async function DashboardPageEditorRoute({
                     : "Hero or story sections can override this with their own image. Otherwise, this page-level image is used as the fallback cover."
                 }
                 value={page.heroImage || ""}
+                compact
+                previewClassName="w-full max-w-72"
               />
             </div>
             <Field
@@ -209,34 +245,7 @@ export default async function DashboardPageEditorRoute({
         </CardContent>
       </Card>
 
-      {page.slug === "home" ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Homepage section map</CardTitle>
-          </CardHeader>
-          <CardContent className="grid min-w-0 gap-3 md:grid-cols-2">
-            {roshalHomeSectionGuides.map((guide) => (
-              <div
-                key={guide.sectionKey}
-                className="rounded-xl border border-border/70 bg-muted/20 p-4"
-              >
-                <p className="font-medium">
-                  {locale === "bn" ? guide.label.bn : guide.label.en}
-                </p>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {guide.sectionKey}
-                </p>
-                <p className="mt-3 text-sm text-muted-foreground">
-                  {locale === "bn" ? guide.summary.bn : guide.summary.en}
-                </p>
-                <p className="mt-3 text-sm text-muted-foreground">
-                  {locale === "bn" ? guide.stylesHint.bn : guide.stylesHint.en}
-                </p>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      ) : null}
+      {/* Homepage section map is intentionally hidden to keep this marketing page editor compact. */}
 
       {page.slug !== "home" && pageGuide ? (
         <Card>
@@ -267,43 +276,137 @@ export default async function DashboardPageEditorRoute({
         <h2 className="text-2xl font-semibold">
           {locale === "bn" ? "সেকশনসমূহ" : "Sections"}
         </h2>
-        {sections.map((section) => (
-          <Card key={section.id} id={`section-${section.sectionKey}`}>
-            <CardHeader>
-              <CardTitle>
-                {section.sectionKey} · {section.type}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {page.slug === "home" &&
-              getRoshalHomeSectionGuide(section.sectionKey) ? (
-                <div className="rounded-xl border border-border/70 bg-muted/20 p-4 text-sm text-muted-foreground">
-                  <p className="font-medium text-foreground">
-                    {locale === "bn"
-                      ? getRoshalHomeSectionGuide(section.sectionKey)?.label.bn
-                      : getRoshalHomeSectionGuide(section.sectionKey)?.label.en}
-                  </p>
-                  <p className="mt-2">
-                    {locale === "bn"
-                      ? getRoshalHomeSectionGuide(section.sectionKey)
-                          ?.contentHint.bn
-                      : getRoshalHomeSectionGuide(section.sectionKey)
-                          ?.contentHint.en}
-                  </p>
-                  <p className="mt-2">
-                    {locale === "bn"
-                      ? getRoshalHomeSectionGuide(section.sectionKey)
-                          ?.stylesHint.bn
-                      : getRoshalHomeSectionGuide(section.sectionKey)
-                          ?.stylesHint.en}
-                  </p>
-                </div>
-              ) : null}
+        <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
+          Open only the section you need to edit. This keeps long marketing
+          pages compact while preserving every CMS control.
+        </p>
+        <Accordion type="single" collapsible className="space-y-3">
+          {sections.map((section) => {
+            const sectionPreviewImage = getSectionEditorPreviewImage(
+              section,
+              page.heroImage,
+            );
+
+            return (
+              <AccordionItem
+                key={section.id}
+                value={`section-${section.id}`}
+                id={`section-${section.sectionKey}`}
+                className="rounded-lg border border-border/70 bg-card px-4 shadow-sm"
+              >
+                <AccordionTrigger className="gap-4 py-4 hover:no-underline">
+                  {sectionPreviewImage ? (
+                    <span className="relative size-12 shrink-0 overflow-hidden rounded-md border border-border/70 bg-muted">
+                      <Image
+                        src={sectionPreviewImage}
+                        alt=""
+                        fill
+                        sizes="48px"
+                        className="object-cover"
+                      />
+                    </span>
+                  ) : null}
+                  <span className="min-w-0 flex-1 text-left">
+                    <span className="block break-words text-base font-semibold text-foreground">
+                      {section.sectionKey} · {section.type}
+                    </span>
+                    <span className="mt-1 block text-sm font-normal text-muted-foreground">
+                      {section.isEnabled ? "Live section" : "Hidden section"} /
+                      sort {section.sortOrder}
+                    </span>
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent className="space-y-4">
+                  {page.slug === "home" &&
+                  getRoshalHomeSectionGuide(section.sectionKey) ? (
+                    <div className="rounded-xl border border-border/70 bg-muted/20 p-4 text-sm text-muted-foreground">
+                      <p className="font-medium text-foreground">
+                        {locale === "bn"
+                          ? getRoshalHomeSectionGuide(section.sectionKey)?.label
+                              .bn
+                          : getRoshalHomeSectionGuide(section.sectionKey)?.label
+                              .en}
+                      </p>
+                      <p className="mt-2">
+                        {locale === "bn"
+                          ? getRoshalHomeSectionGuide(section.sectionKey)
+                              ?.contentHint.bn
+                          : getRoshalHomeSectionGuide(section.sectionKey)
+                              ?.contentHint.en}
+                      </p>
+                      <p className="mt-2">
+                        {locale === "bn"
+                          ? getRoshalHomeSectionGuide(section.sectionKey)
+                              ?.stylesHint.bn
+                          : getRoshalHomeSectionGuide(section.sectionKey)
+                              ?.stylesHint.en}
+                      </p>
+                    </div>
+                  ) : null}
+                  <form
+                    action={saveRoshalSection}
+                    className="grid min-w-0 gap-5 md:grid-cols-2"
+                  >
+                    <input type="hidden" name="id" value={section.id} />
+                    <input type="hidden" name="pageId" value={page.id} />
+                    <input type="hidden" name="pageSlug" value={page.slug} />
+                    <input
+                      type="hidden"
+                      name="redirectTo"
+                      value={`/dashboard/pages/${page.id}`}
+                    />
+                    <SectionFields
+                      locale={locale}
+                      defaults={{
+                        sectionKey: section.sectionKey,
+                        type: section.type,
+                        sortOrder: String(section.sortOrder),
+                        layout: section.layout,
+                        variant: section.variant,
+                        eyebrowBn: section.eyebrow.bn,
+                        eyebrowEn: section.eyebrow.en,
+                        titleBn: section.title.bn,
+                        titleEn: section.title.en,
+                        bodyBn: section.body.bn,
+                        bodyEn: section.body.en,
+                        ctaLabelBn: section.ctaLabel.bn,
+                        ctaLabelEn: section.ctaLabel.en,
+                        ctaHref: section.ctaHref,
+                        imageUrl: section.imageUrl,
+                        previewImageUrl: sectionPreviewImage,
+                        itemsJson: JSON.stringify(section.items, null, 2),
+                        stylesJson: JSON.stringify(section.styles, null, 2),
+                        isEnabled: section.isEnabled,
+                      }}
+                      submitLabel={
+                        locale === "bn" ? "সেকশন সেভ করুন" : "Save section"
+                      }
+                    />
+                  </form>
+                </AccordionContent>
+              </AccordionItem>
+            );
+          })}
+
+          <AccordionItem
+            value="new-section"
+            className="rounded-lg border border-dashed border-border/80 bg-card px-4 shadow-sm"
+          >
+            <AccordionTrigger className="gap-4 py-4 hover:no-underline">
+              <span className="min-w-0 flex-1 text-left">
+                <span className="block text-base font-semibold text-foreground">
+                  {locale === "bn" ? "নতুন সেকশন যোগ করুন" : "Add new section"}
+                </span>
+                <span className="mt-1 block text-sm font-normal text-muted-foreground">
+                  Create another CMS section for this marketing page.
+                </span>
+              </span>
+            </AccordionTrigger>
+            <AccordionContent>
               <form
                 action={saveRoshalSection}
                 className="grid min-w-0 gap-5 md:grid-cols-2"
               >
-                <input type="hidden" name="id" value={section.id} />
                 <input type="hidden" name="pageId" value={page.id} />
                 <input type="hidden" name="pageSlug" value={page.slug} />
                 <input
@@ -314,81 +417,34 @@ export default async function DashboardPageEditorRoute({
                 <SectionFields
                   locale={locale}
                   defaults={{
-                    sectionKey: section.sectionKey,
-                    type: section.type,
-                    sortOrder: String(section.sortOrder),
-                    layout: section.layout,
-                    variant: section.variant,
-                    eyebrowBn: section.eyebrow.bn,
-                    eyebrowEn: section.eyebrow.en,
-                    titleBn: section.title.bn,
-                    titleEn: section.title.en,
-                    bodyBn: section.body.bn,
-                    bodyEn: section.body.en,
-                    ctaLabelBn: section.ctaLabel.bn,
-                    ctaLabelEn: section.ctaLabel.en,
-                    ctaHref: section.ctaHref,
-                    imageUrl: section.imageUrl,
-                    itemsJson: JSON.stringify(section.items, null, 2),
-                    stylesJson: JSON.stringify(section.styles, null, 2),
-                    isEnabled: section.isEnabled,
+                    sectionKey: "",
+                    type: "story",
+                    sortOrder: String(sections.length),
+                    layout: "stacked",
+                    variant: "default",
+                    eyebrowBn: "",
+                    eyebrowEn: "",
+                    titleBn: "",
+                    titleEn: "",
+                    bodyBn: "",
+                    bodyEn: "",
+                    ctaLabelBn: "",
+                    ctaLabelEn: "",
+                    ctaHref: "",
+                    imageUrl: "",
+                    previewImageUrl: "",
+                    itemsJson: "[]",
+                    stylesJson: "{}",
+                    isEnabled: true,
                   }}
                   submitLabel={
-                    locale === "bn" ? "সেকশন সেভ করুন" : "Save section"
+                    locale === "bn" ? "সেকশন তৈরি করুন" : "Create section"
                   }
                 />
               </form>
-            </CardContent>
-          </Card>
-        ))}
-
-        <Card>
-          <CardHeader>
-            <CardTitle>
-              {locale === "bn" ? "নতুন সেকশন যোগ করুন" : "Add new section"}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form
-              action={saveRoshalSection}
-              className="grid min-w-0 gap-5 md:grid-cols-2"
-            >
-              <input type="hidden" name="pageId" value={page.id} />
-              <input type="hidden" name="pageSlug" value={page.slug} />
-              <input
-                type="hidden"
-                name="redirectTo"
-                value={`/dashboard/pages/${page.id}`}
-              />
-              <SectionFields
-                locale={locale}
-                defaults={{
-                  sectionKey: "",
-                  type: "story",
-                  sortOrder: String(sections.length),
-                  layout: "stacked",
-                  variant: "default",
-                  eyebrowBn: "",
-                  eyebrowEn: "",
-                  titleBn: "",
-                  titleEn: "",
-                  bodyBn: "",
-                  bodyEn: "",
-                  ctaLabelBn: "",
-                  ctaLabelEn: "",
-                  ctaHref: "",
-                  imageUrl: "",
-                  itemsJson: "[]",
-                  stylesJson: "{}",
-                  isEnabled: true,
-                }}
-                submitLabel={
-                  locale === "bn" ? "সেকশন তৈরি করুন" : "Create section"
-                }
-              />
-            </form>
-          </CardContent>
-        </Card>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </div>
     </div>
   );
@@ -416,6 +472,7 @@ function SectionFields({
     ctaLabelEn: string;
     ctaHref: string;
     imageUrl: string;
+    previewImageUrl: string;
     itemsJson: string;
     stylesJson: string;
     isEnabled: boolean;
@@ -469,6 +526,9 @@ function SectionFields({
               : "For hero or story sections, this image overrides the page cover. Use it for other visual sections as well."
           }
           value={defaults.imageUrl}
+          previewValue={defaults.previewImageUrl}
+          compact
+          previewClassName="w-full max-w-64"
         />
       </div>
       <Field

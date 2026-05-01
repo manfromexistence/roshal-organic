@@ -48,7 +48,7 @@ export default async function DashboardPagesPage({
   ).length;
   const navigationCount = pages.filter((page) => page.showInNavigation).length;
   return (
-    <div className="min-w-0 space-y-6 px-6 pt-6 pb-0">
+    <div className="min-w-0 space-y-6 px-6 pt-6 pb-4">
       <div className="min-w-0 space-y-2">
         <p className="text-xs uppercase tracking-[0.24em] text-primary">
           {locale === "bn" ? "মার্কেটিং পেজ" : "Marketing pages"}
@@ -73,7 +73,7 @@ export default async function DashboardPagesPage({
         </Alert>
       ) : null}
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         <DashboardMetricCard
           title={locale === "bn" ? "মোট পেজ" : "Total pages"}
           value={pages.length}
@@ -138,6 +138,8 @@ export default async function DashboardPagesPage({
                           : "This image will be used as the top cover when the page has no hero/story section yet."
                       }
                       value=""
+                      compact
+                      previewClassName="w-full max-w-72"
                     />
                   </div>
                   <Field
