@@ -4,7 +4,6 @@ import { StorefrontBottomNavigation } from "@/components/storefront/storefront-b
 import { StorefrontFooter } from "@/components/storefront/storefront-footer";
 import { StorefrontHeader } from "@/components/storefront/storefront-header";
 import { WhatsAppFloatingButton } from "@/components/storefront/whatsapp-floating-button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { getRoshalSessionUser } from "@/lib/store-auth";
 import { getWhatsAppHref } from "@/lib/store-contact";
 import {
@@ -45,7 +44,7 @@ export default async function MarketingLayout({
   const footerCategoryLinks = buildFooterCategoryLinks(taxonomyBundle);
 
   return (
-    <div className="storefront-shell flex h-svh min-w-0 flex-col overflow-hidden bg-background text-foreground antialiased">
+    <div className="storefront-shell flex min-h-svh min-w-0 flex-col bg-background text-foreground antialiased">
       <StorefrontHeader
         locale={locale}
         pages={pages}
@@ -69,25 +68,18 @@ export default async function MarketingLayout({
         label={locale === "bn" ? "চ্যাট" : "Chat"}
       />
 
-      <ScrollArea
-        type="always"
-        scrollHideDelay={0}
-        className="min-h-0 flex-1"
-        viewportClassName="storefront-scroll-viewport min-w-0 overscroll-contain [&>div]:!block [&>div]:!min-w-0 [&>div]:!w-full"
-      >
-        <div className="flex min-h-full w-full min-w-0 flex-col overflow-x-clip">
-          <main className="min-h-[calc(100vh-18rem)] w-full min-w-0 overflow-x-clip pb-20 md:pb-0">
-            <MarketingPageOffset>{children}</MarketingPageOffset>
-          </main>
+      <div className="flex min-h-svh w-full min-w-0 flex-1 flex-col overflow-x-clip">
+        <main className="min-h-[calc(100vh-18rem)] w-full min-w-0 flex-1 overflow-x-clip pb-20 md:pb-0">
+          <MarketingPageOffset>{children}</MarketingPageOffset>
+        </main>
 
-          <StorefrontFooter
-            locale={locale}
-            pages={allPages}
-            siteSettings={siteSettings}
-            categoryLinks={footerCategoryLinks}
-          />
-        </div>
-      </ScrollArea>
+        <StorefrontFooter
+          locale={locale}
+          pages={allPages}
+          siteSettings={siteSettings}
+          categoryLinks={footerCategoryLinks}
+        />
+      </div>
 
       <StorefrontBottomNavigation locale={locale} />
     </div>

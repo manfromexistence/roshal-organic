@@ -1,14 +1,17 @@
-﻿"use client";
+"use client";
 
-import Image from "next/image";
+import { Eye, EyeOff, Lock, Mail, MapPin, User } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import type { FormEvent, ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PhoneInput2 } from "@/components/ui/phone-input-2";
 import {
   Select,
   SelectContent,
@@ -16,13 +19,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/hooks/use-toast";
 import { authClient } from "@/lib/auth-client";
 import {
   bangladeshDistrictOptions,
   getBangladeshDistrictByValue,
 } from "@/lib/bangladesh-locations";
+import {
+  isBangladeshPhoneComplete,
+  normalizeBangladeshPhoneInput,
+  stripPhoneDecorators,
+} from "@/lib/store-phone";
+import { cn } from "@/lib/utils";
 
 type AuthMode = "signin" | "signup";
 
@@ -38,10 +46,6 @@ function getSafeCallbackUrl(value: string | null) {
   return "/";
 }
 
-function normalizePhone(value: string) {
-  return value.replace(/[^\d+]/g, "");
-}
-
 function toSyntheticEmail(phoneOrEmail: string) {
   const normalized = phoneOrEmail.trim().toLowerCase();
 
@@ -49,8 +53,56 @@ function toSyntheticEmail(phoneOrEmail: string) {
     return normalized;
   }
 
-  const digits = normalized.replace(/\D/g, "");
+  const digits = stripPhoneDecorators(normalized).replace(/\D/g, "");
   return `customer+${digits}@roshalorganic.app`;
+}
+
+function AuthHeader({ title, subtitle }: { title: string; subtitle: string }) {
+  return (
+    <div className="flex flex-col items-center gap-3 text-center">
+      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-sm">
+        <User className="size-7" />
+      </div>
+      <div className="space-y-1">
+        <h1 className="text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
+          {title}
+        </h1>
+        <p className="text-sm text-muted-foreground md:text-base">{subtitle}</p>
+      </div>
+    </div>
+  );
+}
+
+function FieldShell({
+  children,
+  className,
+  icon,
+}: {
+  children: ReactNode;
+  className?: string;
+  icon?: ReactNode;
+}) {
+  return (
+    <div className={cn("relative", className)}>
+      {icon ? (
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-4 text-primary">
+          {icon}
+        </div>
+      ) : null}
+      {children}
+    </div>
+  );
+}
+
+function OrDivider() {
+  return (
+    <div className="relative hidden items-center justify-center md:flex">
+      <div className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-border/70" />
+      <span className="relative z-10 inline-flex h-14 w-14 items-center justify-center rounded-full border border-border/70 bg-background text-sm font-medium text-muted-foreground shadow-sm">
+        OR
+      </span>
+    </div>
+  );
 }
 
 export default function LoginPage() {
@@ -60,6 +112,10 @@ export default function LoginPage() {
   const [authMode, setAuthMode] = useState<AuthMode>(requestedMode);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [rememberMe, setRememberMe] = useState(true);
+  const [quickMobile, setQuickMobile] = useState("");
+  const [showSignInPassword, setShowSignInPassword] = useState(false);
+  const [showSignUpPassword, setShowSignUpPassword] = useState(false);
 
   const [signInIdentifier, setSignInIdentifier] = useState("");
   const [password, setPassword] = useState("");
@@ -72,6 +128,9 @@ export default function LoginPage() {
   const [thana, setThana] = useState(
     bangladeshDistrictOptions[0].thanas[0] || "",
   );
+
+  const signInPasswordRef = useRef<HTMLInputElement | null>(null);
+  const signUpNameRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     setAuthMode(requestedMode);
@@ -93,13 +152,37 @@ export default function LoginPage() {
   const hasCallbackURL = isSafeCallbackUrl(rawCallbackURL);
   const callbackURL = getSafeCallbackUrl(rawCallbackURL);
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleQuickMobileContinue = () => {
+    const normalizedPhone = normalizeBangladeshPhoneInput(quickMobile);
+
+    if (!isBangladeshPhoneComplete(normalizedPhone)) {
+      setErrorMessage("Mobile number must be exactly 11 digits.");
+      return;
+    }
+
+    setErrorMessage(null);
+
+    if (isSignIn) {
+      setSignInIdentifier(normalizedPhone);
+      requestAnimationFrame(() => {
+        signInPasswordRef.current?.focus();
+      });
+      return;
+    }
+
+    setMobile(normalizedPhone);
+    requestAnimationFrame(() => {
+      signUpNameRef.current?.focus();
+    });
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrorMessage(null);
 
     if (!isSignIn) {
-      const phone = normalizePhone(mobile);
-      if (phone.length !== 11) {
+      const phone = normalizeBangladeshPhoneInput(mobile || quickMobile);
+      if (!isBangladeshPhoneComplete(phone)) {
         setErrorMessage("Mobile number must be exactly 11 digits.");
         return;
       }
@@ -113,7 +196,7 @@ export default function LoginPage() {
             {
               email: toSyntheticEmail(signInIdentifier),
               password,
-              rememberMe: true,
+              rememberMe,
               callbackURL,
             },
             {
@@ -125,9 +208,9 @@ export default function LoginPage() {
         : await authClient.signUp.email(
             {
               name,
-              email: toSyntheticEmail(email.trim() || mobile),
+              email: toSyntheticEmail(email.trim() || mobile || quickMobile),
               password,
-              phone: normalizePhone(mobile),
+              phone: normalizeBangladeshPhoneInput(mobile || quickMobile),
               preferredLanguage: "en",
               defaultAddress: [address, thana, districtOption.label]
                 .map((value) => value.trim())
@@ -162,7 +245,6 @@ export default function LoginPage() {
       )?.role;
 
       window.location.replace(role === "admin" ? "/dashboard" : "/profile");
-      return;
     } catch (error) {
       console.error("Authentication error:", error);
       const nextErrorMessage =
@@ -184,305 +266,366 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background pt-8 lg:pt-32">
-      <div className="mx-auto grid min-h-screen max-w-7xl gap-6 px-4 py-6 lg:grid-cols-[1fr_minmax(0,32rem)] lg:items-center">
-        <section className="hidden rounded-sm border border-border/60 bg-card/70 p-8 shadow-sm lg:flex lg:min-h-[42rem] lg:flex-col lg:justify-between">
-          <div className="space-y-6">
-            <div className="inline-flex items-center gap-3">
-              <div className="flex h-14 w-14 items-center justify-center rounded-md border border-border/70 bg-background shadow-sm">
-                <Image
-                  src="/apple-touch-icon.png"
-                  alt="Roshal Organic"
-                  width={48}
-                  height={48}
-                  className="h-11 w-11 object-contain"
-                />
-              </div>
-              <div>
-                <p className="font-wordmark text-2xl text-foreground">
-                  Roshal Organic
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Pure food, trusted delivery, and simple account access.
-                </p>
-              </div>
+    <div className="min-h-screen bg-muted/20 px-4 py-8 md:px-6 md:py-12 lg:px-8 lg:py-16">
+      <div className="mx-auto max-w-7xl">
+        <div className="rounded-[2rem] border border-border/60 bg-background shadow-xl shadow-black/5">
+          <div className="px-6 py-8 md:px-10 md:py-10 lg:px-14 lg:py-12">
+            <AuthHeader
+              title={isSignIn ? "Signin" : "Create New Account"}
+              subtitle={
+                isSignIn
+                  ? "Access your account securely"
+                  : "Register to get started"
+              }
+            />
+
+            <div className="mt-10 grid gap-5 md:grid-cols-[minmax(0,1fr)_4rem_minmax(0,1fr)] md:gap-8">
+              <Card className="rounded-3xl border-0 bg-muted/35 p-0 shadow-none">
+                <CardContent className="space-y-5 px-7 py-7">
+                  <div className="space-y-1">
+                    <h2 className="text-2xl font-semibold text-foreground">
+                      {isSignIn
+                        ? "Login With Mobile Number"
+                        : "Signup With Mobile Number"}
+                    </h2>
+                    <p className="text-sm text-muted-foreground">
+                      {isSignIn
+                        ? "Use your mobile number to continue securely."
+                        : "Start with your delivery mobile number first."}
+                    </p>
+                  </div>
+
+                  <PhoneInput2
+                    value={quickMobile}
+                    onChange={(value) => {
+                      setErrorMessage(null);
+                      setQuickMobile(value);
+                      if (!isSignIn) {
+                        setMobile(value);
+                      }
+                    }}
+                    placeholder="01805-767300"
+                    className="[&_button]:h-14 [&_button]:border-border/70 [&_button]:bg-background [&_input]:h-14 [&_input]:rounded-s-none [&_input]:border-border/70 [&_input]:bg-background [&_input]:text-base"
+                  />
+
+                  <Button
+                    type="button"
+                    className="h-14 w-full rounded-xl text-base font-semibold"
+                    onClick={handleQuickMobileContinue}
+                  >
+                    Send OTP
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <OrDivider />
+
+              <Card className="rounded-3xl border-0 bg-muted/35 p-0 shadow-none">
+                <CardContent className="space-y-5 px-7 py-7">
+                  <div className="space-y-1">
+                    <h2 className="text-2xl font-semibold text-foreground">
+                      {isSignIn
+                        ? "Login With Credentials"
+                        : "Register a new account"}
+                    </h2>
+                    <p className="text-sm text-muted-foreground">
+                      {isSignIn
+                        ? "Use your email or phone number and password."
+                        : "Complete the form below to create your account."}
+                    </p>
+                  </div>
+
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    {errorMessage ? (
+                      <Alert variant="destructive">
+                        <AlertDescription>{errorMessage}</AlertDescription>
+                      </Alert>
+                    ) : null}
+
+                    {isSignIn ? (
+                      <>
+                        <FieldShell icon={<User className="size-4" />}>
+                          <Input
+                            id="signin-identifier"
+                            value={signInIdentifier}
+                            autoComplete="username"
+                            onChange={(event) => {
+                              setErrorMessage(null);
+                              setSignInIdentifier(event.target.value);
+                            }}
+                            placeholder="Email or phone number"
+                            className="h-14 rounded-xl border-border/70 bg-background pl-12 text-base"
+                            required
+                          />
+                        </FieldShell>
+
+                        <FieldShell
+                          icon={<Lock className="size-4" />}
+                          className="relative"
+                        >
+                          <Input
+                            ref={signInPasswordRef}
+                            id="signin-password"
+                            type={showSignInPassword ? "text" : "password"}
+                            value={password}
+                            autoComplete="current-password"
+                            onChange={(event) => {
+                              setErrorMessage(null);
+                              setPassword(event.target.value);
+                            }}
+                            placeholder="Password"
+                            className="h-14 rounded-xl border-border/70 bg-background pr-12 pl-12 text-base"
+                            minLength={6}
+                            required
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="absolute top-1/2 right-2 h-10 w-10 -translate-y-1/2 rounded-full text-muted-foreground"
+                            onClick={() =>
+                              setShowSignInPassword((current) => !current)
+                            }
+                            aria-label={
+                              showSignInPassword
+                                ? "Hide password"
+                                : "Show password"
+                            }
+                          >
+                            {showSignInPassword ? (
+                              <EyeOff className="size-4" />
+                            ) : (
+                              <Eye className="size-4" />
+                            )}
+                          </Button>
+                        </FieldShell>
+
+                        <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Checkbox
+                              id="remember-me"
+                              checked={rememberMe}
+                              onCheckedChange={(checked) =>
+                                setRememberMe(checked === true)
+                              }
+                            />
+                            <Label
+                              htmlFor="remember-me"
+                              className="cursor-pointer text-sm font-normal text-muted-foreground"
+                            >
+                              Remember me
+                            </Label>
+                          </div>
+
+                          <Link
+                            href="/contact"
+                            className="text-sm font-medium text-primary underline-offset-4 transition-colors hover:text-primary/80 hover:underline"
+                          >
+                            Forgotten password?
+                          </Link>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="space-y-4">
+                        <FieldShell icon={<User className="size-4" />}>
+                          <Input
+                            ref={signUpNameRef}
+                            id="signup-name"
+                            value={name}
+                            autoComplete="name"
+                            onChange={(event) => {
+                              setErrorMessage(null);
+                              setName(event.target.value);
+                            }}
+                            placeholder="Full Name"
+                            className="h-14 rounded-xl border-border/70 bg-background pl-12 text-base"
+                            required
+                          />
+                        </FieldShell>
+
+                        <FieldShell icon={<Mail className="size-4" />}>
+                          <Input
+                            id="signup-email"
+                            value={email}
+                            onChange={(event) => {
+                              setErrorMessage(null);
+                              setEmail(event.target.value);
+                            }}
+                            autoComplete="email"
+                            type="email"
+                            placeholder="Email (Optional)"
+                            className="h-14 rounded-xl border-border/70 bg-background pl-12 text-base"
+                          />
+                        </FieldShell>
+
+                        <FieldShell
+                          className="relative"
+                          icon={<Lock className="size-4" />}
+                        >
+                          <Input
+                            id="signup-password"
+                            type={showSignUpPassword ? "text" : "password"}
+                            value={password}
+                            autoComplete="new-password"
+                            onChange={(event) => {
+                              setErrorMessage(null);
+                              setPassword(event.target.value);
+                            }}
+                            placeholder="Password"
+                            className="h-14 rounded-xl border-border/70 bg-background pr-12 pl-12 text-base"
+                            minLength={6}
+                            required
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="absolute top-1/2 right-2 h-10 w-10 -translate-y-1/2 rounded-full text-muted-foreground"
+                            onClick={() =>
+                              setShowSignUpPassword((current) => !current)
+                            }
+                            aria-label={
+                              showSignUpPassword
+                                ? "Hide password"
+                                : "Show password"
+                            }
+                          >
+                            {showSignUpPassword ? (
+                              <EyeOff className="size-4" />
+                            ) : (
+                              <Eye className="size-4" />
+                            )}
+                          </Button>
+                        </FieldShell>
+
+                        <FieldShell icon={<MapPin className="size-4" />}>
+                          <Input
+                            id="signup-address"
+                            value={address}
+                            autoComplete="street-address"
+                            onChange={(event) => {
+                              setErrorMessage(null);
+                              setAddress(event.target.value);
+                            }}
+                            placeholder="Address"
+                            className="h-14 rounded-xl border-border/70 bg-background pl-12 text-base"
+                            required
+                          />
+                        </FieldShell>
+
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="min-w-0 space-y-2">
+                            <Label className="px-1 text-sm text-muted-foreground">
+                              District
+                            </Label>
+                            <Select
+                              value={district}
+                              onValueChange={(value) => {
+                                setErrorMessage(null);
+                                setDistrict(value);
+                              }}
+                            >
+                              <SelectTrigger className="h-14 min-w-0 rounded-xl border-border/70 bg-background text-sm">
+                                <SelectValue placeholder="Select district" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {bangladeshDistrictOptions.map((option) => (
+                                  <SelectItem
+                                    key={option.value}
+                                    value={option.value}
+                                  >
+                                    {option.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          <div className="min-w-0 space-y-2">
+                            <Label className="px-1 text-sm text-muted-foreground">
+                              Thana
+                            </Label>
+                            <Select
+                              value={thana}
+                              onValueChange={(value) => {
+                                setErrorMessage(null);
+                                setThana(value);
+                              }}
+                            >
+                              <SelectTrigger className="h-14 min-w-0 rounded-xl border-border/70 bg-background text-sm">
+                                <SelectValue placeholder="Select thana" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {districtOption.thanas.map((option) => (
+                                  <SelectItem key={option} value={option}>
+                                    {option}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="px-1 text-sm text-muted-foreground">
+                            Mobile number
+                          </Label>
+                          <PhoneInput2
+                            id="signup-mobile"
+                            value={mobile || quickMobile}
+                            autoComplete="tel"
+                            onChange={(value) => {
+                              setErrorMessage(null);
+                              setMobile(value);
+                              setQuickMobile(value);
+                            }}
+                            placeholder="01805-767300"
+                            className="[&_button]:h-14 [&_button]:border-border/70 [&_button]:bg-background [&_input]:h-14 [&_input]:rounded-s-none [&_input]:border-border/70 [&_input]:bg-background [&_input]:text-base"
+                            required
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    <Button
+                      type="submit"
+                      className="h-14 w-full rounded-xl text-base font-semibold"
+                      disabled={isLoading}
+                    >
+                      {isLoading
+                        ? isSignIn
+                          ? "Signing in..."
+                          : "Creating account..."
+                        : isSignIn
+                          ? "Login"
+                          : "Register account"}
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
             </div>
 
-            <div className="space-y-3">
-              <h1 className="text-4xl font-semibold tracking-tight text-foreground">
-                {isSignIn ? "Welcome back" : "Create your customer account"}
-              </h1>
-              <p className="max-w-xl text-sm leading-7 text-muted-foreground">
+            <div className="mt-10 space-y-4 text-center">
+              <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                <div className="h-px flex-1 bg-border/70" />
+                <span>{isSignIn ? "or signin with" : "or signup with"}</span>
+                <div className="h-px flex-1 bg-border/70" />
+              </div>
+
+              <p className="text-sm text-muted-foreground md:text-base">
                 {isSignIn
-                  ? "Sign in with your email or mobile number to manage orders, wishlist, and checkout faster."
-                  : "Create a Roshal Organic account with your delivery details so checkout, order tracking, and support stay simple."}
+                  ? "Don't have any account?"
+                  : "Already have an account?"}{" "}
+                <Link
+                  href={isSignIn ? "/login?mode=signup" : "/login"}
+                  className="font-medium text-primary underline-offset-4 transition-colors hover:text-primary/80 hover:underline"
+                >
+                  {isSignIn ? "Register account" : "Sign in"}
+                </Link>
               </p>
             </div>
           </div>
-
-          <div className="grid gap-3 rounded-md border border-border/60 bg-background/80 p-5 text-sm text-muted-foreground">
-            <p>Track orders without friction</p>
-            <p>Save delivery details for faster checkout</p>
-            <p>Use the same account for storefront and order history</p>
-          </div>
-        </section>
-
-        <section className="flex items-center justify-center">
-          <Card className="w-full max-w-2xl rounded-sm border-border/70 shadow-sm">
-            <CardHeader className="space-y-4 pb-6">
-              <div className="flex flex-col items-center gap-3 text-center">
-                <Link href="/" className="inline-flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-md border border-border/70 bg-background shadow-sm">
-                    <Image
-                      src="/logo.png"
-                      alt="Roshal Organic"
-                      width={40}
-                      height={40}
-                      className="h-9 w-auto object-contain dark:hidden"
-                    />
-                    <Image
-                      src="/logo-light.png"
-                      alt="Roshal Organic"
-                      width={40}
-                      height={40}
-                      className="hidden h-9 w-auto object-contain dark:block"
-                    />
-                  </div>
-                  <span className="font-wordmark text-2xl text-foreground">
-                    Roshal Organic
-                  </span>
-                </Link>
-                <p className="text-sm text-muted-foreground">
-                  Sign in or create your customer account
-                </p>
-              </div>
-
-              <Tabs
-                value={authMode}
-                onValueChange={(value) => {
-                  setErrorMessage(null);
-                  setAuthMode(value === "signup" ? "signup" : "signin");
-                }}
-              >
-                <TabsList className="grid w-full grid-cols-2 rounded-sm">
-                  <TabsTrigger value="signin">Login</TabsTrigger>
-                  <TabsTrigger value="signup">Sign Up</TabsTrigger>
-                </TabsList>
-              </Tabs>
-            </CardHeader>
-
-            <CardContent className="space-y-5">
-              <form onSubmit={handleSubmit} className="space-y-5">
-                {errorMessage ? (
-                  <Alert variant="destructive">
-                    <AlertDescription>{errorMessage}</AlertDescription>
-                  </Alert>
-                ) : null}
-
-                {isSignIn ? (
-                  <>
-                    <div className="space-y-2">
-                      <Label htmlFor="signin-identifier">Email or mobile</Label>
-                      <Input
-                        id="signin-identifier"
-                        value={signInIdentifier}
-                        autoComplete="username"
-                        onChange={(event) => {
-                          setErrorMessage(null);
-                          setSignInIdentifier(event.target.value);
-                        }}
-                        placeholder="admin@gmail.com or 01805-767300"
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="signin-password">Password</Label>
-                      <Input
-                        id="signin-password"
-                        type="password"
-                        value={password}
-                        autoComplete="current-password"
-                        onChange={(event) => {
-                          setErrorMessage(null);
-                          setPassword(event.target.value);
-                        }}
-                        placeholder="********"
-                        minLength={6}
-                        required
-                      />
-                    </div>
-                  </>
-                ) : (
-                  <div className="grid gap-5 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-name">Full name</Label>
-                      <Input
-                        id="signup-name"
-                        value={name}
-                        autoComplete="name"
-                        onChange={(event) => {
-                          setErrorMessage(null);
-                          setName(event.target.value);
-                        }}
-                        placeholder="Roshal Organic Customer"
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="signup-mobile">Mobile</Label>
-                      <Input
-                        id="signup-mobile"
-                        value={mobile}
-                        autoComplete="tel"
-                        inputMode="tel"
-                        maxLength={11}
-                        minLength={11}
-                        onChange={(event) => {
-                          setErrorMessage(null);
-                          setMobile(event.target.value);
-                        }}
-                        placeholder="01805-767300"
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-2 md:col-span-2">
-                      <Label htmlFor="signup-email">Email (optional)</Label>
-                      <Input
-                        id="signup-email"
-                        type="email"
-                        value={email}
-                        autoComplete="email"
-                        onChange={(event) => {
-                          setErrorMessage(null);
-                          setEmail(event.target.value);
-                        }}
-                        placeholder="you@example.com"
-                      />
-                    </div>
-
-                    <div className="space-y-2 md:col-span-2">
-                      <Label htmlFor="signup-address">Address</Label>
-                      <Input
-                        id="signup-address"
-                        value={address}
-                        autoComplete="street-address"
-                        onChange={(event) => {
-                          setErrorMessage(null);
-                          setAddress(event.target.value);
-                        }}
-                        placeholder="House, road, area"
-                        required
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4 md:col-span-2">
-                      <div className="min-w-0 space-y-2">
-                        <Label>District</Label>
-                        <Select
-                          value={district}
-                          onValueChange={(value) => {
-                            setErrorMessage(null);
-                            setDistrict(value);
-                          }}
-                        >
-                          <SelectTrigger className="h-10 min-w-0 rounded-sm text-xs sm:text-sm">
-                            <SelectValue placeholder="Select district" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {bangladeshDistrictOptions.map((option) => (
-                              <SelectItem
-                                key={option.value}
-                                value={option.value}
-                              >
-                                {option.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="min-w-0 space-y-2">
-                        <Label>Thana</Label>
-                        <Select
-                          value={thana}
-                          onValueChange={(value) => {
-                            setErrorMessage(null);
-                            setThana(value);
-                          }}
-                        >
-                          <SelectTrigger className="h-10 min-w-0 rounded-sm text-xs sm:text-sm">
-                            <SelectValue placeholder="Select thana" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {districtOption.thanas.map((option) => (
-                              <SelectItem key={option} value={option}>
-                                {option}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2 md:col-span-2">
-                      <Label htmlFor="signup-password">
-                        Password (minimum 6 digits)
-                      </Label>
-                      <Input
-                        id="signup-password"
-                        type="password"
-                        value={password}
-                        autoComplete="new-password"
-                        onChange={(event) => {
-                          setErrorMessage(null);
-                          setPassword(event.target.value);
-                        }}
-                        placeholder="********"
-                        minLength={6}
-                        required
-                      />
-                    </div>
-                  </div>
-                )}
-
-                <Button
-                  type="submit"
-                  className="w-full rounded-sm"
-                  disabled={isLoading}
-                >
-                  {isLoading
-                    ? isSignIn
-                      ? "Signing in..."
-                      : "Signing up..."
-                    : isSignIn
-                      ? "Login"
-                      : "Sign Up"}
-                </Button>
-              </form>
-
-              <p className="pt-2 text-center text-sm text-muted-foreground">
-                By continuing, you agree to our{" "}
-                <Link
-                  href="/terms-and-conditions"
-                  className="underline underline-offset-4 hover:text-primary"
-                >
-                  Terms & Conditions
-                </Link>{" "}
-                and{" "}
-                <Link
-                  href="/privacy-policy"
-                  className="underline underline-offset-4 hover:text-primary"
-                >
-                  Privacy Policy
-                </Link>
-                .
-              </p>
-            </CardContent>
-          </Card>
-        </section>
+        </div>
       </div>
     </div>
   );

@@ -13,7 +13,10 @@ import {
   users,
 } from "@/lib/schema";
 import { getRoshalPaymentSettings } from "@/lib/store-content";
-import { defaultRoshalSiteSettings } from "@/lib/store-defaults";
+import {
+  defaultRoshalProducts,
+  defaultRoshalSiteSettings,
+} from "@/lib/store-defaults";
 import {
   normalizeRoshalDeliveryZones,
   resolveRoshalDeliveryEstimate,
@@ -256,6 +259,65 @@ async function restoreRoshalInventory(
         updatedAt: timestamp,
       })
       .where(eq(roshalProducts.id, productId));
+  }
+}
+
+async function ensureRoshalDefaultProductsForCheckout(productIds: string[]) {
+  if (productIds.length === 0) {
+    return;
+  }
+
+  const defaultProductsById = new Map(
+    defaultRoshalProducts.map((product) => [product.id, product]),
+  );
+  const existingProducts = await db
+    .select({
+      id: roshalProducts.id,
+    })
+    .from(roshalProducts)
+    .where(inArray(roshalProducts.id, productIds));
+  const existingIds = new Set(existingProducts.map((product) => product.id));
+
+  for (const productId of productIds) {
+    if (existingIds.has(productId)) {
+      continue;
+    }
+
+    const defaultProduct = defaultProductsById.get(productId);
+
+    if (!defaultProduct) {
+      continue;
+    }
+
+    await upsertRoshalProduct({
+      id: defaultProduct.id,
+      slug: defaultProduct.slug,
+      sku: defaultProduct.sku,
+      nameBn: defaultProduct.name.bn,
+      nameEn: defaultProduct.name.en,
+      summaryBn: defaultProduct.summary.bn,
+      summaryEn: defaultProduct.summary.en,
+      descriptionBn: defaultProduct.description.bn,
+      descriptionEn: defaultProduct.description.en,
+      categoryKey: defaultProduct.categoryKey,
+      categoryLabelBn: defaultProduct.categoryLabel.bn,
+      categoryLabelEn: defaultProduct.categoryLabel.en,
+      price: defaultProduct.price,
+      compareAtPrice: defaultProduct.compareAtPrice,
+      inventory: defaultProduct.inventory,
+      badge: defaultProduct.badge,
+      heroImage: defaultProduct.heroImage,
+      galleryJson: JSON.stringify(defaultProduct.gallery),
+      featuresBnJson: JSON.stringify(
+        defaultProduct.features.map((feature) => feature.bn),
+      ),
+      featuresEnJson: JSON.stringify(
+        defaultProduct.features.map((feature) => feature.en),
+      ),
+      isFeatured: defaultProduct.isFeatured,
+      isPublished: defaultProduct.isPublished,
+      sortOrder: defaultProduct.sortOrder,
+    });
   }
 }
 
@@ -1456,6 +1518,9 @@ export async function createValidatedRoshalOrder(
   const parsed = roshalCheckoutRequestSchema.parse(input);
   const quantityMap = getRoshalItemQuantityMap(parsed.items);
   const requestedProductIds = Array.from(quantityMap.keys());
+
+  await ensureRoshalDefaultProductsForCheckout(requestedProductIds);
+
   const publishedProducts = await db
     .select()
     .from(roshalProducts)

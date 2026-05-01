@@ -39,7 +39,7 @@ export function HomeCategoryStrip({
         {categories.map((category) => (
           <CarouselItem
             key={category.key}
-            className="basis-[50%] pl-3 min-[420px]:basis-[48%] sm:basis-1/3 md:pl-4 lg:basis-1/6"
+            className="basis-[30%] pl-3 min-[420px]:basis-[48%] sm:basis-1/3 md:pl-4 lg:basis-1/6 max-h-[200px]"
           >
             <Link href={category.href} className="block h-full">
               <Card className="h-full rounded-md border-border/70 bg-card shadow-sm transition-transform duration-200 hover:bg-accent/60">

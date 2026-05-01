@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PhoneInput2 } from "@/components/ui/phone-input-2";
 import { Textarea } from "@/components/ui/textarea";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import { getRoshalUsers } from "@/lib/store-content";
@@ -78,7 +79,11 @@ export default async function DashboardUserDetailsPage({
             </div>
             <div className="space-y-2">
               <Label htmlFor="phone">Phone</Label>
-              <Input id="phone" name="phone" defaultValue={user.phone || ""} />
+              <PhoneInput2
+                id="phone"
+                name="phone"
+                defaultValue={user.phone || ""}
+              />
             </div>
             <div className="space-y-2">
               <Label>Language</Label>

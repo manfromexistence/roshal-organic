@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PhoneInput2 } from "@/components/ui/phone-input-2";
 import { Textarea } from "@/components/ui/textarea";
 import { requireRoshalUser } from "@/lib/store-auth";
 import { getRoshalOrdersForUser } from "@/lib/store-content";
@@ -170,7 +171,7 @@ export default async function ProfilePage() {
             </div>
             <div className="space-y-2">
               <Label htmlFor="phone">{locale === "bn" ? "ফোন" : "Phone"}</Label>
-              <Input
+              <PhoneInput2
                 id="phone"
                 name="phone"
                 defaultValue={sessionUser.phone || ""}

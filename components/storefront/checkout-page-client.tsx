@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PhoneInput2 } from "@/components/ui/phone-input-2";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
@@ -170,8 +171,8 @@ function getDefaultCheckoutPaymentMethod(
 const checkoutWalletKeys: RoshalPaymentMethod[] = ["bkash", "nagad"];
 
 const checkoutPaymentLogos: Partial<Record<RoshalPaymentMethod, string>> = {
-  bkash: "/bkash-logo.svg",
-  nagad: "/nagad-logo.svg",
+  bkash: "/logos/bkash-com.png",
+  nagad: "/logos/nagad-com-bd.png",
 };
 
 function sortCheckoutPaymentOptions(options: RoshalPaymentSettings["options"]) {
@@ -737,8 +738,6 @@ export function CheckoutPageClient({
                 value={formState.phone}
                 onChange={(value) => updateFormValue("phone", value)}
                 autoComplete="tel"
-                inputMode="tel"
-                type="tel"
               />
               <Field
                 label={locale === "bn" ? "ইমেইল" : "Email"}
@@ -1044,21 +1043,32 @@ function Field({
   type?: HTMLInputTypeAttribute;
 }) {
   const inputId = useId();
+  const isPhoneField =
+    type === "tel" || inputMode === "tel" || autoComplete === "tel";
 
   return (
     <div className="min-w-0 w-full space-y-2">
       <Label htmlFor={inputId} className="block truncate">
         {label}
       </Label>
-      <Input
-        id={inputId}
-        type={type}
-        value={value}
-        autoComplete={autoComplete}
-        inputMode={inputMode}
-        className="w-full"
-        onChange={(event) => onChange(event.target.value)}
-      />
+      {isPhoneField ? (
+        <PhoneInput2
+          id={inputId}
+          value={value}
+          autoComplete={autoComplete}
+          onChange={onChange}
+        />
+      ) : (
+        <Input
+          id={inputId}
+          type={type}
+          value={value}
+          autoComplete={autoComplete}
+          inputMode={inputMode}
+          className="w-full"
+          onChange={(event) => onChange(event.target.value)}
+        />
+      )}
     </div>
   );
 }

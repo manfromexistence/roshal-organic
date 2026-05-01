@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Changed
+- Added hover motion plus deterministic chart-token right-edge accents to the dashboard overview metric cards so the admin landing page feels more interactive without changing the current layout.
+- Added a reusable shadcn-styled Bangladesh `phone input-2` wrapper and switched the active signup, checkout, profile, and dashboard phone fields over to it.
+- Replaced the old storefront phone field package with a ReUI-style `react-phone-number-input` implementation and removed the legacy `react-phone-input-2` dependency.
 - Limited the visible payment methods across checkout and dashboard settings to Cash on Delivery, Card, bKash, and Nagad.
 - Added compact bKash and Nagad logos to the checkout payment selector and a visible border to the floating WhatsApp chat bubble.
 - Simplified the storefront checkout flow so customers can place orders without payment-proof upload, using a cleaner delivery-type and payment selection layout.
@@ -17,8 +20,19 @@ All notable changes to this project will be documented in this file.
 - Added the seeded `landing-new-arrivals` and `landing-fresh-picks` shelves back onto the homepage so more storefront cards stay driven by the dashboard home-page CMS sections.
 - Moved the storefront footer onto the primary brand surface, shifted the dashboard sidebar onto the same primary-led palette, and tightened storefront product-card heights without changing the current layouts.
 - Reintroduced compact wallet verification inputs for `bKash`, `Nagad`, and `Rocket` while keeping `Cash on delivery` first and visible in the current checkout flow.
+- Replaced the storefront-wide marketing `ScrollArea` shell with native page scrolling and browser scrollbars.
+- Ensured every storefront top-level category keeps a dropdown by backfilling one or two fallback submenu items when dashboard subcategories are missing.
+- Raised the desktop sub-header and `More` overflow dropdown stacking order so the category popovers stay above the rest of the storefront.
+- Swapped the checkout `bKash` and `Nagad` wallet badges over to the real assets from `public/logos`.
+- Rebuilt the single product page into a Ghore-Bazar-style gallery, pricing, CTA, details, reviews, and related-products layout that adapts cleanly down to smaller screens.
+- Kept the single product page dashboard-driven by sourcing gallery images, pricing, description, highlights, contact actions, and related products from product and site-settings data instead of hardcoded product-page copy.
+- Reworked the storefront login and sign-up page into the requested two-panel auth layout while preserving the existing signup fields, redirects, and credential flow.
 
 ### Fixed
+- Removed the dashboard theme-page `500` by stopping the server component from passing a formatter function into the client-side chart card.
+- Verified the admin CMS stack end-to-end: every marketing page editor route now responds successfully in the live app, and the shared ImgBB upload endpoint accepted a real image upload used by the dashboard editors.
+- Replaced the single product page's dummy review surface with live database-backed ratings, persisted review comments, and a real review submission API for published products.
+- Patched checkout validation so missing default catalog rows are backfilled into `roshalProducts` during order creation, preventing valid storefront cart items from failing with `product-unavailable`.
 - Filtered legacy Rocket and Upay payment settings out of the live storefront/admin payment configuration so older stored rows no longer make removed methods reappear.
 - Restored `cash_on_delivery` into live checkout payment settings for older dashboard payment rows by merging stored `optionsJson` with the current default method set instead of trusting stale DB arrays as complete.
 - Preserved dashboard-managed payment labels, numbers, modes, and enabled states while still backfilling newly added payment methods in canonical order.
@@ -29,3 +43,5 @@ All notable changes to this project will be documented in this file.
 - Re-applied the Bangla top-seller CTA labels after the homepage section revert so the restored cards do not show mojibake text.
 - Removed the checkout customer-comments section, dropped its dead homepage-testimonial data plumbing, and fixed the remaining broken Bangla helper/location labels inside the checkout delivery card.
 - Switched the shared image-upload control to a more reliable file-picker trigger so dashboard editors and frontend payment-proof uploads can hit the working ImgBB route again.
+- Increased the shared navigation-menu no-viewport popover z-index and the storefront `More` item stack so overflow dropdown content can render above the fixed sub-header instead of underneath it.
+- Lowered the fixed storefront sub-header shell to `z-10` while keeping its open dropdown layers above the rest of the page chrome.

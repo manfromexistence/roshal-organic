@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PhoneInput2 } from "@/components/ui/phone-input-2";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import { getRoshalSiteSettings } from "@/lib/store-content";
 import { getRoshalLocale } from "@/lib/store-i18n";
@@ -102,9 +103,8 @@ export default async function DashboardThemePage() {
               ? "অঞ্চলভিত্তিক ডেলিভারি চার্জ তুলনা করুন।"
               : "Compare the configured delivery charge across service zones."
           }
-          totalLabel={locale === "bn" ? "ফি" : "Fees"}
+          totalLabel={locale === "bn" ? "ফি (BDT)" : "Fees (BDT)"}
           data={deliveryFeeData}
-          valueFormatter={(value) => `৳${value}`}
         />
       </div>
 
@@ -241,10 +241,16 @@ function Field({
   label: string;
   defaultValue: string;
 }) {
+  const isPhoneField = name.toLowerCase().includes("phone");
+
   return (
     <div className="space-y-2">
       <Label htmlFor={name}>{label}</Label>
-      <Input id={name} name={name} defaultValue={defaultValue} />
+      {isPhoneField ? (
+        <PhoneInput2 id={name} name={name} defaultValue={defaultValue} />
+      ) : (
+        <Input id={name} name={name} defaultValue={defaultValue} />
+      )}
     </div>
   );
 }

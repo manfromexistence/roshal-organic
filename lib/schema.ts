@@ -224,6 +224,23 @@ export const roshalProducts = sqliteTable("roshal_products", {
   updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
 });
 
+export const roshalProductReviews = sqliteTable("roshal_product_reviews", {
+  id: text("id").primaryKey(),
+  productId: text("product_id").notNull(),
+  userId: text("user_id").references(() => users.id, {
+    onDelete: "set null",
+  }),
+  reviewerName: text("reviewer_name").notNull(),
+  reviewerEmail: text("reviewer_email"),
+  rating: integer("rating").notNull(),
+  comment: text("comment").notNull(),
+  isPublished: integer("is_published", { mode: "boolean" })
+    .notNull()
+    .default(true),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+});
+
 export const roshalOrders = sqliteTable("roshal_orders", {
   id: text("id").primaryKey(),
   orderNumber: text("order_number").notNull().unique(),

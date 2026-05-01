@@ -69,3 +69,38 @@
 - [x] Tighten storefront product-card heights by trimming image ratios, spacing, and action areas without changing the existing card structure.
 - [x] Restore compact wallet verification inputs on checkout for `bKash`, `Nagad`, and `Rocket` while keeping `Cash on delivery` first and visible on the current page.
 - [x] Harden the shared image-upload trigger so both dashboard editors and frontend upload surfaces use the same stable picker flow again.
+
+## 2026-05-01 Checkout availability and phone input follow-up
+
+- [x] Backfill missing default catalog products into the database during checkout validation so storefront cart items no longer fail with `product-unavailable` just because the DB row was missing.
+- [x] Add a reusable shadcn-styled `phone input-2` wrapper for Bangladesh phone numbers and use it on the active signup, checkout, profile, and dashboard user/theme phone fields.
+
+## 2026-05-01 Sub-header and native scroll follow-up
+
+- [x] Remove the marketing layout `ScrollArea` wrapper so the storefront uses native page scrolling and the browser scrollbar renders normally again.
+- [x] Ensure every visible storefront category has at least one dropdown item by backfilling fallback taxonomy children when dashboard subcategories are missing.
+- [x] Raise the desktop sub-header stacking order and the `More` dropdown layer so overflow category popovers stay above the rest of the storefront chrome.
+
+## 2026-05-01 Wallet logo and popover layering follow-up
+
+- [x] Switch checkout `bKash` and `Nagad` to the real public logo assets instead of the placeholder wallet badges.
+- [x] Raise the shared navigation-menu popover layer and the storefront `More` item stack so overflow dropdown content stays above the fixed sub-header.
+
+## 2026-05-01 Single product page redesign follow-up
+
+- [x] Rebuild the single product page hero and detail layout to match the provided desktop and mobile ecommerce reference more closely.
+- [x] Keep the single product page dynamic by sourcing gallery images, pricing, description, highlights, contact actions, and related products from product/site settings data instead of hardcoded page copy.
+- [x] Replace the single product page's dummy review-submit action with a real WhatsApp-based review handoff so the CTA remains functional.
+
+## 2026-05-01 Auth, phone input, and product reviews follow-up
+
+- [x] Replace the old storefront phone field implementation with the ReUI-style `phone input-2` experience backed by `react-phone-number-input`.
+- [x] Persist single-product reviews in the database and expose live review summary + submission APIs instead of a dummy review surface.
+- [x] Redesign the login and sign-up page to match the provided two-panel auth references while keeping the current credential, signup-field, and redirect logic intact.
+- [x] Lower the fixed storefront sub-header shell to `z-10` while keeping the overflow popovers above it.
+
+## 2026-05-01 Dashboard overview and CMS verification pass
+
+- [x] Add hoverable dashboard overview metric cards with deterministic right-edge accent colors so the overview feels more active without breaking the current theme system.
+- [x] Fix the dashboard theme page crash caused by passing a server-side formatter function into the client chart card.
+- [x] Verify the dashboard CMS/editor surface and shared ImgBB upload path live: all marketing page editors returned `200`, `/api/cms/home` returned `200`, and `/api/upload/imgbb` accepted a real image upload successfully.

@@ -170,6 +170,29 @@ export interface RoshalProduct {
   sortOrder: number;
 }
 
+export interface RoshalProductReview {
+  id: string;
+  productId: string;
+  userId: string | null;
+  reviewerName: string;
+  reviewerEmail: string;
+  rating: number;
+  comment: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface RoshalProductReviewBundle {
+  averageRating: number;
+  reviewCount: number;
+  ratingsBreakdown: Array<{
+    rating: number;
+    count: number;
+    percentage: number;
+  }>;
+  reviews: RoshalProductReview[];
+}
+
 export interface RoshalOrderItem {
   productId: string;
   slug: string;

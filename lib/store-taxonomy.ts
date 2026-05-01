@@ -63,6 +63,44 @@ function hasSourceKey(sourceKeys: string[], value: string) {
   return sourceKeys.some((sourceKey) => sourceKey === normalizedValue);
 }
 
+function buildCategoryFallbackChildren(
+  category: RoshalStoreCategory,
+  children: StorefrontTaxonomyChild[],
+): StorefrontTaxonomyChild[] {
+  const categoryHref = `/products?category=${category.key}`;
+
+  if (children.length === 0) {
+    return [
+      {
+        key: `${category.key}-browse`,
+        label: localizedValue(
+          `${category.label.bn} দেখুন`,
+          `Browse ${category.label.en}`,
+        ),
+        href: categoryHref,
+        description: category.description,
+      },
+    ];
+  }
+
+  if (children.length === 1) {
+    return [
+      ...children,
+      {
+        key: `${category.key}-all`,
+        label: localizedValue(
+          `সব ${category.label.bn}`,
+          `All ${category.label.en}`,
+        ),
+        href: categoryHref,
+        description: category.description,
+      },
+    ];
+  }
+
+  return children;
+}
+
 export function productMatchesCategory(
   product: Pick<RoshalProduct, "categoryKey">,
   category: Pick<RoshalStoreCategory, "key" | "sourceKeys">,
@@ -105,13 +143,8 @@ export function buildStorefrontTaxonomy({
   return categories
     .filter((category) => category.isEnabled && category.showInNavigation)
     .sort((left, right) => left.sortOrder - right.sortOrder)
-    .map((category) => ({
-      key: category.key,
-      label: category.label,
-      href: `/products?category=${category.key}`,
-      description: category.description,
-      featuredImage: category.imageUrl,
-      children: subcategories
+    .map((category) => {
+      const children = subcategories
         .filter(
           (subcategory) =>
             subcategory.isEnabled &&
@@ -124,8 +157,17 @@ export function buildStorefrontTaxonomy({
           label: subcategory.label,
           href: `/products?category=${category.key}&subcategory=${subcategory.key}`,
           description: subcategory.description,
-        })),
-    }));
+        }));
+
+      return {
+        key: category.key,
+        label: category.label,
+        href: `/products?category=${category.key}`,
+        description: category.description,
+        featuredImage: category.imageUrl,
+        children: buildCategoryFallbackChildren(category, children),
+      };
+    });
 }
 
 export function buildHomepageCategories({
