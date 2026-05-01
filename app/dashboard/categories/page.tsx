@@ -1,20 +1,35 @@
 import {
+  ChevronRight,
+  LayoutGrid,
+  MoreHorizontal,
+  Pencil,
+  Plus,
+  Trash2,
+} from "lucide-react";
+import Link from "next/link";
+import {
   removeRoshalCategory,
   removeRoshalSubcategory,
   saveRoshalCategory,
   saveRoshalSubcategory,
 } from "@/actions/admin";
-import {
-  DashboardBarChartCard,
-  DashboardPieChartCard,
-} from "@/components/dashboard/dashboard-chart-card";
+import { DashboardInsightCard } from "@/components/dashboard/dashboard-insight-card";
+import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
 import { DashboardFormCheckboxGroup } from "@/components/dashboard/form-checkbox-group";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
 import { ImageUploadField } from "@/components/shared/image-upload-field";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -114,21 +129,43 @@ export default async function DashboardCategoriesPage({
       productMatchesCategory(product, category),
     ).length,
   }));
+  const firstCategoryId = taxonomy.categories[0]?.id;
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
-      <div className="space-y-2">
+    <div className="min-w-0 space-y-6 p-6">
+      <div className="min-w-0 space-y-2">
         <p className="text-xs uppercase tracking-[0.24em] text-primary">
           {locale === "bn" ? "ক্যাটাগরি ও সাবক্যাটাগরি" : "Categories & subcategories"}
         </p>
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          {locale === "bn" ? "স্টোরফ্রন্ট ট্যাক্সোনমি" : "Storefront taxonomy"}
+        <h1 className="break-words text-3xl font-semibold tracking-tight sm:text-4xl">
+          {locale === "bn" ? "স্টোরফ্রন্ট ট্যাক্সোনমি" : "Category Management"}
         </h1>
         <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
           {locale === "bn"
             ? "হেডার নেভিগেশন, হোমপেজ ক্যাটাগরি, প্রোডাক্ট ফিল্টার এবং সাবক্যাটাগরি ড্রপডাউন এখন এই এক জায়গা থেকে নিয়ন্ত্রণ করুন।"
-            : "Manage the header navigation, homepage categories, product filters, and subcategory dropdowns from one workspace."}
+            : "Organize and manage your product catalog segments."}
         </p>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2 md:justify-end">
+        <Button asChild variant="secondary" className="shadow-sm">
+          <Link
+            href={
+              firstCategoryId
+                ? `/dashboard/categories/sub/new?categoryId=${firstCategoryId}`
+                : "/dashboard/categories/new"
+            }
+          >
+            <Plus className="size-4" />
+            {locale === "bn" ? "নতুন সাবক্যাটাগরি" : "New Subcategory"}
+          </Link>
+        </Button>
+        <Button asChild className="shadow-sm">
+          <Link href="/dashboard/categories/new">
+            <Plus className="size-4" />
+            {locale === "bn" ? "নতুন ক্যাটাগরি" : "New Category"}
+          </Link>
+        </Button>
       </div>
 
       {errorMessage ? (
@@ -138,8 +175,8 @@ export default async function DashboardCategoriesPage({
       ) : null}
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <MetricCard
-          label={locale === "bn" ? "মোট ক্যাটাগরি" : "Categories"}
+        <DashboardMetricCard
+          title={locale === "bn" ? "মোট ক্যাটাগরি" : "Categories"}
           value={String(taxonomy.categories.length)}
           hint={
             locale === "bn"
@@ -147,8 +184,8 @@ export default async function DashboardCategoriesPage({
               : "Top-level groups used by navigation and filters"
           }
         />
-        <MetricCard
-          label={locale === "bn" ? "মোট সাবক্যাটাগরি" : "Subcategories"}
+        <DashboardMetricCard
+          title={locale === "bn" ? "মোট সাবক্যাটাগরি" : "Subcategories"}
           value={String(taxonomy.subcategories.length)}
           hint={
             locale === "bn"
@@ -156,8 +193,8 @@ export default async function DashboardCategoriesPage({
               : "Nested options shown under each category"
           }
         />
-        <MetricCard
-          label={locale === "bn" ? "নেভিগেশনে দৃশ্যমান" : "Visible in nav"}
+        <DashboardMetricCard
+          title={locale === "bn" ? "নেভিগেশনে দৃশ্যমান" : "Visible in nav"}
           value={String(
             taxonomy.categories.filter(
               (category) => category.showInNavigation && category.isEnabled,
@@ -169,8 +206,8 @@ export default async function DashboardCategoriesPage({
               : "Groups currently shown in the storefront header"
           }
         />
-        <MetricCard
-          label={locale === "bn" ? "হোমপেজে দৃশ্যমান" : "Visible on home"}
+        <DashboardMetricCard
+          title={locale === "bn" ? "হোমপেজে দৃশ্যমান" : "Visible on home"}
           value={String(
             taxonomy.categories.filter(
               (category) => category.showOnHomepage && category.isEnabled,
@@ -184,8 +221,137 @@ export default async function DashboardCategoriesPage({
         />
       </div>
 
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {taxonomy.categories.map((category) => {
+          const categorySubcategories = taxonomy.subcategories.filter(
+            (subcategory) => subcategory.categoryId === category.id,
+          );
+          const categoryProductCount = products.filter((product) =>
+            productMatchesCategory(product, category),
+          ).length;
+          const categoryLabel = getLocalizedValue(locale, category.label);
+
+          return (
+            <Card
+              key={category.id}
+              className="group border-none bg-card shadow-sm transition-shadow hover:shadow-md"
+            >
+              <CardContent className="pt-6">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex size-12 items-center justify-center rounded-xl bg-primary/10 text-2xl shadow-inner">
+                    {getCategoryIcon(category.key)}
+                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="size-8 shrink-0"
+                      >
+                        <MoreHorizontal className="size-4" />
+                        <span className="sr-only">
+                          {locale === "bn"
+                            ? "ক্যাটাগরি অ্যাকশন"
+                            : "Category actions"}
+                        </span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem asChild>
+                        <Link
+                          href={`/dashboard/categories/sub/new?categoryId=${category.id}`}
+                        >
+                          <Plus className="size-4" />
+                          {locale === "bn"
+                            ? "সাবক্যাটাগরি যোগ করুন"
+                            : "Add Subcategory"}
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <Link href={`#edit-category-${category.id}`}>
+                          <Pencil className="size-4" />
+                          {locale === "bn"
+                            ? "ক্যাটাগরি এডিট করুন"
+                            : "Edit Category"}
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link
+                          href={`#delete-category-${category.id}`}
+                          className="text-destructive focus:text-destructive"
+                        >
+                          <Trash2 className="size-4" />
+                          {locale === "bn" ? "ডিলিট অপশনে যান" : "Review Delete"}
+                        </Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+
+                <div className="mt-4 space-y-4">
+                  <div className="flex min-w-0 items-center justify-between gap-3">
+                    <h2 className="truncate text-lg font-bold">
+                      {categoryLabel}
+                    </h2>
+                    <Badge
+                      variant="secondary"
+                      className="shrink-0 rounded-full font-normal"
+                    >
+                      {locale === "bn"
+                        ? `${categoryProductCount} পণ্য`
+                        : `${categoryProductCount} items`}
+                    </Badge>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      <LayoutGrid className="size-3" />
+                      {locale === "bn" ? "সাবক্যাটাগরি" : "Subcategories"} (
+                      {categorySubcategories.length})
+                    </div>
+                    <div className="flex flex-wrap gap-1.5">
+                      {categorySubcategories.slice(0, 8).map((subcategory) => (
+                        <Link
+                          key={subcategory.id}
+                          href={`#subcategory-${subcategory.id}`}
+                          className="group/sub inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-[11px] text-muted-foreground transition-colors hover:bg-primary/10 hover:text-primary"
+                        >
+                          {getLocalizedValue(locale, subcategory.label)}
+                          <ChevronRight className="size-2 opacity-0 transition-opacity group-hover/sub:opacity-100" />
+                        </Link>
+                      ))}
+                      <Link
+                        href={`/dashboard/categories/sub/new?categoryId=${category.id}`}
+                        className="inline-flex items-center gap-1 rounded-full border border-dashed border-muted-foreground/30 px-2 py-0.5 text-[11px] text-muted-foreground transition-colors hover:bg-muted"
+                      >
+                        <Plus className="size-2" />
+                        {locale === "bn" ? "যোগ" : "Add"}
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
+
+        <Button
+          asChild
+          variant="outline"
+          className="h-full min-h-[200px] flex-col gap-2 border-dashed bg-transparent text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+        >
+          <Link href="/dashboard/categories/new">
+            <Plus className="size-6" />
+            <span className="font-medium">
+              {locale === "bn" ? "নতুন ক্যাটাগরি যোগ করুন" : "Add New Category"}
+            </span>
+          </Link>
+        </Button>
+      </div>
+
       <div className="grid gap-6 xl:grid-cols-2">
-        <DashboardPieChartCard
+        <DashboardInsightCard
           title={locale === "bn" ? "ক্যাটাগরি ভিজিবিলিটি" : "Category visibility"}
           description={
             locale === "bn"
@@ -195,7 +361,7 @@ export default async function DashboardCategoriesPage({
           totalLabel={locale === "bn" ? "ক্যাটাগরি" : "Categories"}
           data={categoryVisibilityData}
         />
-        <DashboardBarChartCard
+        <DashboardInsightCard
           title={locale === "bn" ? "সাবক্যাটাগরি গভীরতা" : "Subcategory depth"}
           description={
             locale === "bn"
@@ -205,7 +371,7 @@ export default async function DashboardCategoriesPage({
           totalLabel={locale === "bn" ? "সাবক্যাটাগরি" : "Subcategories"}
           data={subcategoryDepthData}
         />
-        <DashboardBarChartCard
+        <DashboardInsightCard
           title={locale === "bn" ? "প্রোডাক্ট কভারেজ" : "Product coverage"}
           description={
             locale === "bn"
@@ -218,7 +384,7 @@ export default async function DashboardCategoriesPage({
         />
       </div>
 
-      <Card>
+      <Card id="create-category">
         <CardHeader>
           <CardTitle>
             {locale === "bn" ? "নতুন ক্যাটাগরি তৈরি করুন" : "Create category"}
@@ -227,7 +393,7 @@ export default async function DashboardCategoriesPage({
         <CardContent>
           <form
             action={saveRoshalCategory}
-            className="grid gap-5 md:grid-cols-2"
+            className="grid min-w-0 gap-5 md:grid-cols-2"
           >
             <CategoryFields
               locale={locale}
@@ -263,7 +429,7 @@ export default async function DashboardCategoriesPage({
           ).length;
 
           return (
-            <Card key={category.id}>
+            <Card key={category.id} id={`edit-category-${category.id}`}>
               <CardHeader className="gap-3">
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                   <div className="space-y-1">
@@ -290,7 +456,7 @@ export default async function DashboardCategoriesPage({
               <CardContent className="space-y-6">
                 <form
                   action={saveRoshalCategory}
-                  className="grid gap-5 md:grid-cols-2"
+                  className="grid min-w-0 gap-5 md:grid-cols-2"
                 >
                   <input type="hidden" name="id" value={category.id} />
                   <CategoryFields
@@ -315,7 +481,10 @@ export default async function DashboardCategoriesPage({
                   />
                 </form>
 
-                <form action={removeRoshalCategory}>
+                <form
+                  action={removeRoshalCategory}
+                  id={`delete-category-${category.id}`}
+                >
                   <input type="hidden" name="id" value={category.id} />
                   <Button type="submit" variant="destructive">
                     {locale === "bn" ? "ক্যাটাগরি ডিলিট করুন" : "Delete category"}
@@ -336,11 +505,15 @@ export default async function DashboardCategoriesPage({
 
                   <div className="space-y-4">
                     {categorySubcategories.map((subcategory) => (
-                      <Card key={subcategory.id} className="border-border/60">
+                      <Card
+                        key={subcategory.id}
+                        id={`subcategory-${subcategory.id}`}
+                        className="border-border/60"
+                      >
                         <CardContent className="pt-6">
                           <form
                             action={saveRoshalSubcategory}
-                            className="grid gap-5 md:grid-cols-2"
+                            className="grid min-w-0 gap-5 md:grid-cols-2"
                           >
                             <input
                               type="hidden"
@@ -399,7 +572,10 @@ export default async function DashboardCategoriesPage({
                     ))}
                   </div>
 
-                  <Card className="border-dashed border-border/70">
+                  <Card
+                    id={`add-subcategory-${category.id}`}
+                    className="border-dashed border-border/70"
+                  >
                     <CardHeader>
                       <CardTitle className="text-base">
                         {locale === "bn"
@@ -410,7 +586,7 @@ export default async function DashboardCategoriesPage({
                     <CardContent>
                       <form
                         action={saveRoshalSubcategory}
-                        className="grid gap-5 md:grid-cols-2"
+                        className="grid min-w-0 gap-5 md:grid-cols-2"
                       >
                         <SubcategoryFields
                           locale={locale}
@@ -447,6 +623,37 @@ export default async function DashboardCategoriesPage({
       </div>
     </div>
   );
+}
+
+function getCategoryIcon(key: string) {
+  const normalizedKey = key.toLowerCase();
+
+  if (normalizedKey.includes("fruit") || normalizedKey.includes("date")) {
+    return "🍎";
+  }
+  if (normalizedKey.includes("vegetable") || normalizedKey.includes("fresh")) {
+    return "🥬";
+  }
+  if (normalizedKey.includes("honey")) {
+    return "🍯";
+  }
+  if (normalizedKey.includes("ghee") || normalizedKey.includes("dairy")) {
+    return "🥛";
+  }
+  if (normalizedKey.includes("oil")) {
+    return "🫒";
+  }
+  if (normalizedKey.includes("spice") || normalizedKey.includes("masala")) {
+    return "🌶️";
+  }
+  if (normalizedKey.includes("rice") || normalizedKey.includes("flour")) {
+    return "🌾";
+  }
+  if (normalizedKey.includes("nut") || normalizedKey.includes("seed")) {
+    return "🥜";
+  }
+
+  return "🛒";
 }
 
 function CategoryFields({
@@ -687,26 +894,6 @@ function SubcategoryFields({
         <Button type="submit">{submitLabel}</Button>
       </div>
     </>
-  );
-}
-
-function MetricCard({
-  label,
-  value,
-  hint,
-}: {
-  label: string;
-  value: string;
-  hint: string;
-}) {
-  return (
-    <Card className="border-border/70">
-      <CardContent className="space-y-2 p-4">
-        <p className="text-sm text-muted-foreground">{label}</p>
-        <p className="text-2xl font-semibold tracking-tight">{value}</p>
-        <p className="text-xs text-muted-foreground">{hint}</p>
-      </CardContent>
-    </Card>
   );
 }
 

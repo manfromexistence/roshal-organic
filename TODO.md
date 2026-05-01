@@ -78,6 +78,26 @@
 ## 2026-05-01 Sub-header and native scroll follow-up
 
 - [x] Remove the marketing layout `ScrollArea` wrapper so the storefront uses native page scrolling and the browser scrollbar renders normally again.
+
+## 2026-05-01 Delivery verification follow-up
+
+- [x] Verify production storefront routes for home, products, product detail, login, track-order, checkout redirect, and dashboard redirect.
+- [x] Fix remaining customer-facing mojibake in order/payment, homepage fallback, and storefront contact matching copy.
+- [x] Harden dashboard and checkout upload routes with ImgBB-first behavior, Catbox fallback, and small inline-image fallback when external upload providers fail.
+- [x] Re-run format, lint, TypeScript, deploy to Vercel production, and verify the live upload endpoints return usable image URLs.
+
+## 2026-05-01 Dashboard delivery polish
+
+- [x] Use the real Roshal logo image in the dashboard sidebar organization footer and dropdown.
+- [x] Remove overview-page charts and replace them with a cleaner reference-style live-data dashboard layout.
+- [x] Remove chart panels from the remaining dashboard sections and replace them with non-chart insight cards.
+- [x] Run format, lint, typecheck, and production Vercel deployment after the dashboard polish.
+
+## 2026-05-01 Dashboard responsive follow-up
+
+- [x] Stop dashboard accordion parent clicks from navigating to the first child route.
+- [x] Add more expressive emoji metric/insight cards inspired by the reference dashboard UI without copying the mock app.
+- [x] Add compact mobile product cards on the dashboard all-products page and keep the desktop data table for larger screens.
 - [x] Ensure every visible storefront category has at least one dropdown item by backfilling fallback taxonomy children when dashboard subcategories are missing.
 - [x] Raise the desktop sub-header stacking order and the `More` dropdown layer so overflow category popovers stay above the rest of the storefront chrome.
 
@@ -105,6 +125,21 @@
 - [x] Fix the dashboard theme page crash caused by passing a server-side formatter function into the client chart card.
 - [x] Verify the dashboard CMS/editor surface and shared ImgBB upload path live: all marketing page editors returned `200`, `/api/cms/home` returned `200`, and `/api/upload/imgbb` accepted a real image upload successfully.
 
+## 2026-05-01 Dashboard overflow and production deploy pass
+
+- [x] Add horizontal scrollbar support to the shared dashboard sidebar inset content area.
+- [x] Tighten responsive wrappers on dashboard categories, orders, marketing page editor, payment settings, user details, and product editor pages.
+- [x] Remove bottom padding from the dashboard new-product editor while keeping top spacing.
+- [x] Run format, lint, typecheck, and `vercel deploy --prod`.
+
+## 2026-05-01 Dashboard reference UI alignment pass
+
+- [x] Compare the live dashboard pages with the `roshal-organic-dashboard-ui` reference folder.
+- [x] Add the missing category-page reference actions and compact category card layer while preserving the existing dashboard taxonomy forms and mutations.
+- [x] Add visible reference-style create buttons on dashboard product and marketing-page screens using real routes/anchors instead of dummy actions.
+- [x] Run format, lint, and typecheck after the UI alignment changes.
+- [x] Deploy the dashboard UI alignment pass with `vercel deploy --prod`.
+
 ## 2026-05-01 Dashboard visual skin follow-up
 
 - [x] Keep the working Roshal dashboard routes and data model, but apply the client-preferred dashboard visual cues from the separate UI mockup: stronger brand block, clearer active sidebar states, larger nav hit areas, and softer interactive card/table surfaces.
@@ -114,3 +149,30 @@
 
 - [x] Remove the OTP/mobile-only panel from the marketing login and sign-up page and keep the credential/sign-up card padded and focused.
 - [x] Make homepage featured category cards smaller and reduce vertical spacing between marketing homepage sections.
+
+## 2026-05-01 Dashboard sidebar hydration follow-up
+
+- [x] Keep the admin sidebar primary-green in light and dark mode even after theme hydration or older persisted theme values.
+- [x] Remove hover translation from dashboard accordion menu triggers and enforce stable pointer cursor/text contrast in the green sidebar.
+
+## 2026-05-01 Dashboard reference UI completion pass
+
+- [x] Wrap product, order, user, and marketing-page admin tables in compact reference-style dashboard cards.
+- [x] Add mobile fallback cards and action menus for dashboard orders, users, pages, and products while preserving the real data-table on larger screens.
+- [x] Rework the product editor into the reference split-card layout without replacing the existing `saveRoshalProduct` action.
+- [x] Point the stale payment-settings subroute at the real dashboard payment settings page so removed Rocket/file-upload mock UI cannot reappear.
+- [x] Run format, lint, typecheck, and production Vercel deployment for this final dashboard alignment pass.
+
+## 2026-05-01 Dashboard missing route completion pass
+
+- [x] Add the missing functional `/dashboard/settings` system settings route with brand, contact, storefront defaults, and delivery-zone controls backed by the real site-settings action.
+- [x] Add the missing `/dashboard/marketing` route as a real CMS control center for marketing pages, homepage sections, and storefront previews.
+- [x] Add reference-style create routes for `/dashboard/categories/new` and `/dashboard/categories/sub/new` using the real category and subcategory mutation actions.
+- [x] Wire the new settings, marketing, category, and subcategory routes into the dashboard sidebar and dashboard search index.
+
+## 2026-05-01 Dashboard reference size/action comparison pass
+
+- [x] Compare dashboard card shells, category cards, create forms, settings cards, and action buttons against the `roshal-organic-dashboard-ui` reference.
+- [x] Normalize dashboard page padding to the reference-style `p-6` rhythm across list/detail dashboard pages.
+- [x] Tighten shared table-card shells to borderless shadow cards with flush table content and padded mobile fallback cards.
+- [x] Align category cards, add-category tile height, and category create/subcategory create cards with the reference card/action sizing while preserving real dashboard actions.

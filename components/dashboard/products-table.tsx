@@ -1,13 +1,23 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
+import { ExternalLink, MoreHorizontal, Pencil } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
+import { DashboardTableShell } from "@/components/dashboard/dashboard-table-shell";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { DataTableSortList } from "@/components/data-table/data-table-sort-list";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useDataTable } from "@/hooks/use-data-table";
 import { formatBdt } from "@/lib/store-format";
 import { getLocalizedValue } from "@/lib/store-locale";
@@ -15,6 +25,7 @@ import type { RoshalLocale, RoshalProduct } from "@/lib/store-types";
 
 interface ProductRow {
   id: string;
+  slug: string;
   name: string;
   category: string;
   price: string;
@@ -24,7 +35,7 @@ interface ProductRow {
   status: string;
 }
 
-function getColumns(locale: RoshalLocale): ColumnDef<ProductRow>[] {
+function getColumns(): ColumnDef<ProductRow>[] {
   return [
     {
       id: "name",
@@ -107,15 +118,55 @@ function getColumns(locale: RoshalLocale): ColumnDef<ProductRow>[] {
     {
       id: "actions",
       cell: ({ row }) => (
-        <Button asChild variant="ghost" size="sm">
-          <Link href={`/dashboard/products/${row.original.id}`}>
-            {locale === "bn" ? "এডিট" : "Edit"}
-          </Link>
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="size-8">
+              <MoreHorizontal className="size-4" />
+              <span className="sr-only">Product actions</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem asChild>
+              <Link href={`/dashboard/products/${row.original.id}`}>
+                <Pencil className="size-4" />
+                Edit product
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link
+                href={`/products/${row.original.slug}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <ExternalLink className="size-4" />
+                Open storefront
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       ),
       size: 80,
     },
   ];
+}
+
+function getInventoryState(product: RoshalProduct) {
+  const key =
+    product.inventory <= 0
+      ? "out-of-stock"
+      : product.inventory <= 10
+        ? "low-stock"
+        : "in-stock";
+
+  return {
+    key,
+    label:
+      key === "out-of-stock"
+        ? "Out of stock"
+        : key === "low-stock"
+          ? "Low stock"
+          : "In stock",
+  } as const;
 }
 
 export function RoshalProductsTable({
@@ -125,36 +176,25 @@ export function RoshalProductsTable({
   products: RoshalProduct[];
   locale: RoshalLocale;
 }) {
-  const rows: ProductRow[] = products.map((product) => ({
-    id: product.id,
-    name: getLocalizedValue(locale, product.name),
-    category: getLocalizedValue(locale, product.categoryLabel),
-    price: formatBdt(product.price, locale),
-    inventory: product.inventory,
-    inventoryStatus:
-      product.inventory <= 0
-        ? locale === "bn"
-          ? "স্টক শেষ"
-          : "Out of stock"
-        : product.inventory <= 10
-          ? locale === "bn"
-            ? "লো স্টক"
-            : "Low stock"
-          : locale === "bn"
-            ? "স্টকে আছে"
-            : "In stock",
-    inventoryStatusKey:
-      product.inventory <= 0
-        ? "out-of-stock"
-        : product.inventory <= 10
-          ? "low-stock"
-          : "in-stock",
-    status: product.isPublished ? "published" : "draft",
-  }));
+  const rows: ProductRow[] = products.map((product) => {
+    const inventoryState = getInventoryState(product);
+
+    return {
+      id: product.id,
+      slug: product.slug,
+      name: getLocalizedValue(locale, product.name),
+      category: getLocalizedValue(locale, product.categoryLabel),
+      price: formatBdt(product.price, locale),
+      inventory: product.inventory,
+      inventoryStatus: inventoryState.label,
+      inventoryStatusKey: inventoryState.key,
+      status: product.isPublished ? "published" : "draft",
+    };
+  });
 
   const { table } = useDataTable({
     data: rows,
-    columns: getColumns(locale),
+    columns: getColumns(),
     pageCount: Math.ceil(Math.max(rows.length, 1) / 10),
     initialState: {
       pagination: { pageIndex: 0, pageSize: 10 },
@@ -167,10 +207,98 @@ export function RoshalProductsTable({
   });
 
   return (
-    <DataTable table={table}>
-      <DataTableToolbar table={table}>
-        <DataTableSortList table={table} align="end" />
-      </DataTableToolbar>
-    </DataTable>
+    <DashboardTableShell
+      title="All products"
+      description="Search, sort, and edit the live storefront catalog."
+    >
+      <div className="min-w-0">
+        <div className="grid gap-3 p-3 pt-0 sm:p-4 sm:pt-0 md:hidden">
+          {products.map((product) => {
+            const name = getLocalizedValue(locale, product.name);
+            const category = getLocalizedValue(locale, product.categoryLabel);
+            const inventoryState = getInventoryState(product);
+
+            return (
+              <Card
+                key={product.id}
+                className="min-w-0 border-none border-r-[6px] border-r-primary bg-background/70 shadow-sm"
+              >
+                <CardContent className="flex min-w-0 gap-3 p-3">
+                  <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md border bg-background">
+                    <Image
+                      src={product.heroImage || "/logo.png"}
+                      alt={name}
+                      fill
+                      sizes="64px"
+                      className="object-cover"
+                    />
+                  </div>
+                  <div className="min-w-0 flex-1 space-y-2">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold">{name}</p>
+                      <p className="truncate text-xs text-muted-foreground">
+                        {category}
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Badge variant="secondary" className="rounded-sm">
+                        {formatBdt(product.price, locale)}
+                      </Badge>
+                      <Badge
+                        variant={
+                          inventoryState.key === "out-of-stock"
+                            ? "destructive"
+                            : inventoryState.key === "low-stock"
+                              ? "outline"
+                              : "secondary"
+                        }
+                        className="rounded-sm"
+                      >
+                        {inventoryState.label} {"\u00b7"} {product.inventory}
+                      </Badge>
+                      <Badge
+                        variant={product.isPublished ? "secondary" : "outline"}
+                        className="rounded-sm"
+                      >
+                        {product.isPublished ? "Published" : "Draft"}
+                      </Badge>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        asChild
+                        variant="outline"
+                        size="sm"
+                        className="h-8"
+                      >
+                        <Link href={`/dashboard/products/${product.id}`}>
+                          Edit
+                        </Link>
+                      </Button>
+                      <Button asChild variant="ghost" size="sm" className="h-8">
+                        <Link
+                          href={`/products/${product.slug}`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Open
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+
+        <div className="hidden min-w-0 md:block">
+          <DataTable table={table}>
+            <DataTableToolbar table={table}>
+              <DataTableSortList table={table} align="end" />
+            </DataTableToolbar>
+          </DataTable>
+        </div>
+      </div>
+    </DashboardTableShell>
   );
 }

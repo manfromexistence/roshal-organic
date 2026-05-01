@@ -248,6 +248,49 @@
     background-color: color-mix(in oklch, var(--muted) 82%, var(--primary) 18%);
   }
 
+  .dashboard-primary-sidebar {
+    --sidebar: var(--primary);
+    --sidebar-foreground: var(--primary-foreground);
+    --sidebar-primary: var(--primary-foreground);
+    --sidebar-primary-foreground: var(--primary);
+    --sidebar-accent: color-mix(
+      in oklch,
+      var(--primary) 82%,
+      var(--primary-foreground) 18%
+    );
+    --sidebar-accent-foreground: var(--primary-foreground);
+    --sidebar-border: color-mix(
+      in oklch,
+      var(--primary) 72%,
+      var(--primary-foreground) 28%
+    );
+    --sidebar-ring: var(--primary-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+  }
+
+  .dashboard-primary-sidebar [data-slot="sidebar-inner"] {
+    color: var(--sidebar-foreground);
+  }
+
+  .dashboard-primary-sidebar [data-sidebar="menu-button"],
+  .dashboard-primary-sidebar [data-sidebar="menu-sub-button"],
+  .dashboard-primary-sidebar [data-sidebar="group-label"] {
+    color: var(--sidebar-foreground);
+  }
+
+  .dashboard-primary-sidebar [data-sidebar="menu-button"][data-active="true"],
+  .dashboard-primary-sidebar
+    [data-sidebar="menu-sub-button"][data-active="true"] {
+    color: var(--sidebar-primary-foreground);
+  }
+
   html:not(.dark) .storefront-shell [data-slot="card"] {
     background-color: color-mix(in oklch, var(--card) 90%, var(--primary) 10%);
     border-color: color-mix(in oklch, var(--border) 82%, var(--primary) 18%);

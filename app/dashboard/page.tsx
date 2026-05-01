@@ -1,9 +1,17 @@
-import Link from "next/link";
 import {
-  DashboardBarChartCard,
-  DashboardPieChartCard,
-} from "@/components/dashboard/dashboard-chart-card";
-import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
+  AlertTriangle,
+  ArrowDownRight,
+  ArrowUpRight,
+  Clock,
+  FileText,
+  Package,
+  ShoppingBag,
+  Store,
+  Users,
+} from "lucide-react";
+import Link from "next/link";
+import type { ComponentType } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireRoshalAdmin } from "@/lib/store-auth";
@@ -18,8 +26,125 @@ import { formatBdt, formatOrderDate } from "@/lib/store-format";
 import { getRoshalLocale } from "@/lib/store-i18n";
 import { getLocalizedValue } from "@/lib/store-locale";
 import { getRoshalOrderStatusLabel } from "@/lib/store-orders";
+import type { RoshalOrder, RoshalProduct } from "@/lib/store-types";
+
+type StatCardProps = {
+  title: string;
+  value: string | number;
+  description: string;
+  trend: string;
+  trendDirection?: "up" | "down";
+  icon: ComponentType<{ className?: string }>;
+  accentClassName: string;
+  emoji: string;
+};
+
+function DashboardStatCard({
+  title,
+  value,
+  description,
+  trend,
+  trendDirection = "up",
+  icon: Icon,
+  accentClassName,
+  emoji,
+}: StatCardProps) {
+  const TrendIcon = trendDirection === "up" ? ArrowUpRight : ArrowDownRight;
+
+  return (
+    <Card
+      className={`group border-none border-r-[6px] bg-card/50 shadow-sm backdrop-blur transition duration-200 hover:-translate-y-0.5 hover:bg-card hover:shadow-md ${accentClassName}`}
+    >
+      <CardContent className="p-5">
+        <div className="flex items-start justify-between gap-4">
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-muted-foreground">{title}</p>
+            <p className="text-2xl font-bold tracking-tight">{value}</p>
+            <p className="text-xs text-muted-foreground">{description}</p>
+          </div>
+          <div className="flex shrink-0 items-center gap-2">
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-lg">
+              {emoji}
+            </span>
+            <span className="rounded-full bg-primary/10 p-2 text-primary transition group-hover:bg-primary group-hover:text-primary-foreground">
+              <Icon className="h-4 w-4" />
+            </span>
+          </div>
+        </div>
+        <div className="mt-4 flex items-center gap-1 text-xs text-muted-foreground">
+          <TrendIcon className="h-3.5 w-3.5 text-primary" />
+          <span>{trend}</span>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function RecentOrderRow({
+  order,
+  locale,
+}: {
+  order: RoshalOrder;
+  locale: Awaited<ReturnType<typeof getRoshalLocale>>;
+}) {
+  return (
+    <div className="flex items-center gap-4 rounded-md border bg-background/60 p-3 transition hover:bg-accent/50">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+        {order.orderNumber.slice(-2)}
+      </div>
+      <div className="min-w-0 flex-1 space-y-1">
+        <div className="flex flex-wrap items-center gap-2">
+          <p className="truncate text-sm font-semibold">{order.orderNumber}</p>
+          <Badge variant="secondary" className="rounded-sm">
+            {getLocalizedValue(locale, getRoshalOrderStatusLabel(order.status))}
+          </Badge>
+        </div>
+        <p className="truncate text-xs text-muted-foreground">
+          {order.customerName} · {formatOrderDate(order.createdAt, locale)}
+        </p>
+      </div>
+      <p className="shrink-0 text-sm font-semibold">
+        {formatBdt(order.total, locale)}
+      </p>
+    </div>
+  );
+}
+
+function FeaturedProductRow({
+  product,
+  locale,
+}: {
+  product: RoshalProduct;
+  locale: Awaited<ReturnType<typeof getRoshalLocale>>;
+}) {
+  return (
+    <div className="flex items-center gap-4 rounded-md border bg-background/60 p-3 transition hover:bg-accent/50">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+        <Package className="h-4 w-4" />
+      </div>
+      <div className="min-w-0 flex-1 space-y-1">
+        <p className="truncate text-sm font-semibold">
+          {getLocalizedValue(locale, product.name)}
+        </p>
+        <p className="truncate text-xs text-muted-foreground">
+          {getLocalizedValue(locale, product.categoryLabel)}
+        </p>
+      </div>
+      <div className="shrink-0 text-right">
+        <p className="text-sm font-semibold">
+          {formatBdt(product.price, locale)}
+        </p>
+        <p className="text-xs text-muted-foreground">
+          {product.inventory} stock
+        </p>
+      </div>
+    </div>
+  );
+}
 
 export default async function DashboardHomePage() {
+  await requireRoshalAdmin();
+
   const [locale, snapshot, products, orders, pages, users] = await Promise.all([
     getRoshalLocale(),
     getRoshalDashboardSnapshot(),
@@ -27,237 +152,204 @@ export default async function DashboardHomePage() {
     getRoshalOrders(),
     getRoshalPages(),
     getRoshalUsers(),
-    requireRoshalAdmin(),
   ]);
 
-  const orderStatusData = [
-    "pending",
-    "payment-review",
-    "confirmed",
-    "processing",
-    "shipped",
-    "delivered",
-    "cancelled",
-  ].map((status) => ({
-    key: status,
-    label: getLocalizedValue(locale, getRoshalOrderStatusLabel(status)),
-    value: orders.filter((order) => order.status === status).length,
-  }));
-  const publicationData = [
-    {
-      key: "published",
-      label: locale === "bn" ? "প্রকাশিত" : "Published",
-      value: products.filter((product) => product.isPublished).length,
-    },
-    {
-      key: "draft",
-      label: locale === "bn" ? "ড্রাফট" : "Draft",
-      value: products.filter((product) => !product.isPublished).length,
-    },
-    {
-      key: "featured",
-      label: locale === "bn" ? "ফিচারড" : "Featured",
-      value: products.filter((product) => product.isFeatured).length,
-    },
-  ];
-  const audienceData = [
-    {
-      key: "admin",
-      label: locale === "bn" ? "অ্যাডমিন" : "Admins",
-      value: users.filter((user) => user.role === "admin").length,
-    },
-    {
-      key: "user",
-      label: locale === "bn" ? "গ্রাহক" : "Customers",
-      value: users.filter((user) => user.role !== "admin").length,
-    },
-    {
-      key: "navigation",
-      label: locale === "bn" ? "নেভ পেজ" : "Nav pages",
-      value: pages.filter((page) => page.showInNavigation).length,
-    },
-  ];
+  const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
+  const publishedPages = pages.filter(
+    (page) => page.status === "published",
+  ).length;
+  const visibleNavigationPages = pages.filter(
+    (page) => page.showInNavigation,
+  ).length;
+  const customerCount = users.filter((user) => user.role !== "admin").length;
+  const publishedProducts = products.filter((product) => product.isPublished);
+  const publishedProductRatio =
+    products.length > 0
+      ? Math.round((publishedProducts.length / products.length) * 100)
+      : 0;
+  const fulfillmentOrders = orders.filter((order) =>
+    ["pending", "payment-review", "confirmed", "processing"].includes(
+      order.status,
+    ),
+  ).length;
+  const storefrontHealth =
+    snapshot.outOfStockProductCount === 0
+      ? "No stock blockers"
+      : `${snapshot.outOfStockProductCount} stock blocker${
+          snapshot.outOfStockProductCount === 1 ? "" : "s"
+        }`;
 
   return (
-    <div className="min-w-0 space-y-6 p-4 md:p-6">
+    <div className="min-w-0 space-y-6 p-6">
       <div className="flex min-w-0 flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div className="min-w-0 space-y-2">
-          <p className="text-xs uppercase tracking-[0.24em] text-primary">
-            {locale === "bn" ? "অ্যাডমিন ড্যাশবোর্ড" : "Admin dashboard"}
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+            Admin dashboard
           </p>
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-            {locale === "bn"
-              ? "Roshal Organic পরিচালনা"
-              : "Manage Roshal Organic"}
+            Roshal Organic overview
           </h1>
+          <p className="max-w-2xl text-sm text-muted-foreground">
+            Live store, catalog, order, and CMS controls in one clean admin
+            workspace.
+          </p>
         </div>
         <div className="flex flex-wrap gap-3">
           <Button asChild variant="outline">
-            <Link href="/dashboard/pages">
-              {locale === "bn" ? "মার্কেটিং পেজ" : "Marketing pages"}
-            </Link>
+            <Link href="/dashboard/pages">Marketing pages</Link>
           </Button>
           <Button asChild>
-            <Link href="/dashboard/products/new">
-              {locale === "bn" ? "নতুন পণ্য" : "New product"}
-            </Link>
+            <Link href="/dashboard/products/new">New product</Link>
           </Button>
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-        <DashboardMetricCard
-          title={locale === "bn" ? "মোট পণ্য" : "Products"}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <DashboardStatCard
+          title="Total revenue"
+          value={formatBdt(totalRevenue, locale)}
+          description={`${snapshot.orderCount} order${
+            snapshot.orderCount === 1 ? "" : "s"
+          } recorded`}
+          trend={`${fulfillmentOrders} need fulfillment`}
+          icon={ShoppingBag}
+          accentClassName="border-r-primary"
+          emoji={"\u{1F4B0}"}
+        />
+        <DashboardStatCard
+          title="Products"
           value={snapshot.productCount}
-          hint={locale === "bn" ? "লাইভ ক্যাটালগ গুনতি" : "Live catalog count"}
-        />
-        <DashboardMetricCard
-          title={locale === "bn" ? "লো স্টক" : "Low stock"}
-          value={snapshot.lowStockProductCount}
-          hint={
-            locale === "bn"
-              ? "অবিলম্বে রিস্টক দরকার"
-              : "Items that need restocking soon"
+          description={`${publishedProductRatio}% published catalog`}
+          trend={`${snapshot.lowStockProductCount} low-stock items`}
+          trendDirection={
+            snapshot.lowStockProductCount > 0 ||
+            snapshot.outOfStockProductCount > 0
+              ? "down"
+              : "up"
           }
+          icon={Package}
+          accentClassName="border-r-secondary"
+          emoji={"\u{1F6CD}\uFE0F"}
         />
-        <DashboardMetricCard
-          title={locale === "bn" ? "স্টক শেষ" : "Out of stock"}
-          value={snapshot.outOfStockProductCount}
-          hint={
-            locale === "bn"
-              ? "স্টোরফ্রন্টে ঝুঁকিপূর্ণ SKU"
-              : "SKUs currently unavailable on the storefront"
-          }
+        <DashboardStatCard
+          title="Customers"
+          value={customerCount}
+          description={`${users.length - customerCount} admin account${
+            users.length - customerCount === 1 ? "" : "s"
+          }`}
+          trend="Audience data stays dashboard-managed"
+          icon={Users}
+          accentClassName="border-r-accent"
+          emoji={"\u{1F465}"}
         />
-        <DashboardMetricCard
-          title={locale === "bn" ? "চলমান অর্ডার" : "Pending orders"}
-          value={snapshot.pendingOrderCount}
-          hint={
-            locale === "bn"
-              ? "রিভিউ বা ফুলফিলমেন্টে আছে"
-              : "Still in review or fulfillment"
-          }
-        />
-        <DashboardMetricCard
-          title={locale === "bn" ? "ব্যবহারকারী" : "Users"}
-          value={snapshot.userCount}
-          hint={
-            locale === "bn"
-              ? "অ্যাডমিন ও কাস্টমার মিলিয়ে"
-              : "Admins and customers combined"
-          }
-        />
-        <DashboardMetricCard
-          title={locale === "bn" ? "মার্কেটিং পেজ" : "Marketing pages"}
+        <DashboardStatCard
+          title="CMS pages"
           value={snapshot.marketingPageCount}
-          hint={
-            locale === "bn"
-              ? "CMS থেকে চালিত পাবলিক পেজ"
-              : "Public pages managed through the CMS"
-          }
+          description={`${publishedPages} published pages`}
+          trend={`${visibleNavigationPages} visible in navigation`}
+          icon={FileText}
+          accentClassName="border-r-muted-foreground"
+          emoji={"\u{1F4C4}"}
         />
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-2">
-        <DashboardBarChartCard
-          title={locale === "bn" ? "অর্ডার ফানেল" : "Order funnel"}
-          description={
-            locale === "bn"
-              ? "লাইভ অর্ডার স্ট্যাটাস বণ্টন এখন সরাসরি স্টোরফ্রন্ট অর্ডার ফ্লো থেকে আসছে।"
-              : "Live order-status distribution pulled directly from the storefront order flow."
-          }
-          totalLabel={locale === "bn" ? "মোট অর্ডার" : "Total orders"}
-          data={orderStatusData}
-          className="xl:col-span-2"
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <DashboardStatCard
+          title="Pending orders"
+          value={snapshot.pendingOrderCount}
+          description="Orders awaiting review"
+          trend="Review before fulfillment"
+          trendDirection={snapshot.pendingOrderCount > 0 ? "down" : "up"}
+          icon={Clock}
+          accentClassName="border-r-destructive"
+          emoji={"\u23F1\uFE0F"}
         />
-        <DashboardPieChartCard
-          title={locale === "bn" ? "ক্যাটালগ প্রকাশ অবস্থা" : "Catalog publication"}
-          description={
-            locale === "bn"
-              ? "প্রকাশিত, ড্রাফট, এবং ফিচারড পণ্যের দ্রুত স্বাস্থ্য-সিগন্যাল।"
-              : "A quick health signal for published, draft, and featured products."
-          }
-          totalLabel={locale === "bn" ? "পণ্য" : "Products"}
-          data={publicationData}
+        <DashboardStatCard
+          title="Storefront health"
+          value={storefrontHealth}
+          description={`${snapshot.outOfStockProductCount} out-of-stock item${
+            snapshot.outOfStockProductCount === 1 ? "" : "s"
+          }`}
+          trend="Keep catalog availability clean"
+          trendDirection={snapshot.outOfStockProductCount > 0 ? "down" : "up"}
+          icon={AlertTriangle}
+          accentClassName="border-r-primary"
+          emoji={"\u26A0\uFE0F"}
         />
-        <DashboardPieChartCard
-          title={
-            locale === "bn" ? "অডিয়েন্স ও নেভিগেশন" : "Audience and navigation"
-          }
-          description={
-            locale === "bn"
-              ? "অ্যাডমিন, গ্রাহক, এবং নেভিগেশনে প্রকাশিত পেজের অনুপাত।"
-              : "The split between admins, customers, and pages surfaced in navigation."
-          }
-          totalLabel={locale === "bn" ? "সক্রিয়" : "Active"}
-          data={audienceData}
+        <DashboardStatCard
+          title="Featured products"
+          value={snapshot.featuredProducts.length}
+          description="Highlighted on storefront shelves"
+          trend="Managed from product editor"
+          icon={Store}
+          accentClassName="border-r-secondary"
+          emoji={"\u2B50"}
+        />
+        <DashboardStatCard
+          title="Published products"
+          value={snapshot.publishedProductCount}
+          description={`${products.length - snapshot.publishedProductCount} draft item${
+            products.length - snapshot.publishedProductCount === 1 ? "" : "s"
+          }`}
+          trend="Catalog visibility signal"
+          icon={Package}
+          accentClassName="border-r-accent"
+          emoji={"\u2705"}
         />
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-        <Card className="border-none bg-card/50 backdrop-blur shadow-sm">
+      <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+        <Card className="border-none bg-card shadow-sm">
           <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <CardTitle>
-              {locale === "bn" ? "📦 সাম্প্রতিক অর্ডার" : "📦 Recent orders"}
-            </CardTitle>
+            <div>
+              <CardTitle>Recent orders</CardTitle>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Latest customer activity from the live checkout flow.
+              </p>
+            </div>
             <Button asChild variant="ghost" size="sm">
-              <Link href="/dashboard/orders">
-                {locale === "bn" ? "সব দেখুন" : "View all"}
-              </Link>
+              <Link href="/dashboard/orders">View all</Link>
             </Button>
           </CardHeader>
-          <CardContent className="space-y-4">
-            {snapshot.recentOrders.map((order) => (
-              <div
-                key={order.id}
-                className="flex items-center gap-4"
-              >
-                <div className="h-9 w-9 rounded-full bg-accent flex items-center justify-center font-semibold text-xs text-accent-foreground">
-                  {order.orderNumber.slice(-2)}
-                </div>
-                <div className="flex-1 space-y-1">
-                  <p className="text-sm font-medium leading-none">{order.orderNumber}</p>
-                  <p className="text-xs text-muted-foreground">{order.customerName}</p>
-                </div>
-                <div className="font-medium text-sm">{formatBdt(order.total, locale)}</div>
-              </div>
-            ))}
+          <CardContent className="space-y-3">
+            {snapshot.recentOrders.length > 0 ? (
+              snapshot.recentOrders.map((order) => (
+                <RecentOrderRow key={order.id} order={order} locale={locale} />
+              ))
+            ) : (
+              <p className="rounded-md border bg-background/60 p-4 text-sm text-muted-foreground">
+                No orders have been placed yet.
+              </p>
+            )}
           </CardContent>
         </Card>
 
-        <Card className="border-none bg-card/50 backdrop-blur shadow-sm">
+        <Card className="border-none bg-card shadow-sm">
           <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <CardTitle>
-              {locale === "bn" ? "⭐ ফিচারড পণ্য" : "⭐ Featured products"}
-            </CardTitle>
+            <div>
+              <CardTitle>Featured products</CardTitle>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Storefront highlights currently controlled by product data.
+              </p>
+            </div>
             <Button asChild variant="ghost" size="sm">
-              <Link href="/dashboard/products">
-                {locale === "bn" ? "ক্যাটালগ" : "Catalog"}
-              </Link>
+              <Link href="/dashboard/products">Catalog</Link>
             </Button>
           </CardHeader>
-          <CardContent className="space-y-4">
-            {snapshot.featuredProducts.map((product) => (
-              <div
-                key={product.id}
-                className="flex items-center gap-4"
-              >
-                <div className="h-9 w-9 rounded-full bg-accent flex items-center justify-center font-semibold text-xs text-accent-foreground">
-                  🛍️
-                </div>
-                <div className="flex-1 space-y-1">
-                  <p className="text-sm font-medium leading-none">
-                    {locale === "bn" ? product.name.bn : product.name.en}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {locale === "bn"
-                      ? product.categoryLabel.bn
-                      : product.categoryLabel.en}
-                  </p>
-                </div>
-                <div className="font-medium text-sm">{formatBdt(product.price, locale)}</div>
-              </div>
-            ))}
+          <CardContent className="space-y-3">
+            {snapshot.featuredProducts.length > 0 ? (
+              snapshot.featuredProducts.map((product) => (
+                <FeaturedProductRow
+                  key={product.id}
+                  product={product}
+                  locale={locale}
+                />
+              ))
+            ) : (
+              <p className="rounded-md border bg-background/60 p-4 text-sm text-muted-foreground">
+                No featured products are selected yet.
+              </p>
+            )}
           </CardContent>
         </Card>
       </div>

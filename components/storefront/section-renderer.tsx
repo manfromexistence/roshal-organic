@@ -127,31 +127,25 @@ function resolveContactCardHref(
   fallback?: string,
 ) {
   const normalizedLabel = label.trim().toLowerCase();
-  if (
-    normalizedLabel.includes("phone") ||
-    normalizedLabel.includes("à¦«à§‹à¦¨")
-  ) {
+  if (normalizedLabel.includes("phone") || normalizedLabel.includes("ফোন")) {
     return `tel:${siteSettings.contactPhone}`;
   }
 
-  if (
-    normalizedLabel.includes("email") ||
-    normalizedLabel.includes("à¦‡à¦®à§‡à¦‡à¦²")
-  ) {
+  if (normalizedLabel.includes("email") || normalizedLabel.includes("ইমেইল")) {
     return `mailto:${siteSettings.contactEmail}`;
   }
 
   if (
     normalizedLabel.includes("whatsapp") ||
-    normalizedLabel.includes("à¦¹à§‹à¦¯à¦¼à¦¾à¦Ÿà¦¸à¦…à§à¦¯à¦¾à¦ª") ||
-    normalizedLabel.includes("à¦¹à§‹à¦¯à¦¼à¦¾à¦Ÿà¦¸à¦†à¦ª")
+    normalizedLabel.includes("হোয়াটসঅ্যাপ") ||
+    normalizedLabel.includes("হোয়াটসআপ")
   ) {
     return getWhatsAppHref(siteSettings.whatsappPhone) || fallback;
   }
 
   if (
     normalizedLabel.includes("facebook") ||
-    normalizedLabel.includes("à¦«à§‡à¦¸à¦¬à§à¦•")
+    normalizedLabel.includes("ফেসবুক")
   ) {
     return siteSettings.facebookUrl || fallback;
   }

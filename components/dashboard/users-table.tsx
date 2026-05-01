@@ -1,13 +1,22 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
+import { MoreHorizontal, Pencil, ShieldCheck, UserRound } from "lucide-react";
 import Link from "next/link";
+import { DashboardTableShell } from "@/components/dashboard/dashboard-table-shell";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { DataTableSortList } from "@/components/data-table/data-table-sort-list";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useDataTable } from "@/hooks/use-data-table";
 import type { RoshalLocale } from "@/lib/store-types";
 
@@ -20,7 +29,7 @@ interface UserRow {
   status: string;
 }
 
-function getColumns(locale: RoshalLocale): ColumnDef<UserRow>[] {
+function getColumns(): ColumnDef<UserRow>[] {
   return [
     {
       id: "name",
@@ -48,7 +57,13 @@ function getColumns(locale: RoshalLocale): ColumnDef<UserRow>[] {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Role" label="Role" />
       ),
-      cell: ({ row }) => <Badge variant="secondary">{row.original.role}</Badge>,
+      cell: ({ row }) => (
+        <Badge
+          variant={row.original.role === "admin" ? "default" : "secondary"}
+        >
+          {row.original.role}
+        </Badge>
+      ),
     },
     {
       id: "preferredLanguage",
@@ -67,15 +82,33 @@ function getColumns(locale: RoshalLocale): ColumnDef<UserRow>[] {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Status" label="Status" />
       ),
+      cell: ({ row }) => (
+        <Badge
+          variant={row.original.status === "active" ? "secondary" : "outline"}
+        >
+          {row.original.status}
+        </Badge>
+      ),
     },
     {
       id: "actions",
       cell: ({ row }) => (
-        <Button asChild variant="ghost" size="sm">
-          <Link href={`/dashboard/users/${row.original.id}`}>
-            {locale === "bn" ? "এডিট" : "Edit"}
-          </Link>
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="size-8">
+              <MoreHorizontal className="size-4" />
+              <span className="sr-only">User actions</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem asChild>
+              <Link href={`/dashboard/users/${row.original.id}`}>
+                <Pencil className="size-4" />
+                Edit user
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       ),
       size: 80,
     },
@@ -84,7 +117,7 @@ function getColumns(locale: RoshalLocale): ColumnDef<UserRow>[] {
 
 export function RoshalUsersTable({
   users,
-  locale,
+  locale: _locale,
 }: {
   users: Array<{
     id: string;
@@ -107,7 +140,7 @@ export function RoshalUsersTable({
 
   const { table } = useDataTable({
     data: rows,
-    columns: getColumns(locale),
+    columns: getColumns(),
     pageCount: Math.ceil(Math.max(rows.length, 1) / 10),
     initialState: {
       pagination: { pageIndex: 0, pageSize: 10 },
@@ -120,10 +153,70 @@ export function RoshalUsersTable({
   });
 
   return (
-    <DataTable table={table}>
-      <DataTableToolbar table={table}>
-        <DataTableSortList table={table} align="end" />
-      </DataTableToolbar>
-    </DataTable>
+    <DashboardTableShell
+      title="All users"
+      description="Manage admin access, customer accounts, and profile records."
+    >
+      <div className="min-w-0">
+        <div className="grid gap-3 p-3 pt-0 sm:p-4 sm:pt-0 md:hidden">
+          {users.map((user) => {
+            const Icon = user.role === "admin" ? ShieldCheck : UserRound;
+
+            return (
+              <Card
+                key={user.id}
+                className="min-w-0 border-none border-r-[6px] border-r-primary bg-background/70 shadow-sm"
+              >
+                <CardContent className="flex min-w-0 gap-3 p-3">
+                  <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    <Icon className="size-5" />
+                  </div>
+                  <div className="min-w-0 flex-1 space-y-2">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-semibold">
+                        {user.name}
+                      </p>
+                      <p className="truncate text-xs text-muted-foreground">
+                        {user.email}
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <Badge
+                        variant={
+                          user.role === "admin" ? "default" : "secondary"
+                        }
+                        className="rounded-sm"
+                      >
+                        {user.role}
+                      </Badge>
+                      <Badge
+                        variant={user.isActive ? "secondary" : "outline"}
+                        className="rounded-sm"
+                      >
+                        {user.isActive ? "active" : "inactive"}
+                      </Badge>
+                      <Badge variant="outline" className="rounded-sm">
+                        {user.preferredLanguage}
+                      </Badge>
+                    </div>
+                    <Button asChild variant="outline" size="sm" className="h-8">
+                      <Link href={`/dashboard/users/${user.id}`}>Edit</Link>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+
+        <div className="hidden min-w-0 md:block">
+          <DataTable table={table}>
+            <DataTableToolbar table={table}>
+              <DataTableSortList table={table} align="end" />
+            </DataTableToolbar>
+          </DataTable>
+        </div>
+      </div>
+    </DashboardTableShell>
   );
 }

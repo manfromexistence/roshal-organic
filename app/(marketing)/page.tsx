@@ -564,17 +564,14 @@ export default async function LandingPage() {
           language={language}
           title={sectionTitle(
             newArrivalsSection,
-            localizedValue("à¦¨à¦¤à§à¦¨ à¦†à¦—à¦®à¦¨", "New Arrivals"),
+            localizedValue("নতুন আগমন", "New Arrivals"),
           )}
           description={sectionDescription(newArrivalsSection)}
           ctaHref={newArrivalsSection?.ctaHref || "/products"}
           ctaLabel={
             newArrivalsSection?.ctaLabel.bn || newArrivalsSection?.ctaLabel.en
               ? newArrivalsSection.ctaLabel
-              : localizedValue(
-                  "à¦¸à¦¬ à¦¨à¦¤à§à¦¨ à¦ªà¦£à§à¦¯ à¦¦à§‡à¦–à§à¦¨",
-                  "View All New Arrivals",
-                )
+              : localizedValue("সব নতুন পণ্য দেখুন", "View All New Arrivals")
           }
         />
       ) : null}
@@ -622,17 +619,14 @@ export default async function LandingPage() {
           language={language}
           title={sectionTitle(
             freshPicksSection,
-            localizedValue("à¦¤à¦¾à¦œà¦¾ à¦ªà¦£à§à¦¯", "Fresh Picks"),
+            localizedValue("তাজা পণ্য", "Fresh Picks"),
           )}
           description={sectionDescription(freshPicksSection)}
           ctaHref={freshPicksSection?.ctaHref || "/products"}
           ctaLabel={
             freshPicksSection?.ctaLabel.bn || freshPicksSection?.ctaLabel.en
               ? freshPicksSection.ctaLabel
-              : localizedValue(
-                  "à¦¸à¦¬ à¦ªà¦£à§à¦¯ à¦¦à§‡à¦–à§à¦¨",
-                  "View All Products",
-                )
+              : localizedValue("সব পণ্য দেখুন", "View All Products")
           }
         />
       ) : null}

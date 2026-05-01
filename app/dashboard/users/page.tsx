@@ -1,7 +1,4 @@
-import {
-  DashboardBarChartCard,
-  DashboardPieChartCard,
-} from "@/components/dashboard/dashboard-chart-card";
+import { DashboardInsightCard } from "@/components/dashboard/dashboard-insight-card";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { RoshalUsersTable } from "@/components/dashboard/users-table";
 import { requireRoshalAdmin } from "@/lib/store-auth";
@@ -57,7 +54,7 @@ export default async function DashboardUsersPage() {
   ];
 
   return (
-    <div className="min-w-0 space-y-6 p-4 md:p-6">
+    <div className="min-w-0 space-y-6 p-6">
       <div className="min-w-0 space-y-2">
         <p className="text-xs uppercase tracking-[0.24em] text-primary">
           {locale === "bn" ? "ব্যবহারকারী" : "Users"}
@@ -71,19 +68,22 @@ export default async function DashboardUsersPage() {
         <DashboardMetricCard
           title={locale === "bn" ? "মোট ব্যবহারকারী" : "Total users"}
           value={users.length}
+          hint={`${activeCount} active accounts`}
         />
         <DashboardMetricCard
           title={locale === "bn" ? "অ্যাডমিন" : "Admins"}
           value={adminCount}
+          hint={`${users.length - adminCount} customer accounts`}
         />
         <DashboardMetricCard
           title={locale === "bn" ? "সক্রিয় অ্যাকাউন্ট" : "Active accounts"}
           value={activeCount}
+          hint={`${users.length - activeCount} inactive accounts`}
         />
       </div>
 
       <div className="grid gap-6 xl:grid-cols-2">
-        <DashboardPieChartCard
+        <DashboardInsightCard
           title={locale === "bn" ? "রোল স্প্লিট" : "Role split"}
           description={
             locale === "bn"
@@ -93,7 +93,7 @@ export default async function DashboardUsersPage() {
           totalLabel={locale === "bn" ? "অ্যাকাউন্ট" : "Accounts"}
           data={roleData}
         />
-        <DashboardBarChartCard
+        <DashboardInsightCard
           title={locale === "bn" ? "ভাষা পছন্দ" : "Language preference"}
           description={
             locale === "bn"
@@ -103,7 +103,7 @@ export default async function DashboardUsersPage() {
           totalLabel={locale === "bn" ? "ইউজার" : "Users"}
           data={languageData}
         />
-        <DashboardPieChartCard
+        <DashboardInsightCard
           title={locale === "bn" ? "অ্যাকাউন্ট অবস্থা" : "Account status"}
           description={
             locale === "bn"

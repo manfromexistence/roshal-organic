@@ -8,6 +8,7 @@ export type DashboardNavIconKey =
   | "payments"
   | "users"
   | "pages"
+  | "settings"
   | "storefront";
 
 export interface DashboardNavChildItem {
@@ -80,6 +81,23 @@ const primaryNavigationTemplate: DashboardNavItem[] = [
     url: "/dashboard/categories",
     icon: "categories",
     keywords: ["taxonomy", "subcategory", "navigation"],
+    items: [
+      {
+        title: "All Categories",
+        url: "/dashboard/categories",
+        keywords: ["taxonomy", "navigation"],
+      },
+      {
+        title: "New Category",
+        url: "/dashboard/categories/new",
+        keywords: ["create category", "add category"],
+      },
+      {
+        title: "New Subcategory",
+        url: "/dashboard/categories/sub/new",
+        keywords: ["create subcategory", "add subcategory"],
+      },
+    ],
   },
   {
     title: "Orders",
@@ -100,17 +118,45 @@ const primaryNavigationTemplate: DashboardNavItem[] = [
     keywords: ["accounts", "roles", "customers"],
   },
   {
-    title: "Marketing Pages",
-    url: "/dashboard/pages",
+    title: "Marketing",
+    url: "/dashboard/marketing",
     icon: "pages",
     keywords: ["content", "cms", "landing pages"],
     items: [
+      {
+        title: "Marketing Center",
+        url: "/dashboard/marketing",
+        keywords: ["homepage", "cms", "sections"],
+      },
       {
         title: "All Pages",
         url: "/dashboard/pages",
         keywords: ["list", "manage", "edit"],
       },
       ...fallbackMarketingPageItems,
+    ],
+  },
+  {
+    title: "System Settings",
+    url: "/dashboard/settings",
+    icon: "settings",
+    keywords: ["settings", "delivery", "brand", "contact", "configuration"],
+    items: [
+      {
+        title: "System Settings",
+        url: "/dashboard/settings",
+        keywords: ["delivery charges", "contact info", "brand"],
+      },
+      {
+        title: "Storefront Theme",
+        url: "/dashboard/theme",
+        keywords: ["theme", "layout", "delivery zones"],
+      },
+      {
+        title: "Payment Settings",
+        url: "/dashboard/payments",
+        keywords: ["cash on delivery", "bkash", "nagad", "card"],
+      },
     ],
   },
 ];
@@ -152,10 +198,15 @@ export function buildDashboardPrimaryNavigation(
       : fallbackMarketingPageItems;
 
   return primaryNavigationTemplate.map((item) =>
-    item.title === "Marketing Pages"
+    item.title === "Marketing"
       ? {
           ...item,
           items: [
+            {
+              title: "Marketing Center",
+              url: "/dashboard/marketing",
+              keywords: ["homepage", "cms", "sections"],
+            },
             {
               title: "All Pages",
               url: "/dashboard/pages",
@@ -224,6 +275,16 @@ export function getDashboardSearchPages(): DashboardSearchPage[] {
 
   for (const item of dashboardPrimaryNavigation) {
     pushPage(item);
+
+    for (const child of item.items || []) {
+      pushPage(
+        {
+          ...child,
+          keywords: [item.title, ...(child.keywords || [])],
+        },
+        item.title,
+      );
+    }
   }
 
   for (const item of dashboardSectionNavigation) {

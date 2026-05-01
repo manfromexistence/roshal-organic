@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   type LucideIcon,
   Package,
+  Settings,
   Shapes,
   ShoppingCart,
   Users,
@@ -47,6 +48,7 @@ const NAV_ICONS: Record<DashboardNavIconKey, LucideIcon> = {
   payments: CreditCard,
   users: Users,
   pages: FileText,
+  settings: Settings,
   storefront: ExternalLink,
 };
 
@@ -105,13 +107,6 @@ export function NavMain({
     });
   };
 
-  const _handleItemClick = (item: NavItem) => {
-    if (item.items && item.items.length > 0) {
-      // Navigate to first child
-      window.location.href = item.items[0].url;
-    }
-  };
-
   return (
     <SidebarGroup>
       <SidebarMenu className="gap-1">
@@ -127,27 +122,19 @@ export function NavMain({
               <SidebarMenuItem suppressHydrationWarning>
                 <CollapsibleTrigger asChild>
                   <SidebarMenuButton
+                    type="button"
                     tooltip={item.title}
-                    asChild
                     isActive={
                       isDashboardUrlActive(pathname, item.url) ||
                       item.items.some((subItem) =>
                         isDashboardUrlActive(pathname, subItem.url),
                       )
                     }
-                    className="h-10 px-3 font-medium transition-all duration-200 hover:translate-x-0.5 data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:shadow-sm"
+                    className="h-10 cursor-pointer px-3 font-medium transition-colors duration-150 data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:shadow-sm"
                   >
-                    <a
-                      href={item.items[0]?.url || item.url}
-                      onClick={(_e) => {
-                        // Allow the default navigation to happen
-                        // The href already points to the first child
-                      }}
-                    >
-                      <NavIcon icon={item.icon} />
-                      <span>{item.title}</span>
-                      <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                    </a>
+                    <NavIcon icon={item.icon} />
+                    <span>{item.title}</span>
+                    <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
                 <CollapsibleContent suppressHydrationWarning className="pt-1">
@@ -160,7 +147,7 @@ export function NavMain({
                         <SidebarMenuSubButton
                           asChild
                           isActive={isDashboardUrlExact(pathname, subItem.url)}
-                          className="h-8 transition-colors data-[active=true]:bg-sidebar-primary/15 data-[active=true]:text-sidebar-foreground"
+                          className="h-8 cursor-pointer transition-colors data-[active=true]:bg-sidebar-primary/15 data-[active=true]:text-sidebar-foreground"
                         >
                           <Link href={subItem.url}>
                             <span>{subItem.title}</span>
@@ -178,7 +165,7 @@ export function NavMain({
                 tooltip={item.title}
                 asChild
                 isActive={isDashboardUrlActive(pathname, item.url)}
-                className="h-10 px-3 font-medium transition-all duration-200 hover:translate-x-0.5 data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:shadow-sm"
+                className="h-10 cursor-pointer px-3 font-medium transition-colors duration-150 data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:shadow-sm"
               >
                 <Link href={item.url}>
                   <NavIcon icon={item.icon} />

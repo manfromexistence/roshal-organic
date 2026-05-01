@@ -166,6 +166,7 @@ export async function saveRoshalSiteSettings(formData: FormData) {
     "/contact",
     "/cart",
     "/checkout",
+    "/dashboard/settings",
     "/dashboard/theme",
   ]);
 }

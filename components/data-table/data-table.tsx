@@ -34,8 +34,8 @@ export function DataTable<TData>({
       {...props}
     >
       {children}
-      <div className="min-w-0 overflow-hidden rounded-md border">
-        <Table>
+      <div className="min-w-0 max-w-full overflow-hidden rounded-md border">
+        <Table className="min-w-[720px]">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

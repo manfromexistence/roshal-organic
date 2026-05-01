@@ -1,13 +1,22 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
+import { ExternalLink, MoreHorizontal, Pencil } from "lucide-react";
 import Link from "next/link";
+import { DashboardTableShell } from "@/components/dashboard/dashboard-table-shell";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { DataTableSortList } from "@/components/data-table/data-table-sort-list";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useDataTable } from "@/hooks/use-data-table";
 import { getLocalizedValue } from "@/lib/store-locale";
 import type { RoshalLocale, RoshalMarketingPage } from "@/lib/store-types";
@@ -25,7 +34,7 @@ function storefrontPathFromSlug(slug: string) {
   return slug === "home" ? "/" : `/${slug}`;
 }
 
-function getColumns(locale: RoshalLocale): ColumnDef<PageRow>[] {
+function getColumns(): ColumnDef<PageRow>[] {
   return [
     {
       id: "title",
@@ -54,7 +63,13 @@ function getColumns(locale: RoshalLocale): ColumnDef<PageRow>[] {
         <DataTableColumnHeader column={column} title="Status" label="Status" />
       ),
       cell: ({ row }) => (
-        <Badge variant="secondary">{row.original.status}</Badge>
+        <Badge
+          variant={
+            row.original.status === "published" ? "secondary" : "outline"
+          }
+        >
+          {row.original.status}
+        </Badge>
       ),
     },
     {
@@ -71,26 +86,36 @@ function getColumns(locale: RoshalLocale): ColumnDef<PageRow>[] {
     {
       id: "actions",
       cell: ({ row }) => (
-        <div className="flex items-center gap-2">
-          {row.original.status === "published" ? (
-            <Button asChild variant="outline" size="sm">
-              <Link
-                href={row.original.storefrontPath}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {locale === "bn" ? "লাইভ" : "Live"}
-              </Link>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="size-8">
+              <MoreHorizontal className="size-4" />
+              <span className="sr-only">Page actions</span>
             </Button>
-          ) : null}
-          <Button asChild variant="ghost" size="sm">
-            <Link href={`/dashboard/pages/${row.original.id}`}>
-              {locale === "bn" ? "এডিট" : "Edit"}
-            </Link>
-          </Button>
-        </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem asChild>
+              <Link href={`/dashboard/pages/${row.original.id}`}>
+                <Pencil className="size-4" />
+                Edit page
+              </Link>
+            </DropdownMenuItem>
+            {row.original.status === "published" ? (
+              <DropdownMenuItem asChild>
+                <Link
+                  href={row.original.storefrontPath}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <ExternalLink className="size-4" />
+                  Open live page
+                </Link>
+              </DropdownMenuItem>
+            ) : null}
+          </DropdownMenuContent>
+        </DropdownMenu>
       ),
-      size: 160,
+      size: 80,
     },
   ];
 }
@@ -108,18 +133,12 @@ export function RoshalPagesTable({
     slug: page.slug,
     status: page.status,
     storefrontPath: storefrontPathFromSlug(page.slug),
-    navigation: page.showInNavigation
-      ? locale === "bn"
-        ? "দেখাবে"
-        : "Visible"
-      : locale === "bn"
-        ? "লুকানো"
-        : "Hidden",
+    navigation: page.showInNavigation ? "Visible" : "Hidden",
   }));
 
   const { table } = useDataTable({
     data: rows,
-    columns: getColumns(locale),
+    columns: getColumns(),
     pageCount: Math.ceil(Math.max(rows.length, 1) / 10),
     initialState: {
       pagination: { pageIndex: 0, pageSize: 10 },
@@ -132,10 +151,72 @@ export function RoshalPagesTable({
   });
 
   return (
-    <DataTable table={table}>
-      <DataTableToolbar table={table}>
-        <DataTableSortList table={table} align="end" />
-      </DataTableToolbar>
-    </DataTable>
+    <DashboardTableShell
+      title="Marketing pages"
+      description="Edit public pages, navigation labels, and CMS-managed sections."
+    >
+      <div className="min-w-0">
+        <div className="grid gap-3 p-3 pt-0 sm:p-4 sm:pt-0 md:hidden">
+          {pages.map((page) => {
+            const storefrontPath = storefrontPathFromSlug(page.slug);
+
+            return (
+              <Card
+                key={page.id}
+                className="min-w-0 border-none border-r-[6px] border-r-primary bg-background/70 shadow-sm"
+              >
+                <CardContent className="space-y-3 p-3">
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold">
+                      {getLocalizedValue(locale, page.title)}
+                    </p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      /{page.slug}
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Badge
+                      variant={
+                        page.status === "published" ? "secondary" : "outline"
+                      }
+                      className="rounded-sm"
+                    >
+                      {page.status}
+                    </Badge>
+                    <Badge variant="outline" className="rounded-sm">
+                      {page.showInNavigation ? "Visible" : "Hidden"}
+                    </Badge>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    <Button asChild variant="outline" size="sm" className="h-8">
+                      <Link href={`/dashboard/pages/${page.id}`}>Edit</Link>
+                    </Button>
+                    {page.status === "published" ? (
+                      <Button asChild variant="ghost" size="sm" className="h-8">
+                        <Link
+                          href={storefrontPath}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Open
+                        </Link>
+                      </Button>
+                    ) : null}
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })}
+        </div>
+
+        <div className="hidden min-w-0 md:block">
+          <DataTable table={table}>
+            <DataTableToolbar table={table}>
+              <DataTableSortList table={table} align="end" />
+            </DataTableToolbar>
+          </DataTable>
+        </div>
+      </div>
+    </DashboardTableShell>
   );
 }

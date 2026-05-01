@@ -96,19 +96,20 @@ export function DashboardLayout({
           }
         }
       />
-      <SidebarInset className="dashboard-admin-surface relative flex h-svh min-h-0 flex-col overflow-hidden">
+      <SidebarInset className="dashboard-admin-surface relative flex h-svh min-h-0 min-w-0 flex-col overflow-hidden">
         <SiteHeader user={user} />
         <ScrollArea
           type="always"
           scrollHideDelay={0}
+          showHorizontalScrollbar
           className="min-h-0 min-w-0 flex-1 pt-16"
           viewportRef={scrollRef}
           viewportProps={{
-            className: "min-w-0 overscroll-contain",
+            className: "min-w-0 max-w-full overscroll-contain",
             onScroll: handleScroll,
           }}
         >
-          {children}
+          <div className="min-w-full w-full">{children}</div>
         </ScrollArea>
       </SidebarInset>
     </SidebarProvider>

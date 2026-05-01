@@ -1,8 +1,6 @@
+import { Plus } from "lucide-react";
 import Link from "next/link";
-import {
-  DashboardBarChartCard,
-  DashboardPieChartCard,
-} from "@/components/dashboard/dashboard-chart-card";
+import { DashboardInsightCard } from "@/components/dashboard/dashboard-insight-card";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { RoshalProductsTable } from "@/components/dashboard/products-table";
 import { Button } from "@/components/ui/button";
@@ -86,7 +84,7 @@ export default async function DashboardProductsPage() {
   ];
 
   return (
-    <div className="min-w-0 space-y-6 p-4 md:p-6">
+    <div className="min-w-0 space-y-6 p-6">
       <div className="flex min-w-0 flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div className="min-w-0 space-y-2">
           <p className="text-xs uppercase tracking-[0.24em] text-primary">
@@ -98,6 +96,7 @@ export default async function DashboardProductsPage() {
         </div>
         <Button asChild>
           <Link href="/dashboard/products/new">
+            <Plus className="size-4" />
             {locale === "bn" ? "নতুন পণ্য" : "New product"}
           </Link>
         </Button>
@@ -107,23 +106,27 @@ export default async function DashboardProductsPage() {
         <DashboardMetricCard
           title={locale === "bn" ? "মোট পণ্য" : "Products"}
           value={products.length}
+          hint={`${publishedCount} published products`}
         />
         <DashboardMetricCard
           title={locale === "bn" ? "প্রকাশিত" : "Published"}
           value={publishedCount}
+          hint={`${products.length - publishedCount} draft products`}
         />
         <DashboardMetricCard
           title={locale === "bn" ? "লো স্টক" : "Low stock"}
           value={lowStockCount}
+          hint="Inventory is between 1 and 10"
         />
         <DashboardMetricCard
           title={locale === "bn" ? "স্টক শেষ" : "Out of stock"}
           value={outOfStockCount}
+          hint="Unavailable storefront items"
         />
       </div>
 
       <div className="grid gap-6 xl:grid-cols-2">
-        <DashboardPieChartCard
+        <DashboardInsightCard
           title={locale === "bn" ? "ইনভেন্টরি স্বাস্থ্য" : "Inventory health"}
           description={
             locale === "bn"
@@ -133,7 +136,7 @@ export default async function DashboardProductsPage() {
           totalLabel={locale === "bn" ? "SKU" : "SKUs"}
           data={inventoryHealthData}
         />
-        <DashboardBarChartCard
+        <DashboardInsightCard
           title={locale === "bn" ? "ক্যাটাগরি বণ্টন" : "Category distribution"}
           description={
             locale === "bn"
@@ -143,7 +146,7 @@ export default async function DashboardProductsPage() {
           totalLabel={locale === "bn" ? "পণ্য" : "Products"}
           data={categoryDistributionData}
         />
-        <DashboardBarChartCard
+        <DashboardInsightCard
           title={locale === "bn" ? "মূল্য ব্যান্ড" : "Price bands"}
           description={
             locale === "bn"

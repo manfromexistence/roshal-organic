@@ -1158,15 +1158,12 @@ export const defaultRoshalPaymentSettings: RoshalPaymentSettings = {
       key: "upay",
       enabled: true,
       mode: "gateway",
-      label: localizedValue("à¦‰à¦ªà¦¾à§Ÿ", "Upay"),
-      merchantLabel: localizedValue(
-        "à¦‰à¦ªà¦¾à§Ÿ à¦—à§‡à¦Ÿà¦“à§Ÿà§‡",
-        "Upay gateway",
-      ),
+      label: localizedValue("উপায়", "Upay"),
+      merchantLabel: localizedValue("উপায় গেটওয়ে", "Upay gateway"),
       accountType: "mobile-wallet",
       accountNumber: "",
       instructions: localizedValue(
-        "à¦‰à¦ªà¦¾à§Ÿ à¦—à§‡à¦Ÿà¦“à§Ÿà§‡ à¦šà¦¾à¦²à§ à¦¥à¦¾à¦•à¦²à§‡ à¦šà§‡à¦•à¦†à¦‰à¦Ÿà§‡ aamarPay à¦°à¦¿à¦¡à¦¾à¦‡à¦°à§‡à¦•à§à¦Ÿ à¦¹à¦¬à§‡à¥¤ à¦ªà§à¦°à§Ÿà§‹à¦œà¦¨ à¦¹à¦²à§‡ à¦…à§à¦¯à¦¾à¦¡à¦®à¦¿à¦¨ à¦¡à§à¦¯à¦¾à¦¶à¦¬à§‹à¦°à§à¦¡ à¦¥à§‡à¦•à§‡ à¦à¦Ÿà¦¿à¦•à§‡ à¦®à§à¦¯à¦¾à¦¨à§à§Ÿà¦¾à¦² à¦®à§‹à¦¡à§‡ à¦ªà¦°à¦¿à¦¬à¦°à§à¦¤à¦¨ à¦•à¦°à¦¤à§‡ à¦ªà¦¾à¦°à¦¬à§‡à¦¨à¥¤",
+        "উপায় গেটওয়ে চালু থাকলে চেকআউটে aamarPay রিডাইরেক্ট হবে। প্রয়োজন হলে অ্যাডমিন ড্যাশবোর্ড থেকে এটিকে ম্যানুয়াল মোডে পরিবর্তন করতে পারবেন।",
         "When Upay gateway checkout is enabled, customers will be redirected through aamarPay. Admins can switch this option to manual mode from the dashboard if needed.",
       ),
       guideImageUrl: "",

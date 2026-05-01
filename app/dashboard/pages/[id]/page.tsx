@@ -92,13 +92,13 @@ export default async function DashboardPageEditorRoute({
   );
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
-      <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-        <div className="space-y-2">
+    <div className="min-w-0 space-y-6 p-6">
+      <div className="flex min-w-0 flex-col gap-3 md:flex-row md:items-end md:justify-between">
+        <div className="min-w-0 space-y-2">
           <p className="text-xs uppercase tracking-[0.24em] text-primary">
             {locale === "bn" ? "পেজ এডিটর" : "Page editor"}
           </p>
-          <h1 className="text-4xl font-semibold tracking-tight">
+          <h1 className="break-words text-4xl font-semibold tracking-tight">
             {locale === "bn" ? page.title.bn : page.title.en}
           </h1>
         </div>
@@ -124,7 +124,10 @@ export default async function DashboardPageEditorRoute({
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <form action={saveRoshalPage} className="grid gap-5 md:grid-cols-2">
+          <form
+            action={saveRoshalPage}
+            className="grid min-w-0 gap-5 md:grid-cols-2"
+          >
             <input type="hidden" name="id" value={page.id} />
             <input type="hidden" name="previousSlug" value={page.slug} />
             <Field name="slug" label="Slug" defaultValue={page.slug} />
@@ -211,7 +214,7 @@ export default async function DashboardPageEditorRoute({
           <CardHeader>
             <CardTitle>Homepage section map</CardTitle>
           </CardHeader>
-          <CardContent className="grid gap-3 md:grid-cols-2">
+          <CardContent className="grid min-w-0 gap-3 md:grid-cols-2">
             {roshalHomeSectionGuides.map((guide) => (
               <div
                 key={guide.sectionKey}
@@ -246,7 +249,7 @@ export default async function DashboardPageEditorRoute({
             <p className="text-sm leading-6 text-muted-foreground">
               {getLocalizedGuideText(locale, pageGuide.summary)}
             </p>
-            <div className="grid gap-3 md:grid-cols-3">
+            <div className="grid min-w-0 gap-3 md:grid-cols-3">
               {pageGuide.editingTips.map((tip, index) => (
                 <div
                   key={`${pageGuide.slug}-tip-${index}`}
@@ -298,7 +301,7 @@ export default async function DashboardPageEditorRoute({
               ) : null}
               <form
                 action={saveRoshalSection}
-                className="grid gap-5 md:grid-cols-2"
+                className="grid min-w-0 gap-5 md:grid-cols-2"
               >
                 <input type="hidden" name="id" value={section.id} />
                 <input type="hidden" name="pageId" value={page.id} />
@@ -348,7 +351,7 @@ export default async function DashboardPageEditorRoute({
           <CardContent>
             <form
               action={saveRoshalSection}
-              className="grid gap-5 md:grid-cols-2"
+              className="grid min-w-0 gap-5 md:grid-cols-2"
             >
               <input type="hidden" name="pageId" value={page.id} />
               <input type="hidden" name="pageSlug" value={page.slug} />
@@ -567,7 +570,7 @@ function Field({
   type?: string;
 }) {
   return (
-    <div className="space-y-2">
+    <div className="min-w-0 space-y-2">
       <Label htmlFor={name}>{label}</Label>
       <Input id={name} name={name} defaultValue={defaultValue} type={type} />
     </div>
@@ -586,7 +589,7 @@ function TextField({
   rows: number;
 }) {
   return (
-    <div className="space-y-2">
+    <div className="min-w-0 space-y-2">
       <Label htmlFor={name}>{label}</Label>
       <Textarea id={name} name={name} defaultValue={defaultValue} rows={rows} />
     </div>

@@ -1,13 +1,22 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
+import { ExternalLink, MoreHorizontal, Pencil } from "lucide-react";
 import Link from "next/link";
+import { DashboardTableShell } from "@/components/dashboard/dashboard-table-shell";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { DataTableSortList } from "@/components/data-table/data-table-sort-list";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useDataTable } from "@/hooks/use-data-table";
 import { formatBdt, formatOrderDate } from "@/lib/store-format";
 import { getLocalizedValue } from "@/lib/store-locale";
@@ -33,7 +42,7 @@ interface OrderRow {
   createdAt: string;
 }
 
-function getColumns(locale: RoshalLocale): ColumnDef<OrderRow>[] {
+function getColumns(): ColumnDef<OrderRow>[] {
   return [
     {
       id: "orderNumber",
@@ -117,11 +126,30 @@ function getColumns(locale: RoshalLocale): ColumnDef<OrderRow>[] {
     {
       id: "actions",
       cell: ({ row }) => (
-        <Button asChild variant="ghost" size="sm">
-          <Link href={`/dashboard/orders/${row.original.id}`}>
-            {locale === "bn" ? "এডিট" : "Edit"}
-          </Link>
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="size-8">
+              <MoreHorizontal className="size-4" />
+              <span className="sr-only">Order actions</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem asChild>
+              <Link href={`/dashboard/orders/${row.original.id}`}>
+                <Pencil className="size-4" />
+                Manage order
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link
+                href={`/track-order?orderNumber=${row.original.orderNumber}`}
+              >
+                <ExternalLink className="size-4" />
+                Public tracking
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       ),
       size: 80,
     },
@@ -156,7 +184,7 @@ export function RoshalOrdersTable({
 
   const { table } = useDataTable({
     data: rows,
-    columns: getColumns(locale),
+    columns: getColumns(),
     pageCount: Math.ceil(Math.max(rows.length, 1) / 10),
     initialState: {
       pagination: { pageIndex: 0, pageSize: 10 },
@@ -169,10 +197,78 @@ export function RoshalOrdersTable({
   });
 
   return (
-    <DataTable table={table}>
-      <DataTableToolbar table={table}>
-        <DataTableSortList table={table} align="end" />
-      </DataTableToolbar>
-    </DataTable>
+    <DashboardTableShell
+      title="All orders"
+      description="Review checkout submissions, payment states, and fulfillment progress."
+    >
+      <div className="min-w-0">
+        <div className="grid gap-3 p-3 pt-0 sm:p-4 sm:pt-0 md:hidden">
+          {orders.map((order) => (
+            <Card
+              key={order.id}
+              className="min-w-0 border-none border-r-[6px] border-r-primary bg-background/70 shadow-sm"
+            >
+              <CardContent className="space-y-3 p-3">
+                <div className="flex min-w-0 items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold">
+                      {order.orderNumber}
+                    </p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {order.customerName} {"\u00b7"} {order.phone}
+                    </p>
+                  </div>
+                  <p className="shrink-0 text-sm font-bold text-primary">
+                    {formatBdt(order.total, locale)}
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Badge
+                    variant={getRoshalOrderStatusBadgeVariant(order.status)}
+                  >
+                    {getLocalizedValue(
+                      locale,
+                      getRoshalOrderStatusLabel(order.status),
+                    )}
+                  </Badge>
+                  <Badge
+                    variant={getRoshalPaymentStatusBadgeVariant(
+                      order.paymentStatus,
+                    )}
+                  >
+                    {getLocalizedValue(
+                      locale,
+                      getRoshalPaymentStatusLabel(order.paymentStatus),
+                    )}
+                  </Badge>
+                  <Badge variant="outline">
+                    {getLocalizedValue(
+                      locale,
+                      getRoshalPaymentMethodLabel(order.paymentMethod),
+                    )}
+                  </Badge>
+                </div>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-xs text-muted-foreground">
+                    {formatOrderDate(order.createdAt, locale)}
+                  </p>
+                  <Button asChild variant="outline" size="sm" className="h-8">
+                    <Link href={`/dashboard/orders/${order.id}`}>Manage</Link>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <div className="hidden min-w-0 md:block">
+          <DataTable table={table}>
+            <DataTableToolbar table={table}>
+              <DataTableSortList table={table} align="end" />
+            </DataTableToolbar>
+          </DataTable>
+        </div>
+      </div>
+    </DashboardTableShell>
   );
 }

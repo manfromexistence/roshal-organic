@@ -1,11 +1,9 @@
 import { saveRoshalPaymentSettings } from "@/actions/admin";
-import {
-  DashboardBarChartCard,
-  DashboardPieChartCard,
-} from "@/components/dashboard/dashboard-chart-card";
+import { DashboardInsightCard } from "@/components/dashboard/dashboard-insight-card";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -95,7 +93,7 @@ export default async function DashboardPaymentsPage() {
   ];
 
   return (
-    <div className="min-w-0 space-y-6 p-4 md:p-6">
+    <div className="min-w-0 space-y-6 p-6">
       <div className="min-w-0 space-y-2">
         <p className="text-xs uppercase tracking-[0.24em] text-primary">
           {locale === "bn" ? "পেমেন্ট সেটিংস" : "Payment settings"}
@@ -109,19 +107,22 @@ export default async function DashboardPaymentsPage() {
         <DashboardMetricCard
           title={locale === "bn" ? "চালু অপশন" : "Enabled options"}
           value={enabledCount}
+          hint={`${visibleOptions.length} supported methods`}
         />
         <DashboardMetricCard
           title={locale === "bn" ? "গেটওয়ে মোড" : "Gateway modes"}
           value={gatewayModeCount}
+          hint="Card or provider-backed methods"
         />
         <DashboardMetricCard
           title={locale === "bn" ? "প্রুফ প্রয়োজন" : "Proof required"}
           value={proofRequiredCount}
+          hint="Manual verification inputs"
         />
       </div>
 
       <div className="grid gap-6 xl:grid-cols-2">
-        <DashboardPieChartCard
+        <DashboardInsightCard
           title={
             locale === "bn"
               ? "পেমেন্ট অপশন অ্যাভেইলেবিলিটি"
@@ -135,7 +136,7 @@ export default async function DashboardPaymentsPage() {
           totalLabel={locale === "bn" ? "অপশন" : "Options"}
           data={optionStateData}
         />
-        <DashboardBarChartCard
+        <DashboardInsightCard
           title={locale === "bn" ? "মোড ডিস্ট্রিবিউশন" : "Mode distribution"}
           description={
             locale === "bn"
@@ -145,7 +146,7 @@ export default async function DashboardPaymentsPage() {
           totalLabel={locale === "bn" ? "মোড" : "Modes"}
           data={modeData}
         />
-        <DashboardBarChartCard
+        <DashboardInsightCard
           title={locale === "bn" ? "প্রুফ নীতি" : "Proof policy"}
           description={
             locale === "bn"
@@ -165,14 +166,27 @@ export default async function DashboardPaymentsPage() {
           const option = getOption(key);
 
           return (
-            <Card key={key}>
-              <CardHeader>
-                <CardTitle>
-                  {locale === "bn" ? option.label.bn : option.label.en}
-                </CardTitle>
+            <Card key={key} className="border-none bg-card shadow-sm">
+              <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div className="space-y-1">
+                  <CardTitle>
+                    {locale === "bn" ? option.label.bn : option.label.en}
+                  </CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    {option.mode === "gateway"
+                      ? "Gateway-backed checkout method"
+                      : "Manual checkout method"}
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant={option.enabled ? "secondary" : "outline"}>
+                    {option.enabled ? "Enabled" : "Disabled"}
+                  </Badge>
+                  <Badge variant="outline">{option.mode}</Badge>
+                </div>
               </CardHeader>
               <CardContent className="space-y-5">
-                <div className="grid gap-5 md:grid-cols-2">
+                <div className="grid min-w-0 gap-5 md:grid-cols-2">
                   <DashboardFormCheckbox
                     name={`${key}Enabled`}
                     defaultChecked={option.enabled}
@@ -238,7 +252,7 @@ export default async function DashboardPaymentsPage() {
                   </div>
                 </div>
 
-                <div className="grid gap-5 md:grid-cols-2">
+                <div className="grid min-w-0 gap-5 md:grid-cols-2">
                   <TextField
                     name={`${key}InstructionsBn`}
                     label="Checkout note (BN)"

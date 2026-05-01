@@ -1,7 +1,4 @@
-import {
-  DashboardBarChartCard,
-  DashboardPieChartCard,
-} from "@/components/dashboard/dashboard-chart-card";
+import { DashboardInsightCard } from "@/components/dashboard/dashboard-insight-card";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { RoshalOrdersTable } from "@/components/dashboard/orders-table";
 import { requireRoshalAdmin } from "@/lib/store-auth";
@@ -65,7 +62,7 @@ export default async function DashboardOrdersPage() {
   );
 
   return (
-    <div className="min-w-0 space-y-6 p-4 md:p-6">
+    <div className="min-w-0 space-y-6 p-6">
       <div className="min-w-0 space-y-2">
         <p className="text-xs uppercase tracking-[0.24em] text-primary">
           {locale === "bn" ? "অর্ডার" : "Orders"}
@@ -106,7 +103,7 @@ export default async function DashboardOrdersPage() {
       </div>
 
       <div className="grid gap-6 xl:grid-cols-2">
-        <DashboardBarChartCard
+        <DashboardInsightCard
           title={
             locale === "bn" ? "অর্ডার স্ট্যাটাস ব্রেকডাউন" : "Order status breakdown"
           }
@@ -118,7 +115,7 @@ export default async function DashboardOrdersPage() {
           totalLabel={locale === "bn" ? "মোট অর্ডার" : "Total orders"}
           data={orderStatusData}
         />
-        <DashboardPieChartCard
+        <DashboardInsightCard
           title={locale === "bn" ? "পেমেন্ট মেথড" : "Payment methods"}
           description={
             locale === "bn"
@@ -128,7 +125,7 @@ export default async function DashboardOrdersPage() {
           totalLabel={locale === "bn" ? "অর্ডার" : "Orders"}
           data={paymentMethodData}
         />
-        <DashboardBarChartCard
+        <DashboardInsightCard
           title={locale === "bn" ? "পেমেন্ট স্ট্যাটাস" : "Payment status"}
           description={
             locale === "bn"

@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Changed
+- Compared the live dashboard UI against the `roshal-organic-dashboard-ui` reference and normalized page padding, card shells, category-card sizing, and create/settings form cards to better match the client-preferred dashboard mockup.
+- Tightened shared dashboard table cards to use borderless shadow shells with flush desktop table content and padded mobile fallback cards.
+- Added a functional dashboard system-settings page for brand/contact fields, storefront defaults, and delivery-zone fee controls using the existing site-settings save action.
+- Added a dashboard marketing control center that links the live storefront, homepage editor, CMS sections, and marketing pages through real dashboard routes.
+- Added dedicated dashboard create pages for categories and subcategories that use the real taxonomy mutation actions and image-upload control.
+- Wired the new settings, marketing, category, and subcategory dashboard pages into the sidebar navigation and dashboard search index.
+- Updated dashboard metric and insight cards with emoji badges, stronger hover states, right-edge accent borders, and richer supporting text.
+- Added compact mobile product cards to the dashboard all-products page while keeping the full data table for larger screens.
+- Improved the shared data-table container so dashboard tables keep their content inside a horizontally scrollable surface on smaller screens.
+- Reworked the dashboard overview into a cleaner reference-style admin landing page with live store metrics, recent orders, and featured products instead of chart panels.
+- Replaced dashboard chart panels across products, orders, categories, users, pages, payments, and storefront settings with non-chart insight cards.
 - Removed the marketing auth page OTP panel and tightened the login/sign-up page into a single padded credential/sign-up card.
 - Reduced homepage featured-category card size and tightened vertical spacing across the marketing homepage sections.
 - Restyled the existing working dashboard shell with the client-preferred mockup cues: stronger sidebar branding, clearer active navigation states, larger sidebar hit areas, and softer hoverable dashboard card/table surfaces.
@@ -30,8 +41,20 @@ All notable changes to this project will be documented in this file.
 - Rebuilt the single product page into a Ghore-Bazar-style gallery, pricing, CTA, details, reviews, and related-products layout that adapts cleanly down to smaller screens.
 - Kept the single product page dashboard-driven by sourcing gallery images, pricing, description, highlights, contact actions, and related products from product and site-settings data instead of hardcoded product-page copy.
 - Reworked the storefront login and sign-up page into the requested two-panel auth layout while preserving the existing signup fields, redirects, and credential flow.
+- Added horizontal scrollbar support to the dashboard sidebar inset so wide admin tables and editors remain reachable on smaller screens.
+- Removed bottom padding from the new-product dashboard editor while preserving top spacing and normal edit-page padding.
+- Added the reference-dashboard category management layer with top `New Category` / `New Subcategory` actions, compact category cards, per-category action menus, subcategory chips, and an add-category tile while keeping the existing functional create/edit/delete forms.
+- Added reference-style visible action buttons to the dashboard products and marketing pages screens using their existing real create targets.
+- Wrapped the dashboard product, order, user, and marketing-page tables in compact reference-style card shells with mobile fallback cards and row action menus.
+- Reworked the dashboard product editor into a split reference-style layout with product information, media, content, pricing, organization, and publishing cards while preserving the real save action.
+- Restyled the dashboard payment method editor cards with compact status/mode badges around the existing Cash on Delivery, Card, bKash, and Nagad settings.
 
 ### Fixed
+- Hardened dashboard and checkout image uploads so invalid ImgBB keys and Catbox provider rejection no longer break uploads; small images now fall back to inline data URLs.
+- Removed remaining mojibake from order/payment labels, homepage fallback section labels, and storefront contact-card matching so live customer copy stays readable in Bangla and English.
+- Fixed dashboard sidebar accordion triggers so clicking a parent section only expands or collapses it instead of navigating to the first child page.
+- Reused the real Roshal logo image in the dashboard sidebar organization footer and dropdown so the sidebar header/footer branding matches.
+- Fixed the admin sidebar hydration flash where theme state could reset the light-mode sidebar from primary green back to white, and stabilized dashboard accordion menu cursor behavior.
 - Excluded the separate `roshal-organic-dashboard-ui` reference app from the production app lint/typecheck scope so root checks validate the real Roshal app instead of the mockup.
 - Removed the dashboard theme-page `500` by stopping the server component from passing a formatter function into the client-side chart card.
 - Verified the admin CMS stack end-to-end: every marketing page editor route now responds successfully in the live app, and the shared ImgBB upload endpoint accepted a real image upload used by the dashboard editors.
@@ -49,3 +72,5 @@ All notable changes to this project will be documented in this file.
 - Switched the shared image-upload control to a more reliable file-picker trigger so dashboard editors and frontend payment-proof uploads can hit the working ImgBB route again.
 - Increased the shared navigation-menu no-viewport popover z-index and the storefront `More` item stack so overflow dropdown content can render above the fixed sub-header instead of underneath it.
 - Lowered the fixed storefront sub-header shell to `z-10` while keeping its open dropdown layers above the rest of the page chrome.
+- Tightened dashboard category, order detail, marketing page editor, payment settings, user detail, and product editor wrappers so long content wraps instead of overflowing the sidebar inset.
+- Replaced the stale `/dashboard/settings/payment` mock page with the real dashboard payment settings page so removed Rocket/file-upload placeholders cannot be reached from that subroute.

@@ -1,8 +1,7 @@
+import { Plus } from "lucide-react";
+import Link from "next/link";
 import { saveRoshalPage } from "@/actions/admin";
-import {
-  DashboardBarChartCard,
-  DashboardPieChartCard,
-} from "@/components/dashboard/dashboard-chart-card";
+import { DashboardInsightCard } from "@/components/dashboard/dashboard-insight-card";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
@@ -70,7 +69,7 @@ export default async function DashboardPagesPage({
   ];
 
   return (
-    <div className="min-w-0 space-y-6 p-4 md:p-6">
+    <div className="min-w-0 space-y-6 p-6">
       <div className="min-w-0 space-y-2">
         <p className="text-xs uppercase tracking-[0.24em] text-primary">
           {locale === "bn" ? "মার্কেটিং পেজ" : "Marketing pages"}
@@ -78,6 +77,15 @@ export default async function DashboardPagesPage({
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
           {locale === "bn" ? "কনটেন্ট ও লেআউট" : "Content and layout"}
         </h1>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2 md:justify-end">
+        <Button asChild className="shadow-sm">
+          <Link href="#create-marketing-page">
+            <Plus className="size-4" />
+            {locale === "bn" ? "নতুন পেজ" : "New Page"}
+          </Link>
+        </Button>
       </div>
 
       {errorMessage ? (
@@ -90,19 +98,22 @@ export default async function DashboardPagesPage({
         <DashboardMetricCard
           title={locale === "bn" ? "মোট পেজ" : "Total pages"}
           value={pages.length}
+          hint={`${publishedCount} published pages`}
         />
         <DashboardMetricCard
           title={locale === "bn" ? "প্রকাশিত" : "Published"}
           value={publishedCount}
+          hint={`${pages.length - publishedCount} draft pages`}
         />
         <DashboardMetricCard
           title={locale === "bn" ? "নেভিগেশনে" : "In navigation"}
           value={navigationCount}
+          hint={`${pages.length - navigationCount} hidden from navigation`}
         />
       </div>
 
       <div className="grid gap-6 xl:grid-cols-2">
-        <DashboardPieChartCard
+        <DashboardInsightCard
           title={locale === "bn" ? "পেজ স্ট্যাটাস" : "Page status"}
           description={
             locale === "bn"
@@ -112,7 +123,7 @@ export default async function DashboardPagesPage({
           totalLabel={locale === "bn" ? "পেজ" : "Pages"}
           data={pageStatusData}
         />
-        <DashboardBarChartCard
+        <DashboardInsightCard
           title={
             locale === "bn" ? "নেভিগেশন ভিজিবিলিটি" : "Navigation visibility"
           }
@@ -128,7 +139,7 @@ export default async function DashboardPagesPage({
 
       <HomepageControlCenter locale={locale} />
 
-      <Card>
+      <Card id="create-marketing-page">
         <CardHeader>
           <CardTitle>
             {locale === "bn" ? "নতুন মার্কেটিং পেজ" : "Create marketing page"}

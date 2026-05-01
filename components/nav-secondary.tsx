@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   type LucideIcon,
   Package,
+  Settings,
   Shapes,
   ShoppingCart,
   Users,
@@ -46,6 +47,7 @@ const NAV_ICONS: Record<DashboardNavIconKey, LucideIcon> = {
   payments: CreditCard,
   users: Users,
   pages: FileText,
+  settings: Settings,
   storefront: ExternalLink,
 };
 
@@ -126,7 +128,7 @@ export function NavSecondary({
                         isDashboardUrlActive(pathname, subItem.url),
                       )
                     }
-                    className="h-10 px-3 font-medium transition-all duration-200 hover:translate-x-0.5 data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:shadow-sm"
+                    className="h-10 cursor-pointer px-3 font-medium transition-colors duration-150 data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:shadow-sm"
                   >
                     <NavIcon icon={item.icon} />
                     <span>{item.title}</span>
@@ -154,7 +156,7 @@ export function NavSecondary({
                 asChild
                 tooltip={item.title}
                 isActive={isDashboardUrlActive(pathname, item.url)}
-                className="h-10 px-3 font-medium transition-all duration-200 hover:translate-x-0.5 data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:shadow-sm"
+                className="h-10 cursor-pointer px-3 font-medium transition-colors duration-150 data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:shadow-sm"
               >
                 <a href={item.url}>
                   <NavIcon icon={item.icon} />

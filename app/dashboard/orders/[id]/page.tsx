@@ -47,12 +47,12 @@ export default async function DashboardOrderDetailsPage({
   );
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
-      <div className="space-y-2">
+    <div className="min-w-0 space-y-6 p-6">
+      <div className="min-w-0 space-y-2">
         <p className="text-xs uppercase tracking-[0.24em] text-primary">
           {locale === "bn" ? "অর্ডার" : "Order"}
         </p>
-        <h1 className="text-4xl font-semibold tracking-tight">
+        <h1 className="break-words text-4xl font-semibold tracking-tight">
           {order.orderNumber}
         </h1>
         <div className="flex flex-wrap gap-2">
@@ -77,7 +77,7 @@ export default async function DashboardOrderDetailsPage({
         </Alert>
       ) : null}
 
-      <div className="grid gap-6 xl:grid-cols-[1fr,22rem]">
+      <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
         <Card>
           <CardHeader>
             <CardTitle>
@@ -88,30 +88,30 @@ export default async function DashboardOrderDetailsPage({
             {order.items.map((item) => (
               <div
                 key={`${order.id}-${item.productId}`}
-                className="flex items-center justify-between rounded-xl border border-border/70 p-4"
+                className="flex min-w-0 flex-col gap-3 rounded-xl border border-border/70 p-4 sm:flex-row sm:items-center sm:justify-between"
               >
-                <div>
-                  <p className="font-medium">
+                <div className="min-w-0">
+                  <p className="break-words font-medium">
                     {locale === "bn" ? item.name.bn : item.name.en}
                   </p>
                   <p className="text-sm text-muted-foreground">
                     {locale === "bn" ? "পরিমাণ" : "Quantity"}: {item.quantity}
                   </p>
                 </div>
-                <p className="font-semibold text-primary">
+                <p className="shrink-0 font-semibold text-primary">
                   {formatBdt(item.price * item.quantity, locale)}
                 </p>
               </div>
             ))}
 
             <div className="grid gap-4 md:grid-cols-2">
-              <div className="rounded-xl border border-border/70 p-4 text-sm text-muted-foreground">
+              <div className="min-w-0 break-words rounded-xl border border-border/70 p-4 text-sm text-muted-foreground">
                 {order.customerName} · {order.phone} · {order.addressLine1},{" "}
                 {order.city}
                 <br />
                 {formatOrderDate(order.createdAt, locale)}
               </div>
-              <div className="rounded-xl border border-border/70 p-4 text-sm">
+              <div className="min-w-0 rounded-xl border border-border/70 p-4 text-sm">
                 <InfoRow
                   label={locale === "bn" ? "পেমেন্ট মাধ্যম" : "Payment method"}
                   value={
@@ -330,9 +330,11 @@ export default async function DashboardOrderDetailsPage({
 
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between gap-3">
+    <div className="flex min-w-0 flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
       <span className="text-muted-foreground">{label}</span>
-      <strong className="text-right">{value}</strong>
+      <strong className="min-w-0 break-words text-left sm:text-right">
+        {value}
+      </strong>
     </div>
   );
 }

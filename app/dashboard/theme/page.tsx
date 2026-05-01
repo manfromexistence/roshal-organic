@@ -1,8 +1,5 @@
 import { saveRoshalSiteSettings } from "@/actions/admin";
-import {
-  DashboardBarChartCard,
-  DashboardPieChartCard,
-} from "@/components/dashboard/dashboard-chart-card";
+import { DashboardInsightCard } from "@/components/dashboard/dashboard-insight-card";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { DashboardDeliveryZonesEditor } from "@/components/dashboard/delivery-zones-editor";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
@@ -51,7 +48,7 @@ export default async function DashboardThemePage() {
   }));
 
   return (
-    <div className="min-w-0 space-y-6 p-4 md:p-6">
+    <div className="min-w-0 space-y-6 p-6">
       <div className="min-w-0 space-y-2">
         <p className="text-xs uppercase tracking-[0.24em] text-primary">
           {locale === "bn" ? "স্টোরফ্রন্ট সেটিংস" : "Storefront settings"}
@@ -65,10 +62,12 @@ export default async function DashboardThemePage() {
         <DashboardMetricCard
           title={locale === "bn" ? "ডেলিভারি জোন" : "Delivery zones"}
           value={siteSettings.deliveryZones.length}
+          hint={`${defaultZoneCount} default zone configured`}
         />
         <DashboardMetricCard
           title={locale === "bn" ? "চালু জোন" : "Enabled zones"}
           value={enabledZoneCount}
+          hint={`${siteSettings.deliveryZones.length - enabledZoneCount} disabled zones`}
         />
         <DashboardMetricCard
           title={locale === "bn" ? "সর্বোচ্চ ডেলিভারি ফি" : "Highest delivery fee"}
@@ -86,7 +85,7 @@ export default async function DashboardThemePage() {
       </div>
 
       <div className="grid gap-6 xl:grid-cols-2">
-        <DashboardPieChartCard
+        <DashboardInsightCard
           title={locale === "bn" ? "জোন স্ট্যাটাস" : "Zone status"}
           description={
             locale === "bn"
@@ -96,7 +95,7 @@ export default async function DashboardThemePage() {
           totalLabel={locale === "bn" ? "জোন" : "Zones"}
           data={zoneStateData}
         />
-        <DashboardBarChartCard
+        <DashboardInsightCard
           title={locale === "bn" ? "ডেলিভারি ফি ম্যাপ" : "Delivery fee map"}
           description={
             locale === "bn"
