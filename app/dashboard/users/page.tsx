@@ -1,4 +1,3 @@
-import { DashboardInsightCard } from "@/components/dashboard/dashboard-insight-card";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { RoshalUsersTable } from "@/components/dashboard/users-table";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -28,46 +27,6 @@ export default async function DashboardUsersPage({
   ]);
   const adminCount = users.filter((user) => user.role === "admin").length;
   const activeCount = users.filter((user) => user.isActive).length;
-  const banglaCount = users.filter(
-    (user) => (user.preferredLanguage || "en") === "bn",
-  ).length;
-  const roleData = [
-    {
-      key: "admin",
-      label: locale === "bn" ? "অ্যাডমিন" : "Admins",
-      value: adminCount,
-    },
-    {
-      key: "user",
-      label: locale === "bn" ? "গ্রাহক" : "Customers",
-      value: users.length - adminCount,
-    },
-  ];
-  const languageData = [
-    {
-      key: "en",
-      label: locale === "bn" ? "ইংরেজি" : "English",
-      value: users.length - banglaCount,
-    },
-    {
-      key: "bn",
-      label: locale === "bn" ? "বাংলা" : "Bangla",
-      value: banglaCount,
-    },
-  ];
-  const activityData = [
-    {
-      key: "active",
-      label: locale === "bn" ? "সক্রিয়" : "Active",
-      value: activeCount,
-    },
-    {
-      key: "inactive",
-      label: locale === "bn" ? "নিষ্ক্রিয়" : "Inactive",
-      value: users.length - activeCount,
-    },
-  ];
-
   return (
     <div className="min-w-0 space-y-6 p-6">
       <div className="min-w-0 space-y-2">
@@ -111,39 +70,7 @@ export default async function DashboardUsersPage({
         />
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-2">
-        <DashboardInsightCard
-          title={locale === "bn" ? "রোল স্প্লিট" : "Role split"}
-          description={
-            locale === "bn"
-              ? "অ্যাডমিন বনাম গ্রাহক অনুপাত।"
-              : "The current balance between admins and customer accounts."
-          }
-          totalLabel={locale === "bn" ? "অ্যাকাউন্ট" : "Accounts"}
-          data={roleData}
-        />
-        <DashboardInsightCard
-          title={locale === "bn" ? "ভাষা পছন্দ" : "Language preference"}
-          description={
-            locale === "bn"
-              ? "বাংলা ও ইংরেজি পছন্দের ব্যবহারকারী অনুপাত।"
-              : "How the user base currently splits between Bangla and English."
-          }
-          totalLabel={locale === "bn" ? "ইউজার" : "Users"}
-          data={languageData}
-        />
-        <DashboardInsightCard
-          title={locale === "bn" ? "অ্যাকাউন্ট অবস্থা" : "Account status"}
-          description={
-            locale === "bn"
-              ? "সক্রিয় ও নিষ্ক্রিয় অ্যাকাউন্টের বর্তমান অবস্থা।"
-              : "Current split between active and inactive accounts."
-          }
-          totalLabel={locale === "bn" ? "স্ট্যাটাস" : "Status"}
-          data={activityData}
-          className="xl:col-span-2"
-        />
-      </div>
+      {/* Role, language, and account-status insight panels are intentionally hidden per client request. */}
 
       <RoshalUsersTable
         users={users}

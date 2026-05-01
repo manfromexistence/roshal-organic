@@ -1,5 +1,4 @@
 import { saveRoshalSiteSettings } from "@/actions/admin";
-import { DashboardInsightCard } from "@/components/dashboard/dashboard-insight-card";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { DashboardDeliveryZonesEditor } from "@/components/dashboard/delivery-zones-editor";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
@@ -11,7 +10,6 @@ import { PhoneInput2 } from "@/components/ui/phone-input-2";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import { getRoshalSiteSettings } from "@/lib/store-content";
 import { getRoshalLocale } from "@/lib/store-i18n";
-import { getLocalizedValue } from "@/lib/store-locale";
 
 export default async function DashboardThemePage() {
   const [locale, siteSettings] = await Promise.all([
@@ -29,24 +27,6 @@ export default async function DashboardThemePage() {
     0,
     ...siteSettings.deliveryZones.map((zone) => zone.fee),
   );
-  const zoneStateData = [
-    {
-      key: "enabled",
-      label: locale === "bn" ? "চালু জোন" : "Enabled zones",
-      value: enabledZoneCount,
-    },
-    {
-      key: "disabled",
-      label: locale === "bn" ? "বন্ধ জোন" : "Disabled zones",
-      value: siteSettings.deliveryZones.length - enabledZoneCount,
-    },
-  ];
-  const deliveryFeeData = siteSettings.deliveryZones.map((zone) => ({
-    key: zone.id,
-    label: getLocalizedValue(locale, zone.label),
-    value: zone.fee,
-  }));
-
   return (
     <div className="min-w-0 space-y-6 p-6">
       <div className="min-w-0 space-y-2">
@@ -84,28 +64,7 @@ export default async function DashboardThemePage() {
         />
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-2">
-        <DashboardInsightCard
-          title={locale === "bn" ? "জোন স্ট্যাটাস" : "Zone status"}
-          description={
-            locale === "bn"
-              ? "কোন কোন ডেলিভারি জোন বর্তমানে লাইভ আছে।"
-              : "See which delivery zones are currently live."
-          }
-          totalLabel={locale === "bn" ? "জোন" : "Zones"}
-          data={zoneStateData}
-        />
-        <DashboardInsightCard
-          title={locale === "bn" ? "ডেলিভারি ফি ম্যাপ" : "Delivery fee map"}
-          description={
-            locale === "bn"
-              ? "অঞ্চলভিত্তিক ডেলিভারি চার্জ তুলনা করুন।"
-              : "Compare the configured delivery charge across service zones."
-          }
-          totalLabel={locale === "bn" ? "ফি (BDT)" : "Fees (BDT)"}
-          data={deliveryFeeData}
-        />
-      </div>
+      {/* Zone-status and delivery-fee insight panels are intentionally hidden per client request. */}
 
       <Card>
         <CardHeader>

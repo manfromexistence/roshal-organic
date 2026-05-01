@@ -85,7 +85,7 @@ export default async function DashboardPaymentsPage({
       option.key !== "cash_on_delivery",
   ).length;
   return (
-    <div className="min-w-0 space-y-6 p-6 pb-0">
+    <div className="min-w-0 space-y-6 px-6 pt-6 pb-0">
       <div className="min-w-0 space-y-2">
         <p className="text-xs uppercase tracking-[0.24em] text-primary">
           {locale === "bn" ? "পেমেন্ট সেটিংস" : "Payment settings"}

@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Changed
+- Normalized no-bottom-padding dashboard pages to use explicit `px-6 pt-6 pb-0` spacing so reloads cannot reintroduce bottom padding.
+- Removed bottom padding from Dashboard System Settings, kept top/side spacing, and collapsed secondary settings groups into shadcn accordions so the page is easier to scan.
+- Removed the extra Theme Settings shortcut from Dashboard System Settings so the page matches the simplified sidebar structure.
+- Reduced dashboard overload on Users, Storefront Theme, and Marketing by hiding always-visible insight panels and moving advanced homepage CMS controls behind an accordion.
 - Reworked the current client-feedback batch for storefront auth, signup, checkout, featured categories, product cards, contact cards, and footer spacing toward a more compact Ghore-Bazar-style flow.
 - Switched customer-facing phone entry to local Bangladesh mobile numbers only, with `017XXXXXXXX` placeholders and inline mobile validation on signup.
 - Added dashboard order date-range filtering with All time support, paid/unpaid amount totals, and richer per-column order filters for order/mobile, customer, payment method, total, status, payment status, and placed date.

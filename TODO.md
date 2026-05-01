@@ -224,6 +224,15 @@
 - [x] Add compact select controls for product category/subcategory assignment and category/subcategory product-bucket linking.
 - [x] Normalize Payment Settings page spacing with standard top/side dashboard padding and no bottom padding.
 
+## 2026-05-02 Dashboard settings and overload cleanup
+
+- [x] Remove bottom padding from Dashboard System Settings while keeping the standard top and side page spacing.
+- [x] Replace conflicting `p-6 pb-0` dashboard spacing with explicit `px-6 pt-6 pb-0` on no-bottom-padding pages.
+- [x] Collapse secondary settings groups so delivery charges stay visible first and brand/storefront defaults do not overwhelm the page.
+- [x] Remove the extra Theme Settings shortcut from System Settings to keep the simplified dashboard navigation consistent.
+- [x] Hide remaining always-visible Users and Storefront Theme insight panels.
+- [x] Move Marketing advanced homepage controls behind a collapsed accordion while keeping the real CMS controls available.
+
 ## 2026-05-01 Dashboard sidebar and bottom padding cleanup
 
 - [x] Remove Storefront Theme from the dashboard sidebar settings submenu.

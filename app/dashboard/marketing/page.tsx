@@ -10,6 +10,12 @@ import Link from "next/link";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { HomepageControlCenter } from "@/components/dashboard/homepage-control-center";
 import { RoshalPagesTable } from "@/components/dashboard/pages-table";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -200,7 +206,27 @@ export default async function DashboardMarketingPage() {
         </Card>
       </div>
 
-      <HomepageControlCenter locale={locale} />
+      <Accordion type="single" collapsible className="space-y-3">
+        <AccordionItem
+          className="rounded-lg border-none bg-card px-4 shadow-sm"
+          value="homepage-controls"
+        >
+          <AccordionTrigger className="hover:no-underline">
+            <span className="min-w-0 text-left">
+              <span className="block text-base font-semibold">
+                Advanced homepage controls
+              </span>
+              <span className="block text-sm font-normal text-muted-foreground">
+                Open only when changing CMS section visibility or section-level
+                homepage settings.
+              </span>
+            </span>
+          </AccordionTrigger>
+          <AccordionContent>
+            <HomepageControlCenter locale={locale} />
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
 
       <RoshalPagesTable pages={pages} locale={locale} />
     </div>

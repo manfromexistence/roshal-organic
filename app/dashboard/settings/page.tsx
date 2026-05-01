@@ -1,18 +1,16 @@
-import { MapPin, RefreshCcw, Save, Settings, Truck } from "lucide-react";
+import { MapPin, RefreshCcw, Save, Truck } from "lucide-react";
 import Link from "next/link";
 import { saveRoshalSiteSettings } from "@/actions/admin";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { DashboardDeliveryZonesEditor } from "@/components/dashboard/delivery-zones-editor";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
-import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PhoneInput2 } from "@/components/ui/phone-input-2";
@@ -38,26 +36,18 @@ export default async function DashboardSystemSettingsPage() {
   );
 
   return (
-    <div className="mx-auto w-full max-w-4xl space-y-6 p-6">
-      <div className="flex min-w-0 flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div className="min-w-0 space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-primary">
-            System settings
-          </p>
-          <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-            Store configuration
-          </h1>
-          <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
-            Manage brand identity, contact channels, checkout delivery charges,
-            and storefront defaults from one real settings page.
-          </p>
-        </div>
-        <Button asChild variant="outline">
-          <Link href="/dashboard/theme">
-            <Settings className="size-4" />
-            Theme settings
-          </Link>
-        </Button>
+    <div className="mx-auto w-full max-w-4xl space-y-6 px-6 pt-6 pb-0">
+      <div className="min-w-0 space-y-2">
+        <p className="text-xs font-semibold uppercase tracking-[0.24em] text-primary">
+          System settings
+        </p>
+        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+          Store configuration
+        </h1>
+        <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
+          Manage brand identity, contact channels, checkout delivery charges,
+          and storefront defaults from one real settings page.
+        </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
@@ -86,39 +76,58 @@ export default async function DashboardSystemSettingsPage() {
         <input type="hidden" name="id" value={siteSettings.id} />
         <input type="hidden" name="redirectTo" value="/dashboard/settings" />
 
-        <Card className="border-none bg-card shadow-sm">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <Truck className="size-5 text-primary" />
-              Delivery charge system
-            </CardTitle>
-            <CardDescription>
-              Configure checkout delivery fees by customer location. These
-              values are used by the storefront cart and checkout flow.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <DashboardDeliveryZonesEditor
-              locale={locale}
-              name="deliveryZonesJson"
-              value={siteSettings.deliveryZones}
-            />
-          </CardContent>
-        </Card>
+        <Accordion
+          type="multiple"
+          defaultValue={["delivery"]}
+          className="space-y-3"
+        >
+          <AccordionItem
+            value="delivery"
+            className="rounded-lg border-none bg-card px-4 shadow-sm"
+          >
+            <AccordionTrigger className="hover:no-underline">
+              <span className="flex min-w-0 items-start gap-3">
+                <Truck className="mt-0.5 size-5 shrink-0 text-primary" />
+                <span className="min-w-0">
+                  <span className="block text-base font-semibold">
+                    Delivery charge system
+                  </span>
+                  <span className="block text-sm font-normal text-muted-foreground">
+                    Configure checkout fees by customer location.
+                  </span>
+                </span>
+              </span>
+            </AccordionTrigger>
+            <AccordionContent forceMount>
+              <DashboardDeliveryZonesEditor
+                locale={locale}
+                name="deliveryZonesJson"
+                value={siteSettings.deliveryZones}
+              />
+            </AccordionContent>
+          </AccordionItem>
 
-        <div className="grid gap-6 xl:grid-cols-[1fr_0.9fr]">
-          <Card className="border-none bg-card shadow-sm">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-xl">
-                <MapPin className="size-5 text-primary" />
-                Contact and brand
-              </CardTitle>
-              <CardDescription>
-                Public contact values shown in header, footer, checkout, and
-                support surfaces.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="grid min-w-0 gap-5 md:grid-cols-2">
+          <AccordionItem
+            value="contact"
+            className="rounded-lg border-none bg-card px-4 shadow-sm"
+          >
+            <AccordionTrigger className="hover:no-underline">
+              <span className="flex min-w-0 items-start gap-3">
+                <MapPin className="mt-0.5 size-5 shrink-0 text-primary" />
+                <span className="min-w-0">
+                  <span className="block text-base font-semibold">
+                    Contact and brand
+                  </span>
+                  <span className="block text-sm font-normal text-muted-foreground">
+                    Header, footer, checkout, and support contact values.
+                  </span>
+                </span>
+              </span>
+            </AccordionTrigger>
+            <AccordionContent
+              forceMount
+              className="grid min-w-0 gap-5 md:grid-cols-2"
+            >
               <Field
                 name="brandName"
                 label="Brand name"
@@ -155,17 +164,27 @@ export default async function DashboardSystemSettingsPage() {
                 label="Address (BN)"
                 defaultValue={siteSettings.address.bn}
               />
-            </CardContent>
-          </Card>
+            </AccordionContent>
+          </AccordionItem>
 
-          <Card className="border-none bg-card shadow-sm">
-            <CardHeader>
-              <CardTitle className="text-xl">Storefront defaults</CardTitle>
-              <CardDescription>
-                Shared layout defaults for the current marketing storefront.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-5">
+          <AccordionItem
+            value="storefront"
+            className="rounded-lg border-none bg-card px-4 shadow-sm"
+          >
+            <AccordionTrigger className="hover:no-underline">
+              <span className="min-w-0">
+                <span className="block text-base font-semibold">
+                  Storefront defaults
+                </span>
+                <span className="block text-sm font-normal text-muted-foreground">
+                  Shared homepage CTA, layout, card, and spacing defaults.
+                </span>
+              </span>
+            </AccordionTrigger>
+            <AccordionContent
+              forceMount
+              className="grid min-w-0 gap-5 md:grid-cols-2"
+            >
               <Field
                 name="taglineEn"
                 label="Tagline (EN)"
@@ -220,24 +239,22 @@ export default async function DashboardSystemSettingsPage() {
                   { value: "spacious", label: "spacious" },
                 ]}
               />
-            </CardContent>
-          </Card>
-        </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
 
-        <Card className="border-none bg-card shadow-sm">
-          <CardFooter className="flex flex-col-reverse gap-3 border-t bg-muted/20 p-6 sm:flex-row sm:justify-between">
-            <Button asChild variant="outline">
-              <Link href="/dashboard">
-                <RefreshCcw className="size-4" />
-                Back to dashboard
-              </Link>
-            </Button>
-            <Button type="submit">
-              <Save className="size-4" />
-              Save system settings
-            </Button>
-          </CardFooter>
-        </Card>
+        <div className="flex flex-col-reverse gap-3 border-t bg-background pt-4 pb-0 sm:flex-row sm:justify-between">
+          <Button asChild variant="outline">
+            <Link href="/dashboard">
+              <RefreshCcw className="size-4" />
+              Back to dashboard
+            </Link>
+          </Button>
+          <Button type="submit">
+            <Save className="size-4" />
+            Save system settings
+          </Button>
+        </div>
       </form>
     </div>
   );
