@@ -525,9 +525,9 @@ export default async function LandingPage() {
     <div className="flex w-full min-w-0 flex-col overflow-hidden">
       <LandingHero banners={heroBanners} language={language} />
 
-      <section className="bg-background py-12 md:py-16">
-        <div className="container mx-auto space-y-8 px-4 sm:px-6 md:px-8">
-          <div className="space-y-3 text-center">
+      <section className="bg-background py-4 md:py-6">
+        <div className="container mx-auto space-y-4 px-4 sm:px-6 md:space-y-5 md:px-8">
+          <div className="space-y-2.5 text-center">
             <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
               {getLocalizedValue(
                 language,
@@ -538,7 +538,7 @@ export default async function LandingPage() {
               )}
             </h2>
             {categoriesDescription ? (
-              <p className="mx-auto max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
+              <p className="mx-auto max-w-3xl text-sm leading-6 text-muted-foreground md:text-base">
                 {getLocalizedValue(language, categoriesDescription)}
               </p>
             ) : null}
@@ -580,10 +580,10 @@ export default async function LandingPage() {
       ) : null}
 
       {brands.length > 0 ? (
-        <section className="bg-background py-12 md:py-16">
-          <div className="container mx-auto space-y-8 px-4 sm:px-6 md:px-8">
+        <section className="bg-background py-4 md:py-6">
+          <div className="container mx-auto space-y-4 px-4 sm:px-6 md:space-y-5 md:px-8">
             <ScrollReveal>
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
                   {getLocalizedValue(
                     language,
@@ -594,7 +594,7 @@ export default async function LandingPage() {
                   )}
                 </h2>
                 {brandsDescription ? (
-                  <p className="max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
+                  <p className="max-w-3xl text-sm leading-6 text-muted-foreground md:text-base">
                     {getLocalizedValue(language, brandsDescription)}
                   </p>
                 ) : null}
@@ -638,10 +638,10 @@ export default async function LandingPage() {
       ) : null}
 
       {testimonials.length > 0 ? (
-        <section className="bg-background py-12 md:py-16">
-          <div className="container mx-auto space-y-8 px-4 sm:px-6 md:px-8">
+        <section className="bg-background py-4 md:py-6">
+          <div className="container mx-auto space-y-4 px-4 sm:px-6 md:space-y-5 md:px-8">
             <ScrollReveal>
-              <div className="space-y-3 text-center">
+              <div className="space-y-2.5 text-center">
                 <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
                   {getLocalizedValue(
                     language,
@@ -652,7 +652,7 @@ export default async function LandingPage() {
                   )}
                 </h2>
                 {testimonialsDescription ? (
-                  <p className="mx-auto max-w-3xl text-sm leading-7 text-muted-foreground md:text-base">
+                  <p className="mx-auto max-w-3xl text-sm leading-6 text-muted-foreground md:text-base">
                     {getLocalizedValue(language, testimonialsDescription)}
                   </p>
                 ) : null}

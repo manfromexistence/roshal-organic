@@ -17,13 +17,13 @@ export function HomeSectionHeading({
 }) {
   return (
     <div
-      className={`flex flex-col gap-4 border-b border-border/70 pb-4 ${
+      className={`flex flex-col gap-3 border-b border-border/70 pb-3 ${
         centered
           ? "items-center text-center"
           : "justify-between md:flex-row md:items-end"
       }`}
     >
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         <div className={centered ? "flex justify-center" : "flex"}>
           <span className="h-1.5 w-12 rounded-full bg-primary" />
         </div>

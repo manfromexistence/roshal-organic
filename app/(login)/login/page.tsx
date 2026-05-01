@@ -61,7 +61,17 @@ function AuthHeader({ title, subtitle }: { title: string; subtitle: string }) {
   return (
     <div className="flex flex-col items-center gap-3 text-center">
       <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-sm">
-        <User className="size-7" />
+        <svg
+          className="size-7"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M12 1.2A4.8 4.8 0 1 0 16.8 6 4.805 4.805 0 0 0 12 1.2zm0 8.6A3.8 3.8 0 1 1 15.8 6 3.804 3.804 0 0 1 12 9.8zM9 22H4l.01-4.5A5.498 5.498 0 0 1 9.5 12h4.312a5.968 5.968 0 0 0-.462 1H9.5A4.505 4.505 0 0 0 5 17.5V21h4zm10-10.9a3.9 3.9 0 0 0-3.9 3.9 3.86 3.86 0 0 0 .225 1.255L11 20.727V23h2.993l.023-.01L15 22v-1h1.005L17 20v-1h1.004l.186-.187A3.9 3.9 0 1 0 19 11.1zm0 6.9a2.973 2.973 0 0 1-1.223-.267l-.272.267H16v2h-2v1.674l-.408.326H12v-.906l4.419-4.591A2.965 2.965 0 0 1 16 15a3 3 0 1 1 3 3zm.5-5a1.5 1.5 0 1 0 1.5 1.5 1.5 1.5 0 0 0-1.5-1.5zm0 2a.5.5 0 1 1 .5-.5.501.501 0 0 1-.5.5z"/>
+        </svg>
       </div>
       <div className="space-y-1">
         <h1 className="text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
@@ -94,17 +104,6 @@ function FieldShell({
   );
 }
 
-function OrDivider() {
-  return (
-    <div className="relative hidden items-center justify-center md:flex">
-      <div className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-border/70" />
-      <span className="relative z-10 inline-flex h-14 w-14 items-center justify-center rounded-full border border-border/70 bg-background text-sm font-medium text-muted-foreground shadow-sm">
-        OR
-      </span>
-    </div>
-  );
-}
-
 export default function LoginPage() {
   const searchParams = useSearchParams();
   const requestedMode =
@@ -113,7 +112,6 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [rememberMe, setRememberMe] = useState(true);
-  const [quickMobile, setQuickMobile] = useState("");
   const [showSignInPassword, setShowSignInPassword] = useState(false);
   const [showSignUpPassword, setShowSignUpPassword] = useState(false);
 
@@ -130,7 +128,6 @@ export default function LoginPage() {
   );
 
   const signInPasswordRef = useRef<HTMLInputElement | null>(null);
-  const signUpNameRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     setAuthMode(requestedMode);
@@ -152,36 +149,12 @@ export default function LoginPage() {
   const hasCallbackURL = isSafeCallbackUrl(rawCallbackURL);
   const callbackURL = getSafeCallbackUrl(rawCallbackURL);
 
-  const handleQuickMobileContinue = () => {
-    const normalizedPhone = normalizeBangladeshPhoneInput(quickMobile);
-
-    if (!isBangladeshPhoneComplete(normalizedPhone)) {
-      setErrorMessage("Mobile number must be exactly 11 digits.");
-      return;
-    }
-
-    setErrorMessage(null);
-
-    if (isSignIn) {
-      setSignInIdentifier(normalizedPhone);
-      requestAnimationFrame(() => {
-        signInPasswordRef.current?.focus();
-      });
-      return;
-    }
-
-    setMobile(normalizedPhone);
-    requestAnimationFrame(() => {
-      signUpNameRef.current?.focus();
-    });
-  };
-
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrorMessage(null);
 
     if (!isSignIn) {
-      const phone = normalizeBangladeshPhoneInput(mobile || quickMobile);
+      const phone = normalizeBangladeshPhoneInput(mobile);
       if (!isBangladeshPhoneComplete(phone)) {
         setErrorMessage("Mobile number must be exactly 11 digits.");
         return;
@@ -208,9 +181,9 @@ export default function LoginPage() {
         : await authClient.signUp.email(
             {
               name,
-              email: toSyntheticEmail(email.trim() || mobile || quickMobile),
+              email: toSyntheticEmail(email.trim() || mobile),
               password,
-              phone: normalizeBangladeshPhoneInput(mobile || quickMobile),
+              phone: normalizeBangladeshPhoneInput(mobile),
               preferredLanguage: "en",
               defaultAddress: [address, thana, districtOption.label]
                 .map((value) => value.trim())
@@ -266,10 +239,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-muted/20 px-4 py-8 md:px-6 md:py-12 lg:px-8 lg:py-16">
-      <div className="mx-auto max-w-7xl">
-        <div className="rounded-[2rem] border border-border/60 bg-background shadow-xl shadow-black/5">
-          <div className="px-6 py-8 md:px-10 md:py-10 lg:px-14 lg:py-12">
+    <div className="min-h-screen bg-muted/20 px-4 py-10 sm:px-6 md:py-14 lg:px-8 lg:py-16">
+      <div className="mx-auto max-w-3xl">
+        <div className="rounded-2xl border border-border/60 bg-background shadow-xl shadow-black/5 md:rounded-[2rem]">
+          <div className="px-4 py-7 sm:px-6 md:px-10 md:py-10 lg:px-12">
             <AuthHeader
               title={isSignIn ? "Signin" : "Create New Account"}
               subtitle={
@@ -279,49 +252,9 @@ export default function LoginPage() {
               }
             />
 
-            <div className="mt-10 grid gap-5 md:grid-cols-[minmax(0,1fr)_4rem_minmax(0,1fr)] md:gap-8">
+            <div className="mt-8 md:mt-10">
               <Card className="rounded-3xl border-0 bg-muted/35 p-0 shadow-none">
-                <CardContent className="space-y-5 px-7 py-7">
-                  <div className="space-y-1">
-                    <h2 className="text-2xl font-semibold text-foreground">
-                      {isSignIn
-                        ? "Login With Mobile Number"
-                        : "Signup With Mobile Number"}
-                    </h2>
-                    <p className="text-sm text-muted-foreground">
-                      {isSignIn
-                        ? "Use your mobile number to continue securely."
-                        : "Start with your delivery mobile number first."}
-                    </p>
-                  </div>
-
-                  <PhoneInput2
-                    value={quickMobile}
-                    onChange={(value) => {
-                      setErrorMessage(null);
-                      setQuickMobile(value);
-                      if (!isSignIn) {
-                        setMobile(value);
-                      }
-                    }}
-                    placeholder="01805-767300"
-                    className="[&_button]:h-14 [&_button]:border-border/70 [&_button]:bg-background [&_input]:h-14 [&_input]:rounded-s-none [&_input]:border-border/70 [&_input]:bg-background [&_input]:text-base"
-                  />
-
-                  <Button
-                    type="button"
-                    className="h-14 w-full rounded-xl text-base font-semibold"
-                    onClick={handleQuickMobileContinue}
-                  >
-                    Send OTP
-                  </Button>
-                </CardContent>
-              </Card>
-
-              <OrDivider />
-
-              <Card className="rounded-3xl border-0 bg-muted/35 p-0 shadow-none">
-                <CardContent className="space-y-5 px-7 py-7">
+                <CardContent className="space-y-5 px-4 py-5 sm:px-6 sm:py-6 md:px-7 md:py-7">
                   <div className="space-y-1">
                     <h2 className="text-2xl font-semibold text-foreground">
                       {isSignIn
@@ -429,7 +362,6 @@ export default function LoginPage() {
                       <div className="space-y-4">
                         <FieldShell icon={<User className="size-4" />}>
                           <Input
-                            ref={signUpNameRef}
                             id="signup-name"
                             value={name}
                             autoComplete="name"
@@ -572,12 +504,11 @@ export default function LoginPage() {
                           </Label>
                           <PhoneInput2
                             id="signup-mobile"
-                            value={mobile || quickMobile}
+                            value={mobile}
                             autoComplete="tel"
                             onChange={(value) => {
                               setErrorMessage(null);
                               setMobile(value);
-                              setQuickMobile(value);
                             }}
                             placeholder="01805-767300"
                             className="[&_button]:h-14 [&_button]:border-border/70 [&_button]:bg-background [&_input]:h-14 [&_input]:rounded-s-none [&_input]:border-border/70 [&_input]:bg-background [&_input]:text-base"
@@ -605,13 +536,7 @@ export default function LoginPage() {
               </Card>
             </div>
 
-            <div className="mt-10 space-y-4 text-center">
-              <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                <div className="h-px flex-1 bg-border/70" />
-                <span>{isSignIn ? "or signin with" : "or signup with"}</span>
-                <div className="h-px flex-1 bg-border/70" />
-              </div>
-
+            <div className="mt-6 text-center">
               <p className="text-sm text-muted-foreground md:text-base">
                 {isSignIn
                   ? "Don't have any account?"

@@ -265,7 +265,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-40 flex h-(--header-height) shrink-0 items-center gap-0 border-b border-border bg-background/40 bg-clip-padding backdrop-filter backdrop-blur-2xl transition-[width,height] ease-linear lg:left-[var(--sidebar-width)] group-has-data-[collapsible=icon]/sidebar-wrapper:lg:left-[var(--sidebar-width-icon)]">
+      <header className="fixed top-0 left-0 right-0 z-40 flex h-(--header-height) shrink-0 items-center gap-0 border-b border-border/70 bg-background/90 bg-clip-padding shadow-sm backdrop-filter backdrop-blur-xl transition-[width,height] ease-linear lg:left-[var(--sidebar-width)] group-has-data-[collapsible=icon]/sidebar-wrapper:lg:left-[var(--sidebar-width-icon)]">
         <div className="flex w-full items-center gap-1 px-4 lg:gap-2 lg:px-6">
           <SidebarTrigger className="-ml-1" />
           <Separator
@@ -307,7 +307,7 @@ export function SiteHeader({ user }: SiteHeaderProps) {
           <div className="ml-auto flex min-w-0 items-center gap-2">
             <Button
               variant="outline"
-              className="hidden h-9 min-w-0 flex-1 items-center justify-between gap-3 px-3 text-muted-foreground xl:flex xl:max-w-sm"
+              className="hidden h-9 min-w-0 flex-1 items-center justify-between gap-3 border-border/70 bg-card/70 px-3 text-muted-foreground shadow-sm xl:flex xl:max-w-sm"
               onClick={() => setSearchOpen(true)}
             >
               <span className="flex min-w-0 items-center gap-2">

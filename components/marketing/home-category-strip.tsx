@@ -33,27 +33,27 @@ export function HomeCategoryStrip({
         align: "start",
         dragFree: true,
       }}
-      className="max-w-full overflow-x-clip px-3 sm:px-8 md:px-12"
+      className="max-w-full overflow-x-clip px-2 sm:px-6 md:px-10"
     >
-      <CarouselContent className="-ml-3 md:-ml-4">
+      <CarouselContent className="-ml-2 md:-ml-3">
         {categories.map((category) => (
           <CarouselItem
             key={category.key}
-            className="basis-[30%] pl-3 min-[420px]:basis-[48%] sm:basis-1/3 md:pl-4 lg:basis-1/6 max-h-[200px]"
+            className="basis-[30%] pl-2 min-[420px]:basis-[30%] sm:basis-1/4 md:basis-1/5 md:pl-3 lg:basis-[14.285%] xl:basis-[12.5%]"
           >
             <Link href={category.href} className="block h-full">
-              <Card className="h-full rounded-md border-border/70 bg-card shadow-sm transition-transform duration-200 hover:bg-accent/60">
-                <CardContent className="flex flex-col items-center justify-center gap-2.5 p-4 text-center">
-                  <div className="relative flex size-[4.5rem] items-center justify-center overflow-hidden rounded-md bg-muted/60">
+              <Card className="!py-2 h-full rounded-md border-border/70 bg-card shadow-sm transition-transform duration-200 hover:bg-accent/60">
+                <CardContent className="flex flex-col items-center justify-center gap-1.5 p-2 text-center">
+                  <div className="relative flex size-10 items-center justify-center overflow-hidden rounded-md bg-muted/60 sm:size-12">
                     <Image
                       src={category.image}
                       alt={category.name[language]}
                       fill
                       className="object-cover"
-                      sizes="72px"
+                      sizes="48px"
                     />
                   </div>
-                  <p className="line-clamp-2 text-sm font-medium leading-5 text-foreground">
+                  <p className="line-clamp-2 text-[10px] font-medium leading-3 text-foreground sm:text-xs">
                     {category.name[language]}
                   </p>
                 </CardContent>

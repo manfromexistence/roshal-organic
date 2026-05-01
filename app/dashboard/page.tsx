@@ -107,12 +107,12 @@ export default async function DashboardHomePage() {
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
         <DashboardMetricCard
-          title={locale === "bn" ? "মোট পণ্য" : "Products"}
+          title={locale === "bn" ? "🛍️ মোট পণ্য" : "🛍️ Products"}
           value={snapshot.productCount}
           hint={locale === "bn" ? "লাইভ ক্যাটালগ গুনতি" : "Live catalog count"}
         />
         <DashboardMetricCard
-          title={locale === "bn" ? "লো স্টক" : "Low stock"}
+          title={locale === "bn" ? "⚠️ লো স্টক" : "⚠️ Low stock"}
           value={snapshot.lowStockProductCount}
           hint={
             locale === "bn"
@@ -121,7 +121,7 @@ export default async function DashboardHomePage() {
           }
         />
         <DashboardMetricCard
-          title={locale === "bn" ? "স্টক শেষ" : "Out of stock"}
+          title={locale === "bn" ? "❌ স্টক শেষ" : "❌ Out of stock"}
           value={snapshot.outOfStockProductCount}
           hint={
             locale === "bn"
@@ -130,7 +130,7 @@ export default async function DashboardHomePage() {
           }
         />
         <DashboardMetricCard
-          title={locale === "bn" ? "চলমান অর্ডার" : "Pending orders"}
+          title={locale === "bn" ? "📋 চলমান অর্ডার" : "📋 Pending orders"}
           value={snapshot.pendingOrderCount}
           hint={
             locale === "bn"
@@ -139,7 +139,7 @@ export default async function DashboardHomePage() {
           }
         />
         <DashboardMetricCard
-          title={locale === "bn" ? "ব্যবহারকারী" : "Users"}
+          title={locale === "bn" ? "👥 ব্যবহারকারী" : "👥 Users"}
           value={snapshot.userCount}
           hint={
             locale === "bn"
@@ -148,7 +148,7 @@ export default async function DashboardHomePage() {
           }
         />
         <DashboardMetricCard
-          title={locale === "bn" ? "মার্কেটিং পেজ" : "Marketing pages"}
+          title={locale === "bn" ? "📄 মার্কেটিং পেজ" : "📄 Marketing pages"}
           value={snapshot.marketingPageCount}
           hint={
             locale === "bn"
@@ -195,10 +195,10 @@ export default async function DashboardHomePage() {
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-        <Card>
+        <Card className="border-none bg-card/50 backdrop-blur shadow-sm">
           <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <CardTitle>
-              {locale === "bn" ? "সাম্প্রতিক অর্ডার" : "Recent orders"}
+              {locale === "bn" ? "📦 সাম্প্রতিক অর্ডার" : "📦 Recent orders"}
             </CardTitle>
             <Button asChild variant="ghost" size="sm">
               <Link href="/dashboard/orders">
@@ -210,34 +210,25 @@ export default async function DashboardHomePage() {
             {snapshot.recentOrders.map((order) => (
               <div
                 key={order.id}
-                className="flex flex-col gap-2 rounded-md border border-border/70 bg-muted/10 p-4 md:flex-row md:items-center md:justify-between"
+                className="flex items-center gap-4"
               >
-                <div>
-                  <p className="font-medium">{order.orderNumber}</p>
-                  <p className="text-sm text-foreground/68 dark:text-foreground/78">
-                    {order.customerName} ·{" "}
-                    {formatOrderDate(order.createdAt, locale)}
-                  </p>
+                <div className="h-9 w-9 rounded-full bg-accent flex items-center justify-center font-semibold text-xs text-accent-foreground">
+                  {order.orderNumber.slice(-2)}
                 </div>
-                <div className="text-right">
-                  <p className="font-semibold text-primary">
-                    {formatBdt(order.total, locale)}
-                  </p>
-                  <p className="text-sm text-foreground/68 dark:text-foreground/78">
-                    {locale === "bn"
-                      ? getRoshalOrderStatusLabel(order.status).bn
-                      : getRoshalOrderStatusLabel(order.status).en}
-                  </p>
+                <div className="flex-1 space-y-1">
+                  <p className="text-sm font-medium leading-none">{order.orderNumber}</p>
+                  <p className="text-xs text-muted-foreground">{order.customerName}</p>
                 </div>
+                <div className="font-medium text-sm">{formatBdt(order.total, locale)}</div>
               </div>
             ))}
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-none bg-card/50 backdrop-blur shadow-sm">
           <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <CardTitle>
-              {locale === "bn" ? "ফিচারড পণ্য" : "Featured products"}
+              {locale === "bn" ? "⭐ ফিচারড পণ্য" : "⭐ Featured products"}
             </CardTitle>
             <Button asChild variant="ghost" size="sm">
               <Link href="/dashboard/products">
@@ -249,21 +240,22 @@ export default async function DashboardHomePage() {
             {snapshot.featuredProducts.map((product) => (
               <div
                 key={product.id}
-                className="flex items-center justify-between gap-3 rounded-md border border-border/70 bg-muted/10 p-4"
+                className="flex items-center gap-4"
               >
-                <div>
-                  <p className="font-medium">
+                <div className="h-9 w-9 rounded-full bg-accent flex items-center justify-center font-semibold text-xs text-accent-foreground">
+                  🛍️
+                </div>
+                <div className="flex-1 space-y-1">
+                  <p className="text-sm font-medium leading-none">
                     {locale === "bn" ? product.name.bn : product.name.en}
                   </p>
-                  <p className="text-sm text-foreground/68 dark:text-foreground/78">
+                  <p className="text-xs text-muted-foreground">
                     {locale === "bn"
                       ? product.categoryLabel.bn
                       : product.categoryLabel.en}
                   </p>
                 </div>
-                <p className="font-semibold text-primary">
-                  {formatBdt(product.price, locale)}
-                </p>
+                <div className="font-medium text-sm">{formatBdt(product.price, locale)}</div>
               </div>
             ))}
           </CardContent>

@@ -318,7 +318,8 @@
     "useIgnoreFile": true
   },
   "files": {
-    "ignoreUnknown": false
+    "ignoreUnknown": false,
+    "includes": ["**", "!roshal-organic-dashboard-ui", "!resources/sheet.css"]
   },
   "formatter": {
     "enabled": true,

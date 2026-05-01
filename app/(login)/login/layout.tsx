@@ -62,7 +62,7 @@ export default async function LoginLayout({
         type="always"
         scrollHideDelay={0}
         className="min-h-0 flex-1"
-        viewportClassName="min-w-0 overscroll-contain"
+        viewportClassName="min-w-0 overscroll-contain pt-32"
       >
         <div className="flex min-h-full flex-col">
           <main className="min-h-[calc(100vh-18rem)] min-w-0 pb-20 md:pb-0">

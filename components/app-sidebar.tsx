@@ -86,26 +86,32 @@ export function AppSidebar({
 
   return (
     <Sidebar {...sidebarProps}>
-      <SidebarHeader>
+      <SidebarHeader className="px-3 py-4">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
+            <SidebarMenuButton
+              size="lg"
+              asChild
+              className="h-14 rounded-md border border-sidebar-border/80 bg-sidebar-accent/70 px-3 shadow-sm transition-all duration-200 hover:bg-sidebar-accent"
+            >
               <Link href="/dashboard">
-                <div className="flex aspect-square size-8 items-center justify-center overflow-hidden rounded-lg border border-sidebar-border bg-sidebar-accent text-sidebar-accent-foreground">
+                <div className="flex aspect-square size-10 items-center justify-center overflow-hidden rounded-md border border-sidebar-primary/20 bg-sidebar-primary text-sidebar-primary-foreground shadow-sm">
                   <Image
                     src="/logo.png"
                     alt="Roshal Organic"
-                    width={24}
-                    height={24}
+                    width={34}
+                    height={34}
                     priority
-                    className="h-6 w-auto"
+                    className="h-8 w-auto"
                   />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
-                  <span className="font-wordmark truncate text-[0.98rem]">
+                  <span className="font-wordmark truncate text-[1rem] text-sidebar-foreground">
                     Roshal Organic
                   </span>
-                  {/* <span className="truncate text-xs">Storefront CMS</span> */}
+                  <span className="truncate text-xs text-sidebar-foreground/70">
+                    Storefront admin
+                  </span>
                 </div>
               </Link>
             </SidebarMenuButton>
@@ -123,7 +129,7 @@ export function AppSidebar({
             onScroll: handleScroll,
           }}
         >
-          <div className="flex flex-col gap-0 px-3 group-data-[collapsible=icon]:px-0">
+          <div className="flex flex-col gap-2 px-3 group-data-[collapsible=icon]:px-0">
             <NavMain
               items={resolvedPrimaryNavigation}
               initialState={navInitialState}

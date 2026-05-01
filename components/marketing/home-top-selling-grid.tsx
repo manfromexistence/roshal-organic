@@ -113,8 +113,8 @@ export function HomeTopSellingGrid({
   description?: string;
 }) {
   return (
-    <section className="w-full bg-background py-12 md:py-16">
-      <div className="container mx-auto space-y-8 px-4 sm:px-6 md:px-8">
+    <section className="w-full bg-background py-4 md:py-6">
+      <div className="container mx-auto space-y-4 px-4 sm:px-6 md:space-y-5 md:px-8">
         <HomeSectionHeading title={title} description={description} centered />
 
         <div className="grid grid-cols-2 gap-3 md:gap-4">

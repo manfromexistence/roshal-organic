@@ -104,3 +104,13 @@
 - [x] Add hoverable dashboard overview metric cards with deterministic right-edge accent colors so the overview feels more active without breaking the current theme system.
 - [x] Fix the dashboard theme page crash caused by passing a server-side formatter function into the client chart card.
 - [x] Verify the dashboard CMS/editor surface and shared ImgBB upload path live: all marketing page editors returned `200`, `/api/cms/home` returned `200`, and `/api/upload/imgbb` accepted a real image upload successfully.
+
+## 2026-05-01 Dashboard visual skin follow-up
+
+- [x] Keep the working Roshal dashboard routes and data model, but apply the client-preferred dashboard visual cues from the separate UI mockup: stronger brand block, clearer active sidebar states, larger nav hit areas, and softer interactive card/table surfaces.
+- [x] Keep the separate dashboard mockup folder as reference-only by excluding it from the production app lint/typecheck scope.
+
+## 2026-05-01 Marketing auth and homepage spacing follow-up
+
+- [x] Remove the OTP/mobile-only panel from the marketing login and sign-up page and keep the credential/sign-up card padded and focused.
+- [x] Make homepage featured category cards smaller and reduce vertical spacing between marketing homepage sections.

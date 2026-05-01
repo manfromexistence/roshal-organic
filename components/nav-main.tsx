@@ -13,6 +13,7 @@ import {
   Users,
 } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 
 import {
@@ -58,6 +59,18 @@ function NavIcon({ icon }: { icon?: DashboardNavIconKey }) {
   return <Icon />;
 }
 
+function isDashboardUrlActive(pathname: string, url: string) {
+  if (url === "/dashboard") {
+    return pathname === url;
+  }
+
+  return pathname === url || pathname.startsWith(`${url}/`);
+}
+
+function isDashboardUrlExact(pathname: string, url: string) {
+  return pathname === url;
+}
+
 interface NavMainProps {
   items: NavItem[];
   label?: string;
@@ -69,6 +82,7 @@ export function NavMain({
   label = "Platform",
   initialState = {},
 }: NavMainProps) {
+  const pathname = usePathname();
   const storageKey = `nav-main-expanded-${label}`;
 
   // CRITICAL: initialState comes from props (server-rendered from cookie).
@@ -100,7 +114,7 @@ export function NavMain({
 
   return (
     <SidebarGroup>
-      <SidebarMenu>
+      <SidebarMenu className="gap-1">
         {items.map((item) =>
           item.items ? (
             <Collapsible
@@ -112,7 +126,17 @@ export function NavMain({
             >
               <SidebarMenuItem suppressHydrationWarning>
                 <CollapsibleTrigger asChild>
-                  <SidebarMenuButton tooltip={item.title} asChild>
+                  <SidebarMenuButton
+                    tooltip={item.title}
+                    asChild
+                    isActive={
+                      isDashboardUrlActive(pathname, item.url) ||
+                      item.items.some((subItem) =>
+                        isDashboardUrlActive(pathname, subItem.url),
+                      )
+                    }
+                    className="h-10 px-3 font-medium transition-all duration-200 hover:translate-x-0.5 data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:shadow-sm"
+                  >
                     <a
                       href={item.items[0]?.url || item.url}
                       onClick={(_e) => {
@@ -122,15 +146,22 @@ export function NavMain({
                     >
                       <NavIcon icon={item.icon} />
                       <span>{item.title}</span>
-                      <ChevronRight className="ml-auto group-data-[state=open]/collapsible:rotate-90" />
+                      <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                     </a>
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
-                <CollapsibleContent suppressHydrationWarning>
-                  <SidebarMenuSub suppressHydrationWarning>
+                <CollapsibleContent suppressHydrationWarning className="pt-1">
+                  <SidebarMenuSub
+                    suppressHydrationWarning
+                    className="ml-4 gap-1 border-sidebar-primary/30"
+                  >
                     {item.items.map((subItem) => (
                       <SidebarMenuSubItem key={subItem.title}>
-                        <SidebarMenuSubButton asChild>
+                        <SidebarMenuSubButton
+                          asChild
+                          isActive={isDashboardUrlExact(pathname, subItem.url)}
+                          className="h-8 transition-colors data-[active=true]:bg-sidebar-primary/15 data-[active=true]:text-sidebar-foreground"
+                        >
                           <Link href={subItem.url}>
                             <span>{subItem.title}</span>
                           </Link>
@@ -143,7 +174,12 @@ export function NavMain({
             </Collapsible>
           ) : (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title} asChild>
+              <SidebarMenuButton
+                tooltip={item.title}
+                asChild
+                isActive={isDashboardUrlActive(pathname, item.url)}
+                className="h-10 px-3 font-medium transition-all duration-200 hover:translate-x-0.5 data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:shadow-sm"
+              >
                 <Link href={item.url}>
                   <NavIcon icon={item.icon} />
                   <span>{item.title}</span>

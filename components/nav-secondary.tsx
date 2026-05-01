@@ -12,6 +12,7 @@ import {
   ShoppingCart,
   Users,
 } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import {
@@ -57,12 +58,21 @@ function NavIcon({ icon }: { icon?: DashboardNavIconKey }) {
   return <Icon />;
 }
 
+function isDashboardUrlActive(pathname: string, url: string) {
+  if (url === "/") {
+    return pathname === url;
+  }
+
+  return pathname === url || pathname.startsWith(`${url}/`);
+}
+
 export function NavSecondary({
   items,
   ...props
 }: {
   items: NavSecondaryItem[];
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
+  const pathname = usePathname();
   const storageKey = "nav-secondary-expanded";
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(
     {},
@@ -96,7 +106,7 @@ export function NavSecondary({
 
   return (
     <SidebarGroup {...props}>
-      <SidebarMenu>
+      <SidebarMenu className="gap-1">
         {items.map((item) =>
           item.items ? (
             <Collapsible
@@ -108,7 +118,16 @@ export function NavSecondary({
             >
               <SidebarMenuItem suppressHydrationWarning>
                 <CollapsibleTrigger asChild>
-                  <SidebarMenuButton tooltip={item.title}>
+                  <SidebarMenuButton
+                    tooltip={item.title}
+                    isActive={
+                      isDashboardUrlActive(pathname, item.url) ||
+                      item.items.some((subItem) =>
+                        isDashboardUrlActive(pathname, subItem.url),
+                      )
+                    }
+                    className="h-10 px-3 font-medium transition-all duration-200 hover:translate-x-0.5 data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:shadow-sm"
+                  >
                     <NavIcon icon={item.icon} />
                     <span>{item.title}</span>
                     <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
@@ -131,7 +150,12 @@ export function NavSecondary({
             </Collapsible>
           ) : (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild tooltip={item.title}>
+              <SidebarMenuButton
+                asChild
+                tooltip={item.title}
+                isActive={isDashboardUrlActive(pathname, item.url)}
+                className="h-10 px-3 font-medium transition-all duration-200 hover:translate-x-0.5 data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:shadow-sm"
+              >
                 <a href={item.url}>
                   <NavIcon icon={item.icon} />
                   <span>{item.title}</span>

@@ -94,7 +94,7 @@ export function DashboardBarChartCard({
   return (
     <Card
       className={cn(
-        "border-border/70 bg-card/95 shadow-none dark:bg-card/90",
+        "border-none bg-card/50 backdrop-blur shadow-sm",
         className,
       )}
     >
@@ -210,7 +210,7 @@ export function DashboardPieChartCard({
   return (
     <Card
       className={cn(
-        "border-border/70 bg-card/95 shadow-none dark:bg-card/90",
+        "border-none bg-card/50 backdrop-blur shadow-sm",
         className,
       )}
     >

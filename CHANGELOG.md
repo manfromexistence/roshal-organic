@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Changed
+- Removed the marketing auth page OTP panel and tightened the login/sign-up page into a single padded credential/sign-up card.
+- Reduced homepage featured-category card size and tightened vertical spacing across the marketing homepage sections.
+- Restyled the existing working dashboard shell with the client-preferred mockup cues: stronger sidebar branding, clearer active navigation states, larger sidebar hit areas, and softer hoverable dashboard card/table surfaces.
 - Added hover motion plus deterministic chart-token right-edge accents to the dashboard overview metric cards so the admin landing page feels more interactive without changing the current layout.
 - Added a reusable shadcn-styled Bangladesh `phone input-2` wrapper and switched the active signup, checkout, profile, and dashboard phone fields over to it.
 - Replaced the old storefront phone field package with a ReUI-style `react-phone-number-input` implementation and removed the legacy `react-phone-input-2` dependency.
@@ -29,6 +32,7 @@ All notable changes to this project will be documented in this file.
 - Reworked the storefront login and sign-up page into the requested two-panel auth layout while preserving the existing signup fields, redirects, and credential flow.
 
 ### Fixed
+- Excluded the separate `roshal-organic-dashboard-ui` reference app from the production app lint/typecheck scope so root checks validate the real Roshal app instead of the mockup.
 - Removed the dashboard theme-page `500` by stopping the server component from passing a formatter function into the client-side chart card.
 - Verified the admin CMS stack end-to-end: every marketing page editor route now responds successfully in the live app, and the shared ImgBB upload endpoint accepted a real image upload used by the dashboard editors.
 - Replaced the single product page's dummy review surface with live database-backed ratings, persisted review comments, and a real review submission API for published products.

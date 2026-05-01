@@ -32,8 +32,8 @@ export function SpecialOffers({
   description,
 }: SpecialOffersProps) {
   return (
-    <section className="bg-background py-12 md:py-16">
-      <div className="container mx-auto space-y-8 px-4 sm:px-6 md:px-8">
+    <section className="bg-background py-4 md:py-6">
+      <div className="container mx-auto space-y-4 px-4 sm:px-6 md:space-y-5 md:px-8">
         <HomeSectionHeading
           title={
             title
@@ -45,7 +45,7 @@ export function SpecialOffers({
           description={description?.[language]}
         />
 
-        <div className="grid grid-cols-2 gap-6 lg:grid-cols-2">
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-2">
           {deals.slice(0, 2).map((deal) => (
             <Card
               key={`${deal.title.en}-${deal.image}`}

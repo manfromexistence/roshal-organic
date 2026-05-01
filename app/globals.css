@@ -155,6 +155,11 @@
     scrollbar-width: thin;
   }
 
+  /* Prevent sidebar flash on reload */
+  [data-slot="sidebar-inner"] {
+    background-color: var(--sidebar) !important;
+  }
+
   html::-webkit-scrollbar,
   body::-webkit-scrollbar {
     width: 12px;
@@ -214,6 +219,38 @@
       top: 7rem;
       bottom: 0.75rem;
     }
+  }
+
+  .dashboard-admin-surface {
+    background-color: color-mix(
+      in oklch,
+      var(--background) 88%,
+      var(--primary) 12%
+    );
+  }
+
+  .dashboard-admin-surface [data-slot="card"] {
+    background-color: color-mix(in oklch, var(--card) 94%, var(--primary) 6%);
+    border-color: color-mix(in oklch, var(--border) 76%, var(--primary) 24%);
+    box-shadow: 0 1px 2px
+      color-mix(in oklch, var(--foreground) 10%, transparent);
+    transition:
+      border-color 180ms ease,
+      box-shadow 180ms ease,
+      transform 180ms ease;
+  }
+
+  .dashboard-admin-surface [data-slot="card"]:hover {
+    border-color: color-mix(in oklch, var(--border) 48%, var(--primary) 52%);
+    box-shadow: 0 12px 28px color-mix(in oklch, var(--primary) 14%, transparent);
+  }
+
+  .dashboard-admin-surface [data-slot="table-header"] tr {
+    background-color: color-mix(in oklch, var(--muted) 78%, var(--primary) 22%);
+  }
+
+  .dashboard-admin-surface [data-slot="table-row"]:hover {
+    background-color: color-mix(in oklch, var(--muted) 82%, var(--primary) 18%);
   }
 
   html:not(.dark) .storefront-shell [data-slot="card"] {
