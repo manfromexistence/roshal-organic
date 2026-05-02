@@ -101,6 +101,99 @@ function mergeRoshalPages(pages: RoshalMarketingPage[]) {
   return [...mergedPages, ...customPages];
 }
 
+function normalizeMarketingSectionItems(
+  itemsJson: string | null | undefined,
+): RoshalMarketingSection["items"] {
+  const items = safeJsonParse<Record<string, unknown>[]>(itemsJson, []);
+
+  if (!Array.isArray(items)) {
+    return [];
+  }
+
+  return items
+    .map((item, index) => {
+      const parsedSortOrder = Number(item.sortOrder);
+
+      return {
+        index,
+        item: {
+          ...item,
+          imageUrl: normalizeRoshalAssetPath(
+            typeof item.imageUrl === "string" ? item.imageUrl : "",
+            "",
+          ),
+          sortOrder: Number.isFinite(parsedSortOrder) ? parsedSortOrder : index,
+        } as RoshalMarketingSection["items"][number],
+      };
+    })
+    .sort((left, right) => {
+      const leftSortOrder = Number.isFinite(Number(left.item.sortOrder))
+        ? Number(left.item.sortOrder)
+        : 0;
+      const rightSortOrder = Number.isFinite(Number(right.item.sortOrder))
+        ? Number(right.item.sortOrder)
+        : 0;
+
+      if (leftSortOrder !== rightSortOrder) {
+        return leftSortOrder - rightSortOrder;
+      }
+
+      return left.index - right.index;
+    })
+    .map(({ item }) => item);
+}
+
+function localizedSectionItemTextHasContent(
+  value: RoshalMarketingSection["items"][number]["title"],
+) {
+  return Boolean(value?.bn?.trim() || value?.en?.trim());
+}
+
+function sectionItemHasImage(item: RoshalMarketingSection["items"][number]) {
+  return Boolean(normalizeRoshalAssetPath(item.imageUrl || "", "").trim());
+}
+
+function buildSeededHeroItems(
+  storedItems: RoshalMarketingSection["items"],
+  defaultItems: RoshalMarketingSection["items"],
+) {
+  if (defaultItems.length === 0) {
+    return storedItems;
+  }
+
+  const maxItems = Math.max(storedItems.length, defaultItems.length);
+
+  return Array.from({ length: maxItems })
+    .map((_, index) => {
+      const storedItem = storedItems[index];
+      const defaultItem = defaultItems[index % defaultItems.length];
+      const imageUrl = normalizeRoshalAssetPath(
+        storedItem?.imageUrl || defaultItem?.imageUrl || "",
+        "",
+      );
+      const parsedSortOrder = Number(storedItem?.sortOrder);
+
+      return {
+        ...defaultItem,
+        ...storedItem,
+        imageUrl,
+        sortOrder: Number.isFinite(parsedSortOrder)
+          ? parsedSortOrder
+          : (defaultItem?.sortOrder ?? index),
+        styles: {
+          ...(defaultItem?.styles || {}),
+          ...(storedItem?.styles || {}),
+        },
+      };
+    })
+    .filter(
+      (item) =>
+        sectionItemHasImage(item) ||
+        localizedSectionItemTextHasContent(item.title) ||
+        localizedSectionItemTextHasContent(item.body),
+    );
+}
+
 function mapSection(
   row: typeof roshalSections.$inferSelect,
 ): RoshalMarketingSection {
@@ -131,15 +224,7 @@ function mapSection(
     },
     ctaHref: row.ctaHref || "",
     imageUrl: normalizeRoshalAssetPath(row.imageUrl, ""),
-    items: safeJsonParse(row.itemsJson, []).map(
-      (item: Record<string, unknown>) => ({
-        ...item,
-        imageUrl: normalizeRoshalAssetPath(
-          typeof item.imageUrl === "string" ? item.imageUrl : "",
-          "",
-        ),
-      }),
-    ),
+    items: normalizeMarketingSectionItems(row.itemsJson),
     styles: safeJsonParse(row.stylesJson, {}),
   };
 }
@@ -163,6 +248,201 @@ function mergeRoshalSections(
 
     return left.sectionKey.localeCompare(right.sectionKey);
   });
+}
+
+let cmsDefaultsSeedPromise: Promise<void> | null = null;
+
+async function seedMissingHomeHeroSlides(
+  refreshedPages: (typeof roshalPages.$inferSelect)[],
+  existingSections: (typeof roshalSections.$inferSelect)[],
+  timestamp: Date,
+) {
+  const defaultHomePage = defaultRoshalPages.find(
+    (page) => page.id === "page-home",
+  );
+  const storedHomePage = defaultHomePage
+    ? refreshedPages.find((page) => page.slug === defaultHomePage.slug)
+    : null;
+  const defaultHeroSection = defaultRoshalSections.find(
+    (section) =>
+      section.pageId === "page-home" && section.sectionKey === "hero",
+  );
+
+  if (!storedHomePage || !defaultHeroSection) {
+    return;
+  }
+
+  const storedHeroSection = existingSections.find(
+    (section) =>
+      section.pageId === storedHomePage.id && section.sectionKey === "hero",
+  );
+
+  if (!storedHeroSection) {
+    return;
+  }
+
+  const storedItems = normalizeMarketingSectionItems(
+    storedHeroSection.itemsJson,
+  );
+  const hasImageBackedSlides = storedItems.some(sectionItemHasImage);
+  const hasDefaultHeroTitle =
+    !storedHeroSection.titleEn ||
+    storedHeroSection.titleEn === defaultHeroSection.title.en;
+  const shouldEnableDefaultHero =
+    !storedHeroSection.isEnabled &&
+    (hasDefaultHeroTitle || !hasImageBackedSlides);
+
+  if (hasImageBackedSlides && !shouldEnableDefaultHero) {
+    return;
+  }
+
+  const seededItems = hasImageBackedSlides
+    ? storedItems
+    : buildSeededHeroItems(storedItems, defaultHeroSection.items);
+
+  if (!seededItems.some(sectionItemHasImage)) {
+    return;
+  }
+
+  await db
+    .update(roshalSections)
+    .set({
+      imageUrl:
+        normalizeRoshalAssetPath(storedHeroSection.imageUrl || "", "") ||
+        defaultHeroSection.imageUrl ||
+        null,
+      itemsJson: JSON.stringify(seededItems),
+      stylesJson:
+        storedHeroSection.stylesJson ||
+        JSON.stringify(defaultHeroSection.styles || {}),
+      isEnabled: shouldEnableDefaultHero ? true : storedHeroSection.isEnabled,
+      updatedAt: timestamp,
+    })
+    .where(eq(roshalSections.id, storedHeroSection.id));
+}
+
+async function seedMissingRoshalCmsDefaults() {
+  await ensureRoshalCmsSchema();
+
+  const timestamp = new Date();
+  const existingPages = await db.select().from(roshalPages);
+  const pagesBySlug = new Map(existingPages.map((page) => [page.slug, page]));
+  const pageIds = new Set(existingPages.map((page) => page.id));
+
+  for (const page of defaultRoshalPages) {
+    if (pagesBySlug.has(page.slug) || pageIds.has(page.id)) {
+      continue;
+    }
+
+    await db.insert(roshalPages).values({
+      id: page.id,
+      slug: page.slug,
+      navigationLabelBn: page.navigationLabel.bn,
+      navigationLabelEn: page.navigationLabel.en,
+      titleBn: page.title.bn,
+      titleEn: page.title.en,
+      descriptionBn: page.description.bn || null,
+      descriptionEn: page.description.en || null,
+      heroImage: page.heroImage || null,
+      status: page.status,
+      showInNavigation: page.showInNavigation,
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    });
+
+    pagesBySlug.set(page.slug, {
+      id: page.id,
+      slug: page.slug,
+      navigationLabelBn: page.navigationLabel.bn,
+      navigationLabelEn: page.navigationLabel.en,
+      titleBn: page.title.bn,
+      titleEn: page.title.en,
+      descriptionBn: page.description.bn || null,
+      descriptionEn: page.description.en || null,
+      heroImage: page.heroImage || null,
+      status: page.status,
+      showInNavigation: page.showInNavigation,
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    });
+    pageIds.add(page.id);
+  }
+
+  const refreshedPages = await db.select().from(roshalPages);
+  const pageByDefaultId = new Map(
+    defaultRoshalPages.map((page) => {
+      const storedPage =
+        refreshedPages.find((item) => item.slug === page.slug) || null;
+
+      return [page.id, storedPage];
+    }),
+  );
+  const existingSections = await db.select().from(roshalSections);
+  const sectionKeys = new Set(
+    existingSections.map(
+      (section) => `${section.pageId}:${section.sectionKey}`,
+    ),
+  );
+  const sectionIds = new Set(existingSections.map((section) => section.id));
+
+  for (const section of defaultRoshalSections) {
+    const page = pageByDefaultId.get(section.pageId);
+
+    if (!page || page.status === "deleted") {
+      continue;
+    }
+
+    const sectionKey = `${page.id}:${section.sectionKey}`;
+
+    if (sectionKeys.has(sectionKey)) {
+      continue;
+    }
+
+    const sectionId = sectionIds.has(section.id)
+      ? `${section.id}-${page.id}`
+      : section.id;
+
+    await db.insert(roshalSections).values({
+      id: sectionId,
+      pageId: page.id,
+      sectionKey: section.sectionKey,
+      type: section.type,
+      sortOrder: section.sortOrder,
+      layout: section.layout,
+      variant: section.variant,
+      isEnabled: section.isEnabled,
+      eyebrowBn: section.eyebrow.bn || null,
+      eyebrowEn: section.eyebrow.en || null,
+      titleBn: section.title.bn || null,
+      titleEn: section.title.en || null,
+      bodyBn: section.body.bn || null,
+      bodyEn: section.body.en || null,
+      ctaLabelBn: section.ctaLabel.bn || null,
+      ctaLabelEn: section.ctaLabel.en || null,
+      ctaHref: section.ctaHref || null,
+      imageUrl: section.imageUrl || null,
+      itemsJson: JSON.stringify(section.items || []),
+      stylesJson: JSON.stringify(section.styles || {}),
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    });
+
+    sectionKeys.add(sectionKey);
+    sectionIds.add(sectionId);
+  }
+
+  await seedMissingHomeHeroSlides(refreshedPages, existingSections, timestamp);
+}
+
+async function ensureRoshalCmsDefaultsSeeded() {
+  if (!cmsDefaultsSeedPromise) {
+    cmsDefaultsSeedPromise = seedMissingRoshalCmsDefaults().catch((error) => {
+      cmsDefaultsSeedPromise = null;
+      throw error;
+    });
+  }
+
+  return cmsDefaultsSeedPromise;
 }
 
 function mapProduct(row: typeof roshalProducts.$inferSelect): RoshalProduct {
@@ -542,7 +822,7 @@ export async function getRoshalNavigationPages() {
 
 export async function getRoshalPages() {
   try {
-    await ensureRoshalCmsSchema();
+    await ensureRoshalCmsDefaultsSeeded();
     const pages = await db
       .select()
       .from(roshalPages)
@@ -556,7 +836,7 @@ export async function getRoshalPages() {
 
 export async function getRoshalPageBySlug(slug: string) {
   try {
-    await ensureRoshalCmsSchema();
+    await ensureRoshalCmsDefaultsSeeded();
     const [page] = await db
       .select()
       .from(roshalPages)
@@ -578,7 +858,7 @@ export async function getRoshalSectionsForPage(pageId: string) {
     defaultRoshalPages.find((page) => page.id === pageId) || null;
 
   try {
-    await ensureRoshalCmsSchema();
+    await ensureRoshalCmsDefaultsSeeded();
     if (!defaultPage) {
       const [page] = await db
         .select({

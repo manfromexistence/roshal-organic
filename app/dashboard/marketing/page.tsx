@@ -74,7 +74,7 @@ export default async function DashboardMarketingPage({
   const homepage = pages.find((page) => page.slug === "home");
 
   return (
-    <div className="mx-auto min-w-0 max-w-6xl space-y-5 overflow-x-clip px-4 pt-4 pb-4 sm:px-6 md:space-y-6 md:pt-6 md:pb-4">
+    <div className="min-w-0 max-w-full space-y-5 overflow-x-clip px-4 pt-4 pb-4 sm:px-6 md:space-y-6 md:pt-6 md:pb-4">
       <CmsSaveToast status={resolvedSearchParams.saved} />
       <div className="flex min-w-0 flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div className="min-w-0 space-y-2">

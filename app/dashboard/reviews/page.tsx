@@ -1,5 +1,6 @@
 import { saveRoshalProductReview } from "@/actions/admin";
 import { CmsSaveToast } from "@/components/dashboard/cms-save-toast";
+import { DashboardFormStatusToast } from "@/components/dashboard/dashboard-form-status-toast";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
@@ -13,6 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { getDashboardActionErrorMessage } from "@/lib/dashboard-action-errors";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import { getAllRoshalProducts } from "@/lib/store-content";
 import { getRoshalLocale } from "@/lib/store-i18n";
@@ -90,11 +92,12 @@ export default async function DashboardReviewsPage({
       : 0;
   const errorMessage = resolvedSearchParams.error
     ? reviewErrorMessages[resolvedSearchParams.error] ||
-      "The review action could not be completed."
+      getDashboardActionErrorMessage(resolvedSearchParams.error)
     : "";
 
   return (
     <div className="min-w-0 space-y-6 px-6 pt-6 pb-4">
+      <DashboardFormStatusToast errorMessage={errorMessage || undefined} />
       <CmsSaveToast status={resolvedSearchParams.saved} />
 
       <div className="flex min-w-0 flex-col gap-3 md:flex-row md:items-end md:justify-between">

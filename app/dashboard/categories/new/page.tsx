@@ -1,6 +1,8 @@
 import { ArrowLeft, ImageIcon, Save, X } from "lucide-react";
+import { cookies } from "next/headers";
 import Link from "next/link";
 import { saveRoshalCategory } from "@/actions/admin";
+import { DashboardFormStatusToast } from "@/components/dashboard/dashboard-form-status-toast";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
 import { DashboardSourceKeySelect } from "@/components/dashboard/source-key-select";
 import { ImageUploadField } from "@/components/shared/image-upload-field";
@@ -10,6 +12,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -22,11 +25,34 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { getDashboardActionErrorMessage } from "@/lib/dashboard-action-errors";
+import {
+  getDashboardErrorFields,
+  hasDashboardFieldError,
+} from "@/lib/dashboard-field-errors";
+import {
+  dashboardDraftBoolean,
+  dashboardDraftStringArray,
+  dashboardDraftValue,
+  readDashboardFormDraft,
+} from "@/lib/dashboard-form-drafts";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import { getAllRoshalProducts } from "@/lib/store-content";
 import { getLocalizedValue } from "@/lib/store-locale";
 
-export default async function NewCategoryPage() {
+export default async function NewCategoryPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ error?: string }>;
+}) {
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const errorMessage = getDashboardActionErrorMessage(
+    resolvedSearchParams.error,
+  );
+  const errorFields = getDashboardErrorFields(resolvedSearchParams.error);
+  const draftValues = resolvedSearchParams.error
+    ? readDashboardFormDraft(await cookies(), "category")
+    : {};
   const [, products] = await Promise.all([
     requireRoshalAdmin(),
     getAllRoshalProducts(),
@@ -50,6 +76,7 @@ export default async function NewCategoryPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-6 pt-6 pb-4">
+      <DashboardFormStatusToast errorMessage={errorMessage || undefined} />
       <div className="space-y-3">
         <Button asChild variant="ghost" size="sm" className="-ml-3">
           <Link href="/dashboard/categories">
@@ -72,8 +99,19 @@ export default async function NewCategoryPage() {
         </div>
       </div>
 
+      {errorMessage ? (
+        <Alert variant="destructive">
+          <AlertDescription>{errorMessage}</AlertDescription>
+        </Alert>
+      ) : null}
+
       <form action={saveRoshalCategory}>
         <input type="hidden" name="redirectTo" value="/dashboard/categories" />
+        <input
+          type="hidden"
+          name="errorRedirectTo"
+          value="/dashboard/categories/new"
+        />
         <Card className="border-none bg-card shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-xl">
@@ -85,21 +123,32 @@ export default async function NewCategoryPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="grid min-w-0 gap-5 md:grid-cols-2">
-            <Field name="key" label="Key" placeholder="organic-certified" />
+            <Field
+              name="key"
+              label="Key"
+              placeholder="organic-certified"
+              defaultValue={dashboardDraftValue(draftValues, "key")}
+              hasError={hasDashboardFieldError(errorFields, "key")}
+              required
+            />
             <Field
               name="sortOrder"
               label="Sort order"
               type="number"
-              defaultValue="0"
+              defaultValue={dashboardDraftValue(draftValues, "sortOrder", "0")}
             />
             <Field
               name="labelEn"
               label="Label (EN)"
               placeholder="Organic Certified"
+              defaultValue={dashboardDraftValue(draftValues, "labelEn")}
+              hasError={hasDashboardFieldError(errorFields, "labelEn")}
             />
             <Field
               name="labelBn"
               label="Label (BN)"
+              defaultValue={dashboardDraftValue(draftValues, "labelBn")}
+              hasError={hasDashboardFieldError(errorFields, "labelBn")}
               placeholder="অর্গানিক সার্টিফায়েড"
             />
             <div className="md:col-span-2">
@@ -107,7 +156,11 @@ export default async function NewCategoryPage() {
                 name="sourceKeysJson"
                 label="Existing product bucket"
                 options={bucketOptions}
-                defaultValue={[]}
+                defaultValue={dashboardDraftStringArray(
+                  draftValues,
+                  "sourceKeysJson",
+                  [],
+                )}
                 helperText="Select the existing product group that should appear in this storefront category."
               />
             </div>
@@ -124,16 +177,24 @@ export default async function NewCategoryPage() {
                     name="imageUrl"
                     label="Category image"
                     helperText="Used by homepage category cards and future category landing surfaces."
-                    value=""
+                    value={dashboardDraftValue(draftValues, "imageUrl")}
                   />
                   <TextField
                     name="descriptionEn"
                     label="Description (EN)"
+                    defaultValue={dashboardDraftValue(
+                      draftValues,
+                      "descriptionEn",
+                    )}
                     placeholder="Describe what products belong in this category."
                   />
                   <TextField
                     name="descriptionBn"
                     label="Description (BN)"
+                    defaultValue={dashboardDraftValue(
+                      draftValues,
+                      "descriptionBn",
+                    )}
                     placeholder="এই ক্যাটাগরির পণ্য সম্পর্কে লিখুন।"
                   />
                 </AccordionContent>
@@ -142,17 +203,29 @@ export default async function NewCategoryPage() {
             <div className="flex flex-wrap gap-6 md:col-span-2">
               <DashboardFormCheckbox
                 name="isEnabled"
-                defaultChecked
+                defaultChecked={dashboardDraftBoolean(
+                  draftValues,
+                  "isEnabled",
+                  true,
+                )}
                 label="Category enabled"
               />
               <DashboardFormCheckbox
                 name="showInNavigation"
-                defaultChecked
+                defaultChecked={dashboardDraftBoolean(
+                  draftValues,
+                  "showInNavigation",
+                  true,
+                )}
                 label="Show in header navigation"
               />
               <DashboardFormCheckbox
                 name="showOnHomepage"
-                defaultChecked
+                defaultChecked={dashboardDraftBoolean(
+                  draftValues,
+                  "showOnHomepage",
+                  true,
+                )}
                 label="Show on homepage"
               />
             </div>
@@ -177,36 +250,44 @@ export default async function NewCategoryPage() {
 
 function Field({
   defaultValue = "",
+  hasError = false,
   label,
   name,
   placeholder,
+  required = false,
   type = "text",
 }: {
   defaultValue?: string;
+  hasError?: boolean;
   label: string;
   name: string;
   placeholder?: string;
+  required?: boolean;
   type?: string;
 }) {
   return (
     <div className="space-y-2">
       <Label htmlFor={name}>{label}</Label>
       <Input
+        aria-invalid={hasError || undefined}
         id={name}
         name={name}
         type={type}
         defaultValue={defaultValue}
         placeholder={placeholder}
+        required={required}
       />
     </div>
   );
 }
 
 function TextField({
+  defaultValue = "",
   label,
   name,
   placeholder,
 }: {
+  defaultValue?: string;
   label: string;
   name: string;
   placeholder?: string;
@@ -214,7 +295,13 @@ function TextField({
   return (
     <div className="space-y-2">
       <Label htmlFor={name}>{label}</Label>
-      <Textarea id={name} name={name} placeholder={placeholder} rows={3} />
+      <Textarea
+        id={name}
+        name={name}
+        defaultValue={defaultValue}
+        placeholder={placeholder}
+        rows={3}
+      />
     </div>
   );
 }

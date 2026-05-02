@@ -2,8 +2,10 @@ import {
   type CategoryTableRow,
   RoshalCategoriesTable,
 } from "@/components/dashboard/categories-table";
+import { DashboardFormStatusToast } from "@/components/dashboard/dashboard-form-status-toast";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { getDashboardActionErrorMessage } from "@/lib/dashboard-action-errors";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import { getAllRoshalProducts } from "@/lib/store-content";
 import { getRoshalLocale } from "@/lib/store-i18n";
@@ -18,8 +20,10 @@ export default async function DashboardCategoriesPage({
   searchParams,
 }: {
   searchParams?: Promise<{
+    deleted?: string;
     error?: string;
     key?: string;
+    saved?: string;
     subcategory?: string;
   }>;
 }) {
@@ -35,6 +39,11 @@ export default async function DashboardCategoriesPage({
     resolvedSearchParams.error,
     resolvedSearchParams.key,
     resolvedSearchParams.subcategory,
+  );
+  const successMessage = getTaxonomySuccessMessage(
+    locale,
+    resolvedSearchParams.saved,
+    resolvedSearchParams.deleted,
   );
   const visibleInNavigationCount = taxonomy.categories.filter(
     (category) => category.showInNavigation && category.isEnabled,
@@ -108,6 +117,10 @@ export default async function DashboardCategoriesPage({
 
   return (
     <div className="min-w-0 space-y-6 px-6 pt-6 pb-4">
+      <DashboardFormStatusToast
+        errorMessage={errorMessage || undefined}
+        successMessage={successMessage || undefined}
+      />
       <div className="min-w-0 space-y-2">
         <p className="text-xs uppercase tracking-[0.24em] text-primary">
           {locale === "bn" ? "ক্যাটাগরি ও সাবক্যাটাগরি" : "Categories & subcategories"}
@@ -125,6 +138,12 @@ export default async function DashboardCategoriesPage({
       {errorMessage ? (
         <Alert variant="destructive">
           <AlertDescription>{errorMessage}</AlertDescription>
+        </Alert>
+      ) : null}
+
+      {successMessage ? (
+        <Alert>
+          <AlertDescription>{successMessage}</AlertDescription>
         </Alert>
       ) : null}
 
@@ -201,6 +220,50 @@ function getTaxonomyErrorMessage(
         ? "নির্বাচিত parent category খুঁজে পাওয়া যায়নি। আবার নির্বাচন করুন।"
         : "The selected parent category could not be found.";
     default:
-      return null;
+      return getDashboardActionErrorMessage(code) || null;
   }
+}
+
+function getTaxonomySuccessMessage(
+  locale: "bn" | "en",
+  saved: string | undefined,
+  deleted: string | undefined,
+) {
+  if (deleted === "category") {
+    return locale === "bn"
+      ? "ক্যাটাগরি ডিলিট হয়েছে।"
+      : "Category deleted successfully.";
+  }
+
+  if (deleted === "subcategory") {
+    return locale === "bn"
+      ? "সাবক্যাটাগরি ডিলিট হয়েছে।"
+      : "Subcategory deleted successfully.";
+  }
+
+  if (saved === "category-created") {
+    return locale === "bn"
+      ? "নতুন ক্যাটাগরি তৈরি হয়েছে।"
+      : "New category created successfully.";
+  }
+
+  if (saved === "subcategory-created") {
+    return locale === "bn"
+      ? "নতুন সাবক্যাটাগরি তৈরি হয়েছে।"
+      : "New subcategory created successfully.";
+  }
+
+  if (saved === "category") {
+    return locale === "bn"
+      ? "ক্যাটাগরি সেভ হয়েছে।"
+      : "Category saved successfully.";
+  }
+
+  if (saved === "subcategory") {
+    return locale === "bn"
+      ? "সাবক্যাটাগরি সেভ হয়েছে।"
+      : "Subcategory saved successfully.";
+  }
+
+  return null;
 }

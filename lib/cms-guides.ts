@@ -27,8 +27,8 @@ export const roshalHomeSectionGuides: RoshalHomeSectionGuide[] = [
       "Controls the rotating landing banners without changing the storefront layout.",
     ),
     contentHint: localizedValue(
-      "Use items with title, body, label, href, and imageUrl for each slide.",
-      "Use items with title, body, label, href, and imageUrl for each slide.",
+      "Use items with title, body, label, href, imageUrl, and sortOrder for each slide.",
+      "Use items with title, body, label, href, imageUrl, and sortOrder for each slide.",
     ),
     stylesHint: localizedValue(
       "Keep CTA routing in the page or site settings. This block is primarily content-driven.",
@@ -45,8 +45,8 @@ export const roshalHomeSectionGuides: RoshalHomeSectionGuide[] = [
       "Feeds the home category cards shown under the hero area.",
     ),
     contentHint: localizedValue(
-      "Use items with title, href, and imageUrl for each category card.",
-      "Use items with title, href, and imageUrl for each category card.",
+      "Use items with title, href, imageUrl, and sortOrder for each category card.",
+      "Use items with title, href, imageUrl, and sortOrder for each category card.",
     ),
     stylesHint: localizedValue(
       "No special style keys are required. Item order controls the storefront order.",
@@ -117,8 +117,8 @@ export const roshalHomeSectionGuides: RoshalHomeSectionGuide[] = [
       "Controls the deal cards between the catalog sections.",
     ),
     contentHint: localizedValue(
-      "Use items with title, body, label, href, imageUrl, and value for the offer badge.",
-      "Use items with title, body, label, href, imageUrl, and value for the offer badge.",
+      "Use items with title, body, label, href, imageUrl, value, and sortOrder for each offer card.",
+      "Use items with title, body, label, href, imageUrl, value, and sortOrder for each offer card.",
     ),
     stylesHint: localizedValue(
       "No required style keys. The items array drives the cards directly.",
@@ -189,8 +189,8 @@ export const roshalHomeSectionGuides: RoshalHomeSectionGuide[] = [
       "Controls the compact trust metrics shown near the bottom of the landing page.",
     ),
     contentHint: localizedValue(
-      "Use items with label/title plus value for each stat tile.",
-      "Use items with label/title plus value for each stat tile.",
+      "Use items with label/title, value, and sortOrder for each stat tile.",
+      "Use items with label/title, value, and sortOrder for each stat tile.",
     ),
     stylesHint: localizedValue(
       "No special style keys are required for this block.",

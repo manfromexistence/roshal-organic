@@ -7,8 +7,10 @@ import {
   Package,
   Save,
 } from "lucide-react";
+import { cookies } from "next/headers";
 import Link from "next/link";
 import { removeRoshalProduct, saveRoshalProduct } from "@/actions/admin";
+import { DashboardFormStatusToast } from "@/components/dashboard/dashboard-form-status-toast";
 import { DeleteConfirmationButton } from "@/components/dashboard/delete-confirmation-button";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
 import { DashboardImageGalleryField } from "@/components/dashboard/image-gallery-field";
@@ -34,6 +36,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { getDashboardActionErrorMessage } from "@/lib/dashboard-action-errors";
+import {
+  getDashboardErrorFields,
+  hasDashboardFieldError,
+} from "@/lib/dashboard-field-errors";
+import {
+  dashboardDraftBoolean,
+  dashboardDraftValue,
+  readDashboardFormDraft,
+} from "@/lib/dashboard-form-drafts";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import { getAllRoshalProducts } from "@/lib/store-content";
 import {
@@ -100,22 +112,50 @@ export async function ProductEditorPage({
   const product = productId
     ? products.find((item) => item.id === productId) || null
     : null;
+  const draftValues = errorCode
+    ? readDashboardFormDraft(await cookies(), "product")
+    : {};
   const errorMessage = getProductEditorErrorMessage(
     errorCode,
     errorSlug,
     errorSku,
   );
-  const displayName = product?.name.en || product?.name.bn || "New product";
+  const errorFields = getDashboardErrorFields(errorCode);
+  const displayName =
+    dashboardDraftValue(draftValues, "nameEn") ||
+    dashboardDraftValue(draftValues, "nameBn") ||
+    product?.name.en ||
+    product?.name.bn ||
+    "New product";
+  const draftCategoryKey = dashboardDraftValue(draftValues, "categoryKey");
+  const draftSubcategoryKey = dashboardDraftValue(
+    draftValues,
+    "subcategoryKey",
+  );
+  const draftInitialCategory = draftCategoryKey
+    ? taxonomy.categories.find(
+        (category) =>
+          category.key === draftCategoryKey ||
+          category.sourceKeys.includes(draftCategoryKey),
+      )
+    : null;
+  const draftInitialSubcategory = draftSubcategoryKey
+    ? taxonomy.subcategories.find(
+        (subcategory) => subcategory.key === draftSubcategoryKey,
+      )
+    : null;
   const initialCategory =
-    product &&
-    taxonomy.categories.find((category) =>
-      productMatchesCategory(product, category),
-    );
+    draftInitialCategory ||
+    (product &&
+      taxonomy.categories.find((category) =>
+        productMatchesCategory(product, category),
+      ));
   const initialSubcategory =
-    product &&
-    taxonomy.subcategories.find((subcategory) =>
-      productMatchesSubcategory(product, subcategory),
-    );
+    draftInitialSubcategory ||
+    (product &&
+      taxonomy.subcategories.find((subcategory) =>
+        productMatchesSubcategory(product, subcategory),
+      ));
   const regularFeatures = product
     ? getRoshalProductRegularFeatures(product.features)
     : [];
@@ -146,6 +186,10 @@ export async function ProductEditorPage({
 
   return (
     <div className="min-w-0 space-y-6 px-4 pt-4 pb-4 md:px-6 md:pt-6">
+      <DashboardFormStatusToast
+        errorMessage={errorMessage || undefined}
+        successMessage={saved ? "Product saved successfully." : undefined}
+      />
       <div className="flex min-w-0 flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div className="min-w-0 space-y-2">
           <Button asChild variant="ghost" size="sm" className="-ml-3">
@@ -207,25 +251,45 @@ export async function ProductEditorPage({
                 <Field
                   name="nameBn"
                   label="Name (BN)"
-                  defaultValue={product?.name.bn || ""}
+                  defaultValue={dashboardDraftValue(
+                    draftValues,
+                    "nameBn",
+                    product?.name.bn || "",
+                  )}
+                  hasError={hasDashboardFieldError(errorFields, "nameBn")}
                   required
                 />
                 <Field
                   name="nameEn"
                   label="Name (EN)"
-                  defaultValue={product?.name.en || ""}
+                  defaultValue={dashboardDraftValue(
+                    draftValues,
+                    "nameEn",
+                    product?.name.en || "",
+                  )}
+                  hasError={hasDashboardFieldError(errorFields, "nameEn")}
                   required
                 />
                 <Field
                   name="slug"
                   label="Slug"
-                  defaultValue={product?.slug || ""}
+                  defaultValue={dashboardDraftValue(
+                    draftValues,
+                    "slug",
+                    product?.slug || "",
+                  )}
+                  hasError={hasDashboardFieldError(errorFields, "slug")}
                   required
                 />
                 <Field
                   name="sku"
                   label="SKU"
-                  defaultValue={product?.sku || ""}
+                  defaultValue={dashboardDraftValue(
+                    draftValues,
+                    "sku",
+                    product?.sku || "",
+                  )}
+                  hasError={hasDashboardFieldError(errorFields, "sku")}
                   required
                 />
               </CardContent>
@@ -246,12 +310,20 @@ export async function ProductEditorPage({
                   name="heroImage"
                   label="Primary product image"
                   helperText="Used in product cards, product details, checkout, and related product blocks."
-                  value={product?.heroImage || ""}
+                  value={dashboardDraftValue(
+                    draftValues,
+                    "heroImage",
+                    product?.heroImage || "",
+                  )}
                 />
                 <DashboardImageGalleryField
                   name="galleryJson"
                   label="Extra product pictures"
-                  defaultValue={JSON.stringify(product?.gallery || [], null, 2)}
+                  defaultValue={dashboardDraftValue(
+                    draftValues,
+                    "galleryJson",
+                    JSON.stringify(product?.gallery || [], null, 2),
+                  )}
                   hint="Add each product photo with upload or pasted image URL."
                 />
               </CardContent>
@@ -272,7 +344,15 @@ export async function ProductEditorPage({
                 <ProductPurchaseOptionsField
                   name="purchaseOptionsJson"
                   label="Available purchase options"
-                  defaultValue={JSON.stringify(purchaseOptions, null, 2)}
+                  defaultValue={dashboardDraftValue(
+                    draftValues,
+                    "purchaseOptionsJson",
+                    JSON.stringify(purchaseOptions, null, 2),
+                  )}
+                  hasError={hasDashboardFieldError(
+                    errorFields,
+                    "purchaseOptionsJson",
+                  )}
                   hint="Add product buying options such as 250g, 500g, 1kg, or 5L with separate price and stock."
                 />
               </CardContent>
@@ -300,34 +380,54 @@ export async function ProductEditorPage({
                       <TextField
                         name="summaryEn"
                         label="Summary (EN)"
-                        defaultValue={product?.summary.en || ""}
+                        defaultValue={dashboardDraftValue(
+                          draftValues,
+                          "summaryEn",
+                          product?.summary.en || "",
+                        )}
                         rows={3}
                       />
                       <TextField
                         name="summaryBn"
                         label="Summary (BN)"
-                        defaultValue={product?.summary.bn || ""}
+                        defaultValue={dashboardDraftValue(
+                          draftValues,
+                          "summaryBn",
+                          product?.summary.bn || "",
+                        )}
                         rows={3}
                       />
                       <TextField
                         name="descriptionEn"
                         label="Description (EN)"
-                        defaultValue={product?.description.en || ""}
+                        defaultValue={dashboardDraftValue(
+                          draftValues,
+                          "descriptionEn",
+                          product?.description.en || "",
+                        )}
                         rows={5}
                       />
                       <TextField
                         name="descriptionBn"
                         label="Description (BN)"
-                        defaultValue={product?.description.bn || ""}
+                        defaultValue={dashboardDraftValue(
+                          draftValues,
+                          "descriptionBn",
+                          product?.description.bn || "",
+                        )}
                         rows={5}
                       />
                       <JsonFieldEditor
                         name="featuresEnJson"
                         label="Features (EN)"
-                        defaultValue={JSON.stringify(
-                          regularFeatures.map((item) => item.en),
-                          null,
-                          2,
+                        defaultValue={dashboardDraftValue(
+                          draftValues,
+                          "featuresEnJson",
+                          JSON.stringify(
+                            regularFeatures.map((item) => item.en),
+                            null,
+                            2,
+                          ),
                         )}
                         mode="array-string"
                         itemLabel="Feature"
@@ -336,10 +436,14 @@ export async function ProductEditorPage({
                       <JsonFieldEditor
                         name="featuresBnJson"
                         label="Features (BN)"
-                        defaultValue={JSON.stringify(
-                          regularFeatures.map((item) => item.bn),
-                          null,
-                          2,
+                        defaultValue={dashboardDraftValue(
+                          draftValues,
+                          "featuresBnJson",
+                          JSON.stringify(
+                            regularFeatures.map((item) => item.bn),
+                            null,
+                            2,
+                          ),
                         )}
                         mode="array-string"
                         itemLabel="Feature"
@@ -365,20 +469,34 @@ export async function ProductEditorPage({
                   name="price"
                   label="Price"
                   type="number"
-                  defaultValue={String(product?.price ?? 0)}
+                  defaultValue={dashboardDraftValue(
+                    draftValues,
+                    "price",
+                    String(product?.price ?? 0),
+                  )}
+                  hasError={hasDashboardFieldError(errorFields, "price")}
                   required
                 />
                 <Field
                   name="compareAtPrice"
                   label="Compare-at price"
                   type="number"
-                  defaultValue={String(product?.compareAtPrice ?? 0)}
+                  defaultValue={dashboardDraftValue(
+                    draftValues,
+                    "compareAtPrice",
+                    String(product?.compareAtPrice ?? 0),
+                  )}
                 />
                 <Field
                   name="inventory"
                   label="Inventory"
                   type="number"
-                  defaultValue={String(product?.inventory ?? 0)}
+                  defaultValue={dashboardDraftValue(
+                    draftValues,
+                    "inventory",
+                    String(product?.inventory ?? 0),
+                  )}
+                  hasError={hasDashboardFieldError(errorFields, "inventory")}
                   required
                 />
               </CardContent>
@@ -401,17 +519,29 @@ export async function ProductEditorPage({
                   subcategories={taxonomy.subcategories}
                   initialCategoryId={initialCategory?.id || ""}
                   initialSubcategoryId={initialSubcategory?.id || ""}
+                  categoryHasError={hasDashboardFieldError(
+                    errorFields,
+                    "categoryKey",
+                  )}
                 />
                 <Field
                   name="badge"
                   label="Badge"
-                  defaultValue={product?.badge || ""}
+                  defaultValue={dashboardDraftValue(
+                    draftValues,
+                    "badge",
+                    product?.badge || "",
+                  )}
                 />
                 <Field
                   name="sortOrder"
                   label="Sort order"
                   type="number"
-                  defaultValue={String(product?.sortOrder ?? 0)}
+                  defaultValue={dashboardDraftValue(
+                    draftValues,
+                    "sortOrder",
+                    String(product?.sortOrder ?? 0),
+                  )}
                   required
                 />
               </CardContent>
@@ -427,12 +557,20 @@ export async function ProductEditorPage({
               <CardContent className="space-y-5">
                 <DashboardFormCheckbox
                   name="isFeatured"
-                  defaultChecked={product?.isFeatured ?? false}
+                  defaultChecked={dashboardDraftBoolean(
+                    draftValues,
+                    "isFeatured",
+                    product?.isFeatured ?? false,
+                  )}
                   label="Featured"
                 />
                 <DashboardFormCheckbox
                   name="isPublished"
-                  defaultChecked={product?.isPublished ?? true}
+                  defaultChecked={dashboardDraftBoolean(
+                    draftValues,
+                    "isPublished",
+                    product?.isPublished ?? true,
+                  )}
                   label="Published"
                 />
                 <Button type="submit" className="w-full">
@@ -454,7 +592,7 @@ export async function ProductEditorPage({
           buttonLabel="Delete product"
           description={`This permanently removes ${product.name.en} from the storefront catalog and removes its product reviews.`}
           id={product.id}
-          redirectTo="/dashboard/products?deleted=1"
+          redirectTo="/dashboard/products"
           title="Delete product?"
         />
       ) : null}
@@ -466,12 +604,14 @@ function Field({
   name,
   label,
   defaultValue,
+  hasError = false,
   required = false,
   type = "text",
 }: {
   name: string;
   label: string;
   defaultValue: string;
+  hasError?: boolean;
   required?: boolean;
   type?: string;
 }) {
@@ -479,6 +619,7 @@ function Field({
     <div className="min-w-0 space-y-2">
       <Label htmlFor={name}>{label}</Label>
       <Input
+        aria-invalid={hasError || undefined}
         id={name}
         name={name}
         type={type}
@@ -527,6 +668,6 @@ function getProductEditorErrorMessage(
     case "invalid-product-inventory":
       return "Product inventory cannot be negative.";
     default:
-      return null;
+      return getDashboardActionErrorMessage(code) || null;
   }
 }

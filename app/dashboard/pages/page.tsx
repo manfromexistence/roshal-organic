@@ -1,7 +1,9 @@
 import { Plus } from "lucide-react";
+import { cookies } from "next/headers";
 import Link from "next/link";
 import { saveRoshalPage } from "@/actions/admin";
 import { CmsSaveToast } from "@/components/dashboard/cms-save-toast";
+import { DashboardFormStatusToast } from "@/components/dashboard/dashboard-form-status-toast";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
@@ -19,6 +21,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { getDashboardActionErrorMessage } from "@/lib/dashboard-action-errors";
+import {
+  dashboardDraftBoolean,
+  dashboardDraftValue,
+  readDashboardFormDraft,
+} from "@/lib/dashboard-form-drafts";
 import { isDashboardHandoffMarketingSlug } from "@/lib/dashboard-navigation";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import { getRoshalPages } from "@/lib/store-content";
@@ -50,6 +58,9 @@ export default async function DashboardPagesPage({
     resolvedSearchParams.error,
     resolvedSearchParams.slug,
   );
+  const draftValues = resolvedSearchParams.error
+    ? readDashboardFormDraft(await cookies(), "cms-page")
+    : {};
   // Keep All Pages aligned with the simplified sidebar handoff pages.
   const visibleDashboardPages = pages.filter((page) =>
     isDashboardHandoffMarketingSlug(page.slug),
@@ -62,6 +73,14 @@ export default async function DashboardPagesPage({
   ).length;
   return (
     <div className="min-w-0 space-y-6 px-6 pt-6 pb-4">
+      <DashboardFormStatusToast
+        errorMessage={errorMessage || undefined}
+        successMessage={
+          resolvedSearchParams.deleted
+            ? "Marketing page deleted successfully."
+            : undefined
+        }
+      />
       <CmsSaveToast status={resolvedSearchParams.saved} />
       <div className="min-w-0 space-y-2">
         <p className="text-xs uppercase tracking-[0.24em] text-primary">
@@ -135,21 +154,54 @@ export default async function DashboardPagesPage({
                   <Field
                     name="slug"
                     label="Slug"
-                    defaultValue=""
+                    defaultValue={dashboardDraftValue(draftValues, "slug")}
                     placeholder="faq, wholesale, delivery-policy"
+                    required
                   />
                   <Field
                     name="navigationLabelBn"
                     label="Navigation Label (BN)"
-                    defaultValue=""
+                    defaultValue={dashboardDraftValue(
+                      draftValues,
+                      "navigationLabelBn",
+                    )}
                   />
                   <Field
                     name="navigationLabelEn"
                     label="Navigation Label (EN)"
-                    defaultValue=""
+                    defaultValue={dashboardDraftValue(
+                      draftValues,
+                      "navigationLabelEn",
+                    )}
                   />
-                  <Field name="titleBn" label="Title (BN)" defaultValue="" />
-                  <Field name="titleEn" label="Title (EN)" defaultValue="" />
+                  <Field
+                    name="titleBn"
+                    label="Title (BN)"
+                    defaultValue={dashboardDraftValue(draftValues, "titleBn")}
+                  />
+                  <Field
+                    name="titleEn"
+                    label="Title (EN)"
+                    defaultValue={dashboardDraftValue(draftValues, "titleEn")}
+                  />
+                  <div className="md:col-span-2">
+                    <ImageUploadField
+                      name="heroImage"
+                      label={
+                        locale === "bn"
+                          ? "হিরো বা কভার ইমেজ"
+                          : "Hero or cover image"
+                      }
+                      helperText={
+                        locale === "bn"
+                          ? "নতুন পেজের প্রধান image."
+                          : "Main cover image for the new page."
+                      }
+                      value={dashboardDraftValue(draftValues, "heroImage")}
+                      compact
+                      previewClassName="w-full max-w-72"
+                    />
+                  </div>
                   <Accordion
                     type="multiple"
                     className="space-y-3 md:col-span-2"
@@ -166,7 +218,7 @@ export default async function DashboardPagesPage({
                               : "Advanced page settings"}
                           </span>
                           <span className="block text-sm font-normal text-muted-foreground">
-                            Status, image, long descriptions, navigation, and
+                            Status, long descriptions, navigation, and
                             reserved-slug guidance.
                           </span>
                         </span>
@@ -177,33 +229,22 @@ export default async function DashboardPagesPage({
                             <Label>Status</Label>
                             <DashboardFormSelect
                               name="status"
-                              defaultValue="draft"
+                              defaultValue={dashboardDraftValue(
+                                draftValues,
+                                "status",
+                                "draft",
+                              )}
                               options={pageStatusOptions}
-                            />
-                          </div>
-                          <div className="md:col-span-2">
-                            <ImageUploadField
-                              name="heroImage"
-                              label={
-                                locale === "bn"
-                                  ? "হিরো বা কভার ইমেজ"
-                                  : "Hero or cover image"
-                              }
-                              helperText={
-                                locale === "bn"
-                                  ? "নতুন পেজে hero/story সেকশন না থাকলে এই ইমেজটি উপরের কভার হিসেবে ব্যবহৃত হবে।"
-                                  : "This image will be used as the top cover when the page has no hero/story section yet."
-                              }
-                              value=""
-                              compact
-                              previewClassName="w-full max-w-72"
                             />
                           </div>
                           <div className="md:col-span-2">
                             <TextField
                               name="descriptionBn"
                               label="Description (BN)"
-                              defaultValue=""
+                              defaultValue={dashboardDraftValue(
+                                draftValues,
+                                "descriptionBn",
+                              )}
                               rows={3}
                             />
                           </div>
@@ -211,14 +252,21 @@ export default async function DashboardPagesPage({
                             <TextField
                               name="descriptionEn"
                               label="Description (EN)"
-                              defaultValue=""
+                              defaultValue={dashboardDraftValue(
+                                draftValues,
+                                "descriptionEn",
+                              )}
                               rows={3}
                             />
                           </div>
                           <div className="md:col-span-2">
                             <DashboardFormCheckbox
                               name="showInNavigation"
-                              defaultChecked
+                              defaultChecked={dashboardDraftBoolean(
+                                draftValues,
+                                "showInNavigation",
+                                true,
+                              )}
                               label={
                                 locale === "bn"
                                   ? "স্টোরফ্রন্ট নেভিগেশনে দেখান"
@@ -257,11 +305,13 @@ function Field({
   label,
   defaultValue,
   placeholder,
+  required = false,
 }: {
   name: string;
   label: string;
   defaultValue: string;
   placeholder?: string;
+  required?: boolean;
 }) {
   return (
     <div className="space-y-2">
@@ -271,6 +321,7 @@ function Field({
         name={name}
         defaultValue={defaultValue}
         placeholder={placeholder}
+        required={required}
       />
     </div>
   );
@@ -314,6 +365,6 @@ function getPageListErrorMessage(
         ? "পেজ স্লাগে শুধুমাত্র ছোট হাতের অক্ষর, সংখ্যা এবং হাইফেন ব্যবহার করুন।"
         : "Use only lowercase letters, numbers, and hyphens in page slugs.";
     default:
-      return null;
+      return getDashboardActionErrorMessage(code) || null;
   }
 }

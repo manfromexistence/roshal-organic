@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Fixed
+- Fixed Home landing hero default repair so a default-like disabled/missing hero is re-enabled with seeded image-backed slides instead of leaving the public homepage without a hero.
+- Fixed first-click product deletion for edited default products by writing a fallback-default tombstone when an override row uses a different ID, so deleted fallback products cannot reappear until deleted a second time.
+- Changed custom product deletion to hard-delete the product row after product reviews are removed, while keeping tombstones only for built-in fallback catalog products.
+- Replaced the separate product create/delete toast with the shared dashboard status toast so product deletes cannot display the stale "New product added" toast.
+- Fixed Product, Category, and Subcategory dashboard delete redirects so delete actions clear stale create/save query flags, force a fresh list-page feedback event, and cannot reuse the previous "New product added" toast.
+- Seeded the default Home landing hero with real carousel slide images, copy, links, and sizing data, and added a CMS repair step for existing hero sections that have no image-backed slides.
+- Fixed dashboard data tables so the table fills the full available card width on larger screens instead of leaving an empty right-side gap.
+- Fixed the Home CMS hero flow so image-only carousel slides do not receive text from page fallback data, button labels, or another slide.
+- Fixed the Home hero carousel so the Page cover image is never borrowed for carousel slides; slides now require their own slide image and section-level hero fallback stays separate.
+- Fixed the Marketing dashboard page width cap that caused table content to stop early on wider dashboard screens.
+- Fixed storefront hero slide rendering so saved per-slide container height, image fit/scale, and text color settings are applied safely.
+- Fixed dashboard create/delete redirects so stale `created`, `saved`, `deleted`, and `error` query flags are cleared before showing the next Product, Category, Subcategory, or CMS Page status.
+- Fixed dashboard delete feedback so deleting a product cannot leave the old "New product added" toast visible, and category/subcategory/page deletes now show the correct success feedback after redirect.
+- Highlighted Product, Category, and Subcategory dashboard fields with destructive borders when their server validation error points to that field.
+- Fixed failed dashboard Product, Category, Subcategory, CMS Page, and CMS Section create/edit submissions so the submitted form values are restored after validation or duplicate-key redirects.
+- Confirmed the current `test` product slug conflict is caused by an active product row, not a stale deleted-product tombstone.
+- Fixed dashboard slug/key reuse after deletes by moving deleted products, fallback-deleted taxonomy rows, and constraint-protected custom CMS pages onto hidden tombstone identifiers while allowing deleted CMS page markers to be recreated with the same slug.
+- Fixed dashboard search so deleted products and deleted CMS pages no longer appear as editable search results after removal.
+- Compact dashboard CMS page editors by keeping practical image/title/body controls visible while secondary button, item, setup, accent/variant, and renderer controls stay inside collapsed accordions.
+- Fixed Home hero slide rendering so image-only CMS hero slides do not inherit page-level or section-level title text.
+- Hardened dashboard mutation validation for products, categories, subcategories, CMS pages, CMS sections, payment settings, reviews, orders, and users so missing or invalid form data redirects back with actionable alerts/toasts instead of a generic error page.
 - Fixed dashboard product feedback so delete redirects/toasts cannot show the New product added message.
 - Fixed blank product image saves by storing a concrete `/logo.png` fallback when admins do not add a primary product image.
 - Removed homepage hero image gradient overlays so dashboard-uploaded banner images render without storefront effects.
@@ -47,6 +68,8 @@ All notable changes to this project will be documented in this file.
 - Fixed dashboard product creation feedback by redirecting new products to the All Products list with both a success alert and a toast popup.
 - Fixed product gallery image management so extra product pictures use visible uploadable image rows instead of raw JSON value fields.
 - Fixed checkout payment method cards to use compact equal-height selector cards on mobile and desktop.
+- Fixed Home CMS rendering so missing marketing pages/sections are seeded into the database as editable content instead of being invented only at render time.
+- Fixed the Home landing hero so it no longer appends extra fallback slides or fallback hero text when the admin has not added those slide items.
 - Fixed category and subcategory management so dashboard taxonomy rows now have edit and delete actions.
 - Fixed signup field order, mobile District/Thana layout, duplicate-mobile messaging, and 6-character password acceptance for customer registration.
 - Fixed checkout mobile ordering so the order summary appears after delivery/payment forms and cart delivery estimates respect the logged-in profile address.
@@ -59,6 +82,10 @@ All notable changes to this project will be documented in this file.
 - Fixed the custom storefront homepage CMS visibility path so disabled homepage sections stay hidden instead of falling back to default section content.
 
 ### Changed
+- Renamed dashboard Home CMS section accordions to friendly section names and clarified Hero carousel slide controls, including a clear "Add carousel slide" action.
+- Extended friendly dashboard CMS section names and focused item labels to the sidebar-listed About, Contact, Terms & Conditions, and Privacy Policy pages.
+- Added per-carousel-slide CMS controls for container height, image fit, image scale percentage, and slide text color while preserving slide sort/create/delete controls.
+- Added explicit sortable item controls to dashboard CMS section items so Home hero slides and item-driven homepage sections render in the admin-defined order.
 - Reworked the dashboard marketing page section editor so CMS items use exact storefront fields instead of arbitrary JSON, styles use exact key/value rows, and non-field guide panels are hidden from the editor.
 - Switched the site-wide UI font stack to self-hosted Inter with Noto Sans Bengali fallback and JetBrains Mono for monospace code surfaces.
 - Added Brevo transactional email API support as the preferred provider for new-order and password-reset emails, falling back to Resend and SMTP when Brevo is not configured.

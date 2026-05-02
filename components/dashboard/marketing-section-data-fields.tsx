@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, Plus, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { ImageUploadField } from "@/components/shared/image-upload-field";
 import { Button } from "@/components/ui/button";
@@ -12,10 +12,15 @@ import type { RoshalMarketingSectionItem } from "@/lib/store-types";
 type EditableSectionItem = {
   bodyBn: string;
   bodyEn: string;
+  containerHeight: string;
   href: string;
+  imageFit: string;
+  imageScale: string;
   imageUrl: string;
   labelBn: string;
   labelEn: string;
+  sortOrder: string;
+  textColor: string;
   titleBn: string;
   titleEn: string;
   value: string;
@@ -25,6 +30,66 @@ type StylePair = {
   key: string;
   value: string;
 };
+
+export type MarketingSectionItemsCopy = {
+  addButtonLabel?: string;
+  bodyBnLabel?: string;
+  bodyEnLabel?: string;
+  containerHeightLabel?: string;
+  emptyText?: string;
+  helperText?: string;
+  hrefLabel?: string;
+  imageFitLabel?: string;
+  imageLabel?: string;
+  imageScaleLabel?: string;
+  itemLabel?: string;
+  labelBnLabel?: string;
+  labelEnLabel?: string;
+  showSlideDesignFields?: boolean;
+  sortLabel?: string;
+  textColorLabel?: string;
+  title?: string;
+  titleBnLabel?: string;
+  titleEnLabel?: string;
+  valueLabel?: string;
+};
+
+const defaultItemsCopy: Required<MarketingSectionItemsCopy> = {
+  addButtonLabel: "Add item",
+  bodyBnLabel: "Body (BN)",
+  bodyEnLabel: "Body (EN)",
+  containerHeightLabel: "Container height",
+  emptyText: "No items yet.",
+  helperText:
+    "Items render by Sort order. Hero items become slides; item-driven sections use these rows as cards or tiles.",
+  hrefLabel: "Href",
+  imageFitLabel: "Image fit",
+  imageLabel: "Image URL",
+  imageScaleLabel: "Image scale %",
+  itemLabel: "Item",
+  labelBnLabel: "Label (BN)",
+  labelEnLabel: "Label (EN)",
+  showSlideDesignFields: false,
+  sortLabel: "Sort",
+  textColorLabel: "Text color",
+  title: "Items",
+  titleBnLabel: "Title (BN)",
+  titleEnLabel: "Title (EN)",
+  valueLabel: "Value",
+};
+
+function resolveItemsCopy(
+  overrides: MarketingSectionItemsCopy | undefined,
+): Required<MarketingSectionItemsCopy> {
+  return {
+    ...defaultItemsCopy,
+    ...(Object.fromEntries(
+      Object.entries(overrides || {}).filter(
+        ([, value]) => value !== undefined && value !== "",
+      ),
+    ) as MarketingSectionItemsCopy),
+  };
+}
 
 function localizedPart(
   value: RoshalMarketingSectionItem["title"],
@@ -37,32 +102,57 @@ function localizedPart(
   return value[key] || "";
 }
 
-function toEditableItem(item: RoshalMarketingSectionItem): EditableSectionItem {
+function stylePart(item: RoshalMarketingSectionItem, key: string) {
+  return item.styles?.[key] || "";
+}
+
+function toEditableItem(
+  item: RoshalMarketingSectionItem,
+  index: number,
+): EditableSectionItem {
   return {
     bodyBn: localizedPart(item.body, "bn"),
     bodyEn: localizedPart(item.body, "en"),
+    containerHeight: stylePart(item, "containerHeight"),
     href: item.href || "",
+    imageFit: stylePart(item, "imageFit"),
+    imageScale: stylePart(item, "imageScale"),
     imageUrl: item.imageUrl || "",
     labelBn: localizedPart(item.label, "bn"),
     labelEn: localizedPart(item.label, "en"),
+    sortOrder: Number.isFinite(Number(item.sortOrder))
+      ? String(Number(item.sortOrder))
+      : String(index),
+    textColor: stylePart(item, "textColor"),
     titleBn: localizedPart(item.title, "bn"),
     titleEn: localizedPart(item.title, "en"),
     value: item.value || "",
   };
 }
 
-function createEmptyItem(): EditableSectionItem {
+function createEmptyItem(sortOrder: number): EditableSectionItem {
   return {
     bodyBn: "",
     bodyEn: "",
+    containerHeight: "",
     href: "",
+    imageFit: "",
+    imageScale: "",
     imageUrl: "",
     labelBn: "",
     labelEn: "",
+    sortOrder: String(sortOrder),
+    textColor: "",
     titleBn: "",
     titleEn: "",
     value: "",
   };
+}
+
+function itemSortValue(value: string | number | undefined, fallback: number) {
+  const parsed = Number.parseInt(String(value ?? ""), 10);
+
+  return Number.isFinite(parsed) ? parsed : fallback;
 }
 
 function localizedValue(bn: string, en: string) {
@@ -76,9 +166,11 @@ function localizedValue(bn: string, en: string) {
 
 function serializeItem(item: EditableSectionItem): RoshalMarketingSectionItem {
   const next: RoshalMarketingSectionItem = {};
+  const styles: Record<string, string> = {};
   const title = localizedValue(item.titleBn, item.titleEn);
   const body = localizedValue(item.bodyBn, item.bodyEn);
   const label = localizedValue(item.labelBn, item.labelEn);
+  const sortOrder = itemSortValue(item.sortOrder, Number.NaN);
 
   if (title) {
     next.title = title;
@@ -104,6 +196,30 @@ function serializeItem(item: EditableSectionItem): RoshalMarketingSectionItem {
     next.value = item.value.trim();
   }
 
+  if (Number.isFinite(sortOrder)) {
+    next.sortOrder = sortOrder;
+  }
+
+  if (item.containerHeight.trim()) {
+    styles.containerHeight = item.containerHeight.trim();
+  }
+
+  if (item.imageFit.trim()) {
+    styles.imageFit = item.imageFit.trim();
+  }
+
+  if (item.imageScale.trim()) {
+    styles.imageScale = item.imageScale.trim();
+  }
+
+  if (item.textColor.trim()) {
+    styles.textColor = item.textColor.trim();
+  }
+
+  if (Object.keys(styles).length) {
+    next.styles = styles;
+  }
+
   return next;
 }
 
@@ -116,6 +232,36 @@ function hasItemData(item: RoshalMarketingSectionItem) {
       item.imageUrl ||
       item.value,
   );
+}
+
+function serializeItems(items: EditableSectionItem[]) {
+  return items
+    .map((item, index) => ({
+      index,
+      item: serializeItem(item),
+      sortOrder: itemSortValue(item.sortOrder, index),
+    }))
+    .filter(({ item }) => hasItemData(item))
+    .sort((left, right) => {
+      if (left.sortOrder !== right.sortOrder) {
+        return left.sortOrder - right.sortOrder;
+      }
+
+      return left.index - right.index;
+    })
+    .map(({ item }, index) => ({
+      ...item,
+      sortOrder: Number.isFinite(Number(item.sortOrder))
+        ? Number(item.sortOrder)
+        : index,
+    }));
+}
+
+function resequenceItems(items: EditableSectionItem[]) {
+  return items.map((item, index) => ({
+    ...item,
+    sortOrder: String(index),
+  }));
 }
 
 function createStylePairs(styles: Record<string, string>): StylePair[] {
@@ -138,17 +284,20 @@ function serializeStylePairs(pairs: StylePair[]) {
 }
 
 export function MarketingSectionItemsField({
+  copy: copyOverrides,
   defaultItems,
   name,
 }: {
+  copy?: MarketingSectionItemsCopy;
   defaultItems: RoshalMarketingSectionItem[];
   name: string;
 }) {
+  const copy = resolveItemsCopy(copyOverrides);
   const [items, setItems] = useState<EditableSectionItem[]>(() =>
     defaultItems.length ? defaultItems.map(toEditableItem) : [],
   );
   const serializedValue = useMemo(
-    () => JSON.stringify(items.map(serializeItem).filter(hasItemData), null, 2),
+    () => JSON.stringify(serializeItems(items), null, 2),
     [items],
   );
 
@@ -164,13 +313,26 @@ export function MarketingSectionItemsField({
     );
   };
 
+  const moveItem = (index: number, direction: -1 | 1) => {
+    setItems((current) => {
+      const nextIndex = index + direction;
+
+      if (nextIndex < 0 || nextIndex >= current.length) {
+        return current;
+      }
+
+      const next = [...current];
+      [next[index], next[nextIndex]] = [next[nextIndex], next[index]];
+
+      return resequenceItems(next);
+    });
+  };
+
   return (
     <div className="min-w-0 space-y-3">
       <div className="space-y-1">
-        <Label>Items</Label>
-        <p className="text-xs text-muted-foreground">
-          Edit only the CMS item fields used by the storefront.
-        </p>
+        <Label>{copy.title}</Label>
+        <p className="text-xs text-muted-foreground">{copy.helperText}</p>
       </div>
       <input type="hidden" name={name} value={serializedValue} />
 
@@ -182,64 +344,101 @@ export function MarketingSectionItemsField({
               className="space-y-4 rounded-lg border border-border/70 bg-muted/10 p-3"
             >
               <div className="flex items-center justify-between gap-3">
-                <p className="text-sm font-medium">Item {index + 1}</p>
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 px-2 text-muted-foreground hover:text-destructive"
-                  onClick={() =>
-                    setItems((current) =>
-                      current.filter((_, itemIndex) => itemIndex !== index),
-                    )
-                  }
-                >
-                  <Trash2 className="size-4" />
-                  Remove
-                </Button>
+                <p className="text-sm font-medium">
+                  {copy.itemLabel} {index + 1}
+                </p>
+                <div className="flex shrink-0 items-center gap-1">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="size-8 text-muted-foreground"
+                    disabled={index === 0}
+                    onClick={() => moveItem(index, -1)}
+                  >
+                    <ArrowUp className="size-4" />
+                    <span className="sr-only">
+                      Move {copy.itemLabel.toLowerCase()} up
+                    </span>
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="size-8 text-muted-foreground"
+                    disabled={index === items.length - 1}
+                    onClick={() => moveItem(index, 1)}
+                  >
+                    <ArrowDown className="size-4" />
+                    <span className="sr-only">
+                      Move {copy.itemLabel.toLowerCase()} down
+                    </span>
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 px-2 text-muted-foreground hover:text-destructive"
+                    onClick={() =>
+                      setItems((current) =>
+                        resequenceItems(
+                          current.filter((_, itemIndex) => itemIndex !== index),
+                        ),
+                      )
+                    }
+                  >
+                    <Trash2 className="size-4" />
+                    Remove
+                  </Button>
+                </div>
               </div>
 
               <div className="grid min-w-0 gap-3 md:grid-cols-2">
                 <ExactInput
-                  label="Title (BN)"
+                  label={copy.sortLabel}
+                  value={item.sortOrder}
+                  onChange={(value) => updateItem(index, "sortOrder", value)}
+                />
+                <ExactInput
+                  label={copy.titleBnLabel}
                   value={item.titleBn}
                   onChange={(value) => updateItem(index, "titleBn", value)}
                 />
                 <ExactInput
-                  label="Title (EN)"
+                  label={copy.titleEnLabel}
                   value={item.titleEn}
                   onChange={(value) => updateItem(index, "titleEn", value)}
                 />
                 <ExactInput
-                  label="Label (BN)"
+                  label={copy.labelBnLabel}
                   value={item.labelBn}
                   onChange={(value) => updateItem(index, "labelBn", value)}
                 />
                 <ExactInput
-                  label="Label (EN)"
+                  label={copy.labelEnLabel}
                   value={item.labelEn}
                   onChange={(value) => updateItem(index, "labelEn", value)}
                 />
                 <ExactInput
-                  label="Value"
+                  label={copy.valueLabel}
                   value={item.value}
                   onChange={(value) => updateItem(index, "value", value)}
                 />
                 <ExactInput
-                  label="Href"
+                  label={copy.hrefLabel}
                   value={item.href}
                   onChange={(value) => updateItem(index, "href", value)}
                 />
                 <div className="md:col-span-2">
                   <ExactTextarea
-                    label="Body (BN)"
+                    label={copy.bodyBnLabel}
                     value={item.bodyBn}
                     onChange={(value) => updateItem(index, "bodyBn", value)}
                   />
                 </div>
                 <div className="md:col-span-2">
                   <ExactTextarea
-                    label="Body (EN)"
+                    label={copy.bodyEnLabel}
                     value={item.bodyEn}
                     onChange={(value) => updateItem(index, "bodyEn", value)}
                   />
@@ -247,20 +446,54 @@ export function MarketingSectionItemsField({
                 <div className="md:col-span-2">
                   <ImageUploadField
                     name={undefined}
-                    label="Image URL"
+                    label={copy.imageLabel}
                     value={item.imageUrl}
                     onChange={(value) => updateItem(index, "imageUrl", value)}
                     compact
                     previewClassName="w-full max-w-48"
                   />
                 </div>
+                {copy.showSlideDesignFields ? (
+                  <div className="grid min-w-0 gap-3 rounded-md border border-border/60 bg-background/70 p-3 md:col-span-2 md:grid-cols-2">
+                    <ExactInput
+                      label={copy.containerHeightLabel}
+                      value={item.containerHeight}
+                      onChange={(value) =>
+                        updateItem(index, "containerHeight", value)
+                      }
+                      placeholder="18rem, 320px, 45vh"
+                    />
+                    <ExactInput
+                      label={copy.imageFitLabel}
+                      value={item.imageFit}
+                      onChange={(value) => updateItem(index, "imageFit", value)}
+                      placeholder="cover or contain"
+                    />
+                    <ExactInput
+                      label={copy.imageScaleLabel}
+                      value={item.imageScale}
+                      onChange={(value) =>
+                        updateItem(index, "imageScale", value)
+                      }
+                      placeholder="100"
+                    />
+                    <ExactInput
+                      label={copy.textColorLabel}
+                      value={item.textColor}
+                      onChange={(value) =>
+                        updateItem(index, "textColor", value)
+                      }
+                      placeholder="#0f3d24, white, var(--foreground)"
+                    />
+                  </div>
+                ) : null}
               </div>
             </div>
           ))}
         </div>
       ) : (
         <div className="rounded-lg border border-border/70 bg-muted/10 p-3 text-sm text-muted-foreground">
-          No items yet.
+          {copy.emptyText}
         </div>
       )}
 
@@ -269,10 +502,21 @@ export function MarketingSectionItemsField({
         variant="outline"
         size="sm"
         className="gap-2"
-        onClick={() => setItems((current) => [...current, createEmptyItem()])}
+        onClick={() =>
+          setItems((current) => {
+            const nextSortOrder =
+              current.reduce(
+                (maxSortOrder, item, index) =>
+                  Math.max(maxSortOrder, itemSortValue(item.sortOrder, index)),
+                -1,
+              ) + 1;
+
+            return [...current, createEmptyItem(nextSortOrder)];
+          })
+        }
       >
         <Plus className="size-4" />
-        Add item
+        {copy.addButtonLabel}
       </Button>
     </div>
   );
@@ -371,16 +615,22 @@ export function MarketingSectionStylesField({
 function ExactInput({
   label,
   onChange,
+  placeholder,
   value,
 }: {
   label: string;
   onChange: (value: string) => void;
+  placeholder?: string;
   value: string;
 }) {
   return (
     <div className="min-w-0 space-y-1.5">
       <Label>{label}</Label>
-      <Input value={value} onChange={(event) => onChange(event.target.value)} />
+      <Input
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        placeholder={placeholder}
+      />
     </div>
   );
 }

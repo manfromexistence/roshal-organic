@@ -354,7 +354,62 @@ export const defaultRoshalSections: RoshalMarketingSection[] = [
     ctaLabel: localizedValue("পণ্য দেখুন", "Browse products"),
     ctaHref: "/products",
     imageUrl: "/special-offer.jpg",
-    items: [],
+    items: [
+      {
+        title: localizedValue("খাঁটি মধু ও ঘি", "Pure honey and ghee"),
+        body: localizedValue(
+          "প্রতিদিনের পরিবারের জন্য বিশ্বাসযোগ্য খাঁটি খাবার।",
+          "Everyday healthy staples you can trust for your family.",
+        ),
+        label: localizedValue("এখনই দেখুন", "Shop now"),
+        href: "/products",
+        imageUrl: "/special-offer.jpg",
+        sortOrder: 0,
+        styles: {
+          containerHeight: "18rem",
+          imageFit: "cover",
+          imageScale: "100",
+        },
+      },
+      {
+        title: localizedValue(
+          "মৌসুমি ফল ও বাজারের পণ্য",
+          "Seasonal fruits and market picks",
+        ),
+        body: localizedValue(
+          "তাজা, প্রাকৃতিক পণ্য আপনার টেবিলের জন্য বাছাই করা।",
+          "Fresh, natural products selected for your table.",
+        ),
+        label: localizedValue("পণ্য দেখুন", "View products"),
+        href: "/products",
+        imageUrl: "/fruits.jpg",
+        sortOrder: 1,
+        styles: {
+          containerHeight: "18rem",
+          imageFit: "cover",
+          imageScale: "100",
+        },
+      },
+      {
+        title: localizedValue(
+          "অর্গানিক ঘরের প্রয়োজনীয় পণ্য",
+          "Organic pantry essentials",
+        ),
+        body: localizedValue(
+          "মধু, তেল, গুড়, খেজুর ও নাশতার পণ্য এক জায়গায়।",
+          "Honey, oils, jaggery, dates, and breakfast items in one store.",
+        ),
+        label: localizedValue("ক্যাটালগ দেখুন", "Browse catalog"),
+        href: "/products",
+        imageUrl: "/deal-3.jpg",
+        sortOrder: 2,
+        styles: {
+          containerHeight: "18rem",
+          imageFit: "cover",
+          imageScale: "100",
+        },
+      },
+    ],
     styles: {
       highlight: "warm",
       density: "comfortable",

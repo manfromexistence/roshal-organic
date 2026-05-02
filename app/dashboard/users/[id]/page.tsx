@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { saveRoshalUserProfile, saveRoshalUserRole } from "@/actions/admin";
+import { DashboardFormStatusToast } from "@/components/dashboard/dashboard-form-status-toast";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -9,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PhoneInput2 } from "@/components/ui/phone-input-2";
 import { Textarea } from "@/components/ui/textarea";
+import { getDashboardActionErrorMessage } from "@/lib/dashboard-action-errors";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import { getRoshalUsers } from "@/lib/store-content";
 import { getRoshalLocale } from "@/lib/store-i18n";
@@ -33,14 +35,15 @@ export default async function DashboardUserDetailsPage({
     notFound();
   }
 
+  const errorMessage = error ? getUserRoleErrorMessage(locale, error) : "";
+
   return (
     <div className="grid min-w-0 gap-6 px-6 pt-6 pb-4 xl:grid-cols-[minmax(0,1fr)_22rem]">
+      <DashboardFormStatusToast errorMessage={errorMessage || undefined} />
       <div className="min-w-0 space-y-6 xl:col-span-2">
         {error ? (
           <Alert variant="destructive">
-            <AlertDescription>
-              {getUserRoleErrorMessage(locale, error)}
-            </AlertDescription>
+            <AlertDescription>{errorMessage}</AlertDescription>
           </Alert>
         ) : null}
 
@@ -153,6 +156,12 @@ export default async function DashboardUserDetailsPage({
 }
 
 function getUserRoleErrorMessage(locale: "bn" | "en", code: string) {
+  if (
+    ["form-save-failed", "missing-user-id", "missing-user-name"].includes(code)
+  ) {
+    return getDashboardActionErrorMessage(code);
+  }
+
   switch (code) {
     case "self-admin-lockout":
       return locale === "bn"

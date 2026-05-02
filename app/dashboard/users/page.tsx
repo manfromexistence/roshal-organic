@@ -1,6 +1,8 @@
+import { DashboardFormStatusToast } from "@/components/dashboard/dashboard-form-status-toast";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { RoshalUsersTable } from "@/components/dashboard/users-table";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { getDashboardActionErrorMessage } from "@/lib/dashboard-action-errors";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import { getRoshalUsers } from "@/lib/store-content";
 import { getRoshalLocale } from "@/lib/store-i18n";
@@ -25,10 +27,15 @@ export default async function DashboardUsersPage({
     getRoshalUsers(),
     requireRoshalAdmin(),
   ]);
+  const errorMessage = resolvedSearchParams.error
+    ? userErrorCopy[resolvedSearchParams.error] ||
+      getDashboardActionErrorMessage(resolvedSearchParams.error)
+    : "";
   const adminCount = users.filter((user) => user.role === "admin").length;
   const activeCount = users.filter((user) => user.isActive).length;
   return (
     <div className="min-w-0 space-y-6 px-6 pt-6 pb-4">
+      <DashboardFormStatusToast errorMessage={errorMessage || undefined} />
       <div className="min-w-0 space-y-2">
         <p className="text-xs uppercase tracking-[0.24em] text-primary">
           {locale === "bn" ? "ব্যবহারকারী" : "Users"}
@@ -40,10 +47,7 @@ export default async function DashboardUsersPage({
 
       {resolvedSearchParams.error ? (
         <Alert variant="destructive">
-          <AlertDescription>
-            {userErrorCopy[resolvedSearchParams.error] ||
-              "Could not complete the user action."}
-          </AlertDescription>
+          <AlertDescription>{errorMessage}</AlertDescription>
         </Alert>
       ) : null}
       {resolvedSearchParams.deleted ? (

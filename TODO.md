@@ -19,6 +19,20 @@
 | 17 | Track Order | Login sarao order track korte parbe public. | | | 🔶 Pending | Order number diye sudhu public Track korte parbe public view te. |
 | 18 | Payment | 1. User order deoar somoy Payment method select korbe Ghorerbazar system a, bortomane card space beshi khay.<br>2. Home Delivery naki Office delivery ta Redial system a jekono 1 ta select kora jabe. | | | 🔶 Pending | Checkout page aro easy & simple korte hobe. see ghorerbazar for demo.<br>r Screenshot proof deoar system rakhar dorkar nei. |
 
+## 2026-05-03 Home CMS hero seed repair
+
+- [x] Seed the default Home landing hero with real carousel slide images, copy, links, and compact sizing data.
+- [x] Repair existing Home hero CMS sections only when they do not have any image-backed carousel slides, while preserving valid admin-edited slides.
+
+## 2026-05-03 Dashboard delete feedback repair
+
+- [x] Make Product delete redirects use the clean All Products URL and add a fresh feedback event so stale New product added toasts cannot appear after deletion.
+- [x] Make Category and Subcategory save/delete feedback redirects include a fresh action marker so the dashboard list reloads and shows the current action status.
+- [x] Fix first-click deletion for edited default products by adding a fallback-default tombstone when the editable override row uses a different ID.
+- [x] Hard-delete custom product rows after deleting their reviews, keeping soft tombstones only where needed to suppress built-in fallback products.
+- [x] Replace the product-specific create/delete toast with the shared dashboard save/delete status toast to prevent stale create messages after delete.
+- [x] Re-enable and seed default-like Home hero sections with image-backed slides so the landing hero shows by default.
+
 ## 2026-05-02 Live storefront comment follow-up
 
 - [x] Stop browser testing for the current admin-error pass and fix source-level CMS/product editor crashes first.
@@ -135,11 +149,17 @@
 - [x] Replace generic marketing section item JSON editing with exact fields for title, label, body, href, image URL, and value.
 - [x] Replace generic marketing section style JSON editing with exact style key/value editing.
 - [x] Remove non-field guide panels from the marketing page editor so the dashboard shows only the persisted CMS controls.
+- [x] Add sortable CMS section items so Home hero slides, category cards, offer cards, brand tiles, and stat tiles can be added and rendered in the dashboard order.
+- [x] Harden dashboard product, category, subcategory, CMS page, CMS section, payment, review, order, and user mutation validation so missing data redirects back with form alerts/toasts instead of generic error pages.
+- [x] Stop image-only Home hero slides from inheriting the page or section title text on the storefront.
+- [x] Compact CMS page editors by keeping image/title/body controls visible and moving secondary button, item, setup, accent, and renderer controls behind collapsed accordions.
 
 ## 2026-05-03 Product upload/save fix
 
 - [x] Fix new product save blocking by making only the real required product fields required and keeping optional fields such as Badge optional.
 - [x] Verify the shared image upload endpoint returns a valid hosted image URL locally.
+- [x] Seed missing CMS pages and sections into the database so Home uses editable content instead of render-only fallback copy.
+- [x] Stop the Home landing hero from appending extra fallback slides when the admin has not added hero slide items.
 
 ## 2026-05-03 Marketing dashboard compact controls and deploy
 
@@ -147,6 +167,13 @@
 - [x] Move advanced marketing page settings, section setup, media/CTA, items, and styles into accordions with force-mounted form fields so closed controls still save.
 - [x] Create hidden QA category, subcategory, and unpublished product records to verify catalog persistence without public storefront pollution.
 - [x] Browser-smoke-check dashboard Marketing, Home page editor, QA product editor, and products list locally.
+
+## 2026-05-03 Dashboard slug reuse after deletes
+
+- [x] Release product slugs and SKUs during delete by moving deleted products onto hidden tombstone identifiers.
+- [x] Allow a newly created CMS page to reuse a slug from a deleted CMS page marker by reviving that marker instead of throwing a duplicate-slug error.
+- [x] Harden category, subcategory, and custom page delete fallback paths so constraint-protected rows are hidden with tombstone keys/slugs rather than blocking future creates.
+- [x] Hide deleted products and deleted CMS pages from the dashboard search command results.
 
 ## 2026-05-02 Storefront mobile header cleanup
 
@@ -421,3 +448,24 @@
 - [x] Make simple Contact cards fit as a compact one-row desktop grid while staying two-column/tablet and one-column/mobile friendly.
 - [x] Remove stacked card padding from CMS feature and contact cards so page sections are not oversized.
 - [x] Adjust large Bangla marketing headings so wrapped lines stay readable at desktop and smaller widths.
+
+## 2026-05-03 Dashboard form draft preservation
+
+- [x] Check whether product slug `test` exists in the connected Roshal database before treating slug reuse as a stale-delete bug.
+- [x] Preserve failed dashboard Product, Category, Subcategory, CMS Page, and CMS Section form submissions in short-lived server cookies.
+- [x] Rehydrate product, category, subcategory, CMS page, and CMS section create/edit forms from the saved draft after validation or duplicate-key errors so admins only fix the invalid fields.
+- [x] Highlight the exact Product, Category, and Subcategory fields that need edits after validation or duplicate-key errors.
+- [x] Normalize Product, Category, Subcategory, and CMS Page action redirects so stale success/delete flags cannot show the wrong feedback after create/delete.
+- [x] Add correct category, subcategory, and CMS page delete feedback and dismiss older dashboard toasts before showing the next action result.
+
+## 2026-05-03 Dashboard table and Home CMS editor polish
+
+- [x] Make dashboard data tables stretch across the full available card width on wide screens while keeping their small-screen horizontal scroll behavior.
+- [x] Remove the Marketing dashboard page's desktop max-width cap so its table no longer leaves a right-side gap.
+- [x] Rename Home CMS section accordions from raw keys to client-friendly section names and descriptions.
+- [x] Clarify the Home hero flow with explicit Hero carousel slide controls, an "Add carousel slide" button, and image-only slide guidance.
+- [x] Prevent hero slide/button/page fallback text from appearing on image-only hero banners.
+- [x] Add per-slide carousel controls for container height, image fit, image scale, and text color in CMS item rows.
+- [x] Apply saved carousel slide size/color settings on the storefront hero renderer.
+- [x] Stop the Home hero carousel from borrowing the Page cover image for slide text; carousel slides now use explicit slide images and the Page cover stays out of the Home carousel.
+- [x] Extend friendly CMS section names and focused item labels to the sidebar-listed About, Contact, Terms & Conditions, and Privacy Policy pages.

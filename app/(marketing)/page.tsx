@@ -195,11 +195,31 @@ function sectionMap(sections: RoshalMarketingSection[]) {
   return new Map(sections.map((section) => [section.sectionKey, section]));
 }
 
-function firstNonEmptyValue(
-  values: Array<string | null | undefined>,
-  fallback: string,
-) {
-  return values.find((value) => value?.trim()) || fallback;
+function hasLocalizedText(value?: LocalizedValue | null) {
+  return Boolean(value?.bn?.trim() || value?.en?.trim());
+}
+
+function firstLocalizedText(values: Array<LocalizedValue | null | undefined>) {
+  return values.find(hasLocalizedText) || localizedValue("", "");
+}
+
+function sortedSectionItems(section: RoshalMarketingSection | undefined) {
+  return (section?.items || [])
+    .map((item, index) => ({
+      index,
+      item,
+      sortOrder: Number.isFinite(Number(item.sortOrder))
+        ? Number(item.sortOrder)
+        : index,
+    }))
+    .sort((left, right) => {
+      if (left.sortOrder !== right.sortOrder) {
+        return left.sortOrder - right.sortOrder;
+      }
+
+      return left.index - right.index;
+    })
+    .map(({ item }) => item);
 }
 
 function buildHeroBanners(
@@ -208,36 +228,20 @@ function buildHeroBanners(
   siteCtaHref: string,
   siteCtaLabel: LocalizedValue,
 ) {
+  const sectionSlideStyles = heroSection?.styles || {};
+  const fallbackHeroImage = heroSection
+    ? heroSection.imageUrl || "/logo.png"
+    : page?.heroImage || "/logo.png";
   const primaryBanner: LandingHeroBanner = {
-    image: page?.heroImage || heroSection?.imageUrl || fallbackBanners[0].image,
-    title: {
-      bn: firstNonEmptyValue(
-        [page?.title.bn, heroSection?.title.bn, fallbackBanners[0].title.bn],
-        fallbackBanners[0].title.bn,
-      ),
-      en: firstNonEmptyValue(
-        [page?.title.en, heroSection?.title.en, fallbackBanners[0].title.en],
-        fallbackBanners[0].title.en,
-      ),
-    },
-    subtitle: {
-      bn: firstNonEmptyValue(
-        [
-          page?.description.bn,
-          heroSection?.body.bn,
-          fallbackBanners[0].subtitle.bn,
-        ],
-        fallbackBanners[0].subtitle.bn,
-      ),
-      en: firstNonEmptyValue(
-        [
-          page?.description.en,
-          heroSection?.body.en,
-          fallbackBanners[0].subtitle.en,
-        ],
-        fallbackBanners[0].subtitle.en,
-      ),
-    },
+    containerHeight: sectionSlideStyles.containerHeight,
+    image: fallbackHeroImage,
+    imageFit: sectionSlideStyles.imageFit,
+    imageScale: sectionSlideStyles.imageScale,
+    textColor: sectionSlideStyles.textColor,
+    title: heroSection ? heroSection.title : firstLocalizedText([page?.title]),
+    subtitle: heroSection
+      ? heroSection.body
+      : firstLocalizedText([page?.description]),
     href: heroSection?.ctaHref || siteCtaHref,
     ctaLabel:
       heroSection?.ctaLabel.bn || heroSection?.ctaLabel.en
@@ -245,46 +249,58 @@ function buildHeroBanners(
         : siteCtaLabel,
   };
 
-  if (heroSection?.items.length) {
-    return heroSection.items.map((item, index) => {
-      const fallbackBanner = fallbackBanners[index % fallbackBanners.length];
+  const heroItems = sortedSectionItems(heroSection);
 
-      return {
-        image:
-          item.imageUrl ||
-          (index === 0 ? primaryBanner.image : fallbackBanner.image),
-        title:
-          item.title ||
-          item.label ||
-          (index === 0 ? primaryBanner.title : fallbackBanner.title),
-        subtitle:
-          item.body ||
-          (index === 0 ? primaryBanner.subtitle : fallbackBanner.subtitle),
-        href: item.href || (index === 0 ? primaryBanner.href : siteCtaHref),
-        ctaLabel:
-          item.label || (index === 0 ? primaryBanner.ctaLabel : siteCtaLabel),
-      };
-    });
+  if (heroItems.length) {
+    const itemBanners = heroItems
+      .filter((item) => Boolean(item.imageUrl?.trim()))
+      .map((item) => ({
+        containerHeight: item.styles?.containerHeight,
+        image: item.imageUrl || "",
+        imageFit: item.styles?.imageFit,
+        imageScale: item.styles?.imageScale,
+        textColor: item.styles?.textColor,
+        title: item.title || localizedValue("", ""),
+        subtitle: item.body || localizedValue("", ""),
+        href: item.href || "",
+        ctaLabel: item.label || localizedValue("", ""),
+      }))
+      .filter(
+        (banner) =>
+          banner.image ||
+          hasLocalizedText(banner.title) ||
+          hasLocalizedText(banner.subtitle),
+      )
+      .map((banner) => ({ ...banner, image: banner.image || "/logo.png" }));
+
+    return itemBanners.length > 0 ? itemBanners : [primaryBanner];
   }
 
-  return [primaryBanner, ...fallbackBanners.slice(1)];
+  return [primaryBanner];
 }
 
 function buildCategories(
   section: RoshalMarketingSection | undefined,
   taxonomy: RoshalTaxonomyBundle,
 ) {
-  if (section?.items.length && section.styles.source === "manual") {
-    return section.items.map((item, index) => ({
-      key: `manual-${index + 1}`,
-      name:
-        item.title ||
-        item.label ||
-        localizedValue(`ক্যাটাগরি ${index + 1}`, `Category ${index + 1}`),
-      image:
-        item.imageUrl || fallbackBanners[index % fallbackBanners.length].image,
-      href: item.href || "/products",
-    }));
+  const items = sortedSectionItems(section);
+
+  if (items.length && section?.styles.source === "manual") {
+    return items
+      .filter(
+        (item) => hasLocalizedText(item.title) || hasLocalizedText(item.label),
+      )
+      .map((item, index) => ({
+        key: `manual-${index + 1}`,
+        name:
+          item.title ||
+          item.label ||
+          localizedValue(`ক্যাটাগরি ${index + 1}`, `Category ${index + 1}`),
+        image:
+          item.imageUrl ||
+          fallbackBanners[index % fallbackBanners.length].image,
+        href: item.href || "/products",
+      }));
   }
 
   const homepageCategories = buildHomepageCategories(taxonomy);
@@ -292,32 +308,36 @@ function buildCategories(
     return homepageCategories;
   }
 
-  return [
-    {
-      key: "fallback-oil-ghee",
-      name: localizedValue("তেল ও ঘি", "Oil & Ghee"),
-      image: "/ghee.jpg",
-      href: "/products?category=oil-ghee",
-    },
-    {
-      key: "fallback-honey",
-      name: localizedValue("মধু", "Honey"),
-      image: "/honey.jpg",
-      href: "/products?category=honey",
-    },
-    {
-      key: "fallback-fruits-dates",
-      name: localizedValue("ফল ও খেজুর", "Fruits & Dates"),
-      image: "/mango-2.jpg",
-      href: "/products?category=fruits-dates",
-    },
-    {
-      key: "fallback-dairy",
-      name: localizedValue("দুগ্ধজাত", "Dairy"),
-      image: "/yogurt-2.jpg",
-      href: "/products?category=dairy-breakfast",
-    },
-  ];
+  if (process.env.NEXT_PUBLIC_ROSHAL_ENABLE_RENDER_FALLBACKS === "1") {
+    return [
+      {
+        key: "fallback-oil-ghee",
+        name: localizedValue("তেল ও ঘি", "Oil & Ghee"),
+        image: "/ghee.jpg",
+        href: "/products?category=oil-ghee",
+      },
+      {
+        key: "fallback-honey",
+        name: localizedValue("মধু", "Honey"),
+        image: "/honey.jpg",
+        href: "/products?category=honey",
+      },
+      {
+        key: "fallback-fruits-dates",
+        name: localizedValue("ফল ও খেজুর", "Fruits & Dates"),
+        image: "/mango-2.jpg",
+        href: "/products?category=fruits-dates",
+      },
+      {
+        key: "fallback-dairy",
+        name: localizedValue("দুগ্ধজাত", "Dairy"),
+        image: "/yogurt-2.jpg",
+        href: "/products?category=dairy-breakfast",
+      },
+    ];
+  }
+
+  return [];
 }
 
 function parseLimit(value: string | undefined, fallback: number) {
@@ -392,45 +412,62 @@ function buildDeals(
   siteCtaHref: string,
   siteCtaLabel: LocalizedValue,
 ) {
-  if (section?.items.length) {
-    return section.items.map((item, index) => ({
-      title:
-        item.title ||
-        item.label ||
-        fallbackDeals[index % fallbackDeals.length].title,
-      description:
-        item.body || fallbackDeals[index % fallbackDeals.length].description,
-      image: item.imageUrl || fallbackDeals[index % fallbackDeals.length].image,
-      discount:
-        item.value || fallbackDeals[index % fallbackDeals.length].discount,
-      href: item.href || siteCtaHref,
-      ctaLabel: item.label || siteCtaLabel,
-    }));
+  const items = sortedSectionItems(section);
+
+  if (items.length) {
+    return items
+      .filter(
+        (item) =>
+          item.imageUrl ||
+          hasLocalizedText(item.title) ||
+          hasLocalizedText(item.label) ||
+          hasLocalizedText(item.body) ||
+          Boolean(item.value?.trim()),
+      )
+      .map((item, index) => ({
+        title: item.title || item.label || localizedValue("", ""),
+        description: item.body || localizedValue("", ""),
+        image:
+          item.imageUrl ||
+          fallbackDeals[index % fallbackDeals.length]?.image ||
+          "/logo.png",
+        discount: item.value || "",
+        href: item.href || siteCtaHref,
+        ctaLabel: item.label || siteCtaLabel,
+      }))
+      .filter((deal) => hasLocalizedText(deal.title) || deal.image);
   }
 
-  return fallbackDeals;
+  return [];
 }
 
 function buildBrands(
   section: RoshalMarketingSection | undefined,
   locale: Language,
 ) {
-  if (section?.items.length) {
-    return section.items.map((item, index) => ({
-      key: `${section.sectionKey}-${index + 1}`,
-      name: getLocalizedValue(
-        locale,
-        item.title ||
-          item.label ||
-          localizedValue(`ব্র্যান্ড ${index + 1}`, `Brand ${index + 1}`),
-      ),
-      image:
-        item.imageUrl || fallbackBrands[index % fallbackBrands.length].image,
-      href: item.href || "/products",
-    }));
+  const items = sortedSectionItems(section);
+
+  if (items.length) {
+    return items
+      .filter(
+        (item) =>
+          item.imageUrl ||
+          hasLocalizedText(item.title) ||
+          hasLocalizedText(item.label),
+      )
+      .map((item, index) => ({
+        key: `${section?.sectionKey || "brand"}-${index + 1}`,
+        name: getLocalizedValue(
+          locale,
+          item.title || item.label || localizedValue("", ""),
+        ),
+        image:
+          item.imageUrl || fallbackBrands[index % fallbackBrands.length].image,
+        href: item.href || "/products",
+      }));
   }
 
-  return fallbackBrands;
+  return [];
 }
 
 function buildTestimonials(
@@ -451,49 +488,31 @@ function buildTestimonials(
 
 function buildStats(
   section: RoshalMarketingSection | undefined,
-  productCount: number,
-  categoryCount: number,
+  _productCount: number,
+  _categoryCount: number,
 ): LandingStat[] {
-  if (section?.items.length) {
-    return section.items.map((item, index) => ({
-      key: `${section.sectionKey}-${index + 1}`,
-      label:
-        item.label ||
-        item.title ||
-        localizedValue(`Stat ${index + 1}`, `Stat ${index + 1}`),
-      value: item.value || "0",
-    }));
+  const items = sortedSectionItems(section);
+
+  if (items.length) {
+    return items
+      .filter(
+        (item) => hasLocalizedText(item.label) || hasLocalizedText(item.title),
+      )
+      .map((item, index) => ({
+        key: `${section?.sectionKey || "stat"}-${index + 1}`,
+        label: item.label || item.title || localizedValue("", ""),
+        value: item.value || "0",
+      }));
   }
 
-  return [
-    {
-      key: "customers",
-      label: localizedValue("Happy Customers", "Happy Customers"),
-      value: "10K+",
-    },
-    {
-      key: "products",
-      label: localizedValue("Products", "Products"),
-      value: `${Math.max(productCount, 1)}+`,
-    },
-    {
-      key: "categories",
-      label: localizedValue("Categories", "Categories"),
-      value: `${Math.max(categoryCount, 1)}+`,
-    },
-    {
-      key: "quality",
-      label: localizedValue("Quality Assured", "Quality Assured"),
-      value: "99%",
-    },
-  ];
+  return [];
 }
 
 function sectionTitle(
   section: RoshalMarketingSection | undefined,
   fallback: LocalizedValue,
 ) {
-  return section?.title.bn || section?.title.en ? section.title : fallback;
+  return section ? section.title : fallback;
 }
 
 const ADMIN_HELPER_DESCRIPTION_MARKERS = [

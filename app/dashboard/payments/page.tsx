@@ -2,6 +2,7 @@ import {
   saveRoshalPaymentSettings,
   saveRoshalSiteSettings,
 } from "@/actions/admin";
+import { DashboardFormStatusToast } from "@/components/dashboard/dashboard-form-status-toast";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { DashboardDeliveryZonesEditor } from "@/components/dashboard/delivery-zones-editor";
 import { DashboardPaymentProvidersEditor } from "@/components/dashboard/payment-providers-editor";
@@ -14,6 +15,7 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getDashboardActionErrorMessage } from "@/lib/dashboard-action-errors";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import {
   getRoshalPaymentSettings,
@@ -31,10 +33,14 @@ export default async function DashboardPaymentsPage({
   searchParams,
 }: {
   searchParams?: Promise<{
+    error?: string;
     saved?: string;
   }>;
 }) {
   const resolvedSearchParams = searchParams ? await searchParams : {};
+  const errorMessage = getDashboardActionErrorMessage(
+    resolvedSearchParams.error,
+  );
   const [locale, paymentSettings, siteSettings] = await Promise.all([
     getRoshalLocale(),
     getRoshalPaymentSettings(),
@@ -56,6 +62,15 @@ export default async function DashboardPaymentsPage({
 
   return (
     <div className="min-w-0 space-y-6 px-6 pt-6 pb-4">
+      <DashboardFormStatusToast
+        errorMessage={errorMessage || undefined}
+        successMessage={
+          resolvedSearchParams.saved
+            ? saveMessages[resolvedSearchParams.saved] ||
+              "Settings saved successfully."
+            : undefined
+        }
+      />
       <div className="min-w-0 space-y-2">
         <p className="text-xs uppercase tracking-[0.24em] text-primary">
           {locale === "bn" ? "পেমেন্ট সেটিংস" : "Payment settings"}
@@ -73,6 +88,12 @@ export default async function DashboardPaymentsPage({
             {saveMessages[resolvedSearchParams.saved] ||
               "Settings saved successfully."}
           </AlertDescription>
+        </Alert>
+      ) : null}
+
+      {errorMessage ? (
+        <Alert variant="destructive">
+          <AlertDescription>{errorMessage}</AlertDescription>
         </Alert>
       ) : null}
 

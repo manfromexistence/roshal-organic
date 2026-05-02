@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
 type PurchaseOptionRow = {
   id: string;
@@ -71,11 +72,13 @@ function toOptionalNumber(value: string) {
 
 export function ProductPurchaseOptionsField({
   defaultValue,
+  hasError = false,
   hint,
   label,
   name,
 }: {
   defaultValue: string;
+  hasError?: boolean;
   hint?: string;
   label: string;
   name: string;
@@ -149,7 +152,12 @@ export function ProductPurchaseOptionsField({
 
       <input type="hidden" name={name} value={serializedValue} />
 
-      <div className="space-y-3 rounded-xl border border-border/70 bg-muted/10 p-3">
+      <div
+        className={cn(
+          "space-y-3 rounded-xl border border-border/70 bg-muted/10 p-3",
+          hasError && "border-destructive ring-2 ring-destructive/20",
+        )}
+      >
         {options.length === 0 ? (
           <p className="text-sm text-muted-foreground">
             No size or amount options yet. Add one when this product has
@@ -176,6 +184,7 @@ export function ProductPurchaseOptionsField({
                 />
                 <Field
                   label="Price"
+                  hasError={hasError}
                   type="number"
                   value={option.price}
                   onChange={(value) => updateOption(index, "price", value)}
@@ -190,6 +199,7 @@ export function ProductPurchaseOptionsField({
                 />
                 <Field
                   label="Stock"
+                  hasError={hasError}
                   type="number"
                   value={option.inventory}
                   onChange={(value) => updateOption(index, "inventory", value)}
@@ -243,12 +253,14 @@ export function ProductPurchaseOptionsField({
 }
 
 function Field({
+  hasError = false,
   label,
   onChange,
   placeholder,
   type = "text",
   value,
 }: {
+  hasError?: boolean;
   label: string;
   onChange: (value: string) => void;
   placeholder?: string;
@@ -259,6 +271,7 @@ function Field({
     <div className="min-w-0 space-y-1.5">
       <Label className="text-xs text-muted-foreground">{label}</Label>
       <Input
+        aria-invalid={hasError || undefined}
         type={type}
         value={value}
         placeholder={placeholder}

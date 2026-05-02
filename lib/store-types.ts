@@ -22,6 +22,8 @@ export interface RoshalMarketingSectionItem {
   href?: string;
   imageUrl?: string;
   value?: string;
+  sortOrder?: number;
+  styles?: Record<string, string>;
 }
 
 export interface RoshalMarketingSection {

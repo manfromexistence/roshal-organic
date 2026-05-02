@@ -35,7 +35,7 @@ export function DataTable<TData>({
     >
       {children}
       <div className="min-w-0 max-w-full overflow-x-auto rounded-md border bg-card text-card-foreground">
-        <Table className="min-w-[920px]">
+        <Table className="w-full min-w-[920px]">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

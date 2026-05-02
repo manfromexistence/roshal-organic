@@ -1,4 +1,4 @@
-import { desc, like, or } from "drizzle-orm";
+import { and, desc, like, ne, or, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { roshalOrders, roshalPages, roshalProducts, users } from "@/lib/schema";
@@ -44,13 +44,16 @@ export async function GET(request: Request) {
         })
         .from(roshalProducts)
         .where(
-          or(
-            like(roshalProducts.nameEn, wildcardQuery),
-            like(roshalProducts.nameBn, wildcardQuery),
-            like(roshalProducts.sku, wildcardQuery),
-            like(roshalProducts.slug, wildcardQuery),
-            like(roshalProducts.categoryLabelEn, wildcardQuery),
-            like(roshalProducts.categoryLabelBn, wildcardQuery),
+          and(
+            sql`${roshalProducts.deletedAt} IS NULL`,
+            or(
+              like(roshalProducts.nameEn, wildcardQuery),
+              like(roshalProducts.nameBn, wildcardQuery),
+              like(roshalProducts.sku, wildcardQuery),
+              like(roshalProducts.slug, wildcardQuery),
+              like(roshalProducts.categoryLabelEn, wildcardQuery),
+              like(roshalProducts.categoryLabelBn, wildcardQuery),
+            ),
           ),
         )
         .orderBy(desc(roshalProducts.updatedAt))
@@ -106,12 +109,15 @@ export async function GET(request: Request) {
         })
         .from(roshalPages)
         .where(
-          or(
-            like(roshalPages.slug, wildcardQuery),
-            like(roshalPages.titleEn, wildcardQuery),
-            like(roshalPages.titleBn, wildcardQuery),
-            like(roshalPages.navigationLabelEn, wildcardQuery),
-            like(roshalPages.navigationLabelBn, wildcardQuery),
+          and(
+            ne(roshalPages.status, "deleted"),
+            or(
+              like(roshalPages.slug, wildcardQuery),
+              like(roshalPages.titleEn, wildcardQuery),
+              like(roshalPages.titleBn, wildcardQuery),
+              like(roshalPages.navigationLabelEn, wildcardQuery),
+              like(roshalPages.navigationLabelBn, wildcardQuery),
+            ),
           ),
         )
         .orderBy(desc(roshalPages.updatedAt))

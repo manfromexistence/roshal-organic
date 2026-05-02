@@ -94,6 +94,17 @@ function deletedRoshalProductSku(id: string) {
   return `DELETED-${id.toUpperCase()}`;
 }
 
+function deletedRoshalPageSlug(id: string) {
+  return normalizeRoshalRouteSlug(`deleted-page-${id}`);
+}
+
+function deletedRoshalTaxonomyKey(
+  type: "category" | "subcategory",
+  id: string,
+) {
+  return normalizeRoshalRouteSlug(`deleted-${type}-${id}`);
+}
+
 function normalizeRoshalProductHeroImage(value: string) {
   return normalizeRoshalAssetPath(value, "/logo.png");
 }
@@ -1137,13 +1148,99 @@ export async function upsertRoshalSubcategory(
 export async function deleteRoshalCategory(id: string) {
   await ensureRoshalTaxonomySchema();
 
-  await db.delete(roshalCategories).where(eq(roshalCategories.id, id));
+  const timestamp = new Date();
+  const tombstoneKey = deletedRoshalTaxonomyKey("category", id);
+
+  try {
+    await db.transaction(async (tx) => {
+      await tx
+        .delete(roshalSubcategories)
+        .where(eq(roshalSubcategories.categoryId, id));
+      await tx.delete(roshalCategories).where(eq(roshalCategories.id, id));
+    });
+  } catch (error) {
+    if (!isForeignKeyConstraintError(error)) {
+      throw error;
+    }
+
+    const subcategories = await db
+      .select({
+        id: roshalSubcategories.id,
+      })
+      .from(roshalSubcategories)
+      .where(eq(roshalSubcategories.categoryId, id));
+
+    for (const subcategory of subcategories) {
+      const subcategoryTombstoneKey = deletedRoshalTaxonomyKey(
+        "subcategory",
+        subcategory.id,
+      );
+
+      await db
+        .update(roshalSubcategories)
+        .set({
+          key: subcategoryTombstoneKey,
+          labelBn: "Deleted subcategory",
+          labelEn: "Deleted subcategory",
+          descriptionBn: null,
+          descriptionEn: null,
+          imageUrl: null,
+          sourceKeysJson: JSON.stringify([subcategoryTombstoneKey]),
+          isEnabled: false,
+          showInNavigation: false,
+          updatedAt: timestamp,
+        })
+        .where(eq(roshalSubcategories.id, subcategory.id));
+    }
+
+    await db
+      .update(roshalCategories)
+      .set({
+        key: tombstoneKey,
+        labelBn: "Deleted category",
+        labelEn: "Deleted category",
+        descriptionBn: null,
+        descriptionEn: null,
+        imageUrl: null,
+        sourceKeysJson: JSON.stringify([tombstoneKey]),
+        isEnabled: false,
+        showInNavigation: false,
+        showOnHomepage: false,
+        updatedAt: timestamp,
+      })
+      .where(eq(roshalCategories.id, id));
+  }
 }
 
 export async function deleteRoshalSubcategory(id: string) {
   await ensureRoshalTaxonomySchema();
 
-  await db.delete(roshalSubcategories).where(eq(roshalSubcategories.id, id));
+  const timestamp = new Date();
+  const tombstoneKey = deletedRoshalTaxonomyKey("subcategory", id);
+
+  try {
+    await db.delete(roshalSubcategories).where(eq(roshalSubcategories.id, id));
+  } catch (error) {
+    if (!isForeignKeyConstraintError(error)) {
+      throw error;
+    }
+
+    await db
+      .update(roshalSubcategories)
+      .set({
+        key: tombstoneKey,
+        labelBn: "Deleted subcategory",
+        labelEn: "Deleted subcategory",
+        descriptionBn: null,
+        descriptionEn: null,
+        imageUrl: null,
+        sourceKeysJson: JSON.stringify([tombstoneKey]),
+        isEnabled: false,
+        showInNavigation: false,
+        updatedAt: timestamp,
+      })
+      .where(eq(roshalSubcategories.id, id));
+  }
 }
 
 export interface UpsertRoshalPageInput {
@@ -1162,7 +1259,7 @@ export interface UpsertRoshalPageInput {
 
 export async function upsertRoshalPage(input: UpsertRoshalPageInput) {
   await ensureRoshalCmsSchema();
-  const id = input.id || nextId("page");
+  let id = input.id || nextId("page");
   const timestamp = new Date();
   const slug = normalizeRoshalRouteSlug(input.slug);
 
@@ -1183,16 +1280,21 @@ export async function upsertRoshalPage(input: UpsertRoshalPageInput) {
   const [existingPage] = await db
     .select({
       id: roshalPages.id,
+      status: roshalPages.status,
     })
     .from(roshalPages)
     .where(and(eq(roshalPages.slug, slug), ne(roshalPages.id, id)))
     .limit(1);
 
   if (existingPage) {
-    throw new RoshalPageError(
-      "duplicate-slug",
-      "Another marketing page is already using this slug.",
-    );
+    if (!input.id && existingPage.status === "deleted") {
+      id = existingPage.id;
+    } else {
+      throw new RoshalPageError(
+        "duplicate-slug",
+        "Another marketing page is already using this slug.",
+      );
+    }
   }
 
   await db
@@ -1254,41 +1356,57 @@ export async function deleteRoshalPage(id: string) {
     (item) => item.id === page.id || item.slug === page.slug,
   );
 
-  await db.transaction(async (tx) => {
-    await tx.delete(roshalSections).where(eq(roshalSections.pageId, page.id));
+  try {
+    await db.transaction(async (tx) => {
+      await tx.delete(roshalSections).where(eq(roshalSections.pageId, page.id));
 
-    if (isDefaultPage) {
-      await tx
-        .insert(roshalPages)
-        .values({
-          id: page.id,
-          slug: page.slug,
-          navigationLabelBn:
-            defaultPage?.navigationLabel.bn || page.slug || "Deleted",
-          navigationLabelEn:
-            defaultPage?.navigationLabel.en || page.slug || "Deleted",
-          titleBn: defaultPage?.title.bn || page.slug || "Deleted",
-          titleEn: defaultPage?.title.en || page.slug || "Deleted",
-          descriptionBn: defaultPage?.description.bn || null,
-          descriptionEn: defaultPage?.description.en || null,
-          heroImage: defaultPage?.heroImage || null,
-          status: "deleted",
-          showInNavigation: false,
-          createdAt: timestamp,
-          updatedAt: timestamp,
-        })
-        .onConflictDoUpdate({
-          target: roshalPages.id,
-          set: {
+      if (isDefaultPage) {
+        await tx
+          .insert(roshalPages)
+          .values({
+            id: page.id,
+            slug: page.slug,
+            navigationLabelBn:
+              defaultPage?.navigationLabel.bn || page.slug || "Deleted",
+            navigationLabelEn:
+              defaultPage?.navigationLabel.en || page.slug || "Deleted",
+            titleBn: defaultPage?.title.bn || page.slug || "Deleted",
+            titleEn: defaultPage?.title.en || page.slug || "Deleted",
+            descriptionBn: defaultPage?.description.bn || null,
+            descriptionEn: defaultPage?.description.en || null,
+            heroImage: defaultPage?.heroImage || null,
             status: "deleted",
             showInNavigation: false,
+            createdAt: timestamp,
             updatedAt: timestamp,
-          },
-        });
-    } else {
-      await tx.delete(roshalPages).where(eq(roshalPages.id, page.id));
+          })
+          .onConflictDoUpdate({
+            target: roshalPages.id,
+            set: {
+              status: "deleted",
+              showInNavigation: false,
+              updatedAt: timestamp,
+            },
+          });
+      } else {
+        await tx.delete(roshalPages).where(eq(roshalPages.id, page.id));
+      }
+    });
+  } catch (error) {
+    if (!isForeignKeyConstraintError(error) || isDefaultPage) {
+      throw error;
     }
-  });
+
+    await db
+      .update(roshalPages)
+      .set({
+        slug: deletedRoshalPageSlug(page.id),
+        status: "deleted",
+        showInNavigation: false,
+        updatedAt: timestamp,
+      })
+      .where(eq(roshalPages.id, page.id));
+  }
 
   return { id: page.id, slug: page.slug };
 }
@@ -1614,11 +1732,17 @@ export async function deleteRoshalProduct(id: string) {
       .delete(roshalProductReviews)
       .where(eq(roshalProductReviews.productId, deletedProduct.id));
 
+    if (defaultProduct && defaultProduct.id !== deletedProduct.id) {
+      await tx
+        .delete(roshalProductReviews)
+        .where(eq(roshalProductReviews.productId, defaultProduct.id));
+    }
+
     if (defaultProduct) {
       const tombstoneSlug = deletedRoshalProductSlug(defaultProduct.id);
       const tombstoneSku = deletedRoshalProductSku(defaultProduct.id);
 
-      if (existingProduct) {
+      if (existingProduct?.id === defaultProduct.id) {
         await tx
           .update(roshalProducts)
           .set({
@@ -1629,6 +1753,10 @@ export async function deleteRoshalProduct(id: string) {
             deletedAt: timestamp,
             updatedAt: timestamp,
           })
+          .where(eq(roshalProducts.id, existingProduct.id));
+      } else if (existingProduct) {
+        await tx
+          .delete(roshalProducts)
           .where(eq(roshalProducts.id, existingProduct.id));
       } else {
         await tx.insert(roshalProducts).values({
@@ -1668,10 +1796,65 @@ export async function deleteRoshalProduct(id: string) {
         });
       }
 
+      if (existingProduct && existingProduct.id !== defaultProduct.id) {
+        await tx
+          .insert(roshalProducts)
+          .values({
+            id: defaultProduct.id,
+            slug: tombstoneSlug,
+            sku: tombstoneSku,
+            nameBn: defaultProduct.name.bn,
+            nameEn: defaultProduct.name.en,
+            summaryBn: defaultProduct.summary.bn,
+            summaryEn: defaultProduct.summary.en,
+            descriptionBn: defaultProduct.description.bn,
+            descriptionEn: defaultProduct.description.en,
+            categoryKey: defaultProduct.categoryKey,
+            categoryLabelBn: defaultProduct.categoryLabel.bn,
+            categoryLabelEn: defaultProduct.categoryLabel.en,
+            price: defaultProduct.price,
+            compareAtPrice: defaultProduct.compareAtPrice,
+            inventory: defaultProduct.inventory,
+            badge: defaultProduct.badge,
+            heroImage: defaultProduct.heroImage,
+            galleryJson: JSON.stringify(defaultProduct.gallery),
+            featuresBnJson: JSON.stringify(
+              defaultProduct.features.map((feature) => feature.bn),
+            ),
+            featuresEnJson: JSON.stringify(
+              defaultProduct.features.map((feature) => feature.en),
+            ),
+            purchaseOptionsJson: serializeRoshalProductPurchaseOptions(
+              defaultProduct.purchaseOptions || [],
+            ),
+            isFeatured: false,
+            isPublished: false,
+            sortOrder: defaultProduct.sortOrder,
+            deletedAt: timestamp,
+            createdAt: timestamp,
+            updatedAt: timestamp,
+          })
+          .onConflictDoUpdate({
+            target: roshalProducts.id,
+            set: {
+              slug: tombstoneSlug,
+              sku: tombstoneSku,
+              isFeatured: false,
+              isPublished: false,
+              deletedAt: timestamp,
+              updatedAt: timestamp,
+            },
+          });
+      }
+
       return;
     }
 
-    await tx.delete(roshalProducts).where(eq(roshalProducts.id, id));
+    if (existingProduct) {
+      await tx
+        .delete(roshalProducts)
+        .where(eq(roshalProducts.id, existingProduct.id));
+    }
   });
 
   return deletedProduct;

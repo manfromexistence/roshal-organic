@@ -409,7 +409,7 @@ export function RoshalProductsTable({
                 <input
                   type="hidden"
                   name="redirectTo"
-                  value="/dashboard/products?deleted=1"
+                  value="/dashboard/products"
                 />
                 <Button type="submit" variant="destructive">
                   Delete

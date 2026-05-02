@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { toast as sonnerToast } from "sonner";
 import { toast } from "@/hooks/use-toast";
 
 type ProductCatalogToastStatus = "created" | "deleted";
@@ -29,6 +30,7 @@ export function ProductCreatedToast({
       return;
     }
 
+    sonnerToast.dismiss();
     toast(toastCopy[status]);
   }, [status]);
 

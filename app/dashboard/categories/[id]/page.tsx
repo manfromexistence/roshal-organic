@@ -1,6 +1,8 @@
 import { ArrowLeft, ImageIcon, Save, Trash2, X } from "lucide-react";
+import { cookies } from "next/headers";
 import Link from "next/link";
 import { removeRoshalCategory, saveRoshalCategory } from "@/actions/admin";
+import { DashboardFormStatusToast } from "@/components/dashboard/dashboard-form-status-toast";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
 import { DashboardSourceKeySelect } from "@/components/dashboard/source-key-select";
 import { ImageUploadField } from "@/components/shared/image-upload-field";
@@ -23,6 +25,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { getDashboardActionErrorMessage } from "@/lib/dashboard-action-errors";
+import {
+  getDashboardErrorFields,
+  hasDashboardFieldError,
+} from "@/lib/dashboard-field-errors";
+import {
+  dashboardDraftBoolean,
+  dashboardDraftStringArray,
+  dashboardDraftValue,
+  readDashboardFormDraft,
+} from "@/lib/dashboard-form-drafts";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import { getAllRoshalProducts } from "@/lib/store-content";
 import { getLocalizedValue } from "@/lib/store-locale";
@@ -30,10 +43,20 @@ import { getRoshalTaxonomy } from "@/lib/store-taxonomy-content";
 
 export default async function EditCategoryPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams?: Promise<{ error?: string }>;
 }) {
   const { id } = await params;
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const errorMessage = getDashboardActionErrorMessage(
+    resolvedSearchParams.error,
+  );
+  const errorFields = getDashboardErrorFields(resolvedSearchParams.error);
+  const draftValues = resolvedSearchParams.error
+    ? readDashboardFormDraft(await cookies(), "category")
+    : {};
   const [, taxonomy, products] = await Promise.all([
     requireRoshalAdmin(),
     getRoshalTaxonomy(),
@@ -75,6 +98,7 @@ export default async function EditCategoryPage({
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-6 pt-6 pb-4">
+      <DashboardFormStatusToast errorMessage={errorMessage || undefined} />
       <div className="space-y-3">
         <Button asChild variant="ghost" size="sm" className="-ml-3">
           <Link href="/dashboard/categories">
@@ -92,9 +116,20 @@ export default async function EditCategoryPage({
         </div>
       </div>
 
+      {errorMessage ? (
+        <Alert variant="destructive">
+          <AlertDescription>{errorMessage}</AlertDescription>
+        </Alert>
+      ) : null}
+
       <form action={saveRoshalCategory}>
         <input type="hidden" name="id" value={category.id} />
         <input type="hidden" name="redirectTo" value="/dashboard/categories" />
+        <input
+          type="hidden"
+          name="errorRedirectTo"
+          value={`/dashboard/categories/${category.id}`}
+        />
         <Card className="border-none bg-card shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-xl">
@@ -106,29 +141,57 @@ export default async function EditCategoryPage({
             </CardDescription>
           </CardHeader>
           <CardContent className="grid min-w-0 gap-5 md:grid-cols-2">
-            <Field name="key" label="Key" defaultValue={category.key} />
+            <Field
+              name="key"
+              label="Key"
+              defaultValue={dashboardDraftValue(
+                draftValues,
+                "key",
+                category.key,
+              )}
+              hasError={hasDashboardFieldError(errorFields, "key")}
+              required
+            />
             <Field
               name="sortOrder"
               label="Sort order"
               type="number"
-              defaultValue={String(category.sortOrder)}
+              defaultValue={dashboardDraftValue(
+                draftValues,
+                "sortOrder",
+                String(category.sortOrder),
+              )}
             />
             <Field
               name="labelEn"
               label="Label (EN)"
-              defaultValue={category.label.en}
+              defaultValue={dashboardDraftValue(
+                draftValues,
+                "labelEn",
+                category.label.en,
+              )}
+              hasError={hasDashboardFieldError(errorFields, "labelEn")}
             />
             <Field
               name="labelBn"
               label="Label (BN)"
-              defaultValue={category.label.bn}
+              defaultValue={dashboardDraftValue(
+                draftValues,
+                "labelBn",
+                category.label.bn,
+              )}
+              hasError={hasDashboardFieldError(errorFields, "labelBn")}
             />
             <div className="md:col-span-2">
               <DashboardSourceKeySelect
                 name="sourceKeysJson"
                 label="Existing product bucket"
                 options={bucketOptions}
-                defaultValue={category.sourceKeys}
+                defaultValue={dashboardDraftStringArray(
+                  draftValues,
+                  "sourceKeysJson",
+                  category.sourceKeys,
+                )}
                 helperText="Select the existing product group that should appear in this storefront category."
               />
             </div>
@@ -145,17 +208,29 @@ export default async function EditCategoryPage({
                     name="imageUrl"
                     label="Category image"
                     helperText="Used by homepage category cards and future category landing surfaces."
-                    value={category.imageUrl}
+                    value={dashboardDraftValue(
+                      draftValues,
+                      "imageUrl",
+                      category.imageUrl,
+                    )}
                   />
                   <TextField
                     name="descriptionEn"
                     label="Description (EN)"
-                    defaultValue={category.description.en}
+                    defaultValue={dashboardDraftValue(
+                      draftValues,
+                      "descriptionEn",
+                      category.description.en,
+                    )}
                   />
                   <TextField
                     name="descriptionBn"
                     label="Description (BN)"
-                    defaultValue={category.description.bn}
+                    defaultValue={dashboardDraftValue(
+                      draftValues,
+                      "descriptionBn",
+                      category.description.bn,
+                    )}
                   />
                 </AccordionContent>
               </AccordionItem>
@@ -163,17 +238,29 @@ export default async function EditCategoryPage({
             <div className="flex flex-wrap gap-6 md:col-span-2">
               <DashboardFormCheckbox
                 name="isEnabled"
-                defaultChecked={category.isEnabled}
+                defaultChecked={dashboardDraftBoolean(
+                  draftValues,
+                  "isEnabled",
+                  category.isEnabled,
+                )}
                 label="Category enabled"
               />
               <DashboardFormCheckbox
                 name="showInNavigation"
-                defaultChecked={category.showInNavigation}
+                defaultChecked={dashboardDraftBoolean(
+                  draftValues,
+                  "showInNavigation",
+                  category.showInNavigation,
+                )}
                 label="Show in header navigation"
               />
               <DashboardFormCheckbox
                 name="showOnHomepage"
-                defaultChecked={category.showOnHomepage}
+                defaultChecked={dashboardDraftBoolean(
+                  draftValues,
+                  "showOnHomepage",
+                  category.showOnHomepage,
+                )}
                 label="Show on homepage"
               />
             </div>
@@ -206,19 +293,30 @@ export default async function EditCategoryPage({
 
 function Field({
   defaultValue = "",
+  hasError = false,
   label,
   name,
+  required = false,
   type = "text",
 }: {
   defaultValue?: string;
+  hasError?: boolean;
   label: string;
   name: string;
+  required?: boolean;
   type?: string;
 }) {
   return (
     <div className="space-y-2">
       <Label htmlFor={name}>{label}</Label>
-      <Input id={name} name={name} type={type} defaultValue={defaultValue} />
+      <Input
+        aria-invalid={hasError || undefined}
+        id={name}
+        name={name}
+        type={type}
+        defaultValue={defaultValue}
+        required={required}
+      />
     </div>
   );
 }

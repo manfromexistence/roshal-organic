@@ -1,10 +1,11 @@
 import { Plus } from "lucide-react";
 import Link from "next/link";
+import { DashboardFormStatusToast } from "@/components/dashboard/dashboard-form-status-toast";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
-import { ProductCreatedToast } from "@/components/dashboard/product-created-toast";
 import { RoshalProductsTable } from "@/components/dashboard/products-table";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { getDashboardActionErrorMessage } from "@/lib/dashboard-action-errors";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import { getAllRoshalProducts } from "@/lib/store-content";
 import { getRoshalLocale } from "@/lib/store-i18n";
@@ -12,9 +13,17 @@ import { getRoshalLocale } from "@/lib/store-i18n";
 export default async function DashboardProductsPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ created?: string; deleted?: string }>;
+  searchParams?: Promise<{
+    actionId?: string;
+    created?: string;
+    deleted?: string;
+    error?: string;
+  }>;
 }) {
   const resolvedSearchParams = searchParams ? await searchParams : {};
+  const errorMessage = getDashboardActionErrorMessage(
+    resolvedSearchParams.error,
+  );
   const showDeletedFeedback = Boolean(resolvedSearchParams.deleted);
   const showCreatedFeedback =
     Boolean(resolvedSearchParams.created) && !showDeletedFeedback;
@@ -23,6 +32,12 @@ export default async function DashboardProductsPage({
     : showCreatedFeedback
       ? "created"
       : undefined;
+  const successMessage =
+    feedbackStatus === "deleted"
+      ? "Product deleted successfully."
+      : feedbackStatus === "created"
+        ? "New product added. It is now visible in the product list."
+        : undefined;
   const [locale, products] = await Promise.all([
     getRoshalLocale(),
     getAllRoshalProducts(),
@@ -39,7 +54,10 @@ export default async function DashboardProductsPage({
   ).length;
   return (
     <div className="min-w-0 space-y-6 px-6 pt-6 pb-4">
-      <ProductCreatedToast status={feedbackStatus} />
+      <DashboardFormStatusToast
+        errorMessage={errorMessage || undefined}
+        successMessage={successMessage}
+      />
 
       <div className="flex min-w-0 flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div className="min-w-0 space-y-2">
@@ -63,6 +81,12 @@ export default async function DashboardProductsPage({
           <AlertDescription>
             New product added. It is now visible in the product list.
           </AlertDescription>
+        </Alert>
+      ) : null}
+
+      {errorMessage ? (
+        <Alert variant="destructive">
+          <AlertDescription>{errorMessage}</AlertDescription>
         </Alert>
       ) : null}
 

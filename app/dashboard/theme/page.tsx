@@ -1,17 +1,28 @@
 import { saveRoshalSiteSettings } from "@/actions/admin";
+import { DashboardFormStatusToast } from "@/components/dashboard/dashboard-form-status-toast";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { DashboardDeliveryZonesEditor } from "@/components/dashboard/delivery-zones-editor";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PhoneInput2 } from "@/components/ui/phone-input-2";
+import { getDashboardActionErrorMessage } from "@/lib/dashboard-action-errors";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import { getRoshalSiteSettings } from "@/lib/store-content";
 import { getRoshalLocale } from "@/lib/store-i18n";
 
-export default async function DashboardThemePage() {
+export default async function DashboardThemePage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ error?: string }>;
+}) {
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const errorMessage = getDashboardActionErrorMessage(
+    resolvedSearchParams.error,
+  );
   const [locale, siteSettings] = await Promise.all([
     getRoshalLocale(),
     getRoshalSiteSettings(),
@@ -29,6 +40,7 @@ export default async function DashboardThemePage() {
   );
   return (
     <div className="min-w-0 space-y-6 px-6 pt-6 pb-4">
+      <DashboardFormStatusToast errorMessage={errorMessage || undefined} />
       <div className="min-w-0 space-y-2">
         <p className="text-xs uppercase tracking-[0.24em] text-primary">
           {locale === "bn" ? "স্টোরফ্রন্ট সেটিংস" : "Storefront settings"}
@@ -66,6 +78,12 @@ export default async function DashboardThemePage() {
 
       {/* Zone-status and delivery-fee insight panels are intentionally hidden per client request. */}
 
+      {errorMessage ? (
+        <Alert variant="destructive">
+          <AlertDescription>{errorMessage}</AlertDescription>
+        </Alert>
+      ) : null}
+
       <Card>
         <CardHeader>
           <CardTitle>{locale === "bn" ? "সাইট থিম" : "Site theme"}</CardTitle>
@@ -76,6 +94,11 @@ export default async function DashboardThemePage() {
             className="grid min-w-0 gap-5 md:grid-cols-2"
           >
             <input type="hidden" name="id" value={siteSettings.id} />
+            <input
+              type="hidden"
+              name="errorRedirectTo"
+              value="/dashboard/theme"
+            />
             <Field
               name="brandName"
               label="Brand Name"

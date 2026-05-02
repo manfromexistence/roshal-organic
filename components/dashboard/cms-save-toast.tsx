@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { toast as sonnerToast } from "sonner";
 import { toast } from "@/hooks/use-toast";
 
 const recentToastKeys = new Map<string, number>();
@@ -57,6 +58,7 @@ export function CmsSaveToast({ status }: { status?: string }) {
     }
 
     recentToastKeys.set(toastKey, now);
+    sonnerToast.dismiss();
 
     for (const [key, timestamp] of recentToastKeys) {
       if (now - timestamp > toastDedupeWindowMs) {

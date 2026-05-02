@@ -1,6 +1,8 @@
 import { ArrowLeft, ImageIcon, Save, X } from "lucide-react";
+import { cookies } from "next/headers";
 import Link from "next/link";
 import { saveRoshalSubcategory } from "@/actions/admin";
+import { DashboardFormStatusToast } from "@/components/dashboard/dashboard-form-status-toast";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
 import { DashboardSourceKeySelect } from "@/components/dashboard/source-key-select";
@@ -24,6 +26,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { getDashboardActionErrorMessage } from "@/lib/dashboard-action-errors";
+import {
+  getDashboardErrorFields,
+  hasDashboardFieldError,
+} from "@/lib/dashboard-field-errors";
+import {
+  dashboardDraftBoolean,
+  dashboardDraftStringArray,
+  dashboardDraftValue,
+  readDashboardFormDraft,
+} from "@/lib/dashboard-form-drafts";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import { getAllRoshalProducts } from "@/lib/store-content";
 import { getLocalizedValue } from "@/lib/store-locale";
@@ -32,9 +45,20 @@ import { getRoshalTaxonomy } from "@/lib/store-taxonomy-content";
 export default async function NewSubcategoryPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ categoryId?: string; parent?: string }>;
+  searchParams?: Promise<{
+    categoryId?: string;
+    error?: string;
+    parent?: string;
+  }>;
 }) {
   const resolvedSearchParams = searchParams ? await searchParams : {};
+  const errorMessage = getDashboardActionErrorMessage(
+    resolvedSearchParams.error,
+  );
+  const errorFields = getDashboardErrorFields(resolvedSearchParams.error);
+  const draftValues = resolvedSearchParams.error
+    ? readDashboardFormDraft(await cookies(), "subcategory")
+    : {};
   const [, taxonomy, products] = await Promise.all([
     requireRoshalAdmin(),
     getRoshalTaxonomy(),
@@ -45,6 +69,7 @@ export default async function NewSubcategoryPage({
     label: getLocalizedValue("en", category.label),
   }));
   const defaultCategoryId =
+    dashboardDraftValue(draftValues, "categoryId") ||
     resolvedSearchParams.categoryId ||
     taxonomy.categories.find(
       (category) => category.key === resolvedSearchParams.parent,
@@ -78,6 +103,7 @@ export default async function NewSubcategoryPage({
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-6 pt-6 pb-4">
+      <DashboardFormStatusToast errorMessage={errorMessage || undefined} />
       <div className="space-y-3">
         <Button asChild variant="ghost" size="sm" className="-ml-3">
           <Link href="/dashboard/categories">
@@ -99,6 +125,12 @@ export default async function NewSubcategoryPage({
         </div>
       </div>
 
+      {errorMessage ? (
+        <Alert variant="destructive">
+          <AlertDescription>{errorMessage}</AlertDescription>
+        </Alert>
+      ) : null}
+
       {categoryOptions.length === 0 ? (
         <Alert>
           <AlertDescription className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -114,6 +146,11 @@ export default async function NewSubcategoryPage({
             type="hidden"
             name="redirectTo"
             value="/dashboard/categories"
+          />
+          <input
+            type="hidden"
+            name="errorRedirectTo"
+            value="/dashboard/categories/sub/new"
           />
           <Card className="border-none bg-card shadow-sm">
             <CardHeader>
@@ -132,6 +169,7 @@ export default async function NewSubcategoryPage({
                 <DashboardFormSelect
                   name="categoryId"
                   defaultValue={defaultCategoryId}
+                  hasError={hasDashboardFieldError(errorFields, "categoryId")}
                   options={categoryOptions}
                 />
               </div>
@@ -139,21 +177,44 @@ export default async function NewSubcategoryPage({
                 name="sortOrder"
                 label="Sort order"
                 type="number"
-                defaultValue={String(siblingCount)}
+                defaultValue={dashboardDraftValue(
+                  draftValues,
+                  "sortOrder",
+                  String(siblingCount),
+                )}
               />
-              <Field name="key" label="Key" placeholder="raw-honey" />
+              <Field
+                name="key"
+                label="Key"
+                placeholder="raw-honey"
+                defaultValue={dashboardDraftValue(draftValues, "key")}
+                hasError={hasDashboardFieldError(errorFields, "key")}
+                required
+              />
               <Field
                 name="labelEn"
                 label="Label (EN)"
                 placeholder="Raw Honey"
+                defaultValue={dashboardDraftValue(draftValues, "labelEn")}
+                hasError={hasDashboardFieldError(errorFields, "labelEn")}
               />
-              <Field name="labelBn" label="Label (BN)" placeholder="র হানি" />
+              <Field
+                name="labelBn"
+                label="Label (BN)"
+                placeholder="Raw Honey"
+                defaultValue={dashboardDraftValue(draftValues, "labelBn")}
+                hasError={hasDashboardFieldError(errorFields, "labelBn")}
+              />
               <div className="md:col-span-2">
                 <DashboardSourceKeySelect
                   name="sourceKeysJson"
                   label="Existing product bucket"
                   options={bucketOptions}
-                  defaultValue={selectedCategory?.sourceKeys || []}
+                  defaultValue={dashboardDraftStringArray(
+                    draftValues,
+                    "sourceKeysJson",
+                    selectedCategory?.sourceKeys || [],
+                  )}
                   helperText="Select the existing product group that should appear in this subcategory."
                 />
               </div>
@@ -170,16 +231,24 @@ export default async function NewSubcategoryPage({
                       name="imageUrl"
                       label="Subcategory image"
                       helperText="Used in dropdown previews and future category landing sections."
-                      value=""
+                      value={dashboardDraftValue(draftValues, "imageUrl")}
                     />
                     <TextField
                       name="descriptionEn"
                       label="Description (EN)"
+                      defaultValue={dashboardDraftValue(
+                        draftValues,
+                        "descriptionEn",
+                      )}
                       placeholder="Describe what products belong in this subcategory."
                     />
                     <TextField
                       name="descriptionBn"
                       label="Description (BN)"
+                      defaultValue={dashboardDraftValue(
+                        draftValues,
+                        "descriptionBn",
+                      )}
                       placeholder="এই সাবক্যাটাগরির পণ্য সম্পর্কে লিখুন।"
                     />
                   </AccordionContent>
@@ -188,12 +257,20 @@ export default async function NewSubcategoryPage({
               <div className="flex flex-wrap gap-6 md:col-span-2">
                 <DashboardFormCheckbox
                   name="isEnabled"
-                  defaultChecked
+                  defaultChecked={dashboardDraftBoolean(
+                    draftValues,
+                    "isEnabled",
+                    true,
+                  )}
                   label="Subcategory enabled"
                 />
                 <DashboardFormCheckbox
                   name="showInNavigation"
-                  defaultChecked
+                  defaultChecked={dashboardDraftBoolean(
+                    draftValues,
+                    "showInNavigation",
+                    true,
+                  )}
                   label="Show in dropdown navigation"
                 />
               </div>
@@ -219,36 +296,44 @@ export default async function NewSubcategoryPage({
 
 function Field({
   defaultValue = "",
+  hasError = false,
   label,
   name,
   placeholder,
+  required = false,
   type = "text",
 }: {
   defaultValue?: string;
+  hasError?: boolean;
   label: string;
   name: string;
   placeholder?: string;
+  required?: boolean;
   type?: string;
 }) {
   return (
     <div className="space-y-2">
       <Label htmlFor={name}>{label}</Label>
       <Input
+        aria-invalid={hasError || undefined}
         id={name}
         name={name}
         type={type}
         defaultValue={defaultValue}
         placeholder={placeholder}
+        required={required}
       />
     </div>
   );
 }
 
 function TextField({
+  defaultValue = "",
   label,
   name,
   placeholder,
 }: {
+  defaultValue?: string;
   label: string;
   name: string;
   placeholder?: string;
@@ -256,7 +341,13 @@ function TextField({
   return (
     <div className="space-y-2">
       <Label htmlFor={name}>{label}</Label>
-      <Textarea id={name} name={name} placeholder={placeholder} rows={3} />
+      <Textarea
+        id={name}
+        name={name}
+        defaultValue={defaultValue}
+        placeholder={placeholder}
+        rows={3}
+      />
     </div>
   );
 }

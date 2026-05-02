@@ -24,7 +24,7 @@ export function DashboardTableShell({
   return (
     <Card
       className={cn(
-        "min-w-0 overflow-hidden border-none bg-card p-0 shadow-sm",
+        "w-full min-w-0 max-w-none overflow-hidden border-none bg-card p-0 shadow-sm",
         className,
       )}
     >

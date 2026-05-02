@@ -4,6 +4,7 @@ import {
   saveRoshalPaymentSettings,
   saveRoshalSiteSettings,
 } from "@/actions/admin";
+import { DashboardFormStatusToast } from "@/components/dashboard/dashboard-form-status-toast";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { DashboardDeliveryZonesEditor } from "@/components/dashboard/delivery-zones-editor";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
@@ -19,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PhoneInput2 } from "@/components/ui/phone-input-2";
+import { getDashboardActionErrorMessage } from "@/lib/dashboard-action-errors";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import {
   getRoshalPaymentSettings,
@@ -37,10 +39,14 @@ export default async function DashboardSystemSettingsPage({
   searchParams,
 }: {
   searchParams?: Promise<{
+    error?: string;
     saved?: string;
   }>;
 }) {
   const resolvedSearchParams = searchParams ? await searchParams : {};
+  const errorMessage = getDashboardActionErrorMessage(
+    resolvedSearchParams.error,
+  );
   const [locale, siteSettings, paymentSettings] = await Promise.all([
     getRoshalLocale(),
     getRoshalSiteSettings(),
@@ -58,6 +64,15 @@ export default async function DashboardSystemSettingsPage({
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-6 px-6 pt-6 pb-4">
+      <DashboardFormStatusToast
+        errorMessage={errorMessage || undefined}
+        successMessage={
+          resolvedSearchParams.saved
+            ? saveMessages[resolvedSearchParams.saved] ||
+              "Settings saved successfully."
+            : undefined
+        }
+      />
       <div className="min-w-0 space-y-2">
         <p className="text-xs font-semibold uppercase tracking-[0.24em] text-primary">
           Delivery setting
@@ -77,6 +92,12 @@ export default async function DashboardSystemSettingsPage({
             {saveMessages[resolvedSearchParams.saved] ||
               "Settings saved successfully."}
           </AlertDescription>
+        </Alert>
+      ) : null}
+
+      {errorMessage ? (
+        <Alert variant="destructive">
+          <AlertDescription>{errorMessage}</AlertDescription>
         </Alert>
       ) : null}
 

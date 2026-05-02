@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { saveRoshalOrderStatus } from "@/actions/admin";
+import { DashboardFormStatusToast } from "@/components/dashboard/dashboard-form-status-toast";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
 import { OrderTrackingTimeline } from "@/components/storefront/order-tracking-timeline";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -8,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { getDashboardActionErrorMessage } from "@/lib/dashboard-action-errors";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import { getRoshalOrderById } from "@/lib/store-content";
 import { formatBdt, formatOrderDate } from "@/lib/store-format";
@@ -46,6 +48,9 @@ export default async function DashboardOrderDetailsPage({
 
   return (
     <div className="min-w-0 space-y-6 px-6 pt-6 pb-4">
+      <DashboardFormStatusToast
+        errorMessage={orderStatusErrorMessage || undefined}
+      />
       <div className="min-w-0 space-y-2">
         <p className="text-xs uppercase tracking-[0.24em] text-primary">
           {locale === "bn" ? "অর্ডার" : "Order"}
@@ -349,6 +354,6 @@ function getOrderStatusErrorMessage(
         ? "অর্ডারটি খুঁজে পাওয়া যায়নি।"
         : "The requested order could not be found.";
     default:
-      return null;
+      return getDashboardActionErrorMessage(code) || null;
   }
 }

@@ -12,10 +12,12 @@ import {
 export function DashboardFormSelect({
   name,
   defaultValue,
+  hasError = false,
   options,
 }: {
   name: string;
   defaultValue: string;
+  hasError?: boolean;
   options: Array<{ value: string; label: string }>;
 }) {
   const [value, setValue] = useState(defaultValue);
@@ -24,7 +26,7 @@ export function DashboardFormSelect({
     <>
       <input type="hidden" name={name} value={value} />
       <Select value={value} onValueChange={setValue}>
-        <SelectTrigger className="w-full">
+        <SelectTrigger aria-invalid={hasError || undefined} className="w-full">
           <SelectValue placeholder="Select option" />
         </SelectTrigger>
         <SelectContent>

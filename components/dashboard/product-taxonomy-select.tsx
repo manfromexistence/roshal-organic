@@ -27,11 +27,13 @@ function primarySourceKey(
 
 export function ProductTaxonomySelect({
   categories,
+  categoryHasError = false,
   subcategories,
   initialCategoryId,
   initialSubcategoryId,
 }: {
   categories: RoshalStoreCategory[];
+  categoryHasError?: boolean;
   subcategories: RoshalStoreSubcategory[];
   initialCategoryId: string;
   initialSubcategoryId: string;
@@ -84,7 +86,10 @@ export function ProductTaxonomySelect({
             setSubcategoryId(noSubcategoryValue);
           }}
         >
-          <SelectTrigger className="w-full">
+          <SelectTrigger
+            aria-invalid={categoryHasError || undefined}
+            className="w-full"
+          >
             <SelectValue placeholder="Select category" />
           </SelectTrigger>
           <SelectContent>
