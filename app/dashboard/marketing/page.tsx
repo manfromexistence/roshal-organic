@@ -128,7 +128,7 @@ export default async function DashboardMarketingPage({
         />
       </div>
 
-      <div className="grid min-w-0 gap-4 xl:grid-cols-[0.9fr_1.1fr]">
+      <div className="grid min-w-0 gap-4">
         <Card className="min-w-0 overflow-hidden border-none bg-card shadow-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -175,52 +175,58 @@ export default async function DashboardMarketingPage({
             )}
           </CardContent>
         </Card>
-
-        <Card className="min-w-0 overflow-hidden border-none bg-card shadow-sm">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <LayoutTemplate className="size-5 text-primary" />
-              Page shortcuts
-            </CardTitle>
-            <CardDescription>
-              Fast access to the most important public marketing pages.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="grid min-w-0 grid-cols-2 gap-3">
-            {visibleDashboardPages.map((page) => (
-              <div
-                key={page.id}
-                className="min-w-0 rounded-md border bg-background/70 p-3 transition hover:bg-accent/50"
-              >
-                <p className="truncate text-sm font-semibold">
-                  {getLocalizedValue(locale, page.title)}
-                </p>
-                <p className="truncate text-xs text-muted-foreground">
-                  {storefrontPathFromSlug(page.slug)}
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <Button asChild variant="outline" size="sm" className="h-8">
-                    <Link href={`/dashboard/pages/${page.id}`}>Edit</Link>
-                  </Button>
-                  {page.status === "published" ? (
-                    <Button asChild variant="ghost" size="sm" className="h-8">
-                      <Link
-                        href={storefrontPathFromSlug(page.slug)}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Open
-                      </Link>
-                    </Button>
-                  ) : null}
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
       </div>
 
       <Accordion type="single" collapsible className="space-y-3">
+        <AccordionItem
+          className="rounded-lg border-none bg-card px-4 shadow-sm"
+          value="page-shortcuts"
+        >
+          <AccordionTrigger className="hover:no-underline">
+            <span className="min-w-0 text-left">
+              <span className="flex items-center gap-2 text-base font-semibold">
+                <LayoutTemplate className="size-5 text-primary" />
+                Page shortcuts
+              </span>
+              <span className="block text-sm font-normal text-muted-foreground">
+                Open only when jumping into another public marketing page.
+              </span>
+            </span>
+          </AccordionTrigger>
+          <AccordionContent>
+            <div className="grid min-w-0 grid-cols-2 gap-3">
+              {visibleDashboardPages.map((page) => (
+                <div
+                  key={page.id}
+                  className="min-w-0 rounded-md border bg-background/70 p-3 transition hover:bg-accent/50"
+                >
+                  <p className="truncate text-sm font-semibold">
+                    {getLocalizedValue(locale, page.title)}
+                  </p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {storefrontPathFromSlug(page.slug)}
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Button asChild variant="outline" size="sm" className="h-8">
+                      <Link href={`/dashboard/pages/${page.id}`}>Edit</Link>
+                    </Button>
+                    {page.status === "published" ? (
+                      <Button asChild variant="ghost" size="sm" className="h-8">
+                        <Link
+                          href={storefrontPathFromSlug(page.slug)}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Open
+                        </Link>
+                      </Button>
+                    ) : null}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
         <AccordionItem
           className="rounded-lg border-none bg-card px-4 shadow-sm"
           value="homepage-controls"

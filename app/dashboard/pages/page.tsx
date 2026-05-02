@@ -118,32 +118,6 @@ export default async function DashboardPagesPage({
                     defaultValue=""
                     placeholder="faq, wholesale, delivery-policy"
                   />
-                  <div className="space-y-2">
-                    <Label>Status</Label>
-                    <DashboardFormSelect
-                      name="status"
-                      defaultValue="draft"
-                      options={pageStatusOptions}
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <ImageUploadField
-                      name="heroImage"
-                      label={
-                        locale === "bn"
-                          ? "হিরো বা কভার ইমেজ"
-                          : "Hero or cover image"
-                      }
-                      helperText={
-                        locale === "bn"
-                          ? "নতুন পেজে hero/story সেকশন না থাকলে এই ইমেজটি উপরের কভার হিসেবে ব্যবহৃত হবে।"
-                          : "This image will be used as the top cover when the page has no hero/story section yet."
-                      }
-                      value=""
-                      compact
-                      previewClassName="w-full max-w-72"
-                    />
-                  </div>
                   <Field
                     name="navigationLabelBn"
                     label="Navigation Label (BN)"
@@ -156,38 +130,91 @@ export default async function DashboardPagesPage({
                   />
                   <Field name="titleBn" label="Title (BN)" defaultValue="" />
                   <Field name="titleEn" label="Title (EN)" defaultValue="" />
-                  <div className="md:col-span-2">
-                    <TextField
-                      name="descriptionBn"
-                      label="Description (BN)"
-                      defaultValue=""
-                      rows={3}
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <TextField
-                      name="descriptionEn"
-                      label="Description (EN)"
-                      defaultValue=""
-                      rows={3}
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <DashboardFormCheckbox
-                      name="showInNavigation"
-                      defaultChecked
-                      label={
-                        locale === "bn"
-                          ? "স্টোরফ্রন্ট নেভিগেশনে দেখান"
-                          : "Show in storefront navigation"
-                      }
-                    />
-                  </div>
-                  <div className="md:col-span-2 rounded-xl border border-border/70 bg-muted/25 p-4 text-sm text-muted-foreground">
-                    {locale === "bn"
-                      ? "সিস্টেম রুট যেমন products, cart, checkout, orders, profile, login, dashboard, collections, payment-return ব্যবহার করবেন না। পেজ তৈরি হওয়ার পর সেটির সেকশন ও লেআউট `/dashboard/pages/[id]` থেকে সম্পাদনা করতে পারবেন।"
-                      : "Avoid system slugs such as products, cart, checkout, orders, profile, login, dashboard, collections, and payment-return. After creation, you can edit the page sections and layout from `/dashboard/pages/[id]`."}
-                  </div>
+                  <Accordion
+                    type="multiple"
+                    className="space-y-3 md:col-span-2"
+                  >
+                    <AccordionItem
+                      value="new-page-advanced"
+                      className="rounded-lg border border-border/70 px-4"
+                    >
+                      <AccordionTrigger className="hover:no-underline">
+                        <span className="min-w-0 text-left">
+                          <span className="block font-semibold">
+                            {locale === "bn"
+                              ? "অ্যাডভান্সড পেজ সেটিংস"
+                              : "Advanced page settings"}
+                          </span>
+                          <span className="block text-sm font-normal text-muted-foreground">
+                            Status, image, long descriptions, navigation, and
+                            reserved-slug guidance.
+                          </span>
+                        </span>
+                      </AccordionTrigger>
+                      <AccordionContent forceMount>
+                        <div className="grid min-w-0 gap-5 pt-1 md:grid-cols-2">
+                          <div className="space-y-2">
+                            <Label>Status</Label>
+                            <DashboardFormSelect
+                              name="status"
+                              defaultValue="draft"
+                              options={pageStatusOptions}
+                            />
+                          </div>
+                          <div className="md:col-span-2">
+                            <ImageUploadField
+                              name="heroImage"
+                              label={
+                                locale === "bn"
+                                  ? "হিরো বা কভার ইমেজ"
+                                  : "Hero or cover image"
+                              }
+                              helperText={
+                                locale === "bn"
+                                  ? "নতুন পেজে hero/story সেকশন না থাকলে এই ইমেজটি উপরের কভার হিসেবে ব্যবহৃত হবে।"
+                                  : "This image will be used as the top cover when the page has no hero/story section yet."
+                              }
+                              value=""
+                              compact
+                              previewClassName="w-full max-w-72"
+                            />
+                          </div>
+                          <div className="md:col-span-2">
+                            <TextField
+                              name="descriptionBn"
+                              label="Description (BN)"
+                              defaultValue=""
+                              rows={3}
+                            />
+                          </div>
+                          <div className="md:col-span-2">
+                            <TextField
+                              name="descriptionEn"
+                              label="Description (EN)"
+                              defaultValue=""
+                              rows={3}
+                            />
+                          </div>
+                          <div className="md:col-span-2">
+                            <DashboardFormCheckbox
+                              name="showInNavigation"
+                              defaultChecked
+                              label={
+                                locale === "bn"
+                                  ? "স্টোরফ্রন্ট নেভিগেশনে দেখান"
+                                  : "Show in storefront navigation"
+                              }
+                            />
+                          </div>
+                          <div className="md:col-span-2 rounded-xl border border-border/70 bg-muted/25 p-4 text-sm text-muted-foreground">
+                            {locale === "bn"
+                              ? "সিস্টেম রুট যেমন products, cart, checkout, orders, profile, login, dashboard, collections, payment-return ব্যবহার করবেন না। পেজ তৈরি হওয়ার পর সেটির সেকশন ও লেআউট `/dashboard/pages/[id]` থেকে সম্পাদনা করতে পারবেন।"
+                              : "Avoid system slugs such as products, cart, checkout, orders, profile, login, dashboard, collections, and payment-return. After creation, you can edit the page sections and layout from `/dashboard/pages/[id]`."}
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
                   <div className="md:col-span-2">
                     <Button type="submit">
                       {locale === "bn" ? "পেজ তৈরি করুন" : "Create page"}

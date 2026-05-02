@@ -85,6 +85,8 @@
 - [x] Wire dashboard review actions into the existing product review database table and storefront product review data.
 - [x] Stop homepage product cards from using generated fake rating and review-count values.
 - [x] Replace homepage testimonial fallback rendering with published product-review content only.
+- [x] Seed published product-review rows so homepage testimonials and product detail ratings render from real DB data.
+- [x] Show product rating summaries on product detail pages and revalidate Home after customer review submissions.
 - [x] Close the dashboard mobile sidebar when a real navigation item is clicked and show Payment Setting under Delivery Setting.
 
 ## 2026-05-02 Brevo email provider
@@ -115,6 +117,24 @@
 - [x] Fix the homepage CMS visibility path so disabled sections are not re-rendered from fallback defaults.
 - [x] Verify storefront add-to-cart, cart hydration, checkout page hydration, payment/delivery controls, and checkout client validation without submitting a real order.
 - [x] Verify upload and order API guard responses locally, then confirm the image-upload success path with a generated 1x1 PNG instead of a user file.
+
+## 2026-05-03 Dashboard marketing page fields
+
+- [x] Replace generic marketing section item JSON editing with exact fields for title, label, body, href, image URL, and value.
+- [x] Replace generic marketing section style JSON editing with exact style key/value editing.
+- [x] Remove non-field guide panels from the marketing page editor so the dashboard shows only the persisted CMS controls.
+
+## 2026-05-03 Product upload/save fix
+
+- [x] Fix new product save blocking by making only the real required product fields required and keeping optional fields such as Badge optional.
+- [x] Verify the shared image upload endpoint returns a valid hosted image URL locally.
+
+## 2026-05-03 Marketing dashboard compact controls and deploy
+
+- [x] Collapse secondary Marketing Center shortcuts behind accordions while keeping homepage actions and metrics visible.
+- [x] Move advanced marketing page settings, section setup, media/CTA, items, and styles into accordions with force-mounted form fields so closed controls still save.
+- [x] Create hidden QA category, subcategory, and unpublished product records to verify catalog persistence without public storefront pollution.
+- [x] Browser-smoke-check dashboard Marketing, Home page editor, QA product editor, and products list locally.
 
 ## 2026-05-02 Storefront mobile header cleanup
 

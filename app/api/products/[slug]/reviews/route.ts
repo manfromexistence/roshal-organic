@@ -74,6 +74,7 @@ export async function POST(
 
     const summary = await getRoshalProductReviewBundle(product.id);
     revalidatePath(`/products/${product.slug}`);
+    revalidatePath("/");
 
     return NextResponse.json({
       review,

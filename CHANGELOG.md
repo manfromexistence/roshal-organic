@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Fixed
+- Fixed new product creation blocking by removing accidental required validation from optional product fields such as Badge while keeping real product identity, price, inventory, and sort fields explicit.
+- Fixed dashboard marketing editor overload by moving secondary page, section setup, media/CTA, item, style, and shortcut controls behind accordions while keeping closed form fields mounted for correct saves.
+- Fixed homepage testimonials and product review displays by seeding published product-review rows, keeping homepage testimonials DB-backed, showing product rating summaries on product detail pages, and revalidating Home after new review submissions.
 - Fixed login, forgot-password, and reset-password pages so their auth cards use compact `pt-6 pb-4` spacing without inherited tall bottom areas.
 - Fixed forgot-password feedback so unknown emails show an account-not-found message and do not trigger a reset email.
 - Fixed duplicate CMS save toasts on dashboard CMS pages by deduping the same save event during local React remounts.
@@ -46,6 +49,7 @@ All notable changes to this project will be documented in this file.
 - Fixed the custom storefront homepage CMS visibility path so disabled homepage sections stay hidden instead of falling back to default section content.
 
 ### Changed
+- Reworked the dashboard marketing page section editor so CMS items use exact storefront fields instead of arbitrary JSON, styles use exact key/value rows, and non-field guide panels are hidden from the editor.
 - Switched the site-wide UI font stack to self-hosted Inter with Noto Sans Bengali fallback and JetBrains Mono for monospace code surfaces.
 - Added Brevo transactional email API support as the preferred provider for new-order and password-reset emails, falling back to Resend and SMTP when Brevo is not configured.
 - Added Payment Setting back as a child item under Delivery Setting while keeping the old standalone Payments sidebar entry hidden.

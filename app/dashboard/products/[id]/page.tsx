@@ -207,21 +207,25 @@ export async function ProductEditorPage({
                   name="nameBn"
                   label="Name (BN)"
                   defaultValue={product?.name.bn || ""}
+                  required
                 />
                 <Field
                   name="nameEn"
                   label="Name (EN)"
                   defaultValue={product?.name.en || ""}
+                  required
                 />
                 <Field
                   name="slug"
                   label="Slug"
                   defaultValue={product?.slug || ""}
+                  required
                 />
                 <Field
                   name="sku"
                   label="SKU"
                   defaultValue={product?.sku || ""}
+                  required
                 />
               </CardContent>
             </Card>
@@ -361,6 +365,7 @@ export async function ProductEditorPage({
                   label="Price"
                   type="number"
                   defaultValue={String(product?.price ?? 0)}
+                  required
                 />
                 <Field
                   name="compareAtPrice"
@@ -373,6 +378,7 @@ export async function ProductEditorPage({
                   label="Inventory"
                   type="number"
                   defaultValue={String(product?.inventory ?? 0)}
+                  required
                 />
               </CardContent>
             </Card>
@@ -405,6 +411,7 @@ export async function ProductEditorPage({
                   label="Sort order"
                   type="number"
                   defaultValue={String(product?.sortOrder ?? 0)}
+                  required
                 />
               </CardContent>
             </Card>
@@ -447,11 +454,13 @@ function Field({
   name,
   label,
   defaultValue,
+  required = false,
   type = "text",
 }: {
   name: string;
   label: string;
   defaultValue: string;
+  required?: boolean;
   type?: string;
 }) {
   return (
@@ -462,7 +471,7 @@ function Field({
         name={name}
         type={type}
         defaultValue={defaultValue}
-        required={type !== "number" || name !== "compareAtPrice"}
+        required={required}
       />
     </div>
   );

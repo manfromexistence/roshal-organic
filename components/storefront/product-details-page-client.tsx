@@ -42,6 +42,7 @@ import {
 import type {
   RoshalLocale,
   RoshalProduct,
+  RoshalProductReview,
   RoshalProductReviewBundle,
   RoshalSiteSettings,
 } from "@/lib/store-types";
@@ -83,6 +84,33 @@ function buildWhatsAppOrderHref(
   return `${base}?text=${encodeURIComponent(message)}`;
 }
 
+function ReviewStars({
+  rating,
+  sizeClassName = "size-4",
+}: {
+  rating: number;
+  sizeClassName?: string;
+}) {
+  return (
+    <div className="flex items-center gap-0.5 text-amber-500">
+      {Array.from({ length: 5 }, (_, index) => (
+        <Star
+          key={`review-star-${index + 1}`}
+          className={`${sizeClassName} ${
+            index < Math.round(rating)
+              ? "fill-current"
+              : "text-muted-foreground/30"
+          }`}
+        />
+      ))}
+    </div>
+  );
+}
+
+function formatReviewCount(count: number) {
+  return count === 1 ? "1 review" : `${count} reviews`;
+}
+
 export function ProductDetailsPageClient({
   locale,
   product,
@@ -102,6 +130,9 @@ export function ProductDetailsPageClient({
   const [reviewRating, setReviewRating] = useState("none");
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   const [reviewBundle, setReviewBundle] = useState(initialReviewBundle);
+  const [ownReviewIds, setOwnReviewIds] = useState<Set<string>>(
+    () => new Set(),
+  );
   const galleryImages = useMemo(
     () =>
       Array.from(
@@ -145,6 +176,7 @@ export function ProductDetailsPageClient({
   );
   const callHref = normalizePhoneHref(siteSettings.contactPhone);
   const averageRatingLabel = reviewBundle.averageRating.toFixed(1);
+  const reviewCountLabel = formatReviewCount(reviewBundle.reviewCount);
   const reviewDateFormatter = useMemo(
     () =>
       new Intl.DateTimeFormat(locale === "bn" ? "bn-BD" : "en-US", {
@@ -201,6 +233,7 @@ export function ProductDetailsPageClient({
       });
       const payload = (await response.json().catch(() => null)) as {
         error?: string;
+        review?: Pick<RoshalProductReview, "id"> | null;
         summary?: RoshalProductReviewBundle;
       } | null;
 
@@ -214,6 +247,12 @@ export function ProductDetailsPageClient({
       }
 
       setReviewBundle(payload.summary);
+      const createdReviewId = payload.review?.id;
+
+      if (createdReviewId) {
+        setOwnReviewIds((current) => new Set(current).add(createdReviewId));
+      }
+
       setReviewMessage("");
       setReviewRating("none");
       toast({
@@ -317,6 +356,17 @@ export function ProductDetailsPageClient({
                     <p className="text-sm leading-6 text-muted-foreground">
                       {getLocalizedValue(locale, product.summary)}
                     </p>
+                    <div className="flex flex-wrap items-center gap-2 text-sm">
+                      <ReviewStars
+                        rating={reviewBundle.averageRating}
+                        sizeClassName="size-4"
+                      />
+                      <span className="font-medium text-foreground">
+                        {reviewBundle.reviewCount > 0
+                          ? `${averageRatingLabel}/5 (${reviewCountLabel})`
+                          : "No reviews yet"}
+                      </span>
+                    </div>
                   </div>
 
                   <FavoriteToggleButton
@@ -561,6 +611,10 @@ export function ProductDetailsPageClient({
                       ? `গড় রেটিং (${reviewBundle.reviewCount} রিভিউ)`
                       : `Average rating (${reviewBundle.reviewCount} reviews)`}
                   </p>
+                  <ReviewStars
+                    rating={reviewBundle.averageRating}
+                    sizeClassName="size-5"
+                  />
                 </div>
 
                 <div className="space-y-2">
@@ -689,17 +743,13 @@ export function ProductDetailsPageClient({
                             )}
                           </p>
                         </div>
-                        <div className="flex items-center gap-1 text-amber-500">
-                          {Array.from({ length: 5 }, (_, index) => (
-                            <Star
-                              key={`${review.id}-star-${index + 1}`}
-                              className={`size-4 ${
-                                index < review.rating
-                                  ? "fill-current"
-                                  : "text-muted-foreground/30"
-                              }`}
-                            />
-                          ))}
+                        <div className="flex flex-wrap items-center gap-2">
+                          {ownReviewIds.has(review.id) ? (
+                            <Badge variant="secondary" className="rounded-sm">
+                              Your review
+                            </Badge>
+                          ) : null}
+                          <ReviewStars rating={review.rating} />
                         </div>
                       </div>
                       <p className="mt-3 text-sm leading-7 text-muted-foreground">

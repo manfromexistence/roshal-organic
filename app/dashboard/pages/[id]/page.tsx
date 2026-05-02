@@ -5,7 +5,10 @@ import { saveRoshalPage, saveRoshalSection } from "@/actions/admin";
 import { CmsSaveToast } from "@/components/dashboard/cms-save-toast";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
-import { JsonFieldEditor } from "@/components/dashboard/json-field-editor";
+import {
+  MarketingSectionItemsField,
+  MarketingSectionStylesField,
+} from "@/components/dashboard/marketing-section-data-fields";
 import { ImageUploadField } from "@/components/shared/image-upload-field";
 import {
   Accordion,
@@ -19,10 +22,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  getRoshalHomeSectionGuide,
-  getRoshalMarketingPageGuide,
-} from "@/lib/cms-guides";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import { getRoshalPages, getRoshalSectionsForPage } from "@/lib/store-content";
 import { getRoshalLocale } from "@/lib/store-i18n";
@@ -120,7 +119,6 @@ export default async function DashboardPageEditorRoute({
 
   const sections = await getRoshalSectionsForPage(page.id);
   const storefrontPath = storefrontPathFromSlug(page.slug);
-  const pageGuide = getRoshalMarketingPageGuide(page.slug);
   const errorMessage = getPageEditorErrorMessage(
     locale,
     resolvedSearchParams.error,
@@ -168,31 +166,6 @@ export default async function DashboardPageEditorRoute({
           >
             <input type="hidden" name="id" value={page.id} />
             <input type="hidden" name="previousSlug" value={page.slug} />
-            <Field name="slug" label="Slug" defaultValue={page.slug} />
-            <div className="space-y-2">
-              <Label>Status</Label>
-              <DashboardFormSelect
-                name="status"
-                defaultValue={page.status}
-                options={pageStatusOptions}
-              />
-            </div>
-            <div className="md:col-span-2">
-              <ImageUploadField
-                name="heroImage"
-                label={
-                  locale === "bn" ? "হিরো বা কভার ইমেজ" : "Hero or cover image"
-                }
-                helperText={
-                  locale === "bn"
-                    ? "hero/story সেকশন নিজের image দিলে সেটি আগে দেখানো হবে। না হলে এই page-level image fallback cover হিসেবে কাজ করবে।"
-                    : "Hero or story sections can override this with their own image. Otherwise, this page-level image is used as the fallback cover."
-                }
-                value={page.heroImage || ""}
-                compact
-                previewClassName="w-full max-w-72"
-              />
-            </div>
             <Field
               name="navigationLabelBn"
               label="Navigation Label (BN)"
@@ -213,33 +186,84 @@ export default async function DashboardPageEditorRoute({
               label="Title (EN)"
               defaultValue={page.title.en}
             />
-            <div className="md:col-span-2">
-              <TextField
-                name="descriptionBn"
-                label="Description (BN)"
-                defaultValue={page.description.bn}
-                rows={3}
-              />
-            </div>
-            <div className="md:col-span-2">
-              <TextField
-                name="descriptionEn"
-                label="Description (EN)"
-                defaultValue={page.description.en}
-                rows={3}
-              />
-            </div>
-            <div className="md:col-span-2">
-              <DashboardFormCheckbox
-                name="showInNavigation"
-                defaultChecked={page.showInNavigation}
-                label={
-                  locale === "bn"
-                    ? "স্টোরফ্রন্ট নেভিগেশনে দেখান"
-                    : "Show in storefront navigation"
-                }
-              />
-            </div>
+            <Accordion type="multiple" className="space-y-3 md:col-span-2">
+              <AccordionItem
+                value="page-advanced"
+                className="rounded-lg border border-border/70 px-4"
+              >
+                <AccordionTrigger className="hover:no-underline">
+                  <span className="min-w-0 text-left">
+                    <span className="block font-semibold">
+                      {locale === "bn"
+                        ? "অ্যাডভান্সড পেজ সেটিংস"
+                        : "Advanced page settings"}
+                    </span>
+                    <span className="block text-sm font-normal text-muted-foreground">
+                      Slug, status, cover image, description, and navigation
+                      visibility.
+                    </span>
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent forceMount>
+                  <div className="grid min-w-0 gap-5 pt-1 md:grid-cols-2">
+                    <Field name="slug" label="Slug" defaultValue={page.slug} />
+                    <div className="space-y-2">
+                      <Label>Status</Label>
+                      <DashboardFormSelect
+                        name="status"
+                        defaultValue={page.status}
+                        options={pageStatusOptions}
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <ImageUploadField
+                        name="heroImage"
+                        label={
+                          locale === "bn"
+                            ? "হিরো বা কভার ইমেজ"
+                            : "Hero or cover image"
+                        }
+                        helperText={
+                          locale === "bn"
+                            ? "hero/story সেকশন নিজের image দিলে সেটি আগে দেখানো হবে। না হলে এই page-level image fallback cover হিসেবে কাজ করবে।"
+                            : "Hero or story sections can override this with their own image. Otherwise, this page-level image is used as the fallback cover."
+                        }
+                        value={page.heroImage || ""}
+                        compact
+                        previewClassName="w-full max-w-72"
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <TextField
+                        name="descriptionBn"
+                        label="Description (BN)"
+                        defaultValue={page.description.bn}
+                        rows={3}
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <TextField
+                        name="descriptionEn"
+                        label="Description (EN)"
+                        defaultValue={page.description.en}
+                        rows={3}
+                      />
+                    </div>
+                    <div className="md:col-span-2">
+                      <DashboardFormCheckbox
+                        name="showInNavigation"
+                        defaultChecked={page.showInNavigation}
+                        label={
+                          locale === "bn"
+                            ? "স্টোরফ্রন্ট নেভিগেশনে দেখান"
+                            : "Show in storefront navigation"
+                        }
+                      />
+                    </div>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
             <div className="md:col-span-2">
               <Button type="submit">
                 {locale === "bn" ? "পেজ সেভ করুন" : "Save page"}
@@ -250,31 +274,6 @@ export default async function DashboardPageEditorRoute({
       </Card>
 
       {/* Homepage section map is intentionally hidden to keep this marketing page editor compact. */}
-
-      {page.slug !== "home" && pageGuide ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>
-              {getLocalizedGuideText(locale, pageGuide.label)}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-sm leading-6 text-muted-foreground">
-              {getLocalizedGuideText(locale, pageGuide.summary)}
-            </p>
-            <div className="grid min-w-0 gap-3 md:grid-cols-3">
-              {pageGuide.editingTips.map((tip, index) => (
-                <div
-                  key={`${pageGuide.slug}-tip-${index}`}
-                  className="rounded-md border border-border/70 bg-muted/20 p-4 text-sm leading-6 text-muted-foreground"
-                >
-                  {getLocalizedGuideText(locale, tip)}
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      ) : null}
 
       <div className="space-y-4">
         <h2 className="text-2xl font-semibold">
@@ -321,32 +320,6 @@ export default async function DashboardPageEditorRoute({
                   </span>
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4">
-                  {page.slug === "home" &&
-                  getRoshalHomeSectionGuide(section.sectionKey) ? (
-                    <div className="rounded-xl border border-border/70 bg-muted/20 p-4 text-sm text-muted-foreground">
-                      <p className="font-medium text-foreground">
-                        {locale === "bn"
-                          ? getRoshalHomeSectionGuide(section.sectionKey)?.label
-                              .bn
-                          : getRoshalHomeSectionGuide(section.sectionKey)?.label
-                              .en}
-                      </p>
-                      <p className="mt-2">
-                        {locale === "bn"
-                          ? getRoshalHomeSectionGuide(section.sectionKey)
-                              ?.contentHint.bn
-                          : getRoshalHomeSectionGuide(section.sectionKey)
-                              ?.contentHint.en}
-                      </p>
-                      <p className="mt-2">
-                        {locale === "bn"
-                          ? getRoshalHomeSectionGuide(section.sectionKey)
-                              ?.stylesHint.bn
-                          : getRoshalHomeSectionGuide(section.sectionKey)
-                              ?.stylesHint.en}
-                      </p>
-                    </div>
-                  ) : null}
                   <form
                     action={saveRoshalSection}
                     className="grid min-w-0 gap-5 md:grid-cols-2"
@@ -378,8 +351,8 @@ export default async function DashboardPageEditorRoute({
                         ctaHref: section.ctaHref,
                         imageUrl: section.imageUrl,
                         previewImageUrl: sectionPreviewImage,
-                        itemsJson: JSON.stringify(section.items, null, 2),
-                        stylesJson: JSON.stringify(section.styles, null, 2),
+                        items: section.items,
+                        styles: section.styles,
                         isEnabled: section.isEnabled,
                       }}
                       submitLabel={
@@ -437,8 +410,8 @@ export default async function DashboardPageEditorRoute({
                     ctaHref: "",
                     imageUrl: "",
                     previewImageUrl: "",
-                    itemsJson: "[]",
-                    stylesJson: "{}",
+                    items: [],
+                    styles: {},
                     isEnabled: true,
                   }}
                   submitLabel={
@@ -477,74 +450,21 @@ function SectionFields({
     ctaHref: string;
     imageUrl: string;
     previewImageUrl: string;
-    itemsJson: string;
-    stylesJson: string;
+    items: RoshalMarketingSection["items"];
+    styles: RoshalMarketingSection["styles"];
     isEnabled: boolean;
   };
   submitLabel: string;
 }) {
   return (
     <>
-      <Field
-        name="sectionKey"
-        label="Section Key"
-        defaultValue={defaults.sectionKey}
-      />
-      <div className="space-y-2">
-        <Label>Type</Label>
-        <DashboardFormSelect
-          name="type"
-          defaultValue={defaults.type}
-          options={sectionTypeOptions}
-        />
-      </div>
-      <Field
-        name="sortOrder"
-        label="Sort Order"
-        defaultValue={defaults.sortOrder}
-        type="number"
-      />
-      <div className="space-y-2">
-        <Label>Layout</Label>
-        <DashboardFormSelect
-          name="layout"
-          defaultValue={defaults.layout}
-          options={sectionLayoutOptions}
-        />
-      </div>
-      <div className="space-y-2">
-        <Label>Variant</Label>
-        <DashboardFormSelect
-          name="variant"
-          defaultValue={defaults.variant}
-          options={sectionVariantOptions}
-        />
-      </div>
       <div className="md:col-span-2">
-        <ImageUploadField
-          name="imageUrl"
-          label={locale === "bn" ? "সেকশন ইমেজ" : "Section image"}
-          helperText={
-            locale === "bn"
-              ? "hero/story সেকশনে image থাকলে এটি page cover-কে override করবে। অন্যান্য ভিজ্যুয়াল সেকশনের জন্যও এটি ব্যবহার করুন।"
-              : "For hero or story sections, this image overrides the page cover. Use it for other visual sections as well."
-          }
-          value={defaults.imageUrl}
-          previewValue={defaults.previewImageUrl}
-          compact
-          previewClassName="w-full max-w-64"
+        <DashboardFormCheckbox
+          name="isEnabled"
+          defaultChecked={defaults.isEnabled}
+          label={locale === "bn" ? "সেকশন চালু" : "Section enabled"}
         />
       </div>
-      <Field
-        name="eyebrowBn"
-        label="Eyebrow (BN)"
-        defaultValue={defaults.eyebrowBn}
-      />
-      <Field
-        name="eyebrowEn"
-        label="Eyebrow (EN)"
-        defaultValue={defaults.eyebrowEn}
-      />
       <Field
         name="titleBn"
         label="Title (BN)"
@@ -571,55 +491,165 @@ function SectionFields({
           rows={4}
         />
       </div>
-      <Field
-        name="ctaLabelBn"
-        label="CTA Label (BN)"
-        defaultValue={defaults.ctaLabelBn}
-      />
-      <Field
-        name="ctaLabelEn"
-        label="CTA Label (EN)"
-        defaultValue={defaults.ctaLabelEn}
-      />
-      <Field name="ctaHref" label="CTA Href" defaultValue={defaults.ctaHref} />
-      <div className="md:col-span-2">
-        <JsonFieldEditor
-          name="itemsJson"
-          label="Items"
-          defaultValue={defaults.itemsJson}
-          mode="array-object"
-          itemLabel="Content item"
-          hint="Each item is a set of key-value fields (e.g. title, body, imageUrl, href)."
-        />
-      </div>
-      <div className="md:col-span-2">
-        <JsonFieldEditor
-          name="stylesJson"
-          label="Styles"
-          defaultValue={defaults.stylesJson}
-          mode="object"
-          hint="Style keys like columns, highlight, density, source, limit, offset."
-        />
-      </div>
-      <div className="md:col-span-2">
-        <DashboardFormCheckbox
-          name="isEnabled"
-          defaultChecked={defaults.isEnabled}
-          label={locale === "bn" ? "সেকশন চালু" : "Section enabled"}
-        />
-      </div>
+      <Accordion type="multiple" className="space-y-3 md:col-span-2">
+        <AccordionItem
+          value="section-setup"
+          className="rounded-lg border border-border/70 px-4"
+        >
+          <AccordionTrigger className="hover:no-underline">
+            <span className="min-w-0 text-left">
+              <span className="block font-semibold">Section setup</span>
+              <span className="block text-sm font-normal text-muted-foreground">
+                Key, type, order, layout, variant, and eyebrow text.
+              </span>
+            </span>
+          </AccordionTrigger>
+          <AccordionContent forceMount>
+            <div className="grid min-w-0 gap-5 pt-1 md:grid-cols-2">
+              <Field
+                name="sectionKey"
+                label="Section Key"
+                defaultValue={defaults.sectionKey}
+              />
+              <div className="space-y-2">
+                <Label>Type</Label>
+                <DashboardFormSelect
+                  name="type"
+                  defaultValue={defaults.type}
+                  options={sectionTypeOptions}
+                />
+              </div>
+              <Field
+                name="sortOrder"
+                label="Sort Order"
+                defaultValue={defaults.sortOrder}
+                type="number"
+              />
+              <div className="space-y-2">
+                <Label>Layout</Label>
+                <DashboardFormSelect
+                  name="layout"
+                  defaultValue={defaults.layout}
+                  options={sectionLayoutOptions}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Variant</Label>
+                <DashboardFormSelect
+                  name="variant"
+                  defaultValue={defaults.variant}
+                  options={sectionVariantOptions}
+                />
+              </div>
+              <Field
+                name="eyebrowBn"
+                label="Eyebrow (BN)"
+                defaultValue={defaults.eyebrowBn}
+              />
+              <Field
+                name="eyebrowEn"
+                label="Eyebrow (EN)"
+                defaultValue={defaults.eyebrowEn}
+              />
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem
+          value="section-media"
+          className="rounded-lg border border-border/70 px-4"
+        >
+          <AccordionTrigger className="hover:no-underline">
+            <span className="min-w-0 text-left">
+              <span className="block font-semibold">Media and button</span>
+              <span className="block text-sm font-normal text-muted-foreground">
+                Section image and call-to-action fields.
+              </span>
+            </span>
+          </AccordionTrigger>
+          <AccordionContent forceMount>
+            <div className="grid min-w-0 gap-5 pt-1 md:grid-cols-2">
+              <div className="md:col-span-2">
+                <ImageUploadField
+                  name="imageUrl"
+                  label={locale === "bn" ? "সেকশন ইমেজ" : "Section image"}
+                  helperText={
+                    locale === "bn"
+                      ? "hero/story সেকশনে image থাকলে এটি page cover-কে override করবে। অন্যান্য ভিজ্যুয়াল সেকশনের জন্যও এটি ব্যবহার করুন।"
+                      : "For hero or story sections, this image overrides the page cover. Use it for other visual sections as well."
+                  }
+                  value={defaults.imageUrl}
+                  previewValue={defaults.previewImageUrl}
+                  compact
+                  previewClassName="w-full max-w-64"
+                />
+              </div>
+              <Field
+                name="ctaLabelBn"
+                label="CTA Label (BN)"
+                defaultValue={defaults.ctaLabelBn}
+              />
+              <Field
+                name="ctaLabelEn"
+                label="CTA Label (EN)"
+                defaultValue={defaults.ctaLabelEn}
+              />
+              <Field
+                name="ctaHref"
+                label="CTA Href"
+                defaultValue={defaults.ctaHref}
+              />
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem
+          value="section-items"
+          className="rounded-lg border border-border/70 px-4"
+        >
+          <AccordionTrigger className="hover:no-underline">
+            <span className="min-w-0 text-left">
+              <span className="block font-semibold">Section items</span>
+              <span className="block text-sm font-normal text-muted-foreground">
+                Cards, stats, brand tiles, contact rows, and list items.
+              </span>
+            </span>
+          </AccordionTrigger>
+          <AccordionContent forceMount>
+            <div className="pt-1">
+              <MarketingSectionItemsField
+                name="itemsJson"
+                defaultItems={defaults.items}
+              />
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem
+          value="section-styles"
+          className="rounded-lg border border-border/70 px-4"
+        >
+          <AccordionTrigger className="hover:no-underline">
+            <span className="min-w-0 text-left">
+              <span className="block font-semibold">Section styles</span>
+              <span className="block text-sm font-normal text-muted-foreground">
+                Optional renderer keys such as source, limit, columns, or
+                density.
+              </span>
+            </span>
+          </AccordionTrigger>
+          <AccordionContent forceMount>
+            <div className="pt-1">
+              <MarketingSectionStylesField
+                name="stylesJson"
+                defaultStyles={defaults.styles}
+              />
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
       <div className="md:col-span-2">
         <Button type="submit">{submitLabel}</Button>
       </div>
     </>
   );
-}
-
-function getLocalizedGuideText(
-  locale: "bn" | "en",
-  value: { bn: string; en: string },
-) {
-  return locale === "bn" ? value.bn : value.en;
 }
 
 function Field({
