@@ -154,6 +154,7 @@ export default function LoginPage() {
   const rawCallbackURL = searchParams.get("callbackURL");
   const hasCallbackURL = isSafeCallbackUrl(rawCallbackURL);
   const callbackURL = getSafeCallbackUrl(rawCallbackURL);
+  const resetSuccess = searchParams.get("reset") === "success";
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -232,12 +233,16 @@ export default function LoginPage() {
       window.location.replace(role === "admin" ? "/dashboard" : "/profile");
     } catch (error) {
       console.error("Authentication error:", error);
-      const nextErrorMessage =
+      const rawErrorMessage =
         error instanceof Error
           ? error.message
           : isSignIn
             ? "Could not sign in. Please check your credentials."
             : "Could not create the account. Please try again.";
+      const nextErrorMessage =
+        !isSignIn && /already|exist|email|duplicate/i.test(rawErrorMessage)
+          ? "User already exist. Use another Mobile/Email."
+          : rawErrorMessage;
 
       setErrorMessage(nextErrorMessage);
       toast({
@@ -285,6 +290,14 @@ export default function LoginPage() {
                     {errorMessage ? (
                       <Alert variant="destructive">
                         <AlertDescription>{errorMessage}</AlertDescription>
+                      </Alert>
+                    ) : null}
+                    {resetSuccess && isSignIn && !errorMessage ? (
+                      <Alert>
+                        <AlertDescription>
+                          Password reset successfully. Please sign in with your
+                          new password.
+                        </AlertDescription>
                       </Alert>
                     ) : null}
 
@@ -366,7 +379,7 @@ export default function LoginPage() {
                           </div>
 
                           <Link
-                            href="/contact"
+                            href="/forgot-password"
                             className="text-sm font-medium text-primary underline-offset-4 transition-colors hover:text-primary/80 hover:underline"
                           >
                             Forgotten password?
@@ -390,6 +403,30 @@ export default function LoginPage() {
                             required
                           />
                         </FieldShell>
+
+                        <div className="space-y-2">
+                          <Label className="px-1 text-sm text-muted-foreground">
+                            Mobile number
+                          </Label>
+                          <PhoneInput2
+                            id="signup-mobile"
+                            value={mobile}
+                            autoComplete="tel"
+                            onChange={(value) => {
+                              setErrorMessage(null);
+                              setMobileError(null);
+                              setMobile(value);
+                            }}
+                            placeholder="017XXXXXXXX"
+                            className="h-12 rounded-lg border-border/70 bg-background text-base"
+                            required
+                          />
+                          {mobileError ? (
+                            <p className="px-1 text-xs font-medium text-destructive">
+                              {mobileError}
+                            </p>
+                          ) : null}
+                        </div>
 
                         <FieldShell icon={<Mail className="size-4" />}>
                           <Input
@@ -447,6 +484,9 @@ export default function LoginPage() {
                             )}
                           </Button>
                         </FieldShell>
+                        <p className="-mt-2 px-1 text-xs text-muted-foreground">
+                          Password (Minimum any 6 digit)
+                        </p>
 
                         <FieldShell icon={<MapPin className="size-4" />}>
                           <Input
@@ -464,9 +504,9 @@ export default function LoginPage() {
                           />
                         </FieldShell>
 
-                        <div className="grid gap-3 sm:grid-cols-2">
+                        <div className="grid grid-cols-2 gap-2 sm:gap-3">
                           <div className="min-w-0 space-y-2">
-                            <Label className="px-1 text-sm text-muted-foreground">
+                            <Label className="truncate px-1 text-xs text-muted-foreground sm:text-sm">
                               District
                             </Label>
                             <Select
@@ -478,7 +518,7 @@ export default function LoginPage() {
                                 setThana("");
                               }}
                             >
-                              <SelectTrigger className="h-12 min-w-0 rounded-lg border-border/70 bg-background text-sm">
+                              <SelectTrigger className="h-12 min-w-0 rounded-lg border-border/70 bg-background px-2 text-xs sm:px-3 sm:text-sm">
                                 <SelectValue placeholder="Select district" />
                               </SelectTrigger>
                               <SelectContent>
@@ -495,7 +535,7 @@ export default function LoginPage() {
                           </div>
 
                           <div className="min-w-0 space-y-2">
-                            <Label className="px-1 text-sm text-muted-foreground">
+                            <Label className="truncate px-1 text-xs text-muted-foreground sm:text-sm">
                               Thana
                             </Label>
                             <Select
@@ -507,7 +547,7 @@ export default function LoginPage() {
                               }}
                               disabled={!districtOption}
                             >
-                              <SelectTrigger className="h-12 min-w-0 rounded-lg border-border/70 bg-background text-sm">
+                              <SelectTrigger className="h-12 min-w-0 rounded-lg border-border/70 bg-background px-2 text-xs sm:px-3 sm:text-sm">
                                 <SelectValue placeholder="Select thana" />
                               </SelectTrigger>
                               <SelectContent>
@@ -521,30 +561,6 @@ export default function LoginPage() {
                               </SelectContent>
                             </Select>
                           </div>
-                        </div>
-
-                        <div className="space-y-2">
-                          <Label className="px-1 text-sm text-muted-foreground">
-                            Mobile number
-                          </Label>
-                          <PhoneInput2
-                            id="signup-mobile"
-                            value={mobile}
-                            autoComplete="tel"
-                            onChange={(value) => {
-                              setErrorMessage(null);
-                              setMobileError(null);
-                              setMobile(value);
-                            }}
-                            placeholder="017XXXXXXXX"
-                            className="h-12 rounded-lg border-border/70 bg-background text-base"
-                            required
-                          />
-                          {mobileError ? (
-                            <p className="px-1 text-xs font-medium text-destructive">
-                              {mobileError}
-                            </p>
-                          ) : null}
                         </div>
                       </div>
                     )}

@@ -36,7 +36,7 @@ export function HomeBrandStrip({ brands }: { brands: BrandItem[] }) {
                       src={brand.image}
                       alt={brand.name}
                       fill
-                      className="object-contain p-0.5"
+                      className="rounded-md object-contain p-0.5"
                       sizes="(max-width: 640px) 38vw, (max-width: 1024px) 16vw, 12vw"
                     />
                   </div>

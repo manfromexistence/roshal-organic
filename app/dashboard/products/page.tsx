@@ -2,12 +2,18 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { RoshalProductsTable } from "@/components/dashboard/products-table";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import { getAllRoshalProducts } from "@/lib/store-content";
 import { getRoshalLocale } from "@/lib/store-i18n";
 
-export default async function DashboardProductsPage() {
+export default async function DashboardProductsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ created?: string }>;
+}) {
+  const resolvedSearchParams = searchParams ? await searchParams : {};
   const [locale, products] = await Promise.all([
     getRoshalLocale(),
     getAllRoshalProducts(),
@@ -40,6 +46,14 @@ export default async function DashboardProductsPage() {
           </Link>
         </Button>
       </div>
+
+      {resolvedSearchParams.created ? (
+        <Alert>
+          <AlertDescription>
+            New product added. It is now visible in the product list.
+          </AlertDescription>
+        </Alert>
+      ) : null}
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <DashboardMetricCard

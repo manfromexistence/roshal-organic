@@ -10,6 +10,7 @@ import {
 import Link from "next/link";
 import { saveRoshalProduct } from "@/actions/admin";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
+import { DashboardImageGalleryField } from "@/components/dashboard/image-gallery-field";
 import { JsonFieldEditor } from "@/components/dashboard/json-field-editor";
 import { ProductTaxonomySelect } from "@/components/dashboard/product-taxonomy-select";
 import { ImageUploadField } from "@/components/shared/image-upload-field";
@@ -34,6 +35,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import { getAllRoshalProducts } from "@/lib/store-content";
 import {
+  getRoshalProductRegularFeatures,
+  getRoshalProductSizeOptions,
+} from "@/lib/store-product-options";
+import {
   productMatchesCategory,
   productMatchesSubcategory,
 } from "@/lib/store-taxonomy";
@@ -44,19 +49,28 @@ export default async function ProductEditorRoute({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams?: Promise<{ error?: string; slug?: string; sku?: string }>;
+  searchParams?: Promise<{
+    error?: string;
+    saved?: string;
+    slug?: string;
+    sku?: string;
+  }>;
 }) {
   const { id } = await params;
   const resolvedSearchParams = searchParams
     ? await searchParams
-    : await Promise.resolve<{ error?: string; slug?: string; sku?: string }>(
-        {},
-      );
+    : await Promise.resolve<{
+        error?: string;
+        saved?: string;
+        slug?: string;
+        sku?: string;
+      }>({});
 
   return (
     <ProductEditorPage
       productId={id}
       errorCode={resolvedSearchParams.error}
+      saved={resolvedSearchParams.saved}
       errorSlug={resolvedSearchParams.slug}
       errorSku={resolvedSearchParams.sku}
     />
@@ -66,11 +80,13 @@ export default async function ProductEditorRoute({
 export async function ProductEditorPage({
   productId,
   errorCode,
+  saved,
   errorSlug,
   errorSku,
 }: {
   productId: string | null;
   errorCode?: string;
+  saved?: string;
   errorSlug?: string;
   errorSku?: string;
 }) {
@@ -98,6 +114,12 @@ export async function ProductEditorPage({
     taxonomy.subcategories.find((subcategory) =>
       productMatchesSubcategory(product, subcategory),
     );
+  const regularFeatures = product
+    ? getRoshalProductRegularFeatures(product.features)
+    : [];
+  const sizeOptions = product
+    ? getRoshalProductSizeOptions(product.features)
+    : [];
 
   return (
     <div className="min-w-0 space-y-6 px-4 pt-4 pb-4 md:px-6 md:pt-6">
@@ -133,6 +155,12 @@ export async function ProductEditorPage({
       {errorMessage ? (
         <Alert variant="destructive">
           <AlertDescription>{errorMessage}</AlertDescription>
+        </Alert>
+      ) : null}
+
+      {saved ? (
+        <Alert>
+          <AlertDescription>Product saved successfully.</AlertDescription>
         </Alert>
       ) : null}
 
@@ -240,7 +268,7 @@ export async function ProductEditorPage({
                         defaultValue={product?.description.bn || ""}
                         rows={5}
                       />
-                      <JsonFieldEditor
+                      <DashboardImageGalleryField
                         name="galleryJson"
                         label="Gallery"
                         defaultValue={JSON.stringify(
@@ -248,15 +276,21 @@ export async function ProductEditorPage({
                           null,
                           2,
                         )}
-                        mode="array-string"
-                        itemLabel="Image"
                         hint="Each entry should be an image URL."
+                      />
+                      <JsonFieldEditor
+                        name="sizeOptionsJson"
+                        label="Size options"
+                        defaultValue={JSON.stringify(sizeOptions, null, 2)}
+                        mode="array-string"
+                        itemLabel="Size"
+                        hint="Add product size or pack options such as 500g, 1kg, 5L."
                       />
                       <JsonFieldEditor
                         name="featuresEnJson"
                         label="Features (EN)"
                         defaultValue={JSON.stringify(
-                          product?.features.map((item) => item.en) || [],
+                          regularFeatures.map((item) => item.en),
                           null,
                           2,
                         )}
@@ -268,7 +302,7 @@ export async function ProductEditorPage({
                         name="featuresBnJson"
                         label="Features (BN)"
                         defaultValue={JSON.stringify(
-                          product?.features.map((item) => item.bn) || [],
+                          regularFeatures.map((item) => item.bn),
                           null,
                           2,
                         )}

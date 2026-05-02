@@ -161,13 +161,13 @@ const primaryNavigationTemplate: DashboardNavItem[] = [
     ],
   },
   {
-    title: "System Settings",
+    title: "Delivery Setting",
     url: "/dashboard/settings",
     icon: "settings",
     keywords: ["settings", "delivery", "brand", "contact", "configuration"],
     items: [
       {
-        title: "System Settings",
+        title: "Delivery Setting",
         url: "/dashboard/settings",
         keywords: ["delivery charges", "contact info", "brand"],
       },

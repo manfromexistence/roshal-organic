@@ -56,6 +56,12 @@ export interface RoshalNewOrderEmailInput {
   items: RoshalOrderItem[];
 }
 
+export interface RoshalPasswordResetEmailInput {
+  name?: string | null;
+  to: string;
+  url: string;
+}
+
 function envValue(key: string) {
   return process.env[key]?.trim().replace(/^["']|["']$/g, "") || "";
 }
@@ -65,6 +71,10 @@ function isDeliverableEmail(value: string) {
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) &&
     !value.toLowerCase().endsWith(".local")
   );
+}
+
+function isSyntheticRoshalCustomerEmail(value: string) {
+  return /^customer\+\d+@roshalorganic\.app$/i.test(value);
 }
 
 function parseEmailList(value: string) {
@@ -308,6 +318,43 @@ async function sendOrderEmailViaResend(input: {
   return { provider: "resend", sent: true };
 }
 
+async function sendPasswordResetEmailViaResend(input: {
+  apiKey: string;
+  from: string;
+  html: string;
+  subject: string;
+  text: string;
+  to: string;
+}) {
+  const response = await fetch(RESEND_EMAIL_ENDPOINT, {
+    body: JSON.stringify({
+      from: input.from,
+      html: input.html,
+      subject: input.subject,
+      tags: [{ name: "type", value: "password_reset" }],
+      text: input.text,
+      to: [input.to],
+    }),
+    headers: {
+      Authorization: `Bearer ${input.apiKey}`,
+      "Content-Type": "application/json",
+      "Idempotency-Key": `roshal-password-reset-${input.to.toLowerCase()}`,
+      "User-Agent": "roshal-organic/1.0",
+    },
+    method: "POST",
+  });
+
+  if (!response.ok) {
+    const detail = await response.text().catch(() => "");
+    return {
+      reason: `resend-${response.status}${detail ? `: ${detail}` : ""}`,
+      sent: false,
+    };
+  }
+
+  return { provider: "resend", sent: true };
+}
+
 function buildOrderEmail(input: RoshalNewOrderEmailInput) {
   const dashboardUrl = getRoshalAbsoluteUrl(
     `/dashboard/orders/${input.orderId}`,
@@ -440,4 +487,70 @@ export async function sendRoshalNewOrderEmail(input: RoshalNewOrderEmailInput) {
     text,
     to,
   });
+}
+
+export async function sendRoshalPasswordResetEmail(
+  input: RoshalPasswordResetEmailInput,
+) {
+  const to = input.to.trim();
+
+  if (!isDeliverableEmail(to) || isSyntheticRoshalCustomerEmail(to)) {
+    return { reason: "undeliverable-email", sent: false };
+  }
+
+  const apiKey = envValue("RESEND_API_KEY");
+  const from = getOrderEmailFromAddress();
+  const displayName = input.name?.trim() || "customer";
+  const subject = "Reset your Roshal Organic password";
+  const text = [
+    `Hello ${displayName},`,
+    "",
+    "Use this link to reset your Roshal Organic password:",
+    input.url,
+    "",
+    "If you did not request this, you can ignore this email.",
+  ].join("\n");
+  const html = `
+    <div style="font-family:Arial,sans-serif;color:#162116;line-height:1.5;">
+      <h2 style="margin:0 0 12px;">Reset your Roshal Organic password</h2>
+      <p style="margin:0 0 16px;">Hello ${escapeHtml(displayName)}, use the button below to set a new password.</p>
+      <p style="margin:0 0 16px;"><a href="${escapeHtml(
+        input.url,
+      )}" style="display:inline-block;background:#13391f;color:white;text-decoration:none;padding:10px 14px;border-radius:6px;">Reset password</a></p>
+      <p style="margin:0;color:#5b665b;font-size:13px;">If the button does not work, copy this link into your browser:<br>${escapeHtml(
+        input.url,
+      )}</p>
+      <p style="margin:16px 0 0;color:#5b665b;font-size:13px;">If you did not request this, you can ignore this email.</p>
+    </div>
+  `;
+
+  if (apiKey) {
+    return sendPasswordResetEmailViaResend({
+      apiKey,
+      from,
+      html,
+      subject,
+      text,
+      to,
+    });
+  }
+
+  const transporter = await getSmtpTransporter();
+
+  if (!transporter) {
+    return { reason: "missing-email-provider", sent: false };
+  }
+
+  await transporter.sendMail({
+    from,
+    headers: {
+      "X-Roshal-Email-Type": "password-reset",
+    },
+    html,
+    subject,
+    text,
+    to: [to],
+  });
+
+  return { provider: "smtp", sent: true };
 }

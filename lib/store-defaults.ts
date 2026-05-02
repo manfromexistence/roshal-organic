@@ -1,4 +1,3 @@
-import { vegetableProducts } from "@/data/vegetable-products";
 import { defaultRoshalDeliverySettings } from "@/lib/store-delivery";
 import { localizedValue } from "@/lib/store-locale";
 import {
@@ -1036,7 +1035,6 @@ export const defaultRoshalProducts: RoshalProduct[] = [
     isPublished: true,
     sortOrder: 5,
   },
-  ...vegetableProducts,
 ];
 
 export const defaultRoshalPaymentSettings: RoshalPaymentSettings = {

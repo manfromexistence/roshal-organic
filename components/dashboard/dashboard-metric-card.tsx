@@ -2,11 +2,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 const accentClasses = [
-  "border-r-primary",
-  "border-r-secondary",
-  "border-r-accent",
-  "border-r-muted-foreground",
-  "border-r-destructive",
+  "border-r-primary bg-primary/10",
+  "border-r-secondary bg-secondary/80",
+  "border-r-accent bg-accent/80",
+  "border-r-muted-foreground bg-muted/70",
+  "border-r-destructive bg-destructive/10",
 ];
 
 function getEmojiForTitle(title: string): string {
@@ -63,17 +63,17 @@ export function DashboardMetricCard({
   return (
     <Card
       className={cn(
-        "min-w-0 overflow-hidden border-none border-r-[5px] bg-card p-0 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-card hover:shadow-md",
+        "min-w-0 overflow-hidden border-none border-r-[5px] p-0 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md",
         getAccentClass(title),
       )}
     >
       <CardContent className="min-w-0 p-3">
         <div className="flex min-w-0 items-start justify-between gap-2">
           <div className="min-w-0 space-y-1">
-            <p className="break-words text-xs font-medium leading-4 text-muted-foreground">
+            <p className="break-words text-sm font-semibold leading-4 text-foreground">
               {title}
             </p>
-            <div className="break-words text-lg font-bold tracking-tight">
+            <div className="break-words text-2xl font-extrabold leading-tight tracking-tight text-foreground">
               {value}
             </div>
             <p className="break-words text-xs leading-4 text-muted-foreground">

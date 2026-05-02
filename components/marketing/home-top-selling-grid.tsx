@@ -35,9 +35,9 @@ function TopSellingCard({
 }) {
   return (
     <ImageCard className="group overflow-hidden rounded-md border-border/80 bg-card shadow-sm transition-all duration-200 hover:border-primary/25 hover:shadow-md">
-      <div className="grid gap-0 md:grid-cols-[0.95fr_1.05fr]">
+      <div className="grid gap-0 xl:grid-cols-[0.95fr_1.05fr]">
         <ImageCardHeader className="p-0">
-          <div className="relative aspect-[11/8] overflow-hidden border-b border-border/70 bg-muted/35 md:h-full md:min-h-[11rem] md:border-r md:border-b-0">
+          <div className="relative aspect-[11/8] overflow-hidden border-b border-border/70 bg-muted/35 xl:h-full xl:min-h-[11rem] xl:border-r xl:border-b-0">
             <Image
               src={product.image}
               alt={product.name[language]}
@@ -55,15 +55,15 @@ function TopSellingCard({
 
         <ImageCardContent className="flex flex-col justify-center gap-2.5 px-3.5 py-3.5 text-left md:px-4 md:py-3.5">
           <div className="space-y-1.5">
-            <ImageCardTitle className="text-base leading-5 tracking-tight md:text-lg">
+            <ImageCardTitle className="line-clamp-2 text-sm leading-4 tracking-tight sm:text-base sm:leading-5 xl:text-lg">
               {product.name[language]}
             </ImageCardTitle>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-lg font-semibold text-primary md:text-xl">
+              <span className="text-base font-semibold text-primary sm:text-lg xl:text-xl">
                 {product.price}
               </span>
               {product.originalPrice ? (
-                <span className="text-muted-foreground line-through">
+                <span className="text-sm text-muted-foreground line-through">
                   {product.originalPrice}
                 </span>
               ) : null}
@@ -75,10 +75,10 @@ function TopSellingCard({
               <AddToCartButton
                 product={product.cartProduct}
                 locale={language}
-                className="w-full rounded-sm sm:min-w-36 sm:w-auto"
+                className="h-9 w-full rounded-sm text-xs sm:text-sm xl:min-w-36 xl:w-auto"
               />
             ) : (
-              <Button className="w-full rounded-sm sm:min-w-36 sm:w-auto">
+              <Button className="h-9 w-full rounded-sm text-xs sm:text-sm xl:min-w-36 xl:w-auto">
                 <ShoppingBag className="size-4" />
                 {language === "bn" ? "কার্টে যোগ করুন" : "Add To Cart"}
               </Button>
@@ -87,10 +87,10 @@ function TopSellingCard({
             <Button
               asChild
               variant="secondary"
-              className="w-full rounded-sm sm:min-w-28 sm:w-auto"
+              className="h-9 w-full rounded-sm text-xs sm:text-sm xl:min-w-28 xl:w-auto"
             >
               <Link href={product.href || `/products/${product.id}`}>
-                {language === "bn" ? "এখনই কিনুন" : "Buy now"}
+                {language === "bn" ? "বিস্তারিত দেখুন" : "View Details"}
                 <ArrowRight className="size-4" />
               </Link>
             </Button>

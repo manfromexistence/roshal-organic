@@ -28,6 +28,7 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import { bangladeshDistrictOptions } from "@/lib/bangladesh-locations";
+import { parseRoshalDefaultAddress } from "@/lib/store-address";
 import {
   getRoshalDeliveryMatchLabel,
   getRoshalDeliveryZoneLabel,
@@ -70,43 +71,6 @@ const checkoutPaymentLogos: Partial<Record<RoshalPaymentMethod, string>> = {
   bkash: "/logos/bkash-com.png",
   nagad: "/logos/nagad-com-bd.png",
 };
-
-function parseDefaultCheckoutAddress(defaultAddress: string) {
-  const parts = defaultAddress
-    .split(",")
-    .map((part) => part.trim())
-    .filter(Boolean);
-  const normalizedParts = parts.map((part) => part.toLowerCase());
-  const district =
-    bangladeshDistrictOptions.find((option) =>
-      normalizedParts.some(
-        (part) =>
-          part === option.value.toLowerCase() ||
-          part === option.label.toLowerCase(),
-      ),
-    ) || null;
-  const thana =
-    district?.thanas.find((option) =>
-      normalizedParts.some((part) => part === option.toLowerCase()),
-    ) || "";
-  const addressLine1 = parts
-    .filter((part) => {
-      const normalizedPart = part.toLowerCase();
-
-      return (
-        normalizedPart !== thana.toLowerCase() &&
-        normalizedPart !== district?.value.toLowerCase() &&
-        normalizedPart !== district?.label.toLowerCase()
-      );
-    })
-    .join(", ");
-
-  return {
-    addressLine1: addressLine1 || defaultAddress,
-    district: district?.value || "",
-    thana,
-  };
-}
 
 function sortCheckoutPaymentOptions(options: RoshalPaymentSettings["options"]) {
   return [...options]
@@ -162,7 +126,7 @@ export function CheckoutPageClient({
     [paymentSettings.options],
   );
   const defaultAddress = useMemo(
-    () => parseDefaultCheckoutAddress(user.defaultAddress),
+    () => parseRoshalDefaultAddress(user.defaultAddress),
     [user.defaultAddress],
   );
 
@@ -384,6 +348,14 @@ export function CheckoutPageClient({
     setIsSubmitting(true);
 
     try {
+      const checkoutItems = visibleItems.map((item) => {
+        const legacyItem = item as typeof item & { id?: string };
+
+        return {
+          productId: item.productId || legacyItem.id || "",
+          quantity: item.quantity,
+        };
+      });
       const response = await fetch("/api/orders", {
         method: "POST",
         headers: {
@@ -395,13 +367,17 @@ export function CheckoutPageClient({
             .filter(Boolean)
             .join(" | "),
           paymentMethod,
-          items: visibleItems,
+          items: checkoutItems,
         }),
       });
       const payload = await response.json().catch(() => null);
 
       if (!response.ok) {
-        throw new Error(getCheckoutErrorMessage(payload?.code));
+        throw new Error(
+          typeof payload?.error === "string" && payload.error.trim()
+            ? payload.error
+            : getCheckoutErrorMessage(payload?.code),
+        );
       }
 
       setSubmitError(null);
@@ -469,8 +445,7 @@ export function CheckoutPageClient({
       ) : null}
 
       <div className="grid gap-8 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_24rem] xl:grid-cols-[minmax(0,1fr)_26rem]">
-        {/* Order Summary - First on mobile, second on desktop */}
-        <div className="min-w-0 space-y-6 order-1 lg:order-2 lg:sticky lg:top-28">
+        <div className="min-w-0 space-y-6 order-2 lg:order-2 lg:sticky lg:top-28">
           <Card className="h-fit rounded-md border-border/70 shadow-sm">
             <CardHeader className="space-y-2">
               <CardTitle className="text-2xl">
@@ -604,8 +579,7 @@ export function CheckoutPageClient({
           </Card>
         </div>
 
-        {/* Forms - Second on mobile, first on desktop */}
-        <div className="min-w-0 space-y-6 order-2 lg:order-1">
+        <div className="min-w-0 space-y-6 order-1 lg:order-1">
           <Card className="rounded-md border-border/70 shadow-sm">
             <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0 space-y-1.5">
@@ -786,7 +760,7 @@ export function CheckoutPageClient({
                   setSubmitError(null);
                   setPaymentMethod(value as RoshalPaymentMethod);
                 }}
-                className="grid grid-cols-2 gap-2 lg:grid-cols-4"
+                className="grid grid-cols-2 gap-2 sm:grid-cols-4"
               >
                 {paymentOptions.map((option) => {
                   const isSelected = option.key === paymentMethod;
@@ -796,7 +770,7 @@ export function CheckoutPageClient({
                     <Label
                       key={option.key}
                       htmlFor={option.key}
-                      className={`flex cursor-pointer items-center gap-2 rounded-sm border px-2 py-2 transition-colors ${
+                      className={`flex h-16 cursor-pointer items-center justify-center gap-2 rounded-sm border px-2 py-2 text-center transition-colors ${
                         isSelected
                           ? "border-primary/50 bg-primary/5"
                           : "border-border/70 hover:bg-muted/20"
@@ -809,17 +783,17 @@ export function CheckoutPageClient({
                       />
                       <div className="min-w-0 space-y-1">
                         {logoSrc ? (
-                          <div className="flex items-center">
+                          <div className="flex items-center justify-center">
                             <Image
                               src={logoSrc}
                               alt={`${getLocalizedValue(locale, option.label)} logo`}
-                              width={72}
-                              height={24}
-                              className="rounded-[4px] border border-border/60"
+                              width={64}
+                              height={20}
+                              className="max-h-5 w-auto rounded-[4px] object-contain"
                             />
                           </div>
                         ) : null}
-                        <span className="text-sm font-medium text-foreground">
+                        <span className="line-clamp-2 text-xs font-semibold leading-tight text-foreground">
                           {getLocalizedValue(locale, option.label)}
                         </span>
                       </div>
@@ -834,7 +808,13 @@ export function CheckoutPageClient({
                   selectedOption.key !== "cash_on_delivery" ? (
                     <div className="rounded-sm border border-border/60 bg-background px-3 py-2">
                       <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                        Send Money (personal)
+                        {getLocalizedValue(
+                          locale,
+                          selectedOption.merchantLabel,
+                        ) ||
+                          (locale === "bn"
+                            ? "Send Money (personal)"
+                            : "Send Money (personal)")}
                       </p>
                       <p className="mt-1 break-all text-base font-semibold leading-tight text-foreground">
                         {selectedOption.accountNumber}

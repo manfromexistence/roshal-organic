@@ -1,16 +1,9 @@
 import {
-  AlertTriangle,
   ArrowDownRight,
   ArrowUpRight,
-  Clock,
-  FileText,
   Package,
-  ShoppingBag,
-  Store,
-  Users,
 } from "lucide-react";
 import Link from "next/link";
-import type { ComponentType } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,7 +26,6 @@ type StatCardProps = {
   description: string;
   trend: string;
   trendDirection?: "up" | "down";
-  icon: ComponentType<{ className?: string }>;
   accentClassName: string;
   emoji: string;
   href: string;
@@ -45,12 +37,21 @@ function DashboardStatCard({
   description,
   trend,
   trendDirection = "up",
-  icon: Icon,
   accentClassName,
   emoji,
   href,
 }: StatCardProps) {
   const TrendIcon = trendDirection === "up" ? ArrowUpRight : ArrowDownRight;
+  const colorSurfaceClass =
+    accentClassName === "border-r-primary"
+      ? "bg-primary/10"
+      : accentClassName === "border-r-secondary"
+        ? "bg-secondary/80"
+        : accentClassName === "border-r-accent"
+          ? "bg-accent/80"
+          : accentClassName === "border-r-destructive"
+            ? "bg-destructive/10"
+            : "bg-muted/70";
 
   return (
     <Link
@@ -58,15 +59,15 @@ function DashboardStatCard({
       className="block min-w-0 rounded-md outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
     >
       <Card
-        className={`group h-full min-w-0 overflow-hidden border-none border-r-[6px] bg-card/50 p-0 shadow-sm backdrop-blur transition duration-200 hover:-translate-y-0.5 hover:bg-card hover:shadow-md ${accentClassName}`}
+        className={`group h-full min-w-0 overflow-hidden border-none border-r-[6px] p-0 shadow-sm backdrop-blur transition duration-200 hover:-translate-y-0.5 hover:shadow-md ${accentClassName} ${colorSurfaceClass}`}
       >
         <CardContent className="min-w-0 p-3">
           <div className="flex min-w-0 items-start justify-between gap-3">
             <div className="min-w-0 space-y-1">
-              <p className="break-words text-xs font-medium text-muted-foreground">
+              <p className="break-words text-sm font-semibold text-foreground">
                 {title}
               </p>
-              <p className="break-words text-lg font-bold leading-tight tracking-tight">
+              <p className="break-words text-2xl font-extrabold leading-tight tracking-tight text-foreground">
                 {value}
               </p>
               <p className="break-words text-xs text-muted-foreground">
@@ -76,9 +77,6 @@ function DashboardStatCard({
             <div className="flex shrink-0 items-center gap-2">
               <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-sm">
                 {emoji}
-              </span>
-              <span className="hidden rounded-full bg-primary/10 p-1 text-primary transition group-hover:bg-primary group-hover:text-primary-foreground sm:flex">
-                <Icon className="h-3.5 w-3.5" />
               </span>
             </div>
           </div>
@@ -230,14 +228,6 @@ export default async function DashboardHomePage() {
             workspace.
           </p>
         </div>
-        <div className="flex flex-wrap gap-3">
-          <Button asChild variant="outline">
-            <Link href="/dashboard/pages">Marketing pages</Link>
-          </Button>
-          <Button asChild>
-            <Link href="/dashboard/products/new">New product</Link>
-          </Button>
-        </div>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -248,7 +238,6 @@ export default async function DashboardHomePage() {
             deliveredOrders.length === 1 ? "" : "s"
           } counted`}
           trend={`${fulfillmentOrders} need fulfillment`}
-          icon={ShoppingBag}
           accentClassName="border-r-primary"
           emoji={"\u{1F4B0}"}
           href="/dashboard/orders"
@@ -263,7 +252,6 @@ export default async function DashboardHomePage() {
               ? "down"
               : "up"
           }
-          icon={Package}
           accentClassName="border-r-secondary"
           emoji={"\u{1F6CD}\uFE0F"}
           href="/dashboard/products"
@@ -275,7 +263,6 @@ export default async function DashboardHomePage() {
             users.length - customerCount === 1 ? "" : "s"
           }`}
           trend="Audience data stays dashboard-managed"
-          icon={Users}
           accentClassName="border-r-accent"
           emoji={"\u{1F465}"}
           href="/dashboard/users"
@@ -285,7 +272,6 @@ export default async function DashboardHomePage() {
           value={pages.length}
           description={`${publishedPages} published pages`}
           trend={`${visibleNavigationPages} visible in navigation`}
-          icon={FileText}
           accentClassName="border-r-muted-foreground"
           emoji={"\u{1F4C4}"}
           href="/dashboard/pages"
@@ -299,7 +285,6 @@ export default async function DashboardHomePage() {
           description="Pending or payment-review orders"
           trend={`${fulfillmentOrders} active fulfillment orders`}
           trendDirection={pendingReviewOrders.length > 0 ? "down" : "up"}
-          icon={Clock}
           accentClassName="border-r-destructive"
           emoji={"\u23F1\uFE0F"}
           href="/dashboard/orders"
@@ -312,7 +297,6 @@ export default async function DashboardHomePage() {
           }`}
           trend="Keep catalog availability clean"
           trendDirection={outOfStockProducts.length > 0 ? "down" : "up"}
-          icon={AlertTriangle}
           accentClassName="border-r-primary"
           emoji={"\u26A0\uFE0F"}
           href="/dashboard/products"
@@ -322,7 +306,6 @@ export default async function DashboardHomePage() {
           value={featuredProducts.length}
           description="Published storefront highlights"
           trend="Managed from product editor"
-          icon={Store}
           accentClassName="border-r-secondary"
           emoji={"\u2B50"}
           href="/dashboard/products"
@@ -334,7 +317,6 @@ export default async function DashboardHomePage() {
             products.length - publishedProducts.length === 1 ? "" : "s"
           }`}
           trend="Catalog visibility signal"
-          icon={Package}
           accentClassName="border-r-accent"
           emoji={"\u2705"}
           href="/dashboard/products"

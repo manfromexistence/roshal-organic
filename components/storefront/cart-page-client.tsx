@@ -3,7 +3,7 @@
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { parseRoshalDefaultAddress } from "@/lib/store-address";
 import {
   getRoshalDeliveryMatchLabel,
   getRoshalDeliveryZoneLabel,
@@ -23,6 +24,7 @@ import {
 import { formatBdt } from "@/lib/store-format";
 import { getLocalizedValue } from "@/lib/store-locale";
 import type {
+  RoshalDeliverySettings,
   RoshalDeliveryZone,
   RoshalLocale,
   RoshalProduct,
@@ -30,13 +32,17 @@ import type {
 import { useCartStore } from "@/store/cart-store";
 
 export function CartPageClient({
+  deliverySettings,
   deliveryZones,
   locale,
   products,
+  userDefaultAddress,
 }: {
+  deliverySettings: RoshalDeliverySettings;
   deliveryZones: RoshalDeliveryZone[];
   locale: RoshalLocale;
   products: RoshalProduct[];
+  userDefaultAddress: string;
 }) {
   const [isHydrated, setIsHydrated] = useState(false);
   const items = useCartStore((state) => state.items);
@@ -71,8 +77,17 @@ export function CartPageClient({
     (sum, item) => sum + item.price * item.quantity,
     0,
   );
+  const defaultAddress = useMemo(
+    () => parseRoshalDefaultAddress(userDefaultAddress),
+    [userDefaultAddress],
+  );
   const deliveryEstimate = resolveRoshalDeliveryEstimate({
+    addressLine1: defaultAddress.addressLine1,
+    addressLine2: defaultAddress.thana,
+    city: defaultAddress.district,
+    deliverySettings,
     itemCount: visibleItems.length,
+    subtotal,
     zones: deliveryZones,
   });
   const shippingFee = deliveryEstimate.fee;

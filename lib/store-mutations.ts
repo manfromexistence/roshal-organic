@@ -370,10 +370,27 @@ async function ensureRoshalDefaultProductsForCheckout(productIds: string[]) {
   }
 }
 
-const roshalOrderItemRequestSchema = z.object({
-  productId: z.string().trim().min(1),
-  quantity: z.coerce.number().int().min(1).max(99),
-});
+const roshalOrderItemRequestSchema = z.preprocess(
+  (value) => {
+    if (!value || typeof value !== "object") {
+      return value;
+    }
+
+    const item = value as Record<string, unknown>;
+
+    return {
+      ...item,
+      productId:
+        typeof item.productId === "string" && item.productId.trim()
+          ? item.productId
+          : item.id,
+    };
+  },
+  z.object({
+    productId: z.string().trim().min(1),
+    quantity: z.coerce.number().int().min(1).max(99),
+  }),
+);
 
 const roshalCheckoutRequestSchema = z.object({
   userId: z.string().trim().min(1).nullable().optional(),
@@ -476,6 +493,18 @@ export class RoshalUserRoleError extends Error {
   constructor(code: string, message: string, statusCode = 400) {
     super(message);
     this.name = "RoshalUserRoleError";
+    this.code = code;
+    this.statusCode = statusCode;
+  }
+}
+
+export class RoshalUserProfileError extends Error {
+  code: string;
+  statusCode: number;
+
+  constructor(code: string, message: string, statusCode = 400) {
+    super(message);
+    this.name = "RoshalUserProfileError";
     this.code = code;
     this.statusCode = statusCode;
   }
@@ -1491,22 +1520,51 @@ export async function deleteRoshalUser(input: { id: string; actorId: string }) {
 }
 
 export async function updateRoshalUserProfile(input: {
+  email?: string | null;
   id: string;
   name: string;
   phone?: string | null;
   preferredLanguage: string;
   defaultAddress?: string | null;
 }) {
-  await db
-    .update(users)
-    .set({
-      name: input.name,
-      phone: toOptionalText(input.phone),
-      preferredLanguage: input.preferredLanguage === "en" ? "en" : "bn",
-      defaultAddress: toOptionalText(input.defaultAddress),
-      updatedAt: new Date(),
-    })
-    .where(eq(users.id, input.id));
+  const nextEmail = toOptionalText(input.email)?.toLowerCase();
+  const updateValues: Partial<typeof users.$inferInsert> = {
+    name: input.name,
+    phone: toOptionalText(input.phone),
+    preferredLanguage: input.preferredLanguage === "en" ? "en" : "bn",
+    defaultAddress: toOptionalText(input.defaultAddress),
+    updatedAt: new Date(),
+  };
+
+  if (nextEmail) {
+    const emailResult = z.string().email().safeParse(nextEmail);
+
+    if (!emailResult.success) {
+      throw new RoshalUserProfileError(
+        "invalid-email",
+        "Please enter a valid email address.",
+      );
+    }
+
+    const [existingUser] = await db
+      .select({
+        id: users.id,
+      })
+      .from(users)
+      .where(and(eq(users.email, nextEmail), ne(users.id, input.id)))
+      .limit(1);
+
+    if (existingUser) {
+      throw new RoshalUserProfileError(
+        "duplicate-email",
+        "Another user already uses this email address.",
+      );
+    }
+
+    updateValues.email = nextEmail;
+  }
+
+  await db.update(users).set(updateValues).where(eq(users.id, input.id));
 }
 
 export interface CreateRoshalOrderInput {

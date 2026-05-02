@@ -228,6 +228,19 @@ function mergeRoshalProducts(products: RoshalProduct[]) {
   return [...mergedProducts, ...customProducts];
 }
 
+const BLOCKED_PUBLIC_PRODUCT_SLUGS = new Set(["modern-executive-desk"]);
+
+function isPublicStorefrontProduct(product: RoshalProduct) {
+  if (
+    product.id.startsWith("vegetable-") ||
+    product.slug.startsWith("vegetable-")
+  ) {
+    return false;
+  }
+
+  return !BLOCKED_PUBLIC_PRODUCT_SLUGS.has(product.slug);
+}
+
 function mapOrder(row: typeof roshalOrders.$inferSelect): RoshalOrder {
   return {
     id: row.id,
@@ -590,10 +603,10 @@ export async function getRoshalProducts() {
       .orderBy(asc(roshalProducts.sortOrder), asc(roshalProducts.nameEn));
 
     return mergeRoshalProducts(products.map(mapProduct)).filter(
-      (product) => product.isPublished,
+      (product) => product.isPublished && isPublicStorefrontProduct(product),
     );
   } catch {
-    return defaultRoshalProducts;
+    return defaultRoshalProducts.filter(isPublicStorefrontProduct);
   }
 }
 

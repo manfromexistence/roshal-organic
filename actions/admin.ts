@@ -15,6 +15,7 @@ import {
   RoshalProductError,
   RoshalSectionError,
   RoshalTaxonomyError,
+  RoshalUserProfileError,
   RoshalUserRoleError,
   updateRoshalOrderStatus,
   updateRoshalUserProfile,
@@ -28,6 +29,7 @@ import {
   upsertRoshalSubcategory,
 } from "@/lib/store-mutations";
 import { normalizeRoshalPaymentMethodKey } from "@/lib/store-payment-methods";
+import { mergeRoshalProductFeatureInput } from "@/lib/store-product-options";
 import { normalizeRoshalRouteSlug } from "@/lib/store-routes";
 import type {
   RoshalPaymentMethod,
@@ -527,6 +529,11 @@ export async function saveRoshalProduct(formData: FormData) {
   const productEditorPath = productId
     ? `/dashboard/products/${productId}`
     : "/dashboard/products/new";
+  const mergedFeatures = mergeRoshalProductFeatureInput({
+    featuresBn: stringArrayValue(formData, "featuresBnJson"),
+    featuresEn: stringArrayValue(formData, "featuresEnJson"),
+    sizeOptions: stringArrayValue(formData, "sizeOptionsJson"),
+  });
   let id = productId;
 
   try {
@@ -549,8 +556,8 @@ export async function saveRoshalProduct(formData: FormData) {
       badge: optionalTextValue(formData, "badge"),
       heroImage: textValue(formData, "heroImage"),
       galleryJson: optionalTextValue(formData, "galleryJson"),
-      featuresBnJson: optionalTextValue(formData, "featuresBnJson"),
-      featuresEnJson: optionalTextValue(formData, "featuresEnJson"),
+      featuresBnJson: JSON.stringify(mergedFeatures.bn),
+      featuresEnJson: JSON.stringify(mergedFeatures.en),
       isFeatured: boolValue(formData, "isFeatured"),
       isPublished: boolValue(formData, "isPublished"),
       sortOrder: numberValue(formData, "sortOrder"),
@@ -580,7 +587,11 @@ export async function saveRoshalProduct(formData: FormData) {
     }
   }
 
-  redirect(`/dashboard/products/${id}`);
+  redirect(
+    productId
+      ? `/dashboard/products/${id}?saved=1`
+      : "/dashboard/products?created=1",
+  );
 }
 
 export async function saveRoshalOrderStatus(formData: FormData) {
@@ -675,13 +686,27 @@ export async function saveRoshalUserProfile(formData: FormData) {
     redirect("/profile");
   }
 
-  await updateRoshalUserProfile({
-    id,
-    name: textValue(formData, "name"),
-    phone: optionalTextValue(formData, "phone"),
-    preferredLanguage: textValue(formData, "preferredLanguage") || "bn",
-    defaultAddress: optionalTextValue(formData, "defaultAddress"),
-  });
+  try {
+    await updateRoshalUserProfile({
+      id,
+      email: optionalTextValue(formData, "email") || undefined,
+      name: textValue(formData, "name"),
+      phone: optionalTextValue(formData, "phone"),
+      preferredLanguage: textValue(formData, "preferredLanguage") || "bn",
+      defaultAddress: optionalTextValue(formData, "defaultAddress"),
+    });
+  } catch (error) {
+    if (error instanceof RoshalUserProfileError) {
+      const redirectTo = textValue(formData, "redirectTo") || "/profile";
+      const separator = redirectTo.includes("?") ? "&" : "?";
+
+      redirect(
+        `${redirectTo}${separator}error=${encodeURIComponent(error.code)}`,
+      );
+    }
+
+    throw error;
+  }
 
   finishAction("/profile", formData, [
     "/profile",

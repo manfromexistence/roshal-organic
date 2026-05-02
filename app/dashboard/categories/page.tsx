@@ -8,7 +8,10 @@ import { requireRoshalAdmin } from "@/lib/store-auth";
 import { getAllRoshalProducts } from "@/lib/store-content";
 import { getRoshalLocale } from "@/lib/store-i18n";
 import { getLocalizedValue } from "@/lib/store-locale";
-import { productMatchesCategory } from "@/lib/store-taxonomy";
+import {
+  productMatchesCategory,
+  productMatchesSubcategory,
+} from "@/lib/store-taxonomy";
 import { getRoshalTaxonomy } from "@/lib/store-taxonomy-content";
 
 export default async function DashboardCategoriesPage({
@@ -50,6 +53,7 @@ export default async function DashboardCategoriesPage({
 
       return {
         id: category.id,
+        type: "category",
         key: category.key,
         label: getLocalizedValue(locale, category.label),
         latestAt: (
@@ -66,6 +70,41 @@ export default async function DashboardCategoriesPage({
       };
     },
   );
+  const categoryLabelById = new Map(
+    taxonomy.categories.map((category) => [
+      category.id,
+      getLocalizedValue(locale, category.label),
+    ]),
+  );
+  const subcategoryRows: CategoryTableRow[] = taxonomy.subcategories.map(
+    (subcategory) => {
+      const productCount = products.filter((product) =>
+        productMatchesSubcategory(product, subcategory),
+      ).length;
+
+      return {
+        id: subcategory.id,
+        type: "subcategory",
+        key: subcategory.key,
+        label: getLocalizedValue(locale, subcategory.label),
+        latestAt: (
+          subcategory.updatedAt ||
+          subcategory.createdAt ||
+          new Date(0)
+        ).getTime(),
+        parentLabel:
+          categoryLabelById.get(subcategory.categoryId) ||
+          subcategory.categoryKey,
+        productCount,
+        showInNavigation: subcategory.showInNavigation && subcategory.isEnabled,
+        showOnHomepage: false,
+        sortOrder: subcategory.sortOrder,
+        status: subcategory.isEnabled ? "Enabled" : "Disabled",
+        subcategoryCount: 0,
+      };
+    },
+  );
+  const taxonomyRows = [...categoryRows, ...subcategoryRows];
 
   return (
     <div className="min-w-0 space-y-6 px-6 pt-6 pb-4">
@@ -129,7 +168,7 @@ export default async function DashboardCategoriesPage({
       </div>
 
       {/* Category cards, insight panels, and inline create/manage taxonomy forms are intentionally hidden per client request. */}
-      <RoshalCategoriesTable rows={categoryRows} />
+      <RoshalCategoriesTable rows={taxonomyRows} />
     </div>
   );
 }

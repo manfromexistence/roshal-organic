@@ -495,7 +495,7 @@ export function StorefrontHeader({
 
       <div
         className={cn(
-          "fixed inset-x-0 isolate z-10 border-b border-primary-foreground/10 bg-primary text-primary-foreground shadow-md transition-[top] duration-300",
+          "fixed inset-x-0 isolate z-40 border-b border-primary-foreground/10 bg-primary text-primary-foreground shadow-md transition-[top] duration-300",
           hideTopBar ? "top-0" : "top-14 lg:top-[4.1rem]",
         )}
       >
@@ -516,14 +516,14 @@ export function StorefrontHeader({
                   >
                     <NavigationMenuTrigger
                       className={cn(
-                        "relative z-[1] h-10 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-primary-foreground/90 opacity-100 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground focus:bg-primary-foreground/10 focus:text-primary-foreground data-[state=open]:z-[201] data-[state=open]:bg-background data-[state=open]:text-primary data-[state=open]:shadow-sm data-[state=open]:opacity-100",
+                        "relative z-[1] h-10 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-primary-foreground/90 opacity-100 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground focus:bg-primary-foreground/10 focus:text-primary-foreground data-[state=open]:z-[61] data-[state=open]:bg-background data-[state=open]:text-primary data-[state=open]:shadow-sm data-[state=open]:opacity-100",
                         triggerActive &&
                           "bg-primary-foreground/10 text-primary-foreground",
                       )}
                     >
                       {getLocalizedValue(locale, group.label)}
                     </NavigationMenuTrigger>
-                    <NavigationMenuContent className="absolute left-0 top-full z-[200] min-w-[18rem] rounded-sm border border-border/70 bg-background p-2 shadow-xl sm:min-w-[20rem] md:min-w-[24rem]">
+                    <NavigationMenuContent className="absolute left-0 top-full z-[60] min-w-[18rem] rounded-sm border border-border/70 bg-background p-2 shadow-xl sm:min-w-[20rem] md:min-w-[24rem]">
                       <div className="grid gap-1">
                         {group.children.map((child) => (
                           <NavigationMenuLink
@@ -548,10 +548,10 @@ export function StorefrontHeader({
               })}
 
               {overflowDesktopTaxonomy.length > 0 ? (
-                <NavigationMenuItem className="z-[260] flex shrink-0 items-center">
+                <NavigationMenuItem className="z-[62] flex shrink-0 items-center">
                   <NavigationMenuTrigger
                     className={cn(
-                      "relative z-[1] h-10 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-primary-foreground/90 opacity-100 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground focus:bg-primary-foreground/10 focus:text-primary-foreground data-[state=open]:z-[241] data-[state=open]:bg-background data-[state=open]:text-primary data-[state=open]:shadow-sm",
+                      "relative z-[1] h-10 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-primary-foreground/90 opacity-100 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground focus:bg-primary-foreground/10 focus:text-primary-foreground data-[state=open]:z-[63] data-[state=open]:bg-background data-[state=open]:text-primary data-[state=open]:shadow-sm",
                       pathname === "/products" &&
                         overflowCategoryKeys.has(activeCategory) &&
                         "bg-primary-foreground/10 text-primary-foreground",
@@ -559,7 +559,7 @@ export function StorefrontHeader({
                   >
                     {locale === "bn" ? "আরও" : "More"}
                   </NavigationMenuTrigger>
-                  <NavigationMenuContent className="absolute top-full right-0 left-auto z-[240] min-w-[18rem] max-w-[min(24rem,calc(100vw-2rem))] rounded-sm border border-border/70 bg-background p-3 shadow-xl sm:min-w-[22rem] md:min-w-[28rem] md:max-w-[calc(100vw-7rem)]">
+                  <NavigationMenuContent className="absolute top-full right-0 left-auto z-[62] min-w-[18rem] max-w-[min(24rem,calc(100vw-2rem))] rounded-sm border border-border/70 bg-background p-3 shadow-xl sm:min-w-[22rem] md:min-w-[28rem] md:max-w-[calc(100vw-7rem)]">
                     <Accordion type="multiple" className="w-full space-y-2">
                       {overflowDesktopTaxonomy.map((group) => (
                         <AccordionItem

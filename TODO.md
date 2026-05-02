@@ -19,6 +19,38 @@
 | 17 | Track Order | Login sarao order track korte parbe public. | | | 🔶 Pending | Order number diye sudhu public Track korte parbe public view te. |
 | 18 | Payment | 1. User order deoar somoy Payment method select korbe Ghorerbazar system a, bortomane card space beshi khay.<br>2. Home Delivery naki Office delivery ta Redial system a jekono 1 ta select kora jabe. | | | 🔶 Pending | Checkout page aro easy & simple korte hobe. see ghorerbazar for demo.<br>r Screenshot proof deoar system rakhar dorkar nei. |
 
+## 2026-05-02 Production browser delivery QA
+
+- [x] Browser-test the live production storefront homepage and category submenu using the in-app browser.
+- [x] Hide public admin-helper CMS descriptions that leaked into homepage product, brand, and testimonial sections.
+- [x] Filter blank taxonomy labels from public category navigation, homepage category cards, footer links, and product filter options.
+- [x] Remove generated placeholder vegetable products from the default public storefront merchandising list.
+- [x] Fix marked homepage responsive issues for sub-header z-index, featured-category image/text sizing, top-selling card image/text balance, and brand image radius.
+- [x] Harden checkout submission payloads and server item parsing so older cart entries do not trigger the generic incomplete-checkout error.
+- [x] Filter generated `vegetable-*` placeholder products and helper-driven Fresh Picks content from public storefront feeds.
+
+## 2026-05-02 Client UI preference playbook
+
+- [x] Create root `UI.md` documenting the client-approved storefront and dashboard UI direction for future Roshal/GhorerBazar-style builds.
+
+## 2026-05-02 Storefront auth, checkout, profile, and category fixes
+
+- [x] Move Sign Up mobile below Full Name, keep District/Thana side by side on mobile, allow 6-character passwords, and show the requested password helper text.
+- [x] Move checkout Order Summary after the forms on mobile and use the dashboard Merchant Label in checkout payment details.
+- [x] Add customer profile address dropdowns, optional email display, password-change controls, and visible save confirmations.
+- [x] Add email password-reset flow.
+- [x] Improve category submenu visibility, rename Top Selling CTA to View Details, use profile address for cart delivery estimates, and show the requested duplicate-mobile warning.
+
+## 2026-05-02 Dashboard product and taxonomy fixes from roshal.md
+
+- [x] Make dashboard metric cards more colorful and enlarge the main card text.
+- [x] Replace raw gallery JSON editing in product create/edit with uploadable extra-image rows.
+- [x] Add product size-option input during product create/edit without requiring a schema migration.
+- [x] Redirect newly created products to All Products with a visible success message.
+- [x] Compact checkout payment method cards and keep mobile checkout order as Delivery, Payment, then Order Summary.
+- [x] Rename the dashboard System Settings menu to Delivery Setting.
+- [x] Add category and subcategory edit/delete actions and edit pages.
+
 ## 2026-05-02 Latest admin sorting, homepage responsive, and order email
 
 - [x] Keep dashboard products, categories, marketing pages, and users latest-first in their admin tables without changing storefront merchandising order.

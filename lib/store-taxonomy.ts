@@ -78,6 +78,14 @@ function getCategoryImage(
   );
 }
 
+function hasDisplayLabel(
+  value:
+    | Pick<RoshalStoreCategory, "label">
+    | Pick<RoshalStoreSubcategory, "label">,
+) {
+  return Boolean(value.label.bn.trim() || value.label.en.trim());
+}
+
 function hasSourceKey(sourceKeys: string[], value: string) {
   const normalizedValue = value.trim().toLowerCase();
   return sourceKeys.some((sourceKey) => sourceKey === normalizedValue);
@@ -161,7 +169,12 @@ export function buildStorefrontTaxonomy({
   subcategories,
 }: RoshalTaxonomyBundle): StorefrontTaxonomyGroup[] {
   return categories
-    .filter((category) => category.isEnabled && category.showInNavigation)
+    .filter(
+      (category) =>
+        category.isEnabled &&
+        category.showInNavigation &&
+        hasDisplayLabel(category),
+    )
     .sort((left, right) => left.sortOrder - right.sortOrder)
     .map((category) => {
       const children = subcategories
@@ -169,7 +182,8 @@ export function buildStorefrontTaxonomy({
           (subcategory) =>
             subcategory.isEnabled &&
             subcategory.showInNavigation &&
-            subcategory.categoryKey === category.key,
+            subcategory.categoryKey === category.key &&
+            hasDisplayLabel(subcategory),
         )
         .sort((left, right) => left.sortOrder - right.sortOrder)
         .map((subcategory) => ({
@@ -194,7 +208,12 @@ export function buildHomepageCategories({
   categories,
 }: RoshalTaxonomyBundle): StorefrontHomepageCategory[] {
   return categories
-    .filter((category) => category.isEnabled && category.showOnHomepage)
+    .filter(
+      (category) =>
+        category.isEnabled &&
+        category.showOnHomepage &&
+        hasDisplayLabel(category),
+    )
     .sort((left, right) => left.sortOrder - right.sortOrder)
     .map((category) => ({
       key: category.key,
@@ -208,7 +227,7 @@ export function buildFooterCategoryLinks({
   categories,
 }: RoshalTaxonomyBundle): StorefrontFooterCategoryLink[] {
   return categories
-    .filter((category) => category.isEnabled)
+    .filter((category) => category.isEnabled && hasDisplayLabel(category))
     .sort((left, right) => left.sortOrder - right.sortOrder)
     .map((category) => ({
       key: category.key,
@@ -223,7 +242,7 @@ export function getTaxonomyCategoryOptions(
   products: RoshalProduct[],
 ): TaxonomyCategoryOption[] {
   return categories
-    .filter((category) => category.isEnabled)
+    .filter((category) => category.isEnabled && hasDisplayLabel(category))
     .sort((left, right) => left.sortOrder - right.sortOrder)
     .map((category) => ({
       key: category.key,
@@ -243,6 +262,7 @@ export function getTaxonomySubcategoryOptions(
 ): TaxonomySubcategoryOption[] {
   const enabledSubcategories = subcategories
     .filter((subcategory) => subcategory.isEnabled)
+    .filter((subcategory) => hasDisplayLabel(subcategory))
     .filter((subcategory) =>
       categoryKey === "all" ? true : subcategory.categoryKey === categoryKey,
     )

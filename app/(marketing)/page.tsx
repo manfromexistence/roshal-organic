@@ -67,6 +67,12 @@ interface LandingTestimonial {
   image?: string;
 }
 
+interface LandingStat {
+  key: string;
+  label: LocalizedValue;
+  value: string;
+}
+
 const fallbackBanners: LandingHeroBanner[] = [
   {
     title: localizedValue("আজকের সেরা পছন্দ", "Fresh market essentials"),
@@ -444,6 +450,46 @@ function buildTestimonials(section: RoshalMarketingSection | undefined) {
   return fallbackTestimonials;
 }
 
+function buildStats(
+  section: RoshalMarketingSection | undefined,
+  productCount: number,
+  categoryCount: number,
+): LandingStat[] {
+  if (section?.items.length) {
+    return section.items.map((item, index) => ({
+      key: `${section.sectionKey}-${index + 1}`,
+      label:
+        item.label ||
+        item.title ||
+        localizedValue(`Stat ${index + 1}`, `Stat ${index + 1}`),
+      value: item.value || "0",
+    }));
+  }
+
+  return [
+    {
+      key: "customers",
+      label: localizedValue("Happy Customers", "Happy Customers"),
+      value: "10K+",
+    },
+    {
+      key: "products",
+      label: localizedValue("Products", "Products"),
+      value: `${Math.max(productCount, 1)}+`,
+    },
+    {
+      key: "categories",
+      label: localizedValue("Categories", "Categories"),
+      value: `${Math.max(categoryCount, 1)}+`,
+    },
+    {
+      key: "quality",
+      label: localizedValue("Quality Assured", "Quality Assured"),
+      value: "99%",
+    },
+  ];
+}
+
 function sectionTitle(
   section: RoshalMarketingSection | undefined,
   fallback: LocalizedValue,
@@ -451,15 +497,43 @@ function sectionTitle(
   return section?.title.bn || section?.title.en ? section.title : fallback;
 }
 
+const ADMIN_HELPER_DESCRIPTION_MARKERS = [
+  "managed from the dashboard",
+  "show the newest",
+  "reverse-sorted products",
+  "update this section",
+  "highlight the signature brand lines",
+  "you want to surface",
+  "use this block",
+  "this block renders products from the main catalog",
+  "stylesjson",
+  "change the products in this block",
+];
+
+function isAdminHelperDescription(value: LocalizedValue | undefined) {
+  if (!value) {
+    return false;
+  }
+
+  const text = `${value.bn} ${value.en}`.toLowerCase();
+
+  return ADMIN_HELPER_DESCRIPTION_MARKERS.some((marker) =>
+    text.includes(marker),
+  );
+}
+
 function sectionDescription(
   section: RoshalMarketingSection | undefined,
   fallback?: LocalizedValue,
 ) {
-  if (section?.body.bn || section?.body.en) {
+  if (
+    (section?.body.bn || section?.body.en) &&
+    !isAdminHelperDescription(section.body)
+  ) {
     return section.body;
   }
 
-  return fallback;
+  return isAdminHelperDescription(fallback) ? undefined : fallback;
 }
 
 function isSectionEnabled(section: RoshalMarketingSection | undefined) {
@@ -488,6 +562,9 @@ export default async function LandingPage() {
   const brandsSection = sectionsByKey.get("landing-brands");
   const specialOffersSection = sectionsByKey.get("landing-special-offers");
   const freshPicksSection = sectionsByKey.get("landing-fresh-picks");
+  const organicPicksSection = sectionsByKey.get("landing-organic-picks");
+  const seasonalPicksSection = sectionsByKey.get("landing-seasonal-picks");
+  const statsSection = sectionsByKey.get("landing-stats");
   const testimonialsSection = sectionsByKey.get("landing-testimonials");
 
   const heroBanners = buildHeroBanners(
@@ -516,15 +593,31 @@ export default async function LandingPage() {
     limit: 5,
     offset: 4,
   }).map((product, index) => toMarketingProduct(product, language, index + 24));
+  const organicPickCards = selectProducts(products, organicPicksSection, {
+    source: "featured",
+    limit: 5,
+  }).map((product, index) => toMarketingProduct(product, language, index + 34));
+  const seasonalPickCards = selectProducts(products, seasonalPicksSection, {
+    source: "reverse",
+    limit: 5,
+  }).map((product, index) => toMarketingProduct(product, language, index + 44));
+  const stats = buildStats(statsSection, products.length, categories.length);
   const testimonials = buildTestimonials(testimonialsSection);
   const categoriesDescription = sectionDescription(categoriesSection);
   const brandsDescription = sectionDescription(brandsSection);
+  const statsDescription = sectionDescription(statsSection);
   const testimonialsDescription = sectionDescription(testimonialsSection);
   const heroEnabled = isSectionEnabled(heroSection);
   const categoriesEnabled = isSectionEnabled(categoriesSection);
   const topSellersEnabled = isSectionEnabled(topSellersSection);
   const brandsEnabled = isSectionEnabled(brandsSection);
   const specialOffersEnabled = isSectionEnabled(specialOffersSection);
+  const freshPicksEnabled =
+    isSectionEnabled(freshPicksSection) &&
+    !isAdminHelperDescription(freshPicksSection?.body);
+  const organicPicksEnabled = isSectionEnabled(organicPicksSection);
+  const seasonalPicksEnabled = isSectionEnabled(seasonalPicksSection);
+  const statsEnabled = isSectionEnabled(statsSection);
   const testimonialsEnabled = isSectionEnabled(testimonialsSection);
 
   return (
@@ -627,7 +720,7 @@ export default async function LandingPage() {
         />
       ) : null}
 
-      {isSectionEnabled(freshPicksSection) && freshPickCards.length > 0 ? (
+      {freshPicksEnabled && freshPickCards.length > 0 ? (
         <FeaturedProducts
           products={freshPickCards}
           language={language}
@@ -643,6 +736,84 @@ export default async function LandingPage() {
               : localizedValue("সব পণ্য দেখুন", "View All Products")
           }
         />
+      ) : null}
+
+      {organicPicksEnabled && organicPickCards.length > 0 ? (
+        <FeaturedProducts
+          products={organicPickCards}
+          language={language}
+          title={sectionTitle(
+            organicPicksSection,
+            localizedValue("à¦…à¦°à§à¦—à¦¾à¦¨à¦¿à¦• à¦ªà¦£à§à¦¯", "Organic Products"),
+          )}
+          description={sectionDescription(organicPicksSection)}
+          ctaHref={organicPicksSection?.ctaHref || "/products"}
+          ctaLabel={
+            organicPicksSection?.ctaLabel.bn ||
+            organicPicksSection?.ctaLabel.en
+              ? organicPicksSection.ctaLabel
+              : localizedValue("à¦¸à¦¬ à¦…à¦°à§à¦—à¦¾à¦¨à¦¿à¦• à¦ªà¦£à§à¦¯ à¦¦à§‡à¦–à§à¦¨", "View All Organic Products")
+          }
+        />
+      ) : null}
+
+      {seasonalPicksEnabled && seasonalPickCards.length > 0 ? (
+        <FeaturedProducts
+          products={seasonalPickCards}
+          language={language}
+          title={sectionTitle(
+            seasonalPicksSection,
+            localizedValue("à¦®à§Œà¦¸à§à¦®à¦¿ à¦ªà¦£à§à¦¯", "Seasonal Products"),
+          )}
+          description={sectionDescription(seasonalPicksSection)}
+          ctaHref={seasonalPicksSection?.ctaHref || "/products"}
+          ctaLabel={
+            seasonalPicksSection?.ctaLabel.bn ||
+            seasonalPicksSection?.ctaLabel.en
+              ? seasonalPicksSection.ctaLabel
+              : localizedValue("à¦¸à¦¬ à¦®à§Œà¦¸à§à¦®à¦¿ à¦ªà¦£à§à¦¯ à¦¦à§‡à¦–à§à¦¨", "View All Seasonal Products")
+          }
+        />
+      ) : null}
+
+      {statsEnabled && stats.length > 0 ? (
+        <section className="bg-muted/30 py-5 md:py-7">
+          <div className="container mx-auto space-y-4 px-4 sm:px-6 md:px-8">
+            <ScrollReveal>
+              <div className="space-y-2 text-center">
+                <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
+                  {getLocalizedValue(
+                    language,
+                    sectionTitle(
+                      statsSection,
+                      localizedValue("à¦†à¦®à¦¾à¦¦à§‡à¦° à¦ªà¦°à¦¿à¦¸à¦‚à¦–à§à¦¯à¦¾à¦¨", "Our Numbers"),
+                    ),
+                  )}
+                </h2>
+                {statsDescription ? (
+                  <p className="mx-auto max-w-3xl text-sm leading-6 text-muted-foreground md:text-base">
+                    {getLocalizedValue(language, statsDescription)}
+                  </p>
+                ) : null}
+              </div>
+            </ScrollReveal>
+
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {stats.map((stat) => (
+                <ScrollReveal key={stat.key}>
+                  <div className="h-full rounded-md border bg-background p-4 text-center shadow-sm">
+                    <p className="text-3xl font-extrabold tracking-tight text-primary">
+                      {stat.value}
+                    </p>
+                    <p className="mt-1 text-sm font-medium text-foreground">
+                      {getLocalizedValue(language, stat.label)}
+                    </p>
+                  </div>
+                </ScrollReveal>
+              ))}
+            </div>
+          </div>
+        </section>
       ) : null}
 
       {testimonialsEnabled && testimonials.length > 0 ? (

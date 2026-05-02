@@ -1,14 +1,10 @@
 import Link from "next/link";
 import { saveRoshalUserProfile } from "@/actions/admin";
-import { DashboardFormSelect } from "@/components/dashboard/form-select";
 import { LogoutButton } from "@/components/storefront/logout-button";
+import { ProfileSettingsForm } from "@/components/storefront/profile-settings-form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { PhoneInput2 } from "@/components/ui/phone-input-2";
-import { Textarea } from "@/components/ui/textarea";
 import { requireRoshalUser } from "@/lib/store-auth";
 import { getRoshalOrdersForUser } from "@/lib/store-content";
 import { formatBdt, formatOrderDate } from "@/lib/store-format";
@@ -18,7 +14,17 @@ import {
   getRoshalOrderStatusLabel,
 } from "@/lib/store-orders";
 
-export default async function ProfilePage() {
+const profileErrorMessages: Record<string, string> = {
+  "duplicate-email": "Another user already uses this email address.",
+  "invalid-email": "Please enter a valid email address.",
+};
+
+export default async function ProfilePage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ error?: string; saved?: string }>;
+}) {
+  const resolvedSearchParams = searchParams ? await searchParams : {};
   const [locale, sessionUser] = await Promise.all([
     getRoshalLocale(),
     requireRoshalUser(),
@@ -144,69 +150,25 @@ export default async function ProfilePage() {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>
-            {locale === "bn" ? "প্রোফাইল আপডেট" : "Update profile"}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form action={saveRoshalUserProfile} className="space-y-5">
-            <input type="hidden" name="id" value={sessionUser.id} />
-            <input type="hidden" name="redirectTo" value="/profile" />
-            <div className="space-y-2">
-              <Label htmlFor="name">{locale === "bn" ? "নাম" : "Name"}</Label>
-              <Input
-                id="name"
-                name="name"
-                defaultValue={sessionUser.name}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">
-                {locale === "bn" ? "ইমেইল" : "Email"}
-              </Label>
-              <Input id="email" value={sessionUser.email} disabled />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="phone">{locale === "bn" ? "ফোন" : "Phone"}</Label>
-              <PhoneInput2
-                id="phone"
-                name="phone"
-                defaultValue={sessionUser.phone || ""}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>{locale === "bn" ? "ডিফল্ট ভাষা" : "Default language"}</Label>
-              <DashboardFormSelect
-                name="preferredLanguage"
-                defaultValue={
-                  sessionUser.preferredLanguage === "en" ? "en" : "bn"
-                }
-                options={[
-                  { value: "bn", label: "বাংলা" },
-                  { value: "en", label: "English" },
-                ]}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="defaultAddress">
-                {locale === "bn" ? "ডিফল্ট ঠিকানা" : "Default address"}
-              </Label>
-              <Textarea
-                id="defaultAddress"
-                name="defaultAddress"
-                defaultValue={sessionUser.defaultAddress || ""}
-                rows={4}
-              />
-            </div>
-            <Button type="submit">
-              {locale === "bn" ? "সংরক্ষণ করুন" : "Save changes"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+      <ProfileSettingsForm
+        action={saveRoshalUserProfile}
+        error={
+          resolvedSearchParams.error
+            ? profileErrorMessages[resolvedSearchParams.error] ||
+              "Could not save profile. Please try again."
+            : undefined
+        }
+        locale={locale}
+        saved={resolvedSearchParams.saved === "1"}
+        user={{
+          defaultAddress: sessionUser.defaultAddress || "",
+          email: sessionUser.email,
+          id: sessionUser.id,
+          name: sessionUser.name,
+          phone: sessionUser.phone || "",
+          preferredLanguage: sessionUser.preferredLanguage || "bn",
+        }}
+      />
     </div>
   );
 }

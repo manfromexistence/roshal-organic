@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Fixed
+- Fixed public homepage delivery leaks found in browser QA by hiding admin-helper CMS section descriptions, blank taxonomy category cards, and generated placeholder vegetable products from default storefront merchandising.
+- Fixed marked storefront responsive issues from browser QA: reduced sub-header stacking, tightened featured-category card sizing, stopped top-selling images from crowding text at tablet widths, and rounded brand images.
+- Fixed checkout order submission hardening so the client sends a clean item payload, legacy cart item IDs are accepted server-side, and API-provided checkout errors display instead of only the generic incomplete-checkout message.
+- Fixed remaining live-browser homepage leaks by filtering generated `vegetable-*` placeholder products from public storefront product feeds and hiding helper-driven Fresh Picks content.
+- Fixed dashboard product creation feedback by redirecting new products to the All Products list with a visible success message.
+- Fixed product gallery image management so extra product pictures use uploadable image rows instead of raw JSON value fields.
+- Fixed checkout payment method cards to use compact equal-height selector cards on mobile and desktop.
+- Fixed category and subcategory management so dashboard taxonomy rows now have edit and delete actions.
+- Fixed signup field order, mobile District/Thana layout, duplicate-mobile messaging, and 6-character password acceptance for customer registration.
+- Fixed checkout mobile ordering so the order summary appears after delivery/payment forms and cart delivery estimates respect the logged-in profile address.
+- Fixed storefront top-selling product CTA copy from Buy Now to View Details.
+- Fixed the storefront category submenu layer so clicked category menus are not hidden behind the header/page content.
 - Fixed narrow storefront homepage special-offer cards so image/text content stacks safely instead of squeezing and overlapping on smaller screens.
 - Fixed dashboard admin table defaults so product, category, marketing-page, and user listings surface the latest changed records first while keeping storefront merchandising order intact.
 - Fixed payment settings normalization so admin-removed payment providers stay removed instead of being restored from the old fixed default list.
@@ -12,6 +24,13 @@ All notable changes to this project will be documented in this file.
 - Fixed the custom storefront homepage CMS visibility path so disabled homepage sections stay hidden instead of falling back to default section content.
 
 ### Changed
+- Added product size-option management to the dashboard product editor using the existing product feature persistence path.
+- Made dashboard metric cards more colorful and increased the key title/value typography for easier client scanning.
+- Renamed the dashboard System Settings menu to Delivery Setting.
+- Added forgot-password/reset-password storefront flows backed by Better Auth reset links and the existing email providers.
+- Reworked customer profile editing to match signup fields with address, District/Thana dropdowns, optional email display, password-change controls, and visible save/change confirmations.
+- Wired checkout payment account headings to the dashboard Merchant Label fields instead of hardcoded Send Money text.
+- Added a root `UI.md` client-preference playbook for future Roshal/GhorerBazar-style storefront and dashboard decisions.
 - Added Nodemailer SMTP order-notification support as a Resend fallback and always includes `roshalorganic@gmail.com` in new-order notification recipients.
 - Tightened homepage brand logo cards and footer bottom spacing so the marketing homepage uses space better on narrow storefront widths.
 - Added a dynamic dashboard payment-provider editor for adding, removing, enabling, disabling, and reordering checkout payment providers.

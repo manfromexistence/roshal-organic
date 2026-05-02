@@ -39,10 +39,10 @@ export default async function DashboardSystemSettingsPage() {
     <div className="mx-auto w-full max-w-4xl space-y-6 px-6 pt-6 pb-4">
       <div className="min-w-0 space-y-2">
         <p className="text-xs font-semibold uppercase tracking-[0.24em] text-primary">
-          System settings
+          Delivery setting
         </p>
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Store configuration
+          Delivery Setting
         </h1>
         <p className="max-w-3xl text-sm leading-6 text-muted-foreground">
           Manage brand identity, contact channels, checkout delivery charges,
