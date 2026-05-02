@@ -1,0 +1,12 @@
+▲ Next.js 16.2.4 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.102:3000
+- Environments: .env.local, .env
+✓ Ready in 984ms
+
+○ Compiling /forgot-password ...
+ POST /api/password-reset/request 200 in 5.8s (next.js: 4.1s, application-code: 1640ms)
+ GET /forgot-password 200 in 12.9s (next.js: 10.3s, application-code: 2.6s)
+ GET /forgot-password 200 in 13.2s (next.js: 10.2s, application-code: 3.0s)
+ GET /api/auth/get-session 200 in 1708ms (next.js: 1690ms, application-code: 18ms)
+ GET / 200 in 1846ms (next.js: 1297ms, application-code: 549ms)

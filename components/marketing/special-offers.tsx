@@ -32,8 +32,8 @@ export function SpecialOffers({
   description,
 }: SpecialOffersProps) {
   return (
-    <section className="bg-background py-4 md:py-6">
-      <div className="container mx-auto space-y-4 px-4 sm:px-6 md:space-y-5 md:px-8">
+    <section className="bg-background py-4 md:py-5">
+      <div className="container mx-auto space-y-3.5 px-4 sm:px-6 md:px-8">
         <HomeSectionHeading
           title={
             title
@@ -45,14 +45,14 @@ export function SpecialOffers({
           description={description?.[language]}
         />
 
-        <div className="grid grid-cols-1 gap-3.5 md:grid-cols-2 md:gap-4">
+        <div className="grid grid-cols-2 gap-2 sm:gap-3">
           {deals.slice(0, 2).map((deal) => (
             <Card
               key={`${deal.title.en}-${deal.image}`}
               className="min-w-0 overflow-hidden border-border/70 bg-card p-0 shadow-sm"
             >
-              <CardContent className="grid min-w-0 gap-0 p-0 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
-                <div className="relative aspect-[16/10] min-w-0 overflow-hidden border-b border-border/70 bg-muted/40 lg:h-full lg:min-h-[13rem] lg:border-r lg:border-b-0">
+              <CardContent className="grid min-w-0 gap-0 p-0 xl:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+                <div className="relative aspect-[16/10] min-w-0 overflow-hidden border-b border-border/70 bg-muted/40 sm:aspect-[16/9] xl:h-full xl:min-h-[10rem] xl:border-r xl:border-b-0">
                   <Image
                     src={deal.image}
                     alt={deal.title[language]}
@@ -61,16 +61,16 @@ export function SpecialOffers({
                     sizes="(max-width: 768px) 100vw, 50vw"
                   />
                 </div>
-                <div className="flex min-w-0 flex-col justify-between gap-3 p-4 sm:p-5">
-                  <div className="min-w-0 space-y-3">
-                    <div className="inline-flex max-w-full rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+                <div className="flex min-w-0 flex-col justify-between gap-2 p-2.5 sm:gap-2.5 sm:p-3.5 md:p-4">
+                  <div className="min-w-0 space-y-2 sm:space-y-2.5">
+                    <div className="inline-flex max-w-full rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-semibold text-primary sm:px-2.5 sm:py-1 sm:text-xs">
                       {deal.discount}
                     </div>
-                    <div className="min-w-0 space-y-2">
-                      <h3 className="break-words text-lg font-semibold leading-6 tracking-tight sm:text-xl">
+                    <div className="min-w-0 space-y-1 sm:space-y-1.5">
+                      <h3 className="line-clamp-2 break-words text-sm font-semibold leading-4 tracking-tight sm:text-lg sm:leading-6">
                         {deal.title[language]}
                       </h3>
-                      <p className="break-words text-sm leading-6 text-muted-foreground">
+                      <p className="line-clamp-1 break-words text-[11px] leading-4 text-muted-foreground sm:line-clamp-2 sm:text-sm sm:leading-5">
                         {deal.description[language]}
                       </p>
                     </div>
@@ -78,7 +78,7 @@ export function SpecialOffers({
 
                   <Button
                     asChild
-                    className="w-full rounded-full px-5 sm:w-fit"
+                    className="h-7 w-full rounded-full px-3 text-[11px] sm:h-8 sm:w-fit sm:px-4 sm:text-xs"
                     size="sm"
                   >
                     <Link href={deal.href || "/products"}>

@@ -353,6 +353,7 @@ export function CheckoutPageClient({
 
         return {
           productId: item.productId || legacyItem.id || "",
+          optionId: item.optionId,
           quantity: item.quantity,
         };
       });
@@ -460,7 +461,10 @@ export function CheckoutPageClient({
 
             <CardContent className="space-y-4">
               {visibleItems.map((item) => (
-                <div key={item.productId} className="flex gap-3">
+                <div
+                  key={item.selectionKey || item.productId}
+                  className="flex gap-3"
+                >
                   <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-sm border border-border/60 bg-muted/20">
                     <Image
                       src={item.image}
@@ -477,6 +481,13 @@ export function CheckoutPageClient({
                     <p className="mt-1 text-xs text-muted-foreground">
                       {locale === "bn" ? "পরিমাণ" : "Quantity"}: {item.quantity}
                     </p>
+                    {item.optionSize || item.optionAmount ? (
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {[item.optionSize, item.optionAmount]
+                          .filter(Boolean)
+                          .join(" ")}
+                      </p>
+                    ) : null}
                     <p className="mt-1 text-sm font-medium text-foreground">
                       {formatBdt(item.price * item.quantity, locale)}
                     </p>

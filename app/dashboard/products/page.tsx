@@ -1,6 +1,7 @@
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
+import { ProductCreatedToast } from "@/components/dashboard/product-created-toast";
 import { RoshalProductsTable } from "@/components/dashboard/products-table";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,8 @@ export default async function DashboardProductsPage({
   ).length;
   return (
     <div className="min-w-0 space-y-6 px-6 pt-6 pb-4">
+      <ProductCreatedToast enabled={Boolean(resolvedSearchParams.created)} />
+
       <div className="flex min-w-0 flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div className="min-w-0 space-y-2">
           <p className="text-xs uppercase tracking-[0.24em] text-primary">
@@ -55,7 +58,7 @@ export default async function DashboardProductsPage({
         </Alert>
       ) : null}
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <DashboardMetricCard
           title={locale === "bn" ? "মোট পণ্য" : "Products"}
           value={products.length}

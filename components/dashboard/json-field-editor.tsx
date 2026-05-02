@@ -28,6 +28,7 @@ interface JsonFieldEditorProps {
   hint?: string;
   mode?: JsonFieldEditorMode;
   itemLabel?: string;
+  itemPlaceholder?: string;
 }
 
 function safeParseJson(raw: string): unknown {
@@ -384,6 +385,7 @@ export function JsonFieldEditor({
   hint,
   mode = "auto",
   itemLabel = "Item",
+  itemPlaceholder = "Value",
 }: JsonFieldEditorProps) {
   const parsedDefault = useMemo(
     () => safeParseJson(defaultValue),
@@ -600,7 +602,7 @@ export function JsonFieldEditor({
                         ),
                       )
                     }
-                    placeholder="Value"
+                    placeholder={itemPlaceholder}
                   />
                 </div>
                 <Button

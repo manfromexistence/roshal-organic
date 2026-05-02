@@ -1,4 +1,4 @@
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, inArray } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { roshalProductReviews } from "@/lib/schema";
 import { ensureRoshalProductReviewSchema } from "@/lib/store-product-review-schema";
@@ -45,6 +45,7 @@ function mapReview(
     reviewerEmail: row.reviewerEmail || "",
     rating: row.rating,
     comment: row.comment,
+    isPublished: Boolean(row.isPublished),
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
   };
@@ -107,6 +108,90 @@ export async function getRoshalProductReviewBundle(
   }
 }
 
+export async function getRoshalProductReviews(): Promise<
+  RoshalProductReview[]
+> {
+  await ensureRoshalProductReviewSchema();
+
+  try {
+    const rows = await db
+      .select()
+      .from(roshalProductReviews)
+      .orderBy(desc(roshalProductReviews.createdAt));
+
+    return rows.map(mapReview);
+  } catch {
+    return [];
+  }
+}
+
+export async function getPublishedRoshalProductReviews(limitCount = 6) {
+  await ensureRoshalProductReviewSchema();
+
+  try {
+    const rows = await db
+      .select()
+      .from(roshalProductReviews)
+      .where(eq(roshalProductReviews.isPublished, true))
+      .orderBy(desc(roshalProductReviews.createdAt))
+      .limit(Math.max(1, limitCount));
+
+    return rows.map(mapReview);
+  } catch {
+    return [];
+  }
+}
+
+export async function getRoshalProductReviewSummaries(productIds: string[]) {
+  await ensureRoshalProductReviewSchema();
+
+  const uniqueProductIds = Array.from(new Set(productIds.filter(Boolean)));
+  if (uniqueProductIds.length === 0) {
+    return new Map<
+      string,
+      Pick<RoshalProductReviewBundle, "averageRating" | "reviewCount">
+    >();
+  }
+
+  try {
+    const rows = await db
+      .select()
+      .from(roshalProductReviews)
+      .where(
+        and(
+          inArray(roshalProductReviews.productId, uniqueProductIds),
+          eq(roshalProductReviews.isPublished, true),
+        ),
+      );
+    const reviewsByProduct = new Map<string, RoshalProductReview[]>();
+
+    for (const row of rows) {
+      const review = mapReview(row);
+      const productReviews = reviewsByProduct.get(review.productId) || [];
+      productReviews.push(review);
+      reviewsByProduct.set(review.productId, productReviews);
+    }
+
+    return new Map(
+      uniqueProductIds.map((productId) => {
+        const bundle = buildReviewBundle(reviewsByProduct.get(productId) || []);
+        return [
+          productId,
+          {
+            averageRating: bundle.averageRating,
+            reviewCount: bundle.reviewCount,
+          },
+        ] as const;
+      }),
+    );
+  } catch {
+    return new Map<
+      string,
+      Pick<RoshalProductReviewBundle, "averageRating" | "reviewCount">
+    >();
+  }
+}
+
 export async function createRoshalProductReview(input: {
   productId: string;
   userId?: string | null;
@@ -114,6 +199,7 @@ export async function createRoshalProductReview(input: {
   reviewerEmail?: string | null;
   rating: number;
   comment: string;
+  isPublished?: boolean;
 }) {
   await ensureRoshalProductReviewSchema();
 
@@ -153,7 +239,7 @@ export async function createRoshalProductReview(input: {
     reviewerEmail: input.reviewerEmail?.trim() || null,
     rating,
     comment,
-    isPublished: true,
+    isPublished: input.isPublished !== false,
     createdAt: timestamp,
     updatedAt: timestamp,
   });
@@ -165,4 +251,43 @@ export async function createRoshalProductReview(input: {
     .limit(1);
 
   return createdReview ? mapReview(createdReview) : null;
+}
+
+export async function updateRoshalProductReviewPublication(
+  id: string,
+  isPublished: boolean,
+) {
+  await ensureRoshalProductReviewSchema();
+
+  const reviewId = id.trim();
+  if (!reviewId) {
+    throw new RoshalProductReviewError(
+      "invalid-review",
+      "Review details are missing.",
+    );
+  }
+
+  await db
+    .update(roshalProductReviews)
+    .set({
+      isPublished,
+      updatedAt: new Date(),
+    })
+    .where(eq(roshalProductReviews.id, reviewId));
+}
+
+export async function deleteRoshalProductReview(id: string) {
+  await ensureRoshalProductReviewSchema();
+
+  const reviewId = id.trim();
+  if (!reviewId) {
+    throw new RoshalProductReviewError(
+      "invalid-review",
+      "Review details are missing.",
+    );
+  }
+
+  await db
+    .delete(roshalProductReviews)
+    .where(eq(roshalProductReviews.id, reviewId));
 }

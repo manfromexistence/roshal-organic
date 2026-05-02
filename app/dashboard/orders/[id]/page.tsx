@@ -85,13 +85,19 @@ export default async function DashboardOrderDetailsPage({
           <CardContent className="space-y-6">
             {order.items.map((item) => (
               <div
-                key={`${order.id}-${item.productId}`}
+                key={`${order.id}-${item.productId}-${item.optionId || "default"}`}
                 className="flex min-w-0 flex-col gap-3 rounded-xl border border-border/70 p-4 sm:flex-row sm:items-center sm:justify-between"
               >
                 <div className="min-w-0">
                   <p className="break-words font-medium">
                     {locale === "bn" ? item.name.bn : item.name.en}
                   </p>
+                  {formatOrderItemOption(item) ? (
+                    <p className="text-sm text-muted-foreground">
+                      {locale === "bn" ? "অপশন" : "Option"}:{" "}
+                      {formatOrderItemOption(item)}
+                    </p>
+                  ) : null}
                   <p className="text-sm text-muted-foreground">
                     {locale === "bn" ? "পরিমাণ" : "Quantity"}: {item.quantity}
                   </p>
@@ -316,6 +322,13 @@ function InfoRow({ label, value }: { label: string; value: string }) {
       </strong>
     </div>
   );
+}
+
+function formatOrderItemOption(item: {
+  optionAmount?: string;
+  optionSize?: string;
+}) {
+  return [item.optionSize, item.optionAmount].filter(Boolean).join(" ");
 }
 
 function getOrderStatusErrorMessage(

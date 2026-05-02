@@ -16,6 +16,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import {
   buildDashboardPrimaryNavigation,
@@ -27,8 +28,12 @@ import {
 import type { RoshalMarketingPage } from "@/lib/store-types";
 
 const SCROLL_KEY = "sidebar-scroll";
-const HIDDEN_SIDEBAR_URLS = new Set(["/dashboard/theme"]);
-const HIDDEN_SIDEBAR_TITLES = new Set(["Storefront Theme"]);
+const HIDDEN_SIDEBAR_URLS = new Set([
+  "/dashboard/theme",
+  "/dashboard/payments",
+  "/dashboard/settings/payment",
+]);
+const HIDDEN_SIDEBAR_TITLES = new Set(["Storefront Theme", "Payments"]);
 
 interface AppSidebarProps
   extends Omit<React.ComponentProps<typeof Sidebar>, "navInitialState"> {
@@ -82,6 +87,7 @@ export function AppSidebar({
 }: AppSidebarProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [scrollRestored, setScrollRestored] = useState(false);
+  const { isMobile, setOpenMobile } = useSidebar();
 
   useEffect(() => {
     const element = scrollRef.current;
@@ -114,6 +120,11 @@ export function AppSidebar({
       ? buildDashboardPrimaryNavigation(marketingPages)
       : dashboardPrimaryNavigation,
   );
+  const closeMobileSidebar = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
 
   return (
     <Sidebar {...sidebarProps} className="dashboard-primary-sidebar">
@@ -125,7 +136,7 @@ export function AppSidebar({
               asChild
               className="h-14 rounded-md border border-sidebar-border/80 bg-sidebar-accent/70 px-3 shadow-sm transition-all duration-200 hover:bg-sidebar-accent"
             >
-              <Link href="/dashboard">
+              <Link href="/dashboard" onClick={closeMobileSidebar}>
                 <div className="flex aspect-square size-10 items-center justify-center overflow-hidden rounded-md border border-sidebar-primary/20 bg-sidebar-primary text-sidebar-primary-foreground shadow-sm">
                   <Image
                     src="/logo.png"

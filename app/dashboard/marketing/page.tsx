@@ -7,6 +7,7 @@ import {
   Plus,
 } from "lucide-react";
 import Link from "next/link";
+import { CmsSaveToast } from "@/components/dashboard/cms-save-toast";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { HomepageControlCenter } from "@/components/dashboard/homepage-control-center";
 import { RoshalPagesTable } from "@/components/dashboard/pages-table";
@@ -34,7 +35,12 @@ function storefrontPathFromSlug(slug: string) {
   return slug === "home" ? "/" : `/${slug}`;
 }
 
-export default async function DashboardMarketingPage() {
+export default async function DashboardMarketingPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ saved?: string }>;
+}) {
+  const resolvedSearchParams = searchParams ? await searchParams : {};
   const [locale, pages] = await Promise.all([
     getRoshalLocale(),
     getRoshalPages(),
@@ -69,6 +75,7 @@ export default async function DashboardMarketingPage() {
 
   return (
     <div className="mx-auto min-w-0 max-w-6xl space-y-5 overflow-x-clip px-4 pt-4 pb-4 sm:px-6 md:space-y-6 md:pt-6 md:pb-4">
+      <CmsSaveToast status={resolvedSearchParams.saved} />
       <div className="flex min-w-0 flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div className="min-w-0 space-y-2">
           <p className="text-xs font-semibold uppercase tracking-[0.24em] text-primary">
@@ -98,7 +105,7 @@ export default async function DashboardMarketingPage() {
         </div>
       </div>
 
-      <div className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid min-w-0 grid-cols-2 gap-3 lg:grid-cols-4">
         <DashboardMetricCard
           title="Marketing pages"
           value={visibleDashboardPages.length}
@@ -179,7 +186,7 @@ export default async function DashboardMarketingPage() {
               Fast access to the most important public marketing pages.
             </CardDescription>
           </CardHeader>
-          <CardContent className="grid min-w-0 gap-3 sm:grid-cols-2">
+          <CardContent className="grid min-w-0 grid-cols-2 gap-3">
             {visibleDashboardPages.map((page) => (
               <div
                 key={page.id}

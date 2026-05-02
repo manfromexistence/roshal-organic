@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { saveRoshalPage, saveRoshalSection } from "@/actions/admin";
+import { CmsSaveToast } from "@/components/dashboard/cms-save-toast";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
 import { JsonFieldEditor } from "@/components/dashboard/json-field-editor";
@@ -92,6 +93,7 @@ export default async function DashboardPageEditorRoute({
   params: Promise<{ id: string }>;
   searchParams?: Promise<{
     error?: string;
+    saved?: string;
     slug?: string;
     sectionKey?: string;
   }>;
@@ -103,6 +105,7 @@ export default async function DashboardPageEditorRoute({
       ? searchParams
       : Promise.resolve<{
           error?: string;
+          saved?: string;
           slug?: string;
           sectionKey?: string;
         }>({}),
@@ -127,6 +130,7 @@ export default async function DashboardPageEditorRoute({
 
   return (
     <div className="min-w-0 space-y-6 px-6 pt-6 pb-4">
+      <CmsSaveToast status={resolvedSearchParams.saved} />
       <div className="flex min-w-0 flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div className="min-w-0 space-y-2">
           <p className="text-xs uppercase tracking-[0.24em] text-primary">
@@ -353,7 +357,7 @@ export default async function DashboardPageEditorRoute({
                     <input
                       type="hidden"
                       name="redirectTo"
-                      value={`/dashboard/pages/${page.id}`}
+                      value={`/dashboard/pages/${page.id}?saved=section#section-${section.sectionKey}`}
                     />
                     <SectionFields
                       locale={locale}
@@ -412,7 +416,7 @@ export default async function DashboardPageEditorRoute({
                 <input
                   type="hidden"
                   name="redirectTo"
-                  value={`/dashboard/pages/${page.id}`}
+                  value={`/dashboard/pages/${page.id}?saved=section-created`}
                 />
                 <SectionFields
                   locale={locale}

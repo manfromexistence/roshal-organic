@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  ChevronDown,
   Grid3X3,
   Heart,
   LayoutDashboard,
@@ -33,14 +34,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Sheet,
@@ -500,112 +493,143 @@ export function StorefrontHeader({
         )}
       >
         <div className="container mx-auto min-w-0 overflow-x-auto px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <NavigationMenu
-            viewport={false}
-            className="flex w-max max-w-none flex-none justify-start"
-          >
-            <NavigationMenuList className="w-max min-w-full flex-nowrap items-center justify-start gap-1 py-1.5">
-              {visibleDesktopTaxonomy.map((group) => {
-                const triggerActive =
-                  pathname === "/products" && activeCategory === group.key;
+          <div className="flex w-max min-w-full flex-nowrap items-center justify-start gap-1 py-1.5">
+            {visibleDesktopTaxonomy.map((group) => {
+              const groupLabel = getLocalizedValue(locale, group.label);
+              const triggerActive =
+                pathname === "/products" && activeCategory === group.key;
 
-                return (
-                  <NavigationMenuItem
-                    key={group.key}
-                    className="flex shrink-0 items-center"
-                  >
-                    <NavigationMenuTrigger
+              return (
+                <DropdownMenu key={group.key}>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="ghost"
                       className={cn(
-                        "relative z-[1] h-10 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-primary-foreground/90 opacity-100 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground focus:bg-primary-foreground/10 focus:text-primary-foreground data-[state=open]:z-[61] data-[state=open]:bg-background data-[state=open]:text-primary data-[state=open]:shadow-sm data-[state=open]:opacity-100",
+                        "group h-10 shrink-0 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-primary-foreground/90 opacity-100 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground focus:bg-primary-foreground/10 focus:text-primary-foreground data-[state=open]:bg-background data-[state=open]:text-primary data-[state=open]:shadow-sm data-[state=open]:opacity-100",
                         triggerActive &&
                           "bg-primary-foreground/10 text-primary-foreground",
                       )}
                     >
-                      {getLocalizedValue(locale, group.label)}
-                    </NavigationMenuTrigger>
-                    <NavigationMenuContent className="absolute left-0 top-full z-[60] min-w-[18rem] rounded-sm border border-border/70 bg-background p-2 shadow-xl sm:min-w-[20rem] md:min-w-[24rem]">
-                      <div className="grid gap-1">
-                        {group.children.map((child) => (
-                          <NavigationMenuLink
-                            key={child.key}
-                            asChild
-                            active={
-                              pathname === "/products" &&
-                              activeCategory === group.key &&
-                              activeSubcategory === child.key
-                            }
-                            className="rounded-sm px-3 py-2.5 text-sm font-medium whitespace-normal break-words text-foreground transition-colors hover:bg-muted hover:text-foreground data-[active=true]:bg-primary/10 data-[active=true]:text-primary [overflow-wrap:anywhere]"
-                          >
-                            <Link href={child.href}>
-                              {getLocalizedValue(locale, child.label)}
-                            </Link>
-                          </NavigationMenuLink>
-                        ))}
-                      </div>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-                );
-              })}
+                      <span>{groupLabel}</span>
+                      <ChevronDown className="size-3 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="start"
+                    sideOffset={8}
+                    className="z-[90] w-[min(20rem,calc(100vw-2rem))] rounded-sm border-border/70 p-2 shadow-xl"
+                  >
+                    <DropdownMenuLabel className="break-words px-2 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground [overflow-wrap:anywhere]">
+                      {groupLabel}
+                    </DropdownMenuLabel>
+                    <DropdownMenuItem
+                      asChild
+                      className="h-auto cursor-pointer whitespace-normal break-words px-2.5 py-2 text-sm font-medium text-primary [overflow-wrap:anywhere]"
+                    >
+                      <Link href={group.href}>
+                        {locale === "bn"
+                          ? `${groupLabel} দেখুন`
+                          : `Browse ${groupLabel}`}
+                      </Link>
+                    </DropdownMenuItem>
+                    {group.children.length > 0 ? (
+                      <DropdownMenuSeparator />
+                    ) : null}
+                    {group.children.map((child) => {
+                      const childActive =
+                        pathname === "/products" &&
+                        activeCategory === group.key &&
+                        activeSubcategory === child.key;
 
-              {overflowDesktopTaxonomy.length > 0 ? (
-                <NavigationMenuItem className="z-[62] flex shrink-0 items-center">
-                  <NavigationMenuTrigger
+                      return (
+                        <DropdownMenuItem
+                          key={child.key}
+                          asChild
+                          className={cn(
+                            "h-auto cursor-pointer whitespace-normal break-words px-2.5 py-2 text-sm font-medium [overflow-wrap:anywhere]",
+                            childActive &&
+                              "bg-primary/10 text-primary focus:bg-primary/10 focus:text-primary",
+                          )}
+                        >
+                          <Link href={child.href}>
+                            {getLocalizedValue(locale, child.label)}
+                          </Link>
+                        </DropdownMenuItem>
+                      );
+                    })}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              );
+            })}
+
+            {overflowDesktopTaxonomy.length > 0 ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
                     className={cn(
-                      "relative z-[1] h-10 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-primary-foreground/90 opacity-100 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground focus:bg-primary-foreground/10 focus:text-primary-foreground data-[state=open]:z-[63] data-[state=open]:bg-background data-[state=open]:text-primary data-[state=open]:shadow-sm",
+                      "group h-10 shrink-0 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-primary-foreground/90 opacity-100 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground focus:bg-primary-foreground/10 focus:text-primary-foreground data-[state=open]:bg-background data-[state=open]:text-primary data-[state=open]:shadow-sm",
                       pathname === "/products" &&
                         overflowCategoryKeys.has(activeCategory) &&
                         "bg-primary-foreground/10 text-primary-foreground",
                     )}
                   >
                     {locale === "bn" ? "আরও" : "More"}
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent className="absolute top-full right-0 left-auto z-[62] min-w-[18rem] max-w-[min(24rem,calc(100vw-2rem))] rounded-sm border border-border/70 bg-background p-3 shadow-xl sm:min-w-[22rem] md:min-w-[28rem] md:max-w-[calc(100vw-7rem)]">
-                    <Accordion type="multiple" className="w-full space-y-2">
-                      {overflowDesktopTaxonomy.map((group) => (
-                        <AccordionItem
-                          key={group.key}
-                          value={group.key}
-                          className="rounded-sm border border-border/60 px-3"
-                        >
-                          <AccordionTrigger className="py-3 text-left text-sm font-semibold whitespace-normal break-words text-foreground hover:no-underline [overflow-wrap:anywhere]">
-                            {getLocalizedValue(locale, group.label)}
-                          </AccordionTrigger>
-                          <AccordionContent className="space-y-1 pb-3">
-                            <Link
-                              href={group.href}
-                              className="block rounded-sm px-3 py-2 text-sm font-medium break-words text-primary transition-colors hover:bg-primary/10 [overflow-wrap:anywhere]"
-                            >
-                              {locale === "bn"
-                                ? `${getLocalizedValue(locale, group.label)} দেখুন`
-                                : `Browse ${getLocalizedValue(locale, group.label)}`}
-                            </Link>
-                            <div className="grid gap-1">
-                              {group.children.map((child) => (
-                                <NavigationMenuLink
-                                  key={child.key}
-                                  asChild
-                                  active={
-                                    pathname === "/products" &&
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  sideOffset={8}
+                  className="z-[90] max-h-[min(70vh,34rem)] w-[min(24rem,calc(100vw-2rem))] rounded-sm border-border/70 p-2 shadow-xl"
+                >
+                  <Accordion type="multiple" className="w-full space-y-2">
+                    {overflowDesktopTaxonomy.map((group) => (
+                      <AccordionItem
+                        key={group.key}
+                        value={group.key}
+                        className="rounded-sm border border-border/60 px-3"
+                      >
+                        <AccordionTrigger className="py-3 text-left text-sm font-semibold whitespace-normal break-words text-foreground hover:no-underline [overflow-wrap:anywhere]">
+                          {getLocalizedValue(locale, group.label)}
+                        </AccordionTrigger>
+                        <AccordionContent className="space-y-1 pb-3">
+                          <Link
+                            href={group.href}
+                            className="block rounded-sm px-3 py-2 text-sm font-medium break-words text-primary transition-colors hover:bg-primary/10 [overflow-wrap:anywhere]"
+                          >
+                            {locale === "bn"
+                              ? `${getLocalizedValue(locale, group.label)} দেখুন`
+                              : `Browse ${getLocalizedValue(locale, group.label)}`}
+                          </Link>
+                          <div className="grid gap-1">
+                            {group.children.map((child) => (
+                              <DropdownMenuItem
+                                key={child.key}
+                                asChild
+                                className={cn(
+                                  "h-auto cursor-pointer whitespace-normal break-words px-2.5 py-2 text-sm font-medium [overflow-wrap:anywhere]",
+                                  pathname === "/products" &&
                                     activeCategory === group.key &&
-                                    activeSubcategory === child.key
-                                  }
-                                  className="rounded-sm px-3 py-2 text-sm font-medium whitespace-normal break-words text-foreground transition-colors hover:bg-muted data-[active=true]:bg-primary/10 data-[active=true]:text-primary [overflow-wrap:anywhere]"
-                                >
-                                  <Link href={child.href}>
-                                    {getLocalizedValue(locale, child.label)}
-                                  </Link>
-                                </NavigationMenuLink>
-                              ))}
-                            </div>
-                          </AccordionContent>
-                        </AccordionItem>
-                      ))}
-                    </Accordion>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-              ) : null}
-            </NavigationMenuList>
-          </NavigationMenu>
+                                    activeSubcategory === child.key &&
+                                    "bg-primary/10 text-primary focus:bg-primary/10 focus:text-primary",
+                                )}
+                              >
+                                <Link href={child.href}>
+                                  {getLocalizedValue(locale, child.label)}
+                                </Link>
+                              </DropdownMenuItem>
+                            ))}
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : null}
+          </div>
         </div>
       </div>
 

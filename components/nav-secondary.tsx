@@ -11,6 +11,7 @@ import {
   Settings,
   Shapes,
   ShoppingCart,
+  Star,
   Users,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -29,6 +30,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import type { DashboardNavIconKey } from "@/lib/dashboard-navigation";
 
@@ -45,6 +47,7 @@ const NAV_ICONS: Record<DashboardNavIconKey, LucideIcon> = {
   categories: Shapes,
   orders: ShoppingCart,
   payments: CreditCard,
+  reviews: Star,
   users: Users,
   pages: FileText,
   settings: Settings,
@@ -75,6 +78,7 @@ export function NavSecondary({
   items: NavSecondaryItem[];
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   const pathname = usePathname();
+  const { isMobile, setOpenMobile } = useSidebar();
   const storageKey = "nav-secondary-expanded";
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(
     {},
@@ -104,6 +108,12 @@ export function NavSecondary({
       }
       return next;
     });
+  };
+
+  const closeMobileSidebar = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
   };
 
   return (
@@ -140,7 +150,7 @@ export function NavSecondary({
                     {item.items.map((subItem) => (
                       <SidebarMenuSubItem key={subItem.title}>
                         <SidebarMenuSubButton asChild size="sm">
-                          <a href={subItem.url}>
+                          <a href={subItem.url} onClick={closeMobileSidebar}>
                             <span>{subItem.title}</span>
                           </a>
                         </SidebarMenuSubButton>
@@ -158,7 +168,7 @@ export function NavSecondary({
                 isActive={isDashboardUrlActive(pathname, item.url)}
                 className="h-10 cursor-pointer px-3 font-medium transition-colors duration-150 data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:shadow-sm"
               >
-                <a href={item.url}>
+                <a href={item.url} onClick={closeMobileSidebar}>
                   <NavIcon icon={item.icon} />
                   <span>{item.title}</span>
                 </a>

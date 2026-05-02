@@ -19,6 +19,22 @@
 | 17 | Track Order | Login sarao order track korte parbe public. | | | 🔶 Pending | Order number diye sudhu public Track korte parbe public view te. |
 | 18 | Payment | 1. User order deoar somoy Payment method select korbe Ghorerbazar system a, bortomane card space beshi khay.<br>2. Home Delivery naki Office delivery ta Redial system a jekono 1 ta select kora jabe. | | | 🔶 Pending | Checkout page aro easy & simple korte hobe. see ghorerbazar for demo.<br>r Screenshot proof deoar system rakhar dorkar nei. |
 
+## 2026-05-02 Live storefront comment follow-up
+
+- [x] Stop browser testing for the current admin-error pass and fix source-level CMS/product editor crashes first.
+- [x] Add runtime schema guards for product, CMS page/section, and payment settings tables so production admin saves do not crash on missing tables or newer columns.
+- [x] Comment out the dashboard Payment sidebar entry and move the real payment-provider editor into Delivery Setting.
+- [x] Add a sidebar-level hidden-item guard for Payments and Payment Settings so stale nav sources cannot show them.
+- [x] Add CMS dashboard toast feedback for Marketing Center, All Pages, Home, About, Contact, Terms & Conditions, and Privacy Policy saves.
+
+- [x] Replace clipped sub-header category trigger surfaces with portaled dropdown menus that show subcategory links on smaller screens.
+- [x] Reduce smaller-screen storefront footer bottom padding while keeping bottom-navigation clearance.
+- [x] Shrink Featured Categories cards and keep Our Numbers metric cards at two columns from `sm`.
+- [x] Restore more footer bottom padding on smaller screens after the latest mobile footer feedback.
+- [x] Compact Special Deals and Our Numbers cards and keep both sections at two columns from narrow mobile widths upward.
+- [x] Make Brands cards compact no-padding image-cover tiles and remove the wide empty card feel.
+- [x] Recheck checkout/payment/taxonomy/image-upload surfaces and fix payment-provider clearing, guide-image upload, and blank taxonomy labels.
+
 ## 2026-05-02 Production browser delivery QA
 
 - [x] Browser-test the live production storefront homepage and category submenu using the in-app browser.
@@ -28,6 +44,14 @@
 - [x] Fix marked homepage responsive issues for sub-header z-index, featured-category image/text sizing, top-selling card image/text balance, and brand image radius.
 - [x] Harden checkout submission payloads and server item parsing so older cart entries do not trigger the generic incomplete-checkout error.
 - [x] Filter generated `vegetable-*` placeholder products and helper-driven Fresh Picks content from public storefront feeds.
+
+## 2026-05-02 Dashboard CMS and overview feedback
+
+- [x] Wire Organic Products, Seasonal Products, and Our Numbers dashboard Home sections into the public Home page renderer.
+- [x] Keep those sections controlled by the existing dashboard section enable/disable switches.
+- [x] Confirm new-order emails are already sent through the shared order creation path to `roshalorganic@gmail.com` plus configured/admin recipients when an email provider is configured.
+- [x] Confirm the order number generator uses the `RO-YYMMDD123` Bangladesh-date sequence format.
+- [x] Remove the duplicate desktop overview card icon and the Marketing pages/New product overview buttons.
 
 ## 2026-05-02 Client UI preference playbook
 
@@ -41,12 +65,12 @@
 - [x] Add email password-reset flow.
 - [x] Improve category submenu visibility, rename Top Selling CTA to View Details, use profile address for cart delivery estimates, and show the requested duplicate-mobile warning.
 
-## 2026-05-02 Dashboard product and taxonomy fixes from roshal.md
+## 2026-05-02 Dashboard product and taxonomy fixes from roshal.md / roshal (1).md
 
 - [x] Make dashboard metric cards more colorful and enlarge the main card text.
-- [x] Replace raw gallery JSON editing in product create/edit with uploadable extra-image rows.
-- [x] Add product size-option input during product create/edit without requiring a schema migration.
-- [x] Redirect newly created products to All Products with a visible success message.
+- [x] Replace raw gallery JSON editing in product create/edit with visible uploadable extra-image rows.
+- [x] Add visible product size-option input during product create/edit without requiring a schema migration.
+- [x] Redirect newly created products to All Products with a visible success alert and toast popup.
 - [x] Compact checkout payment method cards and keep mobile checkout order as Delivery, Payment, then Order Summary.
 - [x] Rename the dashboard System Settings menu to Delivery Setting.
 - [x] Add category and subcategory edit/delete actions and edit pages.
@@ -54,6 +78,19 @@
 ## 2026-05-02 Latest admin sorting, homepage responsive, and order email
 
 - [x] Keep dashboard products, categories, marketing pages, and users latest-first in their admin tables without changing storefront merchandising order.
+
+## 2026-05-02 Dashboard product review management
+
+- [x] Add a dashboard Reviews page for creating, publishing, hiding, and deleting product reviews.
+- [x] Wire dashboard review actions into the existing product review database table and storefront product review data.
+- [x] Stop homepage product cards from using generated fake rating and review-count values.
+- [x] Replace homepage testimonial fallback rendering with published product-review content only.
+- [x] Close the dashboard mobile sidebar when a real navigation item is clicked and show Payment Setting under Delivery Setting.
+
+## 2026-05-02 Brevo email provider
+
+- [x] Add Brevo transactional email API support before Resend/SMTP fallback for order and password-reset emails.
+- [x] Document Brevo email env variables without committing real secrets.
 - [x] Tighten homepage special-offer card breakpoints, brand logo-card padding, and footer bottom spacing for narrow storefront widths.
 - [x] Add Nodemailer SMTP fallback for new-order notifications and always include `roshalorganic@gmail.com` as a recipient.
 
@@ -61,6 +98,14 @@
 
 - [x] Match shared dashboard top metric cards to the compact dashboard overview card sizing.
 - [x] Align top metric-card grid breakpoints so dashboard pages show two cards per row from the same width as the overview page.
+
+## 2026-05-02 CMS toast and global font polish
+
+- [x] Dedupe dashboard CMS save toasts so one save action shows one toast.
+- [x] Replace the rough dashboard/card font stack with a global Inter plus Noto Sans Bengali UI font stack.
+- [x] Change forgot-password feedback so missing emails show an account-not-found error instead of a generic reset-link sent message.
+- [x] Place login, forgot-password, and reset-password auth cards with compact `pt-6 pb-4` spacing and no inherited tall bottom area.
+- [x] Force dashboard metric and mobile fallback card grids to stay two columns even below the Tailwind `sm` breakpoint.
 - [x] Compact dashboard table shells and mobile fallback cards across the main dashboard data pages.
 - [x] Filter the Marketing dashboard page shortcuts and Marketing pages table to the same simplified client-handoff pages as the sidebar.
 
@@ -310,6 +355,15 @@
 - [x] Replace Order Management native date inputs with a shadcn-style date picker input and keep the range filter valid.
 - [x] Make dashboard overview cards smaller, clickable, and backed by consistent live product/order/page/user data.
 - [x] Tighten shared dashboard cards and limit Marketing sidebar page links to Home, About, Contact, Terms & Conditions, and Privacy Policy.
+
+## 2026-05-02 Product options and email delivery QA
+
+- [x] Add a real purchase-option schema path for product size/amount variants and create the missing database column automatically.
+- [x] Replace raw dashboard purchase-option JSON editing with compact row inputs for size, amount, price, compare-at price, stock, and default option.
+- [x] Carry selected product options through product details, cart, checkout payloads, order records, order views, and new-order email line items.
+- [x] Register Better Auth's verification table and create the missing table so forgot-password reset links can be generated.
+- [x] Configure the provided Resend key in local `.env.local` and Vercel production env without committing the secret.
+- [x] Browser-test forgot-password and checkout order creation; Resend delivery to the client inbox remains blocked by Resend sandbox/domain verification.
 
 ## 2026-05-01 Dashboard sidebar and bottom padding cleanup
 

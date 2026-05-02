@@ -17,6 +17,10 @@ import {
 import { formatBdt } from "@/lib/store-format";
 import { getRoshalLocale } from "@/lib/store-i18n";
 import { getLocalizedValue, localizedValue } from "@/lib/store-locale";
+import {
+  getPublishedRoshalProductReviews,
+  getRoshalProductReviewSummaries,
+} from "@/lib/store-product-reviews";
 import { buildHomepageCategories } from "@/lib/store-taxonomy";
 import { getRoshalTaxonomy } from "@/lib/store-taxonomy-content";
 import type {
@@ -24,6 +28,7 @@ import type {
   RoshalMarketingPage,
   RoshalMarketingSection,
   RoshalProduct,
+  RoshalProductReview,
   RoshalTaxonomyBundle,
 } from "@/lib/store-types";
 
@@ -150,7 +155,7 @@ const fallbackBrands: LandingBrand[] = [
   },
 ];
 
-const fallbackTestimonials: LandingTestimonial[] = [
+const _fallbackTestimonials: LandingTestimonial[] = [
   {
     key: "tumpa",
     quote: localizedValue(
@@ -349,7 +354,7 @@ function selectProducts(
 function toMarketingProduct(
   product: RoshalProduct,
   locale: Language,
-  seed: number,
+  reviewSummary?: { averageRating: number; reviewCount: number },
 ): MarketingProductCard {
   const discountPercentage = product.compareAtPrice
     ? Math.max(
@@ -370,8 +375,10 @@ function toMarketingProduct(
     originalPrice: product.compareAtPrice
       ? formatBdt(product.compareAtPrice, locale)
       : undefined,
-    rating: Number((4.4 + (seed % 5) * 0.1).toFixed(1)),
-    reviews: 40 + seed * 17,
+    rating: reviewSummary?.reviewCount
+      ? reviewSummary.averageRating
+      : undefined,
+    reviews: reviewSummary?.reviewCount || undefined,
     badge:
       product.badge ||
       (discountPercentage > 0 ? `${discountPercentage}% OFF` : undefined),
@@ -426,28 +433,20 @@ function buildBrands(
   return fallbackBrands;
 }
 
-function buildTestimonials(section: RoshalMarketingSection | undefined) {
-  if (section?.items.length) {
-    return section.items.map((item, index) => ({
-      key: `${section.sectionKey}-${index + 1}`,
-      quote:
-        item.body ||
-        item.title ||
-        fallbackTestimonials[index % fallbackTestimonials.length].quote,
-      name:
-        item.label?.en ||
-        item.label?.bn ||
-        fallbackTestimonials[index % fallbackTestimonials.length].name,
-      role:
-        item.title ||
-        fallbackTestimonials[index % fallbackTestimonials.length].role,
-      image:
-        item.imageUrl ||
-        fallbackTestimonials[index % fallbackTestimonials.length].image,
-    }));
-  }
-
-  return fallbackTestimonials;
+function buildTestimonials(
+  _section: RoshalMarketingSection | undefined,
+  reviews: RoshalProductReview[],
+  productNameById: Map<string, string>,
+) {
+  return reviews.map((review) => ({
+    key: review.id,
+    quote: localizedValue(review.comment, review.comment),
+    name: review.reviewerName,
+    role: localizedValue(
+      `${productNameById.get(review.productId) || "Product"} - ${review.rating}/5`,
+      `${productNameById.get(review.productId) || "Product"} - ${review.rating}/5`,
+    ),
+  }));
 }
 
 function buildStats(
@@ -541,16 +540,32 @@ function isSectionEnabled(section: RoshalMarketingSection | undefined) {
 }
 
 export default async function LandingPage() {
-  const [locale, siteSettings, pageBundle, products, taxonomy] =
-    await Promise.all([
-      getRoshalLocale(),
-      getRoshalSiteSettings(),
-      getRoshalPageBundle("home", { includeDisabled: true }),
-      getRoshalProducts(),
-      getRoshalTaxonomy(),
-    ]);
+  const [
+    locale,
+    siteSettings,
+    pageBundle,
+    products,
+    taxonomy,
+    publishedProductReviews,
+  ] = await Promise.all([
+    getRoshalLocale(),
+    getRoshalSiteSettings(),
+    getRoshalPageBundle("home", { includeDisabled: true }),
+    getRoshalProducts(),
+    getRoshalTaxonomy(),
+    getPublishedRoshalProductReviews(6),
+  ]);
 
   const language = locale as Language;
+  const productNameById = new Map(
+    products.map((product) => [
+      product.id,
+      getLocalizedValue(language, product.name),
+    ]),
+  );
+  const reviewSummaries = await getRoshalProductReviewSummaries(
+    products.map((product) => product.id),
+  );
   const page = pageBundle?.page || null;
   const sections = pageBundle?.sections || [];
   const sectionsByKey = sectionMap(sections);
@@ -577,11 +592,15 @@ export default async function LandingPage() {
   const topSellerCards = selectProducts(products, topSellersSection, {
     source: "featured",
     limit: 8,
-  }).map((product, index) => toMarketingProduct(product, language, index + 4));
+  }).map((product) =>
+    toMarketingProduct(product, language, reviewSummaries.get(product.id)),
+  );
   const newArrivalCards = selectProducts(products, newArrivalsSection, {
     source: "reverse",
     limit: 5,
-  }).map((product, index) => toMarketingProduct(product, language, index + 14));
+  }).map((product) =>
+    toMarketingProduct(product, language, reviewSummaries.get(product.id)),
+  );
   const deals = buildDeals(
     specialOffersSection,
     siteSettings.primaryCtaHref,
@@ -592,17 +611,27 @@ export default async function LandingPage() {
     source: "all",
     limit: 5,
     offset: 4,
-  }).map((product, index) => toMarketingProduct(product, language, index + 24));
+  }).map((product) =>
+    toMarketingProduct(product, language, reviewSummaries.get(product.id)),
+  );
   const organicPickCards = selectProducts(products, organicPicksSection, {
     source: "featured",
     limit: 5,
-  }).map((product, index) => toMarketingProduct(product, language, index + 34));
+  }).map((product) =>
+    toMarketingProduct(product, language, reviewSummaries.get(product.id)),
+  );
   const seasonalPickCards = selectProducts(products, seasonalPicksSection, {
     source: "reverse",
     limit: 5,
-  }).map((product, index) => toMarketingProduct(product, language, index + 44));
+  }).map((product) =>
+    toMarketingProduct(product, language, reviewSummaries.get(product.id)),
+  );
   const stats = buildStats(statsSection, products.length, categories.length);
-  const testimonials = buildTestimonials(testimonialsSection);
+  const testimonials = buildTestimonials(
+    testimonialsSection,
+    publishedProductReviews,
+    productNameById,
+  );
   const categoriesDescription = sectionDescription(categoriesSection);
   const brandsDescription = sectionDescription(brandsSection);
   const statsDescription = sectionDescription(statsSection);
@@ -744,15 +773,17 @@ export default async function LandingPage() {
           language={language}
           title={sectionTitle(
             organicPicksSection,
-            localizedValue("à¦…à¦°à§à¦—à¦¾à¦¨à¦¿à¦• à¦ªà¦£à§à¦¯", "Organic Products"),
+            localizedValue("Organic Products", "Organic Products"),
           )}
           description={sectionDescription(organicPicksSection)}
           ctaHref={organicPicksSection?.ctaHref || "/products"}
           ctaLabel={
-            organicPicksSection?.ctaLabel.bn ||
-            organicPicksSection?.ctaLabel.en
+            organicPicksSection?.ctaLabel.bn || organicPicksSection?.ctaLabel.en
               ? organicPicksSection.ctaLabel
-              : localizedValue("à¦¸à¦¬ à¦…à¦°à§à¦—à¦¾à¦¨à¦¿à¦• à¦ªà¦£à§à¦¯ à¦¦à§‡à¦–à§à¦¨", "View All Organic Products")
+              : localizedValue(
+                  "View All Organic Products",
+                  "View All Organic Products",
+                )
           }
         />
       ) : null}
@@ -763,7 +794,7 @@ export default async function LandingPage() {
           language={language}
           title={sectionTitle(
             seasonalPicksSection,
-            localizedValue("à¦®à§Œà¦¸à§à¦®à¦¿ à¦ªà¦£à§à¦¯", "Seasonal Products"),
+            localizedValue("Seasonal Products", "Seasonal Products"),
           )}
           description={sectionDescription(seasonalPicksSection)}
           ctaHref={seasonalPicksSection?.ctaHref || "/products"}
@@ -771,41 +802,44 @@ export default async function LandingPage() {
             seasonalPicksSection?.ctaLabel.bn ||
             seasonalPicksSection?.ctaLabel.en
               ? seasonalPicksSection.ctaLabel
-              : localizedValue("à¦¸à¦¬ à¦®à§Œà¦¸à§à¦®à¦¿ à¦ªà¦£à§à¦¯ à¦¦à§‡à¦–à§à¦¨", "View All Seasonal Products")
+              : localizedValue(
+                  "View All Seasonal Products",
+                  "View All Seasonal Products",
+                )
           }
         />
       ) : null}
 
       {statsEnabled && stats.length > 0 ? (
-        <section className="bg-muted/30 py-5 md:py-7">
-          <div className="container mx-auto space-y-4 px-4 sm:px-6 md:px-8">
+        <section className="bg-muted/30 py-4 md:py-5">
+          <div className="container mx-auto space-y-3 px-4 sm:px-6 md:px-8">
             <ScrollReveal>
-              <div className="space-y-2 text-center">
-                <h2 className="text-2xl font-semibold tracking-tight md:text-3xl">
+              <div className="space-y-1.5 text-center">
+                <h2 className="text-2xl font-semibold tracking-tight">
                   {getLocalizedValue(
                     language,
                     sectionTitle(
                       statsSection,
-                      localizedValue("à¦†à¦®à¦¾à¦¦à§‡à¦° à¦ªà¦°à¦¿à¦¸à¦‚à¦–à§à¦¯à¦¾à¦¨", "Our Numbers"),
+                      localizedValue("Our Numbers", "Our Numbers"),
                     ),
                   )}
                 </h2>
                 {statsDescription ? (
-                  <p className="mx-auto max-w-3xl text-sm leading-6 text-muted-foreground md:text-base">
+                  <p className="mx-auto max-w-3xl text-sm leading-6 text-muted-foreground">
                     {getLocalizedValue(language, statsDescription)}
                   </p>
                 ) : null}
               </div>
             </ScrollReveal>
 
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
               {stats.map((stat) => (
                 <ScrollReveal key={stat.key}>
-                  <div className="h-full rounded-md border bg-background p-4 text-center shadow-sm">
-                    <p className="text-3xl font-extrabold tracking-tight text-primary">
+                  <div className="h-full rounded-md border bg-background p-2.5 text-center shadow-sm sm:p-3.5">
+                    <p className="text-xl font-extrabold tracking-tight text-primary sm:text-3xl">
                       {stat.value}
                     </p>
-                    <p className="mt-1 text-sm font-medium text-foreground">
+                    <p className="mt-0.5 text-xs font-medium text-foreground sm:text-sm">
                       {getLocalizedValue(language, stat.label)}
                     </p>
                   </div>

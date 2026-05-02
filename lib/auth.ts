@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "./db";
-import { accounts, sessions, users } from "./schema";
+import { accounts, sessions, users, verification } from "./schema";
 import { sendRoshalPasswordResetEmail } from "./store-email";
 
 const defaultTrustedOrigins = [
@@ -59,6 +59,7 @@ export const auth = betterAuth({
       user: users,
       session: sessions,
       account: accounts,
+      verification,
     },
   }),
   emailAndPassword: {
@@ -67,11 +68,18 @@ export const auth = betterAuth({
     requireEmailVerification: false,
     resetPasswordTokenExpiresIn: 60 * 60,
     sendResetPassword: async ({ user, url }) => {
-      await sendRoshalPasswordResetEmail({
+      const result = await sendRoshalPasswordResetEmail({
         name: user.name,
         to: user.email,
         url,
       });
+
+      if (!result.sent) {
+        console.warn(
+          "Roshal password reset email was not sent:",
+          result.reason,
+        );
+      }
     },
   },
   session: {

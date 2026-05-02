@@ -29,11 +29,21 @@ import {
   upsertRoshalSubcategory,
 } from "@/lib/store-mutations";
 import { normalizeRoshalPaymentMethodKey } from "@/lib/store-payment-methods";
-import { mergeRoshalProductFeatureInput } from "@/lib/store-product-options";
+import {
+  mergeRoshalProductFeatureInput,
+  normalizeRoshalProductPurchaseOptions,
+} from "@/lib/store-product-options";
+import {
+  createRoshalProductReview,
+  deleteRoshalProductReview,
+  RoshalProductReviewError,
+  updateRoshalProductReviewPublication,
+} from "@/lib/store-product-reviews";
 import { normalizeRoshalRouteSlug } from "@/lib/store-routes";
 import type {
   RoshalPaymentMethod,
   RoshalPaymentOption,
+  RoshalProductPurchaseOption,
 } from "@/lib/store-types";
 
 function textValue(formData: FormData, key: string) {
@@ -176,28 +186,36 @@ function normalizePaymentOptionsInput(
         },
         merchantLabel: {
           bn:
-            option.merchantLabel?.bn?.trim() ||
-            fallback?.merchantLabel.bn ||
-            "",
+            option.merchantLabel?.bn !== undefined
+              ? option.merchantLabel.bn.trim()
+              : (fallback?.merchantLabel.bn ?? ""),
           en:
-            option.merchantLabel?.en?.trim() ||
-            fallback?.merchantLabel.en ||
-            "",
+            option.merchantLabel?.en !== undefined
+              ? option.merchantLabel.en.trim()
+              : (fallback?.merchantLabel.en ?? ""),
         },
         accountType:
           option.accountType?.trim() ||
           fallback?.accountType ||
           "mobile-wallet",
         accountNumber:
-          option.accountNumber?.trim() || fallback?.accountNumber || "",
+          option.accountNumber !== undefined
+            ? option.accountNumber.trim()
+            : (fallback?.accountNumber ?? ""),
         instructions: {
           bn:
-            option.instructions?.bn?.trim() || fallback?.instructions.bn || "",
+            option.instructions?.bn !== undefined
+              ? option.instructions.bn.trim()
+              : (fallback?.instructions.bn ?? ""),
           en:
-            option.instructions?.en?.trim() || fallback?.instructions.en || "",
+            option.instructions?.en !== undefined
+              ? option.instructions.en.trim()
+              : (fallback?.instructions.en ?? ""),
         },
         guideImageUrl:
-          option.guideImageUrl?.trim() || fallback?.guideImageUrl || "",
+          option.guideImageUrl !== undefined
+            ? option.guideImageUrl.trim()
+            : (fallback?.guideImageUrl ?? ""),
         requiresProof: false,
         sortOrder: Number.isFinite(Number(option.sortOrder))
           ? Number(option.sortOrder)
@@ -464,7 +482,10 @@ export async function saveRoshalPage(formData: FormData) {
   }
 
   revalidatePath("/dashboard/pages");
-  redirect(`/dashboard/pages/${id}`);
+  redirect(
+    textValue(formData, "redirectTo") ||
+      `/dashboard/pages/${id}?saved=${pageId ? "page" : "page-created"}`,
+  );
 }
 
 export async function saveRoshalSection(formData: FormData) {
@@ -507,13 +528,17 @@ export async function saveRoshalSection(formData: FormData) {
     throw error;
   }
 
-  finishAction(`/dashboard/pages/${pageId}`, formData, [
-    pageSlug === "home" ? "/" : `/${pageSlug}`,
-    "/",
-    "/about",
-    "/contact",
-    `/dashboard/pages/${pageId}`,
-  ]);
+  finishAction(
+    `/dashboard/pages/${pageId}?saved=${textValue(formData, "id") ? "section" : "section-created"}`,
+    formData,
+    [
+      pageSlug === "home" ? "/" : `/${pageSlug}`,
+      "/",
+      "/about",
+      "/contact",
+      `/dashboard/pages/${pageId}`,
+    ],
+  );
 }
 
 export async function saveRoshalProduct(formData: FormData) {
@@ -529,10 +554,27 @@ export async function saveRoshalProduct(formData: FormData) {
   const productEditorPath = productId
     ? `/dashboard/products/${productId}`
     : "/dashboard/products/new";
+  const basePrice = numberValue(formData, "price");
+  const baseCompareAtPrice = numberValue(formData, "compareAtPrice") || null;
+  const baseInventory = numberValue(formData, "inventory");
+  const normalizedPurchaseOptions = normalizeRoshalProductPurchaseOptions({
+    fallbackCompareAtPrice: baseCompareAtPrice,
+    fallbackInventory: baseInventory,
+    fallbackPrice: basePrice,
+    value: jsonValue<RoshalProductPurchaseOption[]>(
+      formData,
+      "purchaseOptionsJson",
+      [],
+    ),
+  }).filter(
+    (option) => option.id !== "default" || option.size || option.amount,
+  );
   const mergedFeatures = mergeRoshalProductFeatureInput({
     featuresBn: stringArrayValue(formData, "featuresBnJson"),
     featuresEn: stringArrayValue(formData, "featuresEnJson"),
-    sizeOptions: stringArrayValue(formData, "sizeOptionsJson"),
+    sizeOptions: normalizedPurchaseOptions
+      .map((option) => [option.size, option.amount].filter(Boolean).join(" "))
+      .filter(Boolean),
   });
   let id = productId;
 
@@ -550,14 +592,15 @@ export async function saveRoshalProduct(formData: FormData) {
       categoryKey: textValue(formData, "categoryKey"),
       categoryLabelBn: textValue(formData, "categoryLabelBn"),
       categoryLabelEn: textValue(formData, "categoryLabelEn"),
-      price: numberValue(formData, "price"),
-      compareAtPrice: numberValue(formData, "compareAtPrice") || null,
-      inventory: numberValue(formData, "inventory"),
+      price: basePrice,
+      compareAtPrice: baseCompareAtPrice,
+      inventory: baseInventory,
       badge: optionalTextValue(formData, "badge"),
       heroImage: textValue(formData, "heroImage"),
       galleryJson: optionalTextValue(formData, "galleryJson"),
       featuresBnJson: JSON.stringify(mergedFeatures.bn),
       featuresEnJson: JSON.stringify(mergedFeatures.en),
+      purchaseOptionsJson: JSON.stringify(normalizedPurchaseOptions),
       isFeatured: boolValue(formData, "isFeatured"),
       isPublished: boolValue(formData, "isPublished"),
       sortOrder: numberValue(formData, "sortOrder"),
@@ -592,6 +635,79 @@ export async function saveRoshalProduct(formData: FormData) {
       ? `/dashboard/products/${id}?saved=1`
       : "/dashboard/products?created=1",
   );
+}
+
+export async function saveRoshalProductReview(formData: FormData) {
+  await requireRoshalAdmin();
+
+  let redirectTo = "/dashboard/reviews?saved=review-created";
+
+  try {
+    await createRoshalProductReview({
+      productId: textValue(formData, "productId"),
+      reviewerName: textValue(formData, "reviewerName"),
+      reviewerEmail: optionalTextValue(formData, "reviewerEmail"),
+      rating: numberValue(formData, "rating"),
+      comment: textValue(formData, "comment"),
+      isPublished: boolValue(formData, "isPublished"),
+    });
+    revalidatePath("/");
+    revalidatePath("/products");
+    revalidatePath("/dashboard/reviews");
+  } catch (error) {
+    if (error instanceof RoshalProductReviewError) {
+      redirectTo = `/dashboard/reviews?error=${encodeURIComponent(error.code)}`;
+    } else {
+      throw error;
+    }
+  }
+
+  redirect(redirectTo);
+}
+
+export async function saveRoshalProductReviewPublication(formData: FormData) {
+  await requireRoshalAdmin();
+
+  let redirectTo = "/dashboard/reviews?saved=review-updated";
+
+  try {
+    await updateRoshalProductReviewPublication(
+      textValue(formData, "id"),
+      boolValue(formData, "isPublished"),
+    );
+    revalidatePath("/");
+    revalidatePath("/products");
+    revalidatePath("/dashboard/reviews");
+  } catch (error) {
+    if (error instanceof RoshalProductReviewError) {
+      redirectTo = `/dashboard/reviews?error=${encodeURIComponent(error.code)}`;
+    } else {
+      throw error;
+    }
+  }
+
+  redirect(redirectTo);
+}
+
+export async function removeRoshalProductReview(formData: FormData) {
+  await requireRoshalAdmin();
+
+  let redirectTo = "/dashboard/reviews?saved=review-deleted";
+
+  try {
+    await deleteRoshalProductReview(textValue(formData, "id"));
+    revalidatePath("/");
+    revalidatePath("/products");
+    revalidatePath("/dashboard/reviews");
+  } catch (error) {
+    if (error instanceof RoshalProductReviewError) {
+      redirectTo = `/dashboard/reviews?error=${encodeURIComponent(error.code)}`;
+    } else {
+      throw error;
+    }
+  }
+
+  redirect(redirectTo);
 }
 
 export async function saveRoshalOrderStatus(formData: FormData) {

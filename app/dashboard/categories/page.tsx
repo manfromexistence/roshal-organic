@@ -128,7 +128,7 @@ export default async function DashboardCategoriesPage({
         </Alert>
       ) : null}
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <DashboardMetricCard
           title={locale === "bn" ? "মোট ক্যাটাগরি" : "Categories"}
           value={String(taxonomy.categories.length)}

@@ -16,6 +16,7 @@ import {
   sessions,
   users,
 } from "@/lib/schema";
+import { ensureRoshalCmsSchema } from "@/lib/store-cms-schema";
 import { getRoshalPaymentSettings } from "@/lib/store-content";
 import {
   defaultRoshalProducts,
@@ -32,6 +33,7 @@ import {
   isRoshalManualPaymentReferenceRequired,
   normalizeRoshalPaymentMethodKey,
 } from "@/lib/store-payment-methods";
+import { ensureRoshalPaymentSettingsSchema } from "@/lib/store-payment-settings-schema";
 import {
   createRoshalGatewayCheckoutSession,
   hasRoshalGatewayIntegration,
@@ -42,6 +44,12 @@ import {
   isBangladeshPhoneComplete,
   normalizeBangladeshPhoneInput,
 } from "@/lib/store-phone";
+import {
+  getRoshalProductSizeOptions,
+  normalizeRoshalProductPurchaseOptions,
+  serializeRoshalProductPurchaseOptions,
+} from "@/lib/store-product-options";
+import { ensureRoshalProductSchema } from "@/lib/store-product-schema";
 import {
   isRoshalReservedPageSlug,
   isValidRoshalRouteSlug,
@@ -58,6 +66,7 @@ import type {
   RoshalPaymentGatewayProvider,
   RoshalPaymentMethod,
   RoshalPaymentOption,
+  RoshalProductPurchaseOption,
   RoshalRole,
 } from "@/lib/store-types";
 
@@ -136,6 +145,14 @@ function normalizeSourceKeysInput(keys: string[], fallbackKey: string) {
   );
 
   return normalized.length > 0 ? normalized : [fallbackKey];
+}
+
+function humanizeTaxonomyKey(key: string) {
+  return key
+    .split("-")
+    .filter(Boolean)
+    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+    .join(" ");
 }
 
 function getRoshalPaymentWorkflowState(
@@ -217,11 +234,85 @@ function getRoshalItemQuantityMap(
   return quantities;
 }
 
+function getRoshalItemSelectionKey(item: {
+  optionId?: string | null;
+  productId: string;
+}) {
+  return `${item.productId}::${item.optionId?.trim() || "default"}`;
+}
+
+function getRoshalItemSelectionMap(
+  items: Array<{
+    optionId?: string | null;
+    productId: string;
+    quantity: number;
+  }>,
+) {
+  const selections = new Map<
+    string,
+    { optionId?: string; productId: string; quantity: number }
+  >();
+
+  for (const item of items) {
+    const key = getRoshalItemSelectionKey(item);
+    const existing = selections.get(key);
+
+    selections.set(key, {
+      optionId: item.optionId?.trim() || undefined,
+      productId: item.productId,
+      quantity: (existing?.quantity || 0) + item.quantity,
+    });
+  }
+
+  return selections;
+}
+
+function parseRoshalProductPurchaseOptions(row: {
+  compareAtPrice: number | null;
+  featuresBnJson: string | null;
+  featuresEnJson: string | null;
+  inventory: number;
+  price: number;
+  purchaseOptionsJson: string | null;
+}) {
+  const features = safeJsonParse(row.featuresBnJson, []).map(
+    (bnFeature: string, index: number) => ({
+      bn: bnFeature,
+      en: safeJsonParse<string[]>(row.featuresEnJson, [])[index] || bnFeature,
+    }),
+  );
+
+  return normalizeRoshalProductPurchaseOptions({
+    fallbackCompareAtPrice: row.compareAtPrice,
+    fallbackInventory: row.inventory,
+    fallbackPrice: row.price,
+    legacySizeOptions: getRoshalProductSizeOptions(features),
+    value: row.purchaseOptionsJson,
+  });
+}
+
+function findRoshalPurchaseOption(
+  options: RoshalProductPurchaseOption[],
+  optionId?: string | null,
+) {
+  const normalizedOptionId = optionId?.trim();
+
+  return (
+    (normalizedOptionId
+      ? options.find((option) => option.id === normalizedOptionId)
+      : null) ||
+    options.find((option) => option.isDefault) ||
+    options[0]
+  );
+}
+
 async function reserveRoshalInventory(
   database: RoshalDbClient,
   items: RoshalOrderItem[],
 ) {
+  await ensureRoshalProductSchema();
   const quantityMap = getRoshalItemQuantityMap(items);
+  const selectionMap = getRoshalItemSelectionMap(items);
   const productIds = Array.from(quantityMap.keys());
 
   if (productIds.length === 0) {
@@ -233,6 +324,11 @@ async function reserveRoshalInventory(
       id: roshalProducts.id,
       inventory: roshalProducts.inventory,
       nameEn: roshalProducts.nameEn,
+      price: roshalProducts.price,
+      compareAtPrice: roshalProducts.compareAtPrice,
+      featuresBnJson: roshalProducts.featuresBnJson,
+      featuresEnJson: roshalProducts.featuresEnJson,
+      purchaseOptionsJson: roshalProducts.purchaseOptionsJson,
     })
     .from(roshalProducts)
     .where(inArray(roshalProducts.id, productIds));
@@ -263,6 +359,53 @@ async function reserveRoshalInventory(
     }
   }
 
+  const nextPurchaseOptionsByProduct = new Map<string, string>();
+
+  for (const selection of selectionMap.values()) {
+    const product = productMap.get(selection.productId);
+
+    if (!product) {
+      throw new RoshalCheckoutError(
+        "product-unavailable",
+        "One or more products are no longer available for checkout.",
+      );
+    }
+
+    const options = parseRoshalProductPurchaseOptions(product);
+    const selectedOption = findRoshalPurchaseOption(
+      options,
+      selection.optionId,
+    );
+
+    if (!selectedOption) {
+      throw new RoshalCheckoutError(
+        "product-unavailable",
+        "One or more product size or amount options are no longer available.",
+      );
+    }
+
+    if (selection.quantity > selectedOption.inventory) {
+      throw new RoshalCheckoutError(
+        "insufficient-inventory",
+        `${product.nameEn} ${selectedOption.size || selectedOption.amount} does not have enough inventory for the requested quantity.`,
+      );
+    }
+
+    const nextOptions = options.map((option) =>
+      option.id === selectedOption.id
+        ? {
+            ...option,
+            inventory: Math.max(0, option.inventory - selection.quantity),
+          }
+        : option,
+    );
+
+    nextPurchaseOptionsByProduct.set(
+      selection.productId,
+      JSON.stringify(nextOptions),
+    );
+  }
+
   const timestamp = new Date();
 
   for (const [productId, quantity] of quantityMap.entries()) {
@@ -270,6 +413,7 @@ async function reserveRoshalInventory(
       .update(roshalProducts)
       .set({
         inventory: sql`${roshalProducts.inventory} - ${quantity}`,
+        purchaseOptionsJson: nextPurchaseOptionsByProduct.get(productId),
         updatedAt: timestamp,
       })
       .where(
@@ -297,14 +441,67 @@ async function restoreRoshalInventory(
   database: RoshalDbClient,
   items: RoshalOrderItem[],
 ) {
+  await ensureRoshalProductSchema();
   const quantityMap = getRoshalItemQuantityMap(items);
+  const selectionMap = getRoshalItemSelectionMap(items);
+  const productIds = Array.from(quantityMap.keys());
   const timestamp = new Date();
+  const products =
+    productIds.length > 0
+      ? await database
+          .select({
+            id: roshalProducts.id,
+            inventory: roshalProducts.inventory,
+            price: roshalProducts.price,
+            compareAtPrice: roshalProducts.compareAtPrice,
+            featuresBnJson: roshalProducts.featuresBnJson,
+            featuresEnJson: roshalProducts.featuresEnJson,
+            purchaseOptionsJson: roshalProducts.purchaseOptionsJson,
+          })
+          .from(roshalProducts)
+          .where(inArray(roshalProducts.id, productIds))
+      : [];
+  const productMap = new Map(products.map((product) => [product.id, product]));
+  const nextPurchaseOptionsByProduct = new Map<string, string>();
+
+  for (const selection of selectionMap.values()) {
+    const product = productMap.get(selection.productId);
+
+    if (!product) {
+      continue;
+    }
+
+    const options = parseRoshalProductPurchaseOptions(product);
+    const selectedOption = findRoshalPurchaseOption(
+      options,
+      selection.optionId,
+    );
+
+    if (!selectedOption) {
+      continue;
+    }
+
+    const nextOptions = options.map((option) =>
+      option.id === selectedOption.id
+        ? {
+            ...option,
+            inventory: option.inventory + selection.quantity,
+          }
+        : option,
+    );
+
+    nextPurchaseOptionsByProduct.set(
+      selection.productId,
+      JSON.stringify(nextOptions),
+    );
+  }
 
   for (const [productId, quantity] of quantityMap.entries()) {
     await database
       .update(roshalProducts)
       .set({
         inventory: sql`${roshalProducts.inventory} + ${quantity}`,
+        purchaseOptionsJson: nextPurchaseOptionsByProduct.get(productId),
         updatedAt: timestamp,
       })
       .where(eq(roshalProducts.id, productId));
@@ -312,6 +509,7 @@ async function restoreRoshalInventory(
 }
 
 async function ensureRoshalDefaultProductsForCheckout(productIds: string[]) {
+  await ensureRoshalProductSchema();
   if (productIds.length === 0) {
     return;
   }
@@ -363,6 +561,9 @@ async function ensureRoshalDefaultProductsForCheckout(productIds: string[]) {
       featuresEnJson: JSON.stringify(
         defaultProduct.features.map((feature) => feature.en),
       ),
+      purchaseOptionsJson: serializeRoshalProductPurchaseOptions(
+        defaultProduct.purchaseOptions || [],
+      ),
       isFeatured: defaultProduct.isFeatured,
       isPublished: defaultProduct.isPublished,
       sortOrder: defaultProduct.sortOrder,
@@ -388,6 +589,7 @@ const roshalOrderItemRequestSchema = z.preprocess(
   },
   z.object({
     productId: z.string().trim().min(1),
+    optionId: z.string().trim().min(1).optional(),
     quantity: z.coerce.number().int().min(1).max(99),
   }),
 );
@@ -658,6 +860,7 @@ export interface UpsertRoshalPaymentSettingsInput {
 export async function upsertRoshalPaymentSettings(
   input: UpsertRoshalPaymentSettingsInput,
 ) {
+  await ensureRoshalPaymentSettingsSchema();
   const id = input.id || "payment-settings";
   const timestamp = new Date();
 
@@ -731,14 +934,16 @@ export async function upsertRoshalCategory(input: UpsertRoshalCategoryInput) {
   }
 
   const sourceKeys = normalizeSourceKeysInput(input.sourceKeys || [], key);
+  const labelEn = input.labelEn.trim() || humanizeTaxonomyKey(key);
+  const labelBn = input.labelBn.trim() || labelEn;
 
   await db
     .insert(roshalCategories)
     .values({
       id,
       key,
-      labelBn: input.labelBn,
-      labelEn: input.labelEn,
+      labelBn,
+      labelEn,
       descriptionBn: toOptionalText(input.descriptionBn),
       descriptionEn: toOptionalText(input.descriptionEn),
       imageUrl: toOptionalText(input.imageUrl),
@@ -754,8 +959,8 @@ export async function upsertRoshalCategory(input: UpsertRoshalCategoryInput) {
       target: roshalCategories.id,
       set: {
         key,
-        labelBn: input.labelBn,
-        labelEn: input.labelEn,
+        labelBn,
+        labelEn,
         descriptionBn: toOptionalText(input.descriptionBn),
         descriptionEn: toOptionalText(input.descriptionEn),
         imageUrl: toOptionalText(input.imageUrl),
@@ -836,6 +1041,8 @@ export async function upsertRoshalSubcategory(
   }
 
   const sourceKeys = normalizeSourceKeysInput(input.sourceKeys || [], key);
+  const labelEn = input.labelEn.trim() || humanizeTaxonomyKey(key);
+  const labelBn = input.labelBn.trim() || labelEn;
 
   await db
     .insert(roshalSubcategories)
@@ -843,8 +1050,8 @@ export async function upsertRoshalSubcategory(
       id,
       categoryId: input.categoryId,
       key,
-      labelBn: input.labelBn,
-      labelEn: input.labelEn,
+      labelBn,
+      labelEn,
       descriptionBn: toOptionalText(input.descriptionBn),
       descriptionEn: toOptionalText(input.descriptionEn),
       imageUrl: toOptionalText(input.imageUrl),
@@ -860,8 +1067,8 @@ export async function upsertRoshalSubcategory(
       set: {
         categoryId: input.categoryId,
         key,
-        labelBn: input.labelBn,
-        labelEn: input.labelEn,
+        labelBn,
+        labelEn,
         descriptionBn: toOptionalText(input.descriptionBn),
         descriptionEn: toOptionalText(input.descriptionEn),
         imageUrl: toOptionalText(input.imageUrl),
@@ -903,6 +1110,7 @@ export interface UpsertRoshalPageInput {
 }
 
 export async function upsertRoshalPage(input: UpsertRoshalPageInput) {
+  await ensureRoshalCmsSchema();
   const id = input.id || nextId("page");
   const timestamp = new Date();
   const slug = normalizeRoshalRouteSlug(input.slug);
@@ -997,6 +1205,7 @@ export interface UpsertRoshalSectionInput {
 }
 
 export async function upsertRoshalSection(input: UpsertRoshalSectionInput) {
+  await ensureRoshalCmsSchema();
   const id = input.id || nextId("section");
   const timestamp = new Date();
   const sectionKey = normalizeRoshalSectionKey(input.sectionKey);
@@ -1105,12 +1314,14 @@ export interface UpsertRoshalProductInput {
   galleryJson?: string | null;
   featuresBnJson?: string | null;
   featuresEnJson?: string | null;
+  purchaseOptionsJson?: string | null;
   isFeatured: boolean;
   isPublished: boolean;
   sortOrder: number;
 }
 
 export async function upsertRoshalProduct(input: UpsertRoshalProductInput) {
+  await ensureRoshalProductSchema();
   const id = input.id || nextId("product");
   const timestamp = new Date();
   const slug = normalizeRoshalRouteSlug(input.slug);
@@ -1197,6 +1408,7 @@ export async function upsertRoshalProduct(input: UpsertRoshalProductInput) {
       galleryJson: toOptionalText(input.galleryJson),
       featuresBnJson: toOptionalText(input.featuresBnJson),
       featuresEnJson: toOptionalText(input.featuresEnJson),
+      purchaseOptionsJson: toOptionalText(input.purchaseOptionsJson),
       isFeatured: input.isFeatured,
       isPublished: input.isPublished,
       sortOrder: input.sortOrder,
@@ -1225,6 +1437,7 @@ export async function upsertRoshalProduct(input: UpsertRoshalProductInput) {
         galleryJson: toOptionalText(input.galleryJson),
         featuresBnJson: toOptionalText(input.featuresBnJson),
         featuresEnJson: toOptionalText(input.featuresEnJson),
+        purchaseOptionsJson: toOptionalText(input.purchaseOptionsJson),
         isFeatured: input.isFeatured,
         isPublished: input.isPublished,
         sortOrder: input.sortOrder,
@@ -1754,6 +1967,7 @@ async function createRoshalGatewayOrder(
 export async function createValidatedRoshalOrder(
   input: unknown,
 ): Promise<RoshalOrderCreationResult> {
+  await ensureRoshalProductSchema();
   const parsed = roshalCheckoutRequestSchema.parse(input);
   const quantityMap = getRoshalItemQuantityMap(parsed.items);
   const requestedProductIds = Array.from(quantityMap.keys());
@@ -1802,9 +2016,8 @@ export async function createValidatedRoshalOrder(
     );
   }
 
-  const items: RoshalOrderItem[] = requestedProductIds.map((productId) => {
-    const product = productMap.get(productId);
-    const quantity = quantityMap.get(productId) || 0;
+  const items: RoshalOrderItem[] = parsed.items.map((requestedItem) => {
+    const product = productMap.get(requestedItem.productId);
 
     if (!product) {
       throw new RoshalCheckoutError(
@@ -1813,10 +2026,30 @@ export async function createValidatedRoshalOrder(
       );
     }
 
-    if (quantity > product.inventory) {
+    if (requestedItem.quantity > product.inventory) {
       throw new RoshalCheckoutError(
         "insufficient-inventory",
         `${product.nameEn} does not have enough inventory for the requested quantity.`,
+      );
+    }
+
+    const purchaseOptions = parseRoshalProductPurchaseOptions(product);
+    const selectedOption = findRoshalPurchaseOption(
+      purchaseOptions,
+      requestedItem.optionId,
+    );
+
+    if (!selectedOption) {
+      throw new RoshalCheckoutError(
+        "product-unavailable",
+        "One or more product size or amount options are no longer available.",
+      );
+    }
+
+    if (requestedItem.quantity > selectedOption.inventory) {
+      throw new RoshalCheckoutError(
+        "insufficient-inventory",
+        `${product.nameEn} ${selectedOption.size || selectedOption.amount} does not have enough inventory for the requested quantity.`,
       );
     }
 
@@ -1828,8 +2061,11 @@ export async function createValidatedRoshalOrder(
         en: product.nameEn,
       },
       image: product.heroImage,
-      price: product.price,
-      quantity,
+      price: selectedOption.price,
+      quantity: requestedItem.quantity,
+      optionId: selectedOption.id,
+      optionSize: selectedOption.size || undefined,
+      optionAmount: selectedOption.amount || undefined,
     };
   });
 

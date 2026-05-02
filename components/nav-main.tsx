@@ -11,6 +11,7 @@ import {
   Settings,
   Shapes,
   ShoppingCart,
+  Star,
   Users,
 } from "lucide-react";
 import Link from "next/link";
@@ -30,6 +31,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import type { DashboardNavIconKey } from "@/lib/dashboard-navigation";
 
@@ -46,6 +48,7 @@ const NAV_ICONS: Record<DashboardNavIconKey, LucideIcon> = {
   categories: Shapes,
   orders: ShoppingCart,
   payments: CreditCard,
+  reviews: Star,
   users: Users,
   pages: FileText,
   settings: Settings,
@@ -86,6 +89,7 @@ export function NavMain({
 }: NavMainProps) {
   const pathname = usePathname();
   const storageKey = `nav-main-expanded-${label}`;
+  const { isMobile, setOpenMobile } = useSidebar();
 
   // CRITICAL: initialState comes from props (server-rendered from cookie).
   // Server and client both use this exact value → identical HTML → no mismatch.
@@ -105,6 +109,12 @@ export function NavMain({
       )}; path=/; max-age=31536000; SameSite=Lax`;
       return next;
     });
+  };
+
+  const closeMobileSidebar = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
   };
 
   return (
@@ -149,7 +159,7 @@ export function NavMain({
                           isActive={isDashboardUrlExact(pathname, subItem.url)}
                           className="h-8 cursor-pointer transition-colors data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:shadow-sm"
                         >
-                          <Link href={subItem.url}>
+                          <Link href={subItem.url} onClick={closeMobileSidebar}>
                             <span>{subItem.title}</span>
                           </Link>
                         </SidebarMenuSubButton>
@@ -167,7 +177,7 @@ export function NavMain({
                 isActive={isDashboardUrlActive(pathname, item.url)}
                 className="h-10 cursor-pointer px-3 font-medium transition-colors duration-150 data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-primary-foreground data-[active=true]:shadow-sm"
               >
-                <Link href={item.url}>
+                <Link href={item.url} onClick={closeMobileSidebar}>
                   <NavIcon icon={item.icon} />
                   <span>{item.title}</span>
                 </Link>

@@ -76,7 +76,7 @@ export default async function DashboardPaymentsPage({
         </Alert>
       ) : null}
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
         <DashboardMetricCard
           title={locale === "bn" ? "চালু পেমেন্ট" : "Enabled providers"}
           value={enabledCount}

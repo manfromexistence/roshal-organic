@@ -1,6 +1,7 @@
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { saveRoshalPage } from "@/actions/admin";
+import { CmsSaveToast } from "@/components/dashboard/cms-save-toast";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
@@ -30,7 +31,7 @@ const pageStatusOptions = [
 export default async function DashboardPagesPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ error?: string; slug?: string }>;
+  searchParams?: Promise<{ error?: string; saved?: string; slug?: string }>;
 }) {
   const resolvedSearchParams = searchParams ? await searchParams : {};
   const [locale, pages] = await Promise.all([
@@ -49,6 +50,7 @@ export default async function DashboardPagesPage({
   const navigationCount = pages.filter((page) => page.showInNavigation).length;
   return (
     <div className="min-w-0 space-y-6 px-6 pt-6 pb-4">
+      <CmsSaveToast status={resolvedSearchParams.saved} />
       <div className="min-w-0 space-y-2">
         <p className="text-xs uppercase tracking-[0.24em] text-primary">
           {locale === "bn" ? "মার্কেটিং পেজ" : "Marketing pages"}
@@ -73,7 +75,7 @@ export default async function DashboardPagesPage({
         </Alert>
       ) : null}
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
         <DashboardMetricCard
           title={locale === "bn" ? "মোট পেজ" : "Total pages"}
           value={pages.length}

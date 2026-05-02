@@ -67,20 +67,20 @@ export function DashboardMetricCard({
         getAccentClass(title),
       )}
     >
-      <CardContent className="min-w-0 p-3">
-        <div className="flex min-w-0 items-start justify-between gap-2">
+      <CardContent className="min-w-0 p-2.5 sm:p-3">
+        <div className="flex min-w-0 items-start justify-between gap-1.5 sm:gap-2">
           <div className="min-w-0 space-y-1">
-            <p className="break-words text-sm font-semibold leading-4 text-foreground">
+            <p className="break-words text-xs font-semibold leading-4 text-foreground sm:text-sm">
               {title}
             </p>
-            <div className="break-words text-2xl font-extrabold leading-tight tracking-tight text-foreground">
+            <div className="break-words text-xl font-extrabold leading-tight tracking-tight text-foreground sm:text-2xl">
               {value}
             </div>
-            <p className="break-words text-xs leading-4 text-muted-foreground">
+            <p className="break-words text-[11px] leading-4 text-muted-foreground sm:text-xs">
               {hint || "Live dashboard data"}
             </p>
           </div>
-          <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm">
+          <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs sm:h-7 sm:w-7 sm:text-sm">
             <span aria-hidden="true">{emoji}</span>
           </div>
         </div>

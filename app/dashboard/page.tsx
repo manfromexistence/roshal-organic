@@ -1,8 +1,4 @@
-import {
-  ArrowDownRight,
-  ArrowUpRight,
-  Package,
-} from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, Package } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -61,26 +57,26 @@ function DashboardStatCard({
       <Card
         className={`group h-full min-w-0 overflow-hidden border-none border-r-[6px] p-0 shadow-sm backdrop-blur transition duration-200 hover:-translate-y-0.5 hover:shadow-md ${accentClassName} ${colorSurfaceClass}`}
       >
-        <CardContent className="min-w-0 p-3">
-          <div className="flex min-w-0 items-start justify-between gap-3">
+        <CardContent className="min-w-0 p-2.5 sm:p-3">
+          <div className="flex min-w-0 items-start justify-between gap-1.5 sm:gap-3">
             <div className="min-w-0 space-y-1">
-              <p className="break-words text-sm font-semibold text-foreground">
+              <p className="break-words text-xs font-semibold text-foreground sm:text-sm">
                 {title}
               </p>
-              <p className="break-words text-2xl font-extrabold leading-tight tracking-tight text-foreground">
+              <p className="break-words text-xl font-extrabold leading-tight tracking-tight text-foreground sm:text-2xl">
                 {value}
               </p>
-              <p className="break-words text-xs text-muted-foreground">
+              <p className="break-words text-[11px] text-muted-foreground sm:text-xs">
                 {description}
               </p>
             </div>
             <div className="flex shrink-0 items-center gap-2">
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-sm">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs sm:h-7 sm:w-7 sm:text-sm">
                 {emoji}
               </span>
             </div>
           </div>
-          <div className="mt-2.5 flex min-w-0 items-start gap-1 text-xs text-muted-foreground">
+          <div className="mt-2 flex min-w-0 items-start gap-1 text-[11px] text-muted-foreground sm:mt-2.5 sm:text-xs">
             <TrendIcon className="h-3.5 w-3.5 shrink-0 text-primary" />
             <span className="min-w-0 break-words">{trend}</span>
           </div>
@@ -230,7 +226,7 @@ export default async function DashboardHomePage() {
         </div>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <DashboardStatCard
           title="Total revenue"
           value={formatBdt(deliveredRevenue, locale)}
@@ -278,7 +274,7 @@ export default async function DashboardHomePage() {
         />
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <DashboardStatCard
           title="Pending orders"
           value={pendingReviewOrders.length}

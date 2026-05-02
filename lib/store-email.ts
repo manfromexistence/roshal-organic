@@ -8,8 +8,14 @@ import { getRoshalAbsoluteUrl } from "@/lib/store-site";
 import type { RoshalOrderItem, RoshalPaymentMethod } from "@/lib/store-types";
 
 const RESEND_EMAIL_ENDPOINT = "https://api.resend.com/emails";
+const BREVO_EMAIL_ENDPOINT = "https://api.brevo.com/v3/smtp/email";
 const MAX_RESEND_RECIPIENTS = 50;
-const ROSHAL_CLIENT_ORDER_EMAIL = "roshalorganic@gmail.com";
+const DEFAULT_ROSHAL_CLIENT_ORDER_EMAIL = "roshalorganic@gmail.com";
+
+type BrevoEmailAddress = {
+  email: string;
+  name?: string;
+};
 
 type SmtpTransportConfig =
   | string
@@ -133,7 +139,9 @@ async function getRoshalOrderNotificationRecipients() {
       envValue("ROSHAL_ADMIN_EMAIL") ||
       envValue("ADMIN_EMAIL"),
   );
-  const fallbackRecipients: string[] = [ROSHAL_CLIENT_ORDER_EMAIL];
+  const fallbackRecipients = parseEmailList(
+    envValue("ROSHAL_CLIENT_ORDER_EMAIL") || DEFAULT_ROSHAL_CLIENT_ORDER_EMAIL,
+  );
 
   if (configuredRecipients.length === 0) {
     try {
@@ -232,6 +240,49 @@ function getOrderEmailFromAddress() {
     : "Roshal Organic <roshalorganic@gmail.com>";
 }
 
+function getResendEmailFromAddress() {
+  return (
+    envValue("ROSHAL_ORDER_EMAIL_FROM") ||
+    envValue("RESEND_FROM") ||
+    envValue("EMAIL_FROM") ||
+    "Roshal Organic <onboarding@resend.dev>"
+  );
+}
+
+function getBrevoApiKey() {
+  return envValue("BREVO_API_KEY") || envValue("SENDINBLUE_API_KEY");
+}
+
+function getBrevoEmailFromAddress() {
+  return (
+    envValue("BREVO_EMAIL_FROM") ||
+    envValue("BREVO_SENDER_EMAIL") ||
+    envValue("ROSHAL_ORDER_EMAIL_FROM") ||
+    envValue("EMAIL_FROM") ||
+    envValue("SMTP_FROM") ||
+    "Roshal Organic <roshalorganic@gmail.com>"
+  );
+}
+
+function parseEmailAddress(value: string): BrevoEmailAddress | null {
+  const trimmed = value.trim();
+  const namedMatch = trimmed.match(/^(.*?)<([^>]+)>$/);
+
+  if (namedMatch) {
+    const name = namedMatch[1].trim().replace(/^["']|["']$/g, "");
+    const email = namedMatch[2].trim();
+
+    return isDeliverableEmail(email)
+      ? {
+          email,
+          name: name || undefined,
+        }
+      : null;
+  }
+
+  return isDeliverableEmail(trimmed) ? { email: trimmed } : null;
+}
+
 async function getSmtpTransporter() {
   const config = getSmtpTransportConfig();
 
@@ -275,6 +326,57 @@ async function sendOrderEmailViaSmtp(input: {
   });
 
   return { provider: "smtp", sent: true };
+}
+
+async function sendEmailViaBrevo(input: {
+  apiKey: string;
+  from: string;
+  headers?: Record<string, string>;
+  html: string;
+  subject: string;
+  text: string;
+  to: string[];
+}) {
+  const sender = parseEmailAddress(input.from);
+  const recipients = input.to
+    .filter(isDeliverableEmail)
+    .map((email) => ({ email }));
+
+  if (!sender) {
+    return { reason: "invalid-brevo-sender", sent: false };
+  }
+
+  if (recipients.length === 0) {
+    return { reason: "missing-recipient", sent: false };
+  }
+
+  const response = await fetch(BREVO_EMAIL_ENDPOINT, {
+    body: JSON.stringify({
+      headers: input.headers,
+      htmlContent: input.html,
+      sender,
+      subject: input.subject,
+      textContent: input.text,
+      to: recipients,
+    }),
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      "User-Agent": "roshal-organic/1.0",
+      "api-key": input.apiKey,
+    },
+    method: "POST",
+  });
+
+  if (!response.ok) {
+    const detail = await response.text().catch(() => "");
+    return {
+      reason: `brevo-${response.status}${detail ? `: ${detail}` : ""}`,
+      sent: false,
+    };
+  }
+
+  return { provider: "brevo", sent: true };
 }
 
 async function sendOrderEmailViaResend(input: {
@@ -355,6 +457,14 @@ async function sendPasswordResetEmailViaResend(input: {
   return { provider: "resend", sent: true };
 }
 
+function formatRoshalOrderItemEmailName(item: RoshalOrderItem) {
+  const optionLabel = [item.optionSize, item.optionAmount]
+    .filter(Boolean)
+    .join(" ");
+
+  return optionLabel ? `${item.name.en} (${optionLabel})` : item.name.en;
+}
+
 function buildOrderEmail(input: RoshalNewOrderEmailInput) {
   const dashboardUrl = getRoshalAbsoluteUrl(
     `/dashboard/orders/${input.orderId}`,
@@ -366,7 +476,7 @@ function buildOrderEmail(input: RoshalNewOrderEmailInput) {
   const lineItemsText = input.items
     .map(
       (item) =>
-        `- ${item.name.en} x${item.quantity} = ${formatBdt(
+        `- ${formatRoshalOrderItemEmailName(item)} x${item.quantity} = ${formatBdt(
           item.price * item.quantity,
           "en",
         )}`,
@@ -376,7 +486,7 @@ function buildOrderEmail(input: RoshalNewOrderEmailInput) {
     .map(
       (item) =>
         `<tr><td style="padding:8px;border-bottom:1px solid #e5e7eb;">${escapeHtml(
-          item.name.en,
+          formatRoshalOrderItemEmailName(item),
         )}</td><td style="padding:8px;border-bottom:1px solid #e5e7eb;text-align:center;">${
           item.quantity
         }</td><td style="padding:8px;border-bottom:1px solid #e5e7eb;text-align:right;">${escapeHtml(
@@ -453,23 +563,43 @@ function buildOrderEmail(input: RoshalNewOrderEmailInput) {
 }
 
 export async function sendRoshalNewOrderEmail(input: RoshalNewOrderEmailInput) {
-  const apiKey = envValue("RESEND_API_KEY");
+  const brevoApiKey = getBrevoApiKey();
+  const resendApiKey = envValue("RESEND_API_KEY");
   const to = await getRoshalOrderNotificationRecipients();
 
   if (to.length === 0) {
     return { reason: "missing-recipient", sent: false };
   }
 
-  const from = getOrderEmailFromAddress();
+  const from = brevoApiKey
+    ? getBrevoEmailFromAddress()
+    : resendApiKey
+      ? getResendEmailFromAddress()
+      : getOrderEmailFromAddress();
   const { html, text } = buildOrderEmail(input);
   const subject = `New order ${input.orderNumber} - ${formatBdt(
     input.total,
     "en",
   )}`;
 
-  if (apiKey) {
+  if (brevoApiKey) {
+    return sendEmailViaBrevo({
+      apiKey: brevoApiKey,
+      from,
+      headers: {
+        "X-Roshal-Email-Type": "new-order",
+        "X-Roshal-Order": input.orderNumber,
+      },
+      html,
+      subject,
+      text,
+      to,
+    });
+  }
+
+  if (resendApiKey) {
     return sendOrderEmailViaResend({
-      apiKey,
+      apiKey: resendApiKey,
       from,
       html,
       orderNumber: input.orderNumber,
@@ -498,8 +628,13 @@ export async function sendRoshalPasswordResetEmail(
     return { reason: "undeliverable-email", sent: false };
   }
 
-  const apiKey = envValue("RESEND_API_KEY");
-  const from = getOrderEmailFromAddress();
+  const brevoApiKey = getBrevoApiKey();
+  const resendApiKey = envValue("RESEND_API_KEY");
+  const from = brevoApiKey
+    ? getBrevoEmailFromAddress()
+    : resendApiKey
+      ? getResendEmailFromAddress()
+      : getOrderEmailFromAddress();
   const displayName = input.name?.trim() || "customer";
   const subject = "Reset your Roshal Organic password";
   const text = [
@@ -524,9 +659,23 @@ export async function sendRoshalPasswordResetEmail(
     </div>
   `;
 
-  if (apiKey) {
+  if (brevoApiKey) {
+    return sendEmailViaBrevo({
+      apiKey: brevoApiKey,
+      from,
+      headers: {
+        "X-Roshal-Email-Type": "password-reset",
+      },
+      html,
+      subject,
+      text,
+      to: [to],
+    });
+  }
+
+  if (resendApiKey) {
     return sendPasswordResetEmailViaResend({
-      apiKey,
+      apiKey: resendApiKey,
       from,
       html,
       subject,

@@ -6,13 +6,15 @@
 
 :root {
   --font-roshal-sans:
-    "Hind Siliguri", "Noto Sans Bengali", "Segoe UI", system-ui, sans-serif;
+    var(--font-roshal-inter), var(--font-roshal-bengali), "Inter",
+    "Noto Sans Bengali", "Segoe UI", system-ui, sans-serif;
   --font-roshal-wordmark:
     "Segoe Script", "Lucida Handwriting", "Brush Script MT", "Snell Roundhand",
     cursive;
   --font-roshal-mono:
-    "JetBrains Mono", "Roboto Mono", "Fira Code", ui-monospace, SFMono-Regular,
-    Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    var(--font-roshal-jetbrains), "JetBrains Mono", "Roboto Mono", "Fira Code",
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
   --background: oklch(0.985 0.01 148);
   --foreground: oklch(0.145 0 0);
   --card: oklch(0.995 0.008 148);
@@ -171,6 +173,15 @@
     border-radius: 999px;
     border: 2px solid
       color-mix(in oklch, var(--background) 80%, var(--primary) 20%);
+  }
+
+  html,
+  body,
+  button,
+  input,
+  textarea,
+  select {
+    font-family: var(--font-roshal-sans);
   }
 
   body {

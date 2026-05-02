@@ -6,6 +6,7 @@ export type DashboardNavIconKey =
   | "categories"
   | "orders"
   | "payments"
+  | "reviews"
   | "users"
   | "pages"
   | "settings"
@@ -130,11 +131,19 @@ const primaryNavigationTemplate: DashboardNavItem[] = [
     keywords: ["checkout", "purchases", "sales"],
   },
   {
-    title: "Payments",
-    url: "/dashboard/payments",
-    icon: "payments",
-    keywords: ["cash on delivery", "bkash", "nagad", "card"],
+    title: "Reviews",
+    url: "/dashboard/reviews",
+    icon: "reviews",
+    keywords: ["product reviews", "ratings", "customer feedback"],
   },
+  // Hidden for the current client handoff: payment controls now live inside
+  // Delivery Setting so the sidebar stays smaller and less overwhelming.
+  // {
+  //   title: "Payments",
+  //   url: "/dashboard/payments",
+  //   icon: "payments",
+  //   keywords: ["cash on delivery", "bkash", "nagad", "card"],
+  // },
   {
     title: "Users",
     url: "/dashboard/users",
@@ -172,8 +181,8 @@ const primaryNavigationTemplate: DashboardNavItem[] = [
         keywords: ["delivery charges", "contact info", "brand"],
       },
       {
-        title: "Payment Settings",
-        url: "/dashboard/payments",
+        title: "Payment Setting",
+        url: "/dashboard/settings#payment-settings",
         keywords: ["cash on delivery", "bkash", "nagad", "card"],
       },
     ],

@@ -3,6 +3,7 @@ import { MarketingPageOffset } from "@/components/storefront/marketing-page-offs
 import { StorefrontBottomNavigation } from "@/components/storefront/storefront-bottom-navigation";
 import { StorefrontFooter } from "@/components/storefront/storefront-footer";
 import { StorefrontHeader } from "@/components/storefront/storefront-header";
+import { StorefrontMainShell } from "@/components/storefront/storefront-main-shell";
 import { WhatsAppFloatingButton } from "@/components/storefront/whatsapp-floating-button";
 import { getRoshalSessionUser } from "@/lib/store-auth";
 import { getWhatsAppHref } from "@/lib/store-contact";
@@ -69,9 +70,9 @@ export default async function MarketingLayout({
       />
 
       <div className="flex min-h-svh w-full min-w-0 flex-1 flex-col overflow-x-clip">
-        <main className="min-h-[calc(100vh-18rem)] w-full min-w-0 flex-1 overflow-x-clip pb-20 md:pb-0">
+        <StorefrontMainShell>
           <MarketingPageOffset>{children}</MarketingPageOffset>
-        </main>
+        </StorefrontMainShell>
 
         <StorefrontFooter
           locale={locale}

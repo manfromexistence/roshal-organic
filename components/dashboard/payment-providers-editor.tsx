@@ -2,6 +2,7 @@
 
 import { Plus, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
+import { ImageUploadField } from "@/components/shared/image-upload-field";
 import {
   Accordion,
   AccordionContent,
@@ -357,8 +358,11 @@ export function DashboardPaymentProvidersEditor({
                       }))
                     }
                   />
-                  <Field
-                    label="Guide image URL"
+                  <ImageUploadField
+                    compact
+                    label="Guide image"
+                    helperText="Optional checkout guide image for this provider."
+                    uploadLabel="Upload"
                     value={provider.guideImageUrl}
                     onChange={(nextValue) =>
                       updateProvider(provider.key, (current) => ({

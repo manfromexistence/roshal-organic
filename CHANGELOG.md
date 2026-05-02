@@ -5,12 +5,34 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Fixed
+- Fixed login, forgot-password, and reset-password pages so their auth cards use compact `pt-6 pb-4` spacing without inherited tall bottom areas.
+- Fixed forgot-password feedback so unknown emails show an account-not-found message and do not trigger a reset email.
+- Fixed duplicate CMS save toasts on dashboard CMS pages by deduping the same save event during local React remounts.
+- Fixed the dashboard mobile sidebar so selecting a real navigation link closes the mobile menu.
+- Fixed fake storefront review data by removing generated homepage product rating/review counts, reading saved published review summaries, and showing homepage testimonials only from real published product reviews.
+- Fixed CMS dashboard save feedback by adding toast confirmations for Marketing Center section visibility updates, All Pages creation, and Home/About/Contact/Terms/Privacy page or section saves.
+- Fixed dashboard product/CMS/payment editing crashes by adding runtime schema guards for Roshal product, CMS page/section, and payment settings tables before admin reads and saves.
+- Fixed the dashboard sidebar guard so Payments and Payment Settings are hidden even if an older route/nav source still includes them.
+- Fixed forgot-password reset token creation by registering Better Auth's `verification` table with the Drizzle adapter and creating the missing table in the connected database.
+- Fixed Resend email sending defaults so Resend uses the configured sender/from address instead of falling back to an unverified Gmail sender.
+- Fixed storefront product detail, cart, checkout, order detail, and order email line items so selected size/amount purchase options carry through the full order flow.
+- Fixed the storefront sub-header category menus so visible category triggers open portaled subcategory dropdowns on smaller screens instead of being clipped by the horizontal category rail.
+- Fixed the mobile storefront footer by reducing the bottom buffer while preserving space for the fixed bottom navigation.
+- Fixed the storefront homepage follow-up by shrinking Featured Categories cards, restoring more mobile footer bottom clearance, and making the Our Numbers grid explicitly use two columns from the small breakpoint.
+- Fixed the storefront Special Deals and Our Numbers sections so their cards stay compact and use two columns from narrow mobile widths upward.
+- Fixed the storefront Brands strip so brand images cover compact no-padding logo tiles instead of sitting inside wide padded cards.
+- Fixed payment-provider saving so cleared merchant labels, account numbers, instructions, and guide images no longer silently restore old values.
+- Fixed dashboard payment-provider guide images by replacing the raw URL-only field with the shared image upload control.
+- Fixed category and subcategory saves so blank labels fall back to a readable key label instead of creating empty public navigation text.
+- Fixed dashboard metric and mobile table-card grids so admin pages keep two compact cards per row even below the Tailwind `sm` breakpoint.
+- Fixed dashboard homepage CMS rendering so enabled Organic Products, Seasonal Products, and Our Numbers sections now appear on the public Home page and remain controlled by the existing section visibility switches.
+- Fixed dashboard overview cards by keeping revenue tied to delivered orders, removing the duplicate desktop right-side icon on each card, and removing the Marketing pages/New product quick buttons.
 - Fixed public homepage delivery leaks found in browser QA by hiding admin-helper CMS section descriptions, blank taxonomy category cards, and generated placeholder vegetable products from default storefront merchandising.
 - Fixed marked storefront responsive issues from browser QA: reduced sub-header stacking, tightened featured-category card sizing, stopped top-selling images from crowding text at tablet widths, and rounded brand images.
 - Fixed checkout order submission hardening so the client sends a clean item payload, legacy cart item IDs are accepted server-side, and API-provided checkout errors display instead of only the generic incomplete-checkout message.
 - Fixed remaining live-browser homepage leaks by filtering generated `vegetable-*` placeholder products from public storefront product feeds and hiding helper-driven Fresh Picks content.
-- Fixed dashboard product creation feedback by redirecting new products to the All Products list with a visible success message.
-- Fixed product gallery image management so extra product pictures use uploadable image rows instead of raw JSON value fields.
+- Fixed dashboard product creation feedback by redirecting new products to the All Products list with both a success alert and a toast popup.
+- Fixed product gallery image management so extra product pictures use visible uploadable image rows instead of raw JSON value fields.
 - Fixed checkout payment method cards to use compact equal-height selector cards on mobile and desktop.
 - Fixed category and subcategory management so dashboard taxonomy rows now have edit and delete actions.
 - Fixed signup field order, mobile District/Thana layout, duplicate-mobile messaging, and 6-character password acceptance for customer registration.
@@ -24,7 +46,13 @@ All notable changes to this project will be documented in this file.
 - Fixed the custom storefront homepage CMS visibility path so disabled homepage sections stay hidden instead of falling back to default section content.
 
 ### Changed
-- Added product size-option management to the dashboard product editor using the existing product feature persistence path.
+- Switched the site-wide UI font stack to self-hosted Inter with Noto Sans Bengali fallback and JetBrains Mono for monospace code surfaces.
+- Added Brevo transactional email API support as the preferred provider for new-order and password-reset emails, falling back to Resend and SMTP when Brevo is not configured.
+- Added Payment Setting back as a child item under Delivery Setting while keeping the old standalone Payments sidebar entry hidden.
+- Added a dashboard Reviews workspace for creating, publishing, hiding, and deleting product reviews tied to real products.
+- Moved Payment Settings out of the dashboard sidebar and copied the real payment-provider editor into the bottom of Delivery Setting with its own save confirmation.
+- Added dashboard product purchase-option rows for size, amount, price, compare-at price, stock, and default option instead of making admins edit raw option JSON.
+- Added visible product size-option management to the dashboard product editor using the existing product feature persistence path.
 - Made dashboard metric cards more colorful and increased the key title/value typography for easier client scanning.
 - Renamed the dashboard System Settings menu to Delivery Setting.
 - Added forgot-password/reset-password storefront flows backed by Better Auth reset links and the existing email providers.

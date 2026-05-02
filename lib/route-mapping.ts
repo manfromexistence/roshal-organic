@@ -17,6 +17,7 @@ export const ROUTE_NAMES: Record<string, string> = {
   pages: "Marketing Pages",
   products: "Products",
   profile: "Profile",
+  reviews: "Reviews",
   theme: "Storefront Theme",
   users: "Users",
 };

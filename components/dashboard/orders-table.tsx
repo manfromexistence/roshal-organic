@@ -399,7 +399,7 @@ export function RoshalOrdersTable({
       description="Filter by order number, mobile, payment method, delivery type, amount, status, payment state, and placed date."
     >
       <div className="min-w-0">
-        <div className="grid gap-2.5 p-3 pt-0 sm:grid-cols-2 sm:p-4 sm:pt-0 md:hidden">
+        <div className="grid grid-cols-2 gap-2.5 p-3 pt-0 sm:p-4 sm:pt-0 md:hidden">
           {orders.map((order) => (
             <Card
               key={order.id}

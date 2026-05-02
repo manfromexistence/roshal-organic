@@ -38,8 +38,6 @@ const fallbackProducts: GridProduct[] = Array.from(
     },
     price: `BDT ${50 + ((index * 13) % 90)}`,
     originalPrice: `BDT ${110 + ((index * 17) % 120)}`,
-    rating: Number((3.5 + ((index * 3) % 14) / 10).toFixed(1)),
-    reviews: 18 + index * 9,
     href: "/products",
   }),
 );

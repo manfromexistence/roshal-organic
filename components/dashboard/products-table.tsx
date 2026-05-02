@@ -247,7 +247,7 @@ export function RoshalProductsTable({
       description="Search, sort, and edit the live storefront catalog."
     >
       <div className="min-w-0">
-        <div className="grid gap-2.5 p-3 pt-0 sm:grid-cols-2 sm:p-4 sm:pt-0 md:hidden">
+        <div className="grid grid-cols-2 gap-2.5 p-3 pt-0 sm:p-4 sm:pt-0 md:hidden">
           {sortedProducts.map((product) => {
             const name = getLocalizedValue(locale, product.name);
             const category = getLocalizedValue(locale, product.categoryLabel);

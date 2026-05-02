@@ -130,12 +130,18 @@ export default async function TrackOrderPage({
               <div className="grid gap-4 md:grid-cols-2">
                 {order.items.map((item) => (
                   <div
-                    key={`${order.id}-${item.productId}`}
+                    key={`${order.id}-${item.productId}-${item.optionId || "default"}`}
                     className="rounded-md border border-border/70 bg-muted/20 p-4"
                   >
                     <p className="font-medium">
                       {locale === "bn" ? item.name.bn : item.name.en}
                     </p>
+                    {formatOrderItemOption(item) ? (
+                      <p className="mt-1 text-sm text-muted-foreground">
+                        {locale === "bn" ? "অপশন" : "Option"}:{" "}
+                        {formatOrderItemOption(item)}
+                      </p>
+                    ) : null}
                     <p className="mt-1 text-sm text-muted-foreground">
                       {locale === "bn" ? "পরিমাণ" : "Quantity"}: {item.quantity}
                     </p>
@@ -243,4 +249,11 @@ function InfoRow({
       </span>
     </div>
   );
+}
+
+function formatOrderItemOption(item: {
+  optionAmount?: string;
+  optionSize?: string;
+}) {
+  return [item.optionSize, item.optionAmount].filter(Boolean).join(" ");
 }

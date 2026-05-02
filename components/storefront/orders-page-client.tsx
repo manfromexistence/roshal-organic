@@ -238,12 +238,18 @@ export function OrdersPageClient({
                 <div className="grid gap-3 md:grid-cols-2">
                   {order.items.map((item) => (
                     <div
-                      key={`${order.id}-${item.productId}`}
+                      key={`${order.id}-${item.productId}-${item.optionId || "default"}`}
                       className="rounded-xl border border-border/60 bg-muted/20 p-4"
                     >
                       <p className="font-medium">
                         {locale === "bn" ? item.name.bn : item.name.en}
                       </p>
+                      {formatOrderItemOption(item) ? (
+                        <p className="text-sm text-muted-foreground">
+                          {locale === "bn" ? "অপশন" : "Option"}:{" "}
+                          {formatOrderItemOption(item)}
+                        </p>
+                      ) : null}
                       <p className="text-sm text-muted-foreground">
                         {locale === "bn" ? "পরিমাণ" : "Quantity"}:{" "}
                         {item.quantity}
@@ -291,4 +297,11 @@ function MetricCard({ title, value }: { title: string; value: string }) {
       <p className="mt-2 text-3xl font-semibold tracking-tight">{value}</p>
     </div>
   );
+}
+
+function formatOrderItemOption(item: {
+  optionAmount?: string;
+  optionSize?: string;
+}) {
+  return [item.optionSize, item.optionAmount].filter(Boolean).join(" ");
 }

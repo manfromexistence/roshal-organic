@@ -2,9 +2,11 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { getRoshalProductPurchaseOption } from "@/lib/store-product-options";
 import type { LocalizedValue, RoshalProduct } from "@/lib/store-types";
 
 export interface CartItem {
+  selectionKey: string;
   productId: string;
   slug: string;
   name: LocalizedValue;
@@ -12,42 +14,68 @@ export interface CartItem {
   price: number;
   quantity: number;
   inventory: number;
+  optionId?: string;
+  optionSize?: string;
+  optionAmount?: string;
 }
 
 interface CartState {
   items: CartItem[];
-  addItem: (product: RoshalProduct, quantity?: number) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  addItem: (
+    product: RoshalProduct,
+    quantity?: number,
+    optionId?: string,
+  ) => void;
+  updateQuantity: (selectionKey: string, quantity: number) => void;
   syncCatalog: (products: RoshalProduct[]) => {
     adjustedCount: number;
     removedCount: number;
   };
-  removeItem: (productId: string) => void;
+  removeItem: (selectionKey: string) => void;
   clearCart: () => void;
+}
+
+function getSelectionKey(productId: string, optionId?: string | null) {
+  return `${productId}::${optionId?.trim() || "default"}`;
 }
 
 export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       items: [],
-      addItem: (product, quantity = 1) => {
-        if (product.inventory <= 0 || !product.isPublished) {
+      addItem: (product, quantity = 1, optionId) => {
+        const selectedOption = getRoshalProductPurchaseOption(
+          product,
+          optionId,
+        );
+
+        if (
+          product.inventory <= 0 ||
+          !product.isPublished ||
+          !selectedOption ||
+          selectedOption.inventory <= 0
+        ) {
           return;
         }
 
+        const selectionKey = getSelectionKey(product.id, selectedOption.id);
         const existing = get().items.find(
-          (item) => item.productId === product.id,
+          (item) => item.selectionKey === selectionKey,
+        );
+        const nextInventory = Math.max(
+          0,
+          Math.min(product.inventory, selectedOption.inventory),
         );
 
         if (existing) {
           set({
             items: get().items.map((item) =>
-              item.productId === product.id
+              item.selectionKey === selectionKey
                 ? {
                     ...item,
                     quantity: Math.min(
                       item.quantity + quantity,
-                      Math.max(product.inventory, 1),
+                      Math.max(nextInventory, 1),
                     ),
                   }
                 : item,
@@ -60,28 +88,36 @@ export const useCartStore = create<CartState>()(
           items: [
             ...get().items,
             {
+              selectionKey,
               productId: product.id,
               slug: product.slug,
               name: product.name,
               image: product.heroImage,
-              price: product.price,
-              quantity: Math.min(quantity, Math.max(product.inventory, 1)),
-              inventory: product.inventory,
+              price: selectedOption.price,
+              quantity: Math.min(quantity, Math.max(nextInventory, 1)),
+              inventory: nextInventory,
+              optionId: selectedOption.id,
+              optionSize: selectedOption.size || undefined,
+              optionAmount: selectedOption.amount || undefined,
             },
           ],
         });
       },
-      updateQuantity: (productId, quantity) => {
+      updateQuantity: (selectionKey, quantity) => {
         if (quantity <= 0) {
           set({
-            items: get().items.filter((item) => item.productId !== productId),
+            items: get().items.filter(
+              (item) =>
+                item.selectionKey !== selectionKey &&
+                item.productId !== selectionKey,
+            ),
           });
           return;
         }
 
         set({
           items: get().items.map((item) =>
-            item.productId === productId
+            item.selectionKey === selectionKey
               ? {
                   ...item,
                   quantity: Math.min(quantity, Math.max(item.inventory, 1)),
@@ -99,35 +135,60 @@ export const useCartStore = create<CartState>()(
 
         const nextItems = get().items.flatMap((item) => {
           const product = productMap.get(item.productId);
+          const selectedOption = product
+            ? getRoshalProductPurchaseOption(product, item.optionId)
+            : null;
 
-          if (!product || product.inventory <= 0 || !product.isPublished) {
+          if (
+            !product ||
+            product.inventory <= 0 ||
+            !product.isPublished ||
+            !selectedOption ||
+            selectedOption.inventory <= 0
+          ) {
             removedCount += 1;
             return [];
           }
 
-          const nextQuantity = Math.min(item.quantity, product.inventory);
+          const nextInventory = Math.max(
+            0,
+            Math.min(product.inventory, selectedOption.inventory),
+          );
+          const nextQuantity = Math.min(item.quantity, nextInventory);
+          const nextSelectionKey = getSelectionKey(
+            product.id,
+            selectedOption.id,
+          );
 
           if (
             nextQuantity !== item.quantity ||
-            item.price !== product.price ||
-            item.inventory !== product.inventory ||
+            item.price !== selectedOption.price ||
+            item.inventory !== nextInventory ||
             item.slug !== product.slug ||
             item.image !== product.heroImage ||
             item.name.bn !== product.name.bn ||
-            item.name.en !== product.name.en
+            item.name.en !== product.name.en ||
+            item.optionId !== selectedOption.id ||
+            item.optionSize !== (selectedOption.size || undefined) ||
+            item.optionAmount !== (selectedOption.amount || undefined) ||
+            item.selectionKey !== nextSelectionKey
           ) {
             adjustedCount += 1;
           }
 
           return [
             {
+              selectionKey: nextSelectionKey,
               productId: product.id,
               slug: product.slug,
               name: product.name,
               image: product.heroImage,
-              price: product.price,
+              price: selectedOption.price,
               quantity: nextQuantity,
-              inventory: product.inventory,
+              inventory: nextInventory,
+              optionId: selectedOption.id,
+              optionSize: selectedOption.size || undefined,
+              optionAmount: selectedOption.amount || undefined,
             },
           ];
         });
@@ -143,9 +204,13 @@ export const useCartStore = create<CartState>()(
 
         return { adjustedCount, removedCount };
       },
-      removeItem: (productId) => {
+      removeItem: (selectionKey) => {
         set({
-          items: get().items.filter((item) => item.productId !== productId),
+          items: get().items.filter(
+            (item) =>
+              item.selectionKey !== selectionKey &&
+              item.productId !== selectionKey,
+          ),
         });
       },
       clearCart: () => {

@@ -21,7 +21,7 @@ export function ForgotPasswordForm() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/auth/request-password-reset", {
+      const response = await fetch("/api/password-reset/request", {
         body: JSON.stringify({
           email: email.trim().toLowerCase(),
           redirectTo: "/reset-password",
@@ -40,8 +40,9 @@ export function ForgotPasswordForm() {
         );
       }
 
+      const payload = await response.json().catch(() => null);
       setMessage(
-        "If this email exists in our system, a password reset link has been sent.",
+        payload?.message || "Password reset link has been sent to your email.",
       );
     } catch (submitError) {
       setError(
@@ -55,7 +56,7 @@ export function ForgotPasswordForm() {
   };
 
   return (
-    <Card className="mx-auto max-w-md border-border/70 bg-card shadow-sm">
+    <Card className="w-full max-w-md border-border/70 bg-card shadow-sm">
       <CardHeader>
         <CardTitle>Forgot password</CardTitle>
         <p className="text-sm text-muted-foreground">

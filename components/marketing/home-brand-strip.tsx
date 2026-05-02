@@ -26,17 +26,17 @@ export function HomeBrandStrip({ brands }: { brands: BrandItem[] }) {
         {brands.map((brand) => (
           <CarouselItem
             key={brand.key}
-            className="basis-[38%] pl-2 min-[420px]:basis-[30%] sm:basis-1/5 md:basis-1/6 md:pl-3 lg:basis-1/8"
+            className="basis-[28%] pl-2 min-[420px]:basis-[22%] sm:basis-[16%] md:basis-[13%] md:pl-3 lg:basis-[10%]"
           >
             <Link href={brand.href} className="block h-full">
-              <Card className="h-full rounded-md border-border/70 bg-card p-0 shadow-sm hover:bg-accent/60">
-                <CardContent className="flex h-14 items-center justify-center p-1 sm:h-16 sm:p-1.5">
+              <Card className="h-full overflow-hidden rounded-md border-border/70 bg-card p-0 shadow-sm hover:bg-accent/60">
+                <CardContent className="h-14 p-0 sm:h-16">
                   <div className="relative h-full w-full overflow-hidden rounded-md bg-muted/40">
                     <Image
                       src={brand.image}
                       alt={brand.name}
                       fill
-                      className="rounded-md object-contain p-0.5"
+                      className="object-cover"
                       sizes="(max-width: 640px) 38vw, (max-width: 1024px) 16vw, 12vw"
                     />
                   </div>

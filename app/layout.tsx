@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Inter, JetBrains_Mono, Noto_Sans_Bengali } from "next/font/google";
 import { cookies } from "next/headers";
 import Script from "next/script";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
@@ -12,6 +13,25 @@ import {
   NEXT_THEME_STORAGE_KEY,
 } from "@/lib/theme-bootstrap";
 import "./globals.css";
+
+const roshalInter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-roshal-inter",
+});
+
+const roshalBengali = Noto_Sans_Bengali({
+  subsets: ["bengali"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+  variable: "--font-roshal-bengali",
+});
+
+const roshalMono = JetBrains_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-roshal-jetbrains",
+});
 
 export const metadata: Metadata = {
   title: {
@@ -42,7 +62,7 @@ export default async function RootLayout({
   return (
     <html
       lang={locale === "bn" ? "bn-BD" : "en"}
-      className="h-full antialiased"
+      className={`${roshalInter.variable} ${roshalBengali.variable} ${roshalMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="h-full w-full">

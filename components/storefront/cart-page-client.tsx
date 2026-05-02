@@ -157,7 +157,7 @@ export function CartPageClient({
           <div className="space-y-4">
             {visibleItems.map((item) => (
               <Card
-                key={item.productId}
+                key={item.selectionKey || item.productId}
                 className="overflow-hidden rounded-3xl border-border/70 shadow-sm"
               >
                 <CardContent className="grid gap-5 p-5 md:grid-cols-[10rem_minmax(0,1fr)] md:p-6">
@@ -189,6 +189,13 @@ export function CartPageClient({
                           <Badge variant="secondary" className="rounded-full">
                             {formatBdt(item.price, locale)}
                           </Badge>
+                          {item.optionSize || item.optionAmount ? (
+                            <Badge variant="outline" className="rounded-full">
+                              {[item.optionSize, item.optionAmount]
+                                .filter(Boolean)
+                                .join(" ")}
+                            </Badge>
+                          ) : null}
                           <span className="text-sm text-muted-foreground">
                             {locale === "bn"
                               ? `লাইন মোট: ${formatBdt(item.price * item.quantity, locale)}`
@@ -201,7 +208,9 @@ export function CartPageClient({
                         variant="outline"
                         size="sm"
                         className="rounded-full"
-                        onClick={() => removeItem(item.productId)}
+                        onClick={() =>
+                          removeItem(item.selectionKey || item.productId)
+                        }
                       >
                         <Trash2 className="size-4" />
                         {locale === "bn" ? "বাদ দিন" : "Remove"}
@@ -216,7 +225,10 @@ export function CartPageClient({
                           size="icon"
                           className="rounded-full"
                           onClick={() =>
-                            updateQuantity(item.productId, item.quantity - 1)
+                            updateQuantity(
+                              item.selectionKey || item.productId,
+                              item.quantity - 1,
+                            )
                           }
                         >
                           <Minus className="size-4" />
@@ -230,7 +242,10 @@ export function CartPageClient({
                           size="icon"
                           className="rounded-full"
                           onClick={() =>
-                            updateQuantity(item.productId, item.quantity + 1)
+                            updateQuantity(
+                              item.selectionKey || item.productId,
+                              item.quantity + 1,
+                            )
                           }
                         >
                           <Plus className="size-4" />

@@ -9,6 +9,7 @@ import {
   roshalSiteSettings,
   users,
 } from "@/lib/schema";
+import { ensureRoshalCmsSchema } from "@/lib/store-cms-schema";
 import {
   defaultRoshalPages,
   defaultRoshalPaymentSettings,
@@ -26,6 +27,12 @@ import {
   normalizeRoshalProductMedia,
 } from "@/lib/store-media";
 import { normalizeRoshalPaymentMethodKey } from "@/lib/store-payment-methods";
+import { ensureRoshalPaymentSettingsSchema } from "@/lib/store-payment-settings-schema";
+import {
+  getRoshalProductSizeOptions,
+  normalizeRoshalProductPurchaseOptions,
+} from "@/lib/store-product-options";
+import { ensureRoshalProductSchema } from "@/lib/store-product-schema";
 import { ensureRoshalSiteSettingsSchema } from "@/lib/store-site-settings-schema";
 import type {
   RoshalDashboardSnapshot,
@@ -152,6 +159,13 @@ function mergeRoshalSections(
 }
 
 function mapProduct(row: typeof roshalProducts.$inferSelect): RoshalProduct {
+  const features = safeJsonParse(row.featuresBnJson, []).map(
+    (bnFeature: string, index: number) => ({
+      bn: bnFeature,
+      en: safeJsonParse<string[]>(row.featuresEnJson, [])[index] || bnFeature,
+    }),
+  );
+
   return normalizeRoshalProductMedia({
     id: row.id,
     slug: row.slug,
@@ -179,12 +193,14 @@ function mapProduct(row: typeof roshalProducts.$inferSelect): RoshalProduct {
     badge: row.badge,
     heroImage: row.heroImage,
     gallery: safeJsonParse<string[]>(row.galleryJson, [row.heroImage]),
-    features: safeJsonParse(row.featuresBnJson, []).map(
-      (bnFeature: string, index: number) => ({
-        bn: bnFeature,
-        en: safeJsonParse<string[]>(row.featuresEnJson, [])[index] || bnFeature,
-      }),
-    ),
+    features,
+    purchaseOptions: normalizeRoshalProductPurchaseOptions({
+      fallbackCompareAtPrice: row.compareAtPrice,
+      fallbackInventory: row.inventory,
+      fallbackPrice: row.price,
+      legacySizeOptions: getRoshalProductSizeOptions(features),
+      value: row.purchaseOptionsJson,
+    }),
     isFeatured: Boolean(row.isFeatured),
     isPublished: Boolean(row.isPublished),
     sortOrder: row.sortOrder,
@@ -468,6 +484,7 @@ export async function getRoshalSiteSettings() {
 
 export async function getRoshalPaymentSettings() {
   try {
+    await ensureRoshalPaymentSettingsSchema();
     const [settings] = await db.select().from(roshalPaymentSettings).limit(1);
     return settings
       ? mapPaymentSettings(settings)
@@ -494,6 +511,7 @@ export async function getRoshalNavigationPages() {
 
 export async function getRoshalPages() {
   try {
+    await ensureRoshalCmsSchema();
     const pages = await db
       .select()
       .from(roshalPages)
@@ -507,6 +525,7 @@ export async function getRoshalPages() {
 
 export async function getRoshalPageBySlug(slug: string) {
   try {
+    await ensureRoshalCmsSchema();
     const [page] = await db
       .select()
       .from(roshalPages)
@@ -528,6 +547,7 @@ export async function getRoshalSectionsForPage(pageId: string) {
     defaultRoshalPages.find((page) => page.id === pageId) || null;
 
   try {
+    await ensureRoshalCmsSchema();
     if (!defaultPage) {
       const [page] = await db
         .select({
@@ -597,6 +617,7 @@ export async function getRoshalPageBundle(
 
 export async function getRoshalProducts() {
   try {
+    await ensureRoshalProductSchema();
     const products = await db
       .select()
       .from(roshalProducts)
@@ -612,6 +633,7 @@ export async function getRoshalProducts() {
 
 export async function getAllRoshalProducts() {
   try {
+    await ensureRoshalProductSchema();
     const products = await db
       .select()
       .from(roshalProducts)
@@ -632,6 +654,7 @@ export async function getFeaturedRoshalProducts(limit = 4) {
 
 export async function getRoshalProductBySlug(slug: string) {
   try {
+    await ensureRoshalProductSchema();
     const [product] = await db
       .select()
       .from(roshalProducts)

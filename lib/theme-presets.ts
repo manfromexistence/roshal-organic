@@ -3278,7 +3278,7 @@ export const defaultPresets: Record<string, ThemePreset> = {
         "sidebar-border": "oklch(0.38 0.018 150)",
         "sidebar-ring": "oklch(0.985 0 0)",
         "font-sans":
-          '"Hind Siliguri", "Noto Sans Bengali", "Segoe UI", system-ui, sans-serif',
+          'var(--font-roshal-inter), var(--font-roshal-bengali), "Inter", "Noto Sans Bengali", "Segoe UI", system-ui, sans-serif',
         "font-serif": "Source Serif 4, serif",
         "font-mono":
           '"JetBrains Mono", "Roboto Mono", "Fira Code", ui-monospace, monospace',
@@ -3326,7 +3326,7 @@ export const defaultPresets: Record<string, ThemePreset> = {
         "sidebar-border": "oklch(0.42 0.02 152)",
         "sidebar-ring": "oklch(0.985 0 0)",
         "font-sans":
-          '"Hind Siliguri", "Noto Sans Bengali", "Segoe UI", system-ui, sans-serif',
+          'var(--font-roshal-inter), var(--font-roshal-bengali), "Inter", "Noto Sans Bengali", "Segoe UI", system-ui, sans-serif',
         "font-serif": "Source Serif 4, serif",
         "font-mono":
           '"JetBrains Mono", "Roboto Mono", "Fira Code", ui-monospace, monospace',

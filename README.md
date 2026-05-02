@@ -47,7 +47,7 @@ Roshal Organic is a bilingual Bangla/English ecommerce CMS built on Next.js 16, 
 - Safe fallback merging for the built-in home/about/contact CMS pages and sections, so partial dashboard edits do not wipe out the rest of the default storefront composition
 - Storefront brand settings such as CTA labels, hero layout, card style, spacing, and contact information
 - Payment provider add/remove controls, enablement, instructions, merchant/account details, and wallet reference guidance
-- New-order email notifications to `roshalorganic@gmail.com` through Resend or SMTP/Nodemailer configuration
+- New-order email notifications to `roshalorganic@gmail.com` through Brevo, Resend, or SMTP/Nodemailer configuration
 
 ## Environment Variables
 
@@ -69,6 +69,8 @@ IMGBB=your-imgbb-api-key
 IMGBB_API_KEY=your-imgbb-api-key
 CATBOX_USERHASH=optional-catbox-userhash
 RESEND_API_KEY=optional-resend-api-key
+BREVO_API_KEY=optional-brevo-api-key
+BREVO_EMAIL_FROM="Roshal Organic <roshalorganic@gmail.com>"
 ROSHAL_ORDER_NOTIFICATION_EMAILS=roshalorganic@gmail.com
 ROSHAL_ORDER_EMAIL_FROM="Roshal Organic <orders@your-domain.com>"
 SMTP_SERVICE=gmail
@@ -80,9 +82,9 @@ SMTP_PASS=your-smtp-or-app-password
 SMTP_FROM="Roshal Organic <your-smtp-user@gmail.com>"
 ```
 
-`RESEND_API_KEY` is preferred when configured. Without Resend, the app uses
-Nodemailer with `SMTP_URL`/`NODEMAILER_SMTP_URL` or the `SMTP_*` variables
-above. Email volume is limited by the chosen SMTP provider.
+`BREVO_API_KEY` is preferred when configured. Without Brevo, the app falls back
+to `RESEND_API_KEY`, then Nodemailer with `SMTP_URL`/`NODEMAILER_SMTP_URL` or
+the `SMTP_*` variables above. Email volume is limited by the chosen provider.
 
 ## Local Setup
 

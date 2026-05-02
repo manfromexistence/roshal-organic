@@ -179,7 +179,7 @@ export default async function OrderTrackingPage({
           <CardContent className="space-y-4">
             {order.items.map((item) => (
               <div
-                key={`${order.id}-${item.productId}`}
+                key={`${order.id}-${item.productId}-${item.optionId || "default"}`}
                 className="flex flex-col gap-4 rounded-2xl border border-border/70 p-4 sm:flex-row sm:items-center sm:justify-between"
               >
                 <div className="flex items-center gap-4">
@@ -196,6 +196,12 @@ export default async function OrderTrackingPage({
                     <p className="font-medium">
                       {locale === "bn" ? item.name.bn : item.name.en}
                     </p>
+                    {formatOrderItemOption(item) ? (
+                      <p className="text-sm text-muted-foreground">
+                        {locale === "bn" ? "অপশন" : "Option"}:{" "}
+                        {formatOrderItemOption(item)}
+                      </p>
+                    ) : null}
                     <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                       <Badge variant="outline">
                         {locale === "bn" ? "পরিমাণ" : "Qty"} {item.quantity}
@@ -277,6 +283,13 @@ function NoteBlock({ title, body }: { title: string; body: string }) {
       <p className="mt-2 text-sm text-muted-foreground">{body}</p>
     </div>
   );
+}
+
+function formatOrderItemOption(item: {
+  optionAmount?: string;
+  optionSize?: string;
+}) {
+  return [item.optionSize, item.optionAmount].filter(Boolean).join(" ");
 }
 
 function formatDeliveryAddress(order: {

@@ -52,6 +52,15 @@ export const sessions = sqliteTable("sessions", {
   updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
 });
 
+export const verification = sqliteTable("verification", {
+  id: text("id").primaryKey(),
+  identifier: text("identifier").notNull(),
+  value: text("value").notNull(),
+  expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }),
+  updatedAt: integer("updated_at", { mode: "timestamp" }),
+});
+
 export const files = sqliteTable("files", {
   id: text("id").primaryKey(),
   userId: text("user_id")
@@ -219,6 +228,7 @@ export const roshalProducts = sqliteTable("roshal_products", {
   galleryJson: text("gallery_json"),
   featuresBnJson: text("features_bn_json"),
   featuresEnJson: text("features_en_json"),
+  purchaseOptionsJson: text("purchase_options_json"),
   isFeatured: integer("is_featured", { mode: "boolean" })
     .notNull()
     .default(false),

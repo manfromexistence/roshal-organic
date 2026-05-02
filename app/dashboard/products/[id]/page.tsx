@@ -12,6 +12,7 @@ import { saveRoshalProduct } from "@/actions/admin";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
 import { DashboardImageGalleryField } from "@/components/dashboard/image-gallery-field";
 import { JsonFieldEditor } from "@/components/dashboard/json-field-editor";
+import { ProductPurchaseOptionsField } from "@/components/dashboard/product-purchase-options-field";
 import { ProductTaxonomySelect } from "@/components/dashboard/product-taxonomy-select";
 import { ImageUploadField } from "@/components/shared/image-upload-field";
 import {
@@ -117,9 +118,30 @@ export async function ProductEditorPage({
   const regularFeatures = product
     ? getRoshalProductRegularFeatures(product.features)
     : [];
-  const sizeOptions = product
-    ? getRoshalProductSizeOptions(product.features)
-    : [];
+  const purchaseOptions = (
+    product?.purchaseOptions?.filter(
+      (option) => option.id !== "default" || option.size || option.amount,
+    ) ||
+    (product
+      ? getRoshalProductSizeOptions(product.features).map((size, index) => ({
+          amount: size,
+          compareAtPrice: product.compareAtPrice,
+          id: `option-${index + 1}`,
+          inventory: product.inventory,
+          isDefault: index === 0,
+          price: product.price,
+          size,
+        }))
+      : [])
+  ).map((option) => ({
+    amount: option.amount,
+    compareAtPrice: option.compareAtPrice,
+    id: option.id,
+    inventory: option.inventory,
+    isDefault: option.isDefault,
+    price: option.price,
+    size: option.size,
+  }));
 
   return (
     <div className="min-w-0 space-y-6 px-4 pt-4 pb-4 md:px-6 md:pt-6">
@@ -211,7 +233,7 @@ export async function ProductEditorPage({
                   Product media
                 </CardTitle>
                 <CardDescription>
-                  Upload the main product image and manage gallery image URLs.
+                  Upload the main product image and add extra product photos.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-5">
@@ -221,7 +243,33 @@ export async function ProductEditorPage({
                   helperText="Used in product cards, product details, checkout, and related product blocks."
                   value={product?.heroImage || ""}
                 />
-                {/* Gallery URL management moved into the optional details dropdown per client request. */}
+                <DashboardImageGalleryField
+                  name="galleryJson"
+                  label="Extra product pictures"
+                  defaultValue={JSON.stringify(product?.gallery || [], null, 2)}
+                  hint="Add each product photo with upload or pasted image URL."
+                />
+              </CardContent>
+            </Card>
+
+            <Card className="border-none bg-card shadow-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-xl">
+                  <Package className="size-5 text-primary" />
+                  Purchase options
+                </CardTitle>
+                <CardDescription>
+                  Add the size or amount variants customers can buy, with their
+                  own price and stock.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ProductPurchaseOptionsField
+                  name="purchaseOptionsJson"
+                  label="Available purchase options"
+                  defaultValue={JSON.stringify(purchaseOptions, null, 2)}
+                  hint="Add product buying options such as 250g, 500g, 1kg, or 5L with separate price and stock."
+                />
               </CardContent>
             </Card>
 
@@ -267,24 +315,6 @@ export async function ProductEditorPage({
                         label="Description (BN)"
                         defaultValue={product?.description.bn || ""}
                         rows={5}
-                      />
-                      <DashboardImageGalleryField
-                        name="galleryJson"
-                        label="Gallery"
-                        defaultValue={JSON.stringify(
-                          product?.gallery || [],
-                          null,
-                          2,
-                        )}
-                        hint="Each entry should be an image URL."
-                      />
-                      <JsonFieldEditor
-                        name="sizeOptionsJson"
-                        label="Size options"
-                        defaultValue={JSON.stringify(sizeOptions, null, 2)}
-                        mode="array-string"
-                        itemLabel="Size"
-                        hint="Add product size or pack options such as 500g, 1kg, 5L."
                       />
                       <JsonFieldEditor
                         name="featuresEnJson"

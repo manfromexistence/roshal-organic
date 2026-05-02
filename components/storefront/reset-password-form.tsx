@@ -74,7 +74,7 @@ export function ResetPasswordForm() {
   };
 
   return (
-    <Card className="mx-auto max-w-md border-border/70 bg-card shadow-sm">
+    <Card className="w-full max-w-md border-border/70 bg-card shadow-sm">
       <CardHeader>
         <CardTitle>Reset password</CardTitle>
         <p className="text-sm text-muted-foreground">

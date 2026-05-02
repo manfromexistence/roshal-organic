@@ -34,6 +34,11 @@ import { toast } from "@/hooks/use-toast";
 import { getWhatsAppHref } from "@/lib/store-contact";
 import { formatBdt } from "@/lib/store-format";
 import { getLocalizedValue } from "@/lib/store-locale";
+import {
+  getDefaultRoshalProductPurchaseOption,
+  getRoshalProductPurchaseOption,
+  getRoshalProductPurchaseOptions,
+} from "@/lib/store-product-options";
 import type {
   RoshalLocale,
   RoshalProduct,
@@ -42,13 +47,13 @@ import type {
 } from "@/lib/store-types";
 import { useCartStore } from "@/store/cart-store";
 
-function resolveDiscountPercent(product: RoshalProduct) {
-  if (!product.compareAtPrice || product.compareAtPrice <= product.price) {
+function resolveDiscountPercent(price: number, compareAtPrice: number | null) {
+  if (!compareAtPrice || compareAtPrice <= price) {
     return null;
   }
 
   const discount = Math.round(
-    ((product.compareAtPrice - product.price) / product.compareAtPrice) * 100,
+    ((compareAtPrice - price) / compareAtPrice) * 100,
   );
 
   return discount > 0 ? discount : null;
@@ -107,7 +112,31 @@ export function ProductDetailsPageClient({
   const [selectedImage, setSelectedImage] = useState(
     galleryImages[0] || product.heroImage,
   );
-  const discountPercent = resolveDiscountPercent(product);
+  const purchaseOptions = useMemo(
+    () =>
+      getRoshalProductPurchaseOptions(product).filter(
+        (option) => option.id !== "default" || option.size || option.amount,
+      ),
+    [product],
+  );
+  const [selectedOptionId, setSelectedOptionId] = useState(
+    () => getDefaultRoshalProductPurchaseOption(product)?.id || "default",
+  );
+  const selectedOption = useMemo(
+    () => getRoshalProductPurchaseOption(product, selectedOptionId),
+    [product, selectedOptionId],
+  );
+  const effectiveInventory = Math.max(
+    0,
+    Math.min(product.inventory, selectedOption?.inventory ?? product.inventory),
+  );
+  const displayPrice = selectedOption?.price ?? product.price;
+  const displayCompareAtPrice =
+    selectedOption?.compareAtPrice ?? product.compareAtPrice;
+  const discountPercent = resolveDiscountPercent(
+    displayPrice,
+    displayCompareAtPrice,
+  );
   const categoryLabel = getLocalizedValue(locale, product.categoryLabel);
   const whatsappHref = buildWhatsAppOrderHref(
     locale,
@@ -126,12 +155,12 @@ export function ProductDetailsPageClient({
 
   const updateQuantity = (nextQuantity: number) => {
     setQuantity(
-      Math.min(Math.max(nextQuantity, 1), Math.max(product.inventory, 1)),
+      Math.min(Math.max(nextQuantity, 1), Math.max(effectiveInventory, 1)),
     );
   };
 
   const buyNow = () => {
-    addItem(product, quantity);
+    addItem(product, quantity, selectedOption?.id);
     window.location.assign("/checkout");
   };
 
@@ -301,11 +330,11 @@ export function ProductDetailsPageClient({
 
                 <div className="flex flex-wrap items-center gap-2.5">
                   <span className="text-3xl font-semibold text-primary md:text-4xl">
-                    {formatBdt(product.price, locale)}
+                    {formatBdt(displayPrice, locale)}
                   </span>
-                  {product.compareAtPrice ? (
+                  {displayCompareAtPrice ? (
                     <span className="text-lg text-muted-foreground line-through">
-                      {formatBdt(product.compareAtPrice, locale)}
+                      {formatBdt(displayCompareAtPrice, locale)}
                     </span>
                   ) : null}
                   {discountPercent ? (
@@ -321,6 +350,39 @@ export function ProductDetailsPageClient({
               </div>
 
               <Separator />
+
+              {purchaseOptions.length > 0 ? (
+                <div className="space-y-3">
+                  <Label className="text-sm font-medium">
+                    {locale === "bn" ? "সাইজ / পরিমাণ" : "Size / amount"}
+                  </Label>
+                  <Select
+                    value={selectedOption?.id || selectedOptionId}
+                    onValueChange={(value) => {
+                      setSelectedOptionId(value);
+                      setQuantity(1);
+                    }}
+                  >
+                    <SelectTrigger className="h-11 rounded-sm">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {purchaseOptions.map((option) => {
+                        const optionLabel =
+                          [option.size, option.amount]
+                            .filter(Boolean)
+                            .join(" ") || "Default";
+
+                        return (
+                          <SelectItem key={option.id} value={option.id}>
+                            {optionLabel} - {formatBdt(option.price, locale)}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectContent>
+                  </Select>
+                </div>
+              ) : null}
 
               <div className="space-y-3">
                 <Label className="text-sm font-medium">
@@ -356,7 +418,7 @@ export function ProductDetailsPageClient({
                     size="icon"
                     className="h-10 w-10 rounded-none border-l border-border/70"
                     onClick={() => updateQuantity(quantity + 1)}
-                    disabled={quantity >= product.inventory}
+                    disabled={quantity >= effectiveInventory}
                   >
                     <Plus className="size-4" />
                   </Button>
@@ -368,6 +430,8 @@ export function ProductDetailsPageClient({
                   product={product}
                   locale={locale}
                   quantity={quantity}
+                  optionId={selectedOption?.id}
+                  disabled={effectiveInventory <= 0}
                   className="h-11 rounded-sm text-sm font-semibold uppercase tracking-wide"
                 />
 
@@ -375,7 +439,7 @@ export function ProductDetailsPageClient({
                   type="button"
                   className="h-11 rounded-sm text-sm font-semibold uppercase tracking-wide"
                   onClick={buyNow}
-                  disabled={product.inventory <= 0}
+                  disabled={effectiveInventory <= 0}
                 >
                   <ShoppingBag className="size-4" />
                   {locale === "bn" ? "এখনই কিনুন" : "Buy now"}

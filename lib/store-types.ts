@@ -178,11 +178,22 @@ export interface RoshalProduct {
   heroImage: string;
   gallery: string[];
   features: LocalizedValue[];
+  purchaseOptions?: RoshalProductPurchaseOption[];
   isFeatured: boolean;
   isPublished: boolean;
   sortOrder: number;
   createdAt?: Date;
   updatedAt?: Date;
+}
+
+export interface RoshalProductPurchaseOption {
+  id: string;
+  size: string;
+  amount: string;
+  price: number;
+  compareAtPrice: number | null;
+  inventory: number;
+  isDefault: boolean;
 }
 
 export interface RoshalProductReview {
@@ -193,6 +204,7 @@ export interface RoshalProductReview {
   reviewerEmail: string;
   rating: number;
   comment: string;
+  isPublished: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -215,6 +227,9 @@ export interface RoshalOrderItem {
   image: string;
   price: number;
   quantity: number;
+  optionId?: string;
+  optionSize?: string;
+  optionAmount?: string;
 }
 
 export interface RoshalOrder {

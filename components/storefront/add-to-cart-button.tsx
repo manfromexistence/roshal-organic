@@ -10,11 +10,15 @@ export function AddToCartButton({
   product,
   locale,
   quantity = 1,
+  optionId,
+  disabled = false,
   className,
 }: {
   product: RoshalProduct;
   locale: RoshalLocale;
   quantity?: number;
+  optionId?: string;
+  disabled?: boolean;
   className?: string;
 }) {
   const addItem = useCartStore((state) => state.addItem);
@@ -24,14 +28,14 @@ export function AddToCartButton({
     <Button
       className={className}
       onClick={() => {
-        addItem(product, quantity);
+        addItem(product, quantity, optionId);
         setAdded(true);
         window.setTimeout(() => setAdded(false), 1200);
       }}
-      disabled={product.inventory <= 0}
+      disabled={disabled || product.inventory <= 0}
     >
       <ShoppingBag className="size-4" />
-      {product.inventory <= 0
+      {disabled || product.inventory <= 0
         ? locale === "bn"
           ? "স্টক শেষ"
           : "Out of stock"

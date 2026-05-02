@@ -24,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { useMarketingDashboardStore } from "@/store/marketing-dashboard-store";
 
@@ -195,11 +196,23 @@ export function HomepageControlCenter({ locale }: HomepageControlCenterProps) {
       if (context?.previous) {
         queryClient.setQueryData(queryKey, context.previous);
       }
-      setToggleError(
+      const message =
         mutationError instanceof Error
           ? mutationError.message
-          : "Could not update section visibility.",
-      );
+          : "Could not update section visibility.";
+
+      setToggleError(message);
+      toast({
+        title: "CMS update failed",
+        description: message,
+        variant: "destructive",
+      });
+    },
+    onSuccess: (_data, input) => {
+      toast({
+        title: input.isEnabled ? "Section enabled" : "Section disabled",
+        description: "Homepage CMS visibility was updated successfully.",
+      });
     },
     onSettled: async () => {
       await queryClient.invalidateQueries({
@@ -311,7 +324,7 @@ export function HomepageControlCenter({ locale }: HomepageControlCenterProps) {
           </div>
         ) : null}
 
-        <div className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid min-w-0 grid-cols-2 gap-3 lg:grid-cols-4">
           <MetricCard
             label={copy.metrics.sections}
             value={

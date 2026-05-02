@@ -1,29 +1,50 @@
 import { MapPin, RefreshCcw, Save, Truck } from "lucide-react";
 import Link from "next/link";
-import { saveRoshalSiteSettings } from "@/actions/admin";
+import {
+  saveRoshalPaymentSettings,
+  saveRoshalSiteSettings,
+} from "@/actions/admin";
 import { DashboardMetricCard } from "@/components/dashboard/dashboard-metric-card";
 import { DashboardDeliveryZonesEditor } from "@/components/dashboard/delivery-zones-editor";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
+import { DashboardPaymentProvidersEditor } from "@/components/dashboard/payment-providers-editor";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PhoneInput2 } from "@/components/ui/phone-input-2";
 import { requireRoshalAdmin } from "@/lib/store-auth";
-import { getRoshalSiteSettings } from "@/lib/store-content";
+import {
+  getRoshalPaymentSettings,
+  getRoshalSiteSettings,
+} from "@/lib/store-content";
 import { formatBdt } from "@/lib/store-format";
 import { getRoshalLocale } from "@/lib/store-i18n";
 import { getLocalizedValue } from "@/lib/store-locale";
 
-export default async function DashboardSystemSettingsPage() {
-  const [locale, siteSettings] = await Promise.all([
+const saveMessages: Record<string, string> = {
+  delivery: "Delivery settings saved successfully.",
+  payment: "Payment settings saved successfully.",
+};
+
+export default async function DashboardSystemSettingsPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{
+    saved?: string;
+  }>;
+}) {
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const [locale, siteSettings, paymentSettings] = await Promise.all([
     getRoshalLocale(),
     getRoshalSiteSettings(),
+    getRoshalPaymentSettings(),
     requireRoshalAdmin(),
   ]);
   const enabledZoneCount = siteSettings.deliveryZones.filter(
@@ -50,7 +71,16 @@ export default async function DashboardSystemSettingsPage() {
         </p>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {resolvedSearchParams.saved ? (
+        <Alert>
+          <AlertDescription>
+            {saveMessages[resolvedSearchParams.saved] ||
+              "Settings saved successfully."}
+          </AlertDescription>
+        </Alert>
+      ) : null}
+
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
         <DashboardMetricCard
           title="Delivery zones"
           value={siteSettings.deliveryZones.length}
@@ -74,7 +104,11 @@ export default async function DashboardSystemSettingsPage() {
 
       <form action={saveRoshalSiteSettings} className="space-y-6">
         <input type="hidden" name="id" value={siteSettings.id} />
-        <input type="hidden" name="redirectTo" value="/dashboard/settings" />
+        <input
+          type="hidden"
+          name="redirectTo"
+          value="/dashboard/settings?saved=delivery"
+        />
 
         <Accordion
           type="multiple"
@@ -257,6 +291,40 @@ export default async function DashboardSystemSettingsPage() {
           </Button>
         </div>
       </form>
+
+      <section id="payment-settings" className="space-y-4">
+        <div className="min-w-0 space-y-1 border-t pt-6">
+          <h2 className="text-2xl font-semibold tracking-tight">
+            Payment settings
+          </h2>
+          <p className="text-sm leading-6 text-muted-foreground">
+            Add, remove, enable, disable, and edit checkout payment providers
+            from the same Delivery Setting workspace.
+          </p>
+        </div>
+
+        <form action={saveRoshalPaymentSettings} className="space-y-4">
+          <input type="hidden" name="id" value={paymentSettings.id} />
+          <input
+            type="hidden"
+            name="redirectTo"
+            value="/dashboard/settings?saved=payment#payment-settings"
+          />
+          <div className="rounded-lg border-none bg-card p-4 shadow-sm">
+            <DashboardPaymentProvidersEditor
+              locale={locale}
+              name="paymentOptionsJson"
+              value={paymentSettings.options}
+            />
+          </div>
+          <div className="flex justify-end">
+            <Button type="submit">
+              <Save className="size-4" />
+              Save payment settings
+            </Button>
+          </div>
+        </form>
+      </section>
     </div>
   );
 }
