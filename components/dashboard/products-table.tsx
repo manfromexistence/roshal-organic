@@ -1,14 +1,25 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { ExternalLink, MoreHorizontal, Pencil } from "lucide-react";
+import { ExternalLink, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import { removeRoshalProduct } from "@/actions/admin";
 import { DashboardTableShell } from "@/components/dashboard/dashboard-table-shell";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { DataTableSortList } from "@/components/data-table/data-table-sort-list";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -36,7 +47,16 @@ interface ProductRow {
   status: string;
 }
 
-function getColumns(): ColumnDef<ProductRow>[] {
+interface ProductDeleteTarget {
+  id: string;
+  name: string;
+}
+
+function getColumns({
+  onDeleteRequest,
+}: {
+  onDeleteRequest: (target: ProductDeleteTarget) => void;
+}): ColumnDef<ProductRow>[] {
   return [
     {
       id: "name",
@@ -154,6 +174,19 @@ function getColumns(): ColumnDef<ProductRow>[] {
                 Open storefront
               </Link>
             </DropdownMenuItem>
+            <DropdownMenuItem
+              className="text-destructive focus:text-destructive"
+              onSelect={(event) => {
+                event.preventDefault();
+                onDeleteRequest({
+                  id: row.original.id,
+                  name: row.original.name,
+                });
+              }}
+            >
+              <Trash2 className="size-4" />
+              Delete product
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       ),
@@ -192,6 +225,9 @@ export function RoshalProductsTable({
   products: RoshalProduct[];
   locale: RoshalLocale;
 }) {
+  const [deleteTarget, setDeleteTarget] = useState<ProductDeleteTarget | null>(
+    null,
+  );
   const sortedProducts = [...products].sort((left, right) => {
     const latestDelta = latestProductTime(right) - latestProductTime(left);
 
@@ -226,7 +262,7 @@ export function RoshalProductsTable({
 
   const { table } = useDataTable({
     data: rows,
-    columns: getColumns(),
+    columns: getColumns({ onDeleteRequest: setDeleteTarget }),
     pageCount: Math.ceil(Math.max(rows.length, 1) / 10),
     initialState: {
       pagination: { pageIndex: 0, pageSize: 10 },
@@ -275,7 +311,7 @@ export function RoshalProductsTable({
                         {category}
                       </p>
                     </div>
-                    <div className="flex flex-wrap items-center gap-1.5">
+                    <div className="flex min-w-0 max-w-full flex-wrap items-center gap-1.5">
                       <Badge variant="secondary" className="rounded-sm">
                         {formatBdt(product.price, locale)}
                       </Badge>
@@ -298,7 +334,7 @@ export function RoshalProductsTable({
                         {product.isPublished ? "Published" : "Draft"}
                       </Badge>
                     </div>
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="flex min-w-0 max-w-full flex-wrap gap-1.5">
                       <Button
                         asChild
                         variant="outline"
@@ -318,6 +354,20 @@ export function RoshalProductsTable({
                           Open
                         </Link>
                       </Button>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        className="h-8"
+                        onClick={() =>
+                          setDeleteTarget({
+                            id: product.id,
+                            name,
+                          })
+                        }
+                      >
+                        Delete
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
@@ -334,6 +384,41 @@ export function RoshalProductsTable({
           </DataTable>
         </div>
       </div>
+
+      <AlertDialog
+        open={Boolean(deleteTarget)}
+        onOpenChange={(open) => {
+          if (!open) {
+            setDeleteTarget(null);
+          }
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete product?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This permanently removes {deleteTarget?.name || "this product"}{" "}
+              from the storefront catalog and also removes its product reviews.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            {deleteTarget ? (
+              <form action={removeRoshalProduct}>
+                <input type="hidden" name="id" value={deleteTarget.id} />
+                <input
+                  type="hidden"
+                  name="redirectTo"
+                  value="/dashboard/products?deleted=1"
+                />
+                <Button type="submit" variant="destructive">
+                  Delete
+                </Button>
+              </form>
+            ) : null}
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </DashboardTableShell>
   );
 }

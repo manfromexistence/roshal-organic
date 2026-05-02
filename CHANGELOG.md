@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Fixed
+- Fixed dashboard product feedback so delete redirects/toasts cannot show the New product added message.
+- Fixed blank product image saves by storing a concrete `/logo.png` fallback when admins do not add a primary product image.
+- Removed homepage hero image gradient overlays so dashboard-uploaded banner images render without storefront effects.
+- Fixed product creation after deleted catalog rows by moving deleted product tombstones onto reserved slug/SKU values and ignoring tombstoned rows during duplicate checks.
+- Fixed product deletion so built-in default products are hidden with a deletion tombstone instead of reappearing from fallback catalog data after the DB row is removed.
+- Fixed dashboard delete confirmation footers so destructive submit buttons stretch to match the full-width Cancel button on narrow dashboard dialogs.
+- Fixed product deletion hardening by ensuring the product-review table exists before deleting dependent product reviews.
+- Fixed the dashboard All Pages editor list and metrics so they only show the same client-handoff marketing pages exposed in the sidebar.
+- Added dashboard product and marketing-page delete flows with confirmation dialogs, server-side deletion, dependent product-review/CMS-section cleanup, and success feedback after redirect.
+- Fixed dashboard metric cards and compact mobile table cards so long text and badges truncate with ellipses instead of overflowing two-column admin card layouts.
 - Fixed new product creation blocking by removing accidental required validation from optional product fields such as Badge while keeping real product identity, price, inventory, and sort fields explicit.
 - Fixed dashboard marketing editor overload by moving secondary page, section setup, media/CTA, item, style, and shortcut controls behind accordions while keeping closed form fields mounted for correct saves.
 - Fixed homepage testimonials and product review displays by seeding published product-review rows, keeping homepage testimonials DB-backed, showing product rating summaries on product detail pages, and revalidating Home after new review submissions.

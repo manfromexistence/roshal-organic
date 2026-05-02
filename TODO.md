@@ -78,6 +78,12 @@
 ## 2026-05-02 Latest admin sorting, homepage responsive, and order email
 
 - [x] Keep dashboard products, categories, marketing pages, and users latest-first in their admin tables without changing storefront merchandising order.
+- [x] Keep two-column dashboard admin cards while truncating long metric text and badges with ellipses instead of allowing card overflow.
+- [x] Add confirmed delete controls for dashboard products and marketing pages, including product review cleanup and CMS section cleanup.
+- [x] Create hidden/draft real QA category, subcategory, product, page, and section records to test admin list/card/editor behavior without public storefront pollution.
+- [x] Limit the dashboard All Pages editor list to the same handoff pages shown in the sidebar.
+- [x] Make dashboard delete dialog submit buttons full-width on narrow dialogs and harden product delete against missing review-table setup.
+- [x] Stop deleted default products from reappearing through fallback catalog data.
 
 ## 2026-05-02 Dashboard product review management
 
@@ -112,6 +118,12 @@
 - [x] Filter the Marketing dashboard page shortcuts and Marketing pages table to the same simplified client-handoff pages as the sidebar.
 
 ## 2026-05-02 CMS, checkout, and upload QA
+
+- [x] Fix product delete feedback so deletion cannot show the New product added alert or toast.
+- [x] Save `/logo.png` as the fallback image when admins create products without a primary image.
+- [x] Remove storefront homepage hero image overlays so uploaded dashboard images appear without gradient effects.
+- [x] Fix product creation after deleted rows by releasing tombstone slug/SKU values before validating new product uploads.
+- [x] Browser-test dashboard New Product creation after the fix and clean up the temporary QA products.
 
 - [x] Verify the dashboard CMS home API and marketing/page editor routes in the in-app browser.
 - [x] Fix the homepage CMS visibility path so disabled sections are not re-rendered from fallback defaults.

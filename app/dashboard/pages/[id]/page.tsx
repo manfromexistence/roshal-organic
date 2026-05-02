@@ -1,8 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { saveRoshalPage, saveRoshalSection } from "@/actions/admin";
+import {
+  removeRoshalPage,
+  saveRoshalPage,
+  saveRoshalSection,
+} from "@/actions/admin";
 import { CmsSaveToast } from "@/components/dashboard/cms-save-toast";
+import { DeleteConfirmationButton } from "@/components/dashboard/delete-confirmation-button";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
 import {
@@ -272,6 +277,27 @@ export default async function DashboardPageEditorRoute({
           </form>
         </CardContent>
       </Card>
+
+      <DeleteConfirmationButton
+        action={removeRoshalPage}
+        buttonLabel={
+          locale === "bn"
+            ? "à¦ªà§‡à¦œ à¦¡à¦¿à¦²à¦¿à¦Ÿ à¦•à¦°à§à¦¨"
+            : "Delete page"
+        }
+        description={
+          locale === "bn"
+            ? "à¦à¦‡ à¦ªà§‡à¦œà¦Ÿà¦¿ dashboard à¦¥à§‡à¦•à§‡ à¦¸à¦°à¦¿à§Ÿà§‡ à¦¦à§‡à¦¬à§‡ à¦à¦¬à¦‚ à¦à¦° CMS section à¦—à§à¦²à§‹ à¦®à§à¦›à§‡ à¦¦à§‡à¦¬à§‡à¥¤"
+            : `This removes ${page.title.en} from the dashboard page list and deletes its CMS sections.`
+        }
+        id={page.id}
+        redirectTo="/dashboard/pages?deleted=1"
+        title={
+          locale === "bn"
+            ? "à¦ªà§‡à¦œ à¦¡à¦¿à¦²à¦¿à¦Ÿ à¦•à¦°à¦¬à§‡à¦¨?"
+            : "Delete marketing page?"
+        }
+      />
 
       {/* Homepage section map is intentionally hidden to keep this marketing page editor compact. */}
 

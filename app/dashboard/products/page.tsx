@@ -12,9 +12,17 @@ import { getRoshalLocale } from "@/lib/store-i18n";
 export default async function DashboardProductsPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ created?: string }>;
+  searchParams?: Promise<{ created?: string; deleted?: string }>;
 }) {
   const resolvedSearchParams = searchParams ? await searchParams : {};
+  const showDeletedFeedback = Boolean(resolvedSearchParams.deleted);
+  const showCreatedFeedback =
+    Boolean(resolvedSearchParams.created) && !showDeletedFeedback;
+  const feedbackStatus = showDeletedFeedback
+    ? "deleted"
+    : showCreatedFeedback
+      ? "created"
+      : undefined;
   const [locale, products] = await Promise.all([
     getRoshalLocale(),
     getAllRoshalProducts(),
@@ -31,7 +39,7 @@ export default async function DashboardProductsPage({
   ).length;
   return (
     <div className="min-w-0 space-y-6 px-6 pt-6 pb-4">
-      <ProductCreatedToast enabled={Boolean(resolvedSearchParams.created)} />
+      <ProductCreatedToast status={feedbackStatus} />
 
       <div className="flex min-w-0 flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div className="min-w-0 space-y-2">
@@ -50,11 +58,17 @@ export default async function DashboardProductsPage({
         </Button>
       </div>
 
-      {resolvedSearchParams.created ? (
+      {showCreatedFeedback ? (
         <Alert>
           <AlertDescription>
             New product added. It is now visible in the product list.
           </AlertDescription>
+        </Alert>
+      ) : null}
+
+      {showDeletedFeedback ? (
+        <Alert>
+          <AlertDescription>Product deleted successfully.</AlertDescription>
         </Alert>
       ) : null}
 

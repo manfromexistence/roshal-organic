@@ -8,7 +8,8 @@ import {
   Save,
 } from "lucide-react";
 import Link from "next/link";
-import { saveRoshalProduct } from "@/actions/admin";
+import { removeRoshalProduct, saveRoshalProduct } from "@/actions/admin";
+import { DeleteConfirmationButton } from "@/components/dashboard/delete-confirmation-button";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
 import { DashboardImageGalleryField } from "@/components/dashboard/image-gallery-field";
 import { JsonFieldEditor } from "@/components/dashboard/json-field-editor";
@@ -446,6 +447,17 @@ export async function ProductEditorPage({
           </div>
         </div>
       </form>
+
+      {product ? (
+        <DeleteConfirmationButton
+          action={removeRoshalProduct}
+          buttonLabel="Delete product"
+          description={`This permanently removes ${product.name.en} from the storefront catalog and removes its product reviews.`}
+          id={product.id}
+          redirectTo="/dashboard/products?deleted=1"
+          title="Delete product?"
+        />
+      ) : null}
     </div>
   );
 }

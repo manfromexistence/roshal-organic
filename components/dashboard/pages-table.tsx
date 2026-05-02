@@ -1,13 +1,24 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { ExternalLink, MoreHorizontal, Pencil } from "lucide-react";
+import { ExternalLink, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
+import { removeRoshalPage } from "@/actions/admin";
 import { DashboardTableShell } from "@/components/dashboard/dashboard-table-shell";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import { DataTableSortList } from "@/components/data-table/data-table-sort-list";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -31,11 +42,20 @@ interface PageRow {
   storefrontPath: string;
 }
 
+interface PageDeleteTarget {
+  id: string;
+  title: string;
+}
+
 function storefrontPathFromSlug(slug: string) {
   return slug === "home" ? "/" : `/${slug}`;
 }
 
-function getColumns(): ColumnDef<PageRow>[] {
+function getColumns({
+  onDeleteRequest,
+}: {
+  onDeleteRequest: (target: PageDeleteTarget) => void;
+}): ColumnDef<PageRow>[] {
   return [
     {
       id: "title",
@@ -124,6 +144,19 @@ function getColumns(): ColumnDef<PageRow>[] {
                 </Link>
               </DropdownMenuItem>
             ) : null}
+            <DropdownMenuItem
+              className="text-destructive focus:text-destructive"
+              onSelect={(event) => {
+                event.preventDefault();
+                onDeleteRequest({
+                  id: row.original.id,
+                  title: row.original.title,
+                });
+              }}
+            >
+              <Trash2 className="size-4" />
+              Delete page
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       ),
@@ -139,6 +172,9 @@ export function RoshalPagesTable({
   pages: RoshalMarketingPage[];
   locale: RoshalLocale;
 }) {
+  const [deleteTarget, setDeleteTarget] = useState<PageDeleteTarget | null>(
+    null,
+  );
   const sortedPages = [...pages].sort((left, right) => {
     const latestDelta =
       (right.updatedAt || right.createdAt || new Date(0)).getTime() -
@@ -164,7 +200,7 @@ export function RoshalPagesTable({
 
   const { table } = useDataTable({
     data: rows,
-    columns: getColumns(),
+    columns: getColumns({ onDeleteRequest: setDeleteTarget }),
     pageCount: Math.ceil(Math.max(rows.length, 1) / 10),
     initialState: {
       pagination: { pageIndex: 0, pageSize: 10 },
@@ -203,7 +239,7 @@ export function RoshalPagesTable({
                       /{page.slug}
                     </p>
                   </div>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex min-w-0 max-w-full flex-wrap gap-1.5">
                     <Badge
                       variant={
                         page.status === "published" ? "secondary" : "outline"
@@ -216,7 +252,7 @@ export function RoshalPagesTable({
                       {page.showInNavigation ? "Visible" : "Hidden"}
                     </Badge>
                   </div>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex min-w-0 max-w-full flex-wrap gap-1.5">
                     <Button asChild variant="outline" size="sm" className="h-8">
                       <Link href={`/dashboard/pages/${page.id}`}>Edit</Link>
                     </Button>
@@ -231,6 +267,20 @@ export function RoshalPagesTable({
                         </Link>
                       </Button>
                     ) : null}
+                    <Button
+                      type="button"
+                      variant="destructive"
+                      size="sm"
+                      className="h-8"
+                      onClick={() =>
+                        setDeleteTarget({
+                          id: page.id,
+                          title: getLocalizedValue(locale, page.title),
+                        })
+                      }
+                    >
+                      Delete
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -246,6 +296,43 @@ export function RoshalPagesTable({
           </DataTable>
         </div>
       </div>
+
+      <AlertDialog
+        open={Boolean(deleteTarget)}
+        onOpenChange={(open) => {
+          if (!open) {
+            setDeleteTarget(null);
+          }
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete marketing page?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This removes {deleteTarget?.title || "this page"} from the
+              dashboard page list and deletes its CMS sections. Default pages
+              are hidden with a deletion marker so they do not immediately
+              reappear from fallback content.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            {deleteTarget ? (
+              <form action={removeRoshalPage}>
+                <input type="hidden" name="id" value={deleteTarget.id} />
+                <input
+                  type="hidden"
+                  name="redirectTo"
+                  value="/dashboard/pages?deleted=1"
+                />
+                <Button type="submit" variant="destructive">
+                  Delete
+                </Button>
+              </form>
+            ) : null}
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </DashboardTableShell>
   );
 }

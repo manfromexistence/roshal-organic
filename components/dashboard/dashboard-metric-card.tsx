@@ -59,6 +59,8 @@ export function DashboardMetricCard({
   hint?: string;
 }) {
   const emoji = getEmojiForTitle(title);
+  const displayValue = String(value);
+  const displayHint = hint || "Live dashboard data";
 
   return (
     <Card
@@ -69,15 +71,24 @@ export function DashboardMetricCard({
     >
       <CardContent className="min-w-0 p-2.5 sm:p-3">
         <div className="flex min-w-0 items-start justify-between gap-1.5 sm:gap-2">
-          <div className="min-w-0 space-y-1">
-            <p className="break-words text-xs font-semibold leading-4 text-foreground sm:text-sm">
+          <div className="min-w-0 max-w-full flex-1 space-y-1">
+            <p
+              className="max-w-full truncate text-xs font-semibold leading-4 text-foreground sm:text-sm"
+              title={title}
+            >
               {title}
             </p>
-            <div className="break-words text-xl font-extrabold leading-tight tracking-tight text-foreground sm:text-2xl">
-              {value}
+            <div
+              className="max-w-full truncate text-xl font-extrabold leading-tight tracking-tight text-foreground sm:text-2xl"
+              title={displayValue}
+            >
+              {displayValue}
             </div>
-            <p className="break-words text-[11px] leading-4 text-muted-foreground sm:text-xs">
-              {hint || "Live dashboard data"}
+            <p
+              className="max-w-full truncate text-[11px] leading-4 text-muted-foreground sm:text-xs"
+              title={displayHint}
+            >
+              {displayHint}
             </p>
           </div>
           <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs sm:h-7 sm:w-7 sm:text-sm">

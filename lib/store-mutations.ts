@@ -19,6 +19,7 @@ import {
 import { ensureRoshalCmsSchema } from "@/lib/store-cms-schema";
 import { getRoshalPaymentSettings } from "@/lib/store-content";
 import {
+  defaultRoshalPages,
   defaultRoshalProducts,
   defaultRoshalSiteSettings,
 } from "@/lib/store-defaults";
@@ -29,6 +30,7 @@ import {
 } from "@/lib/store-delivery";
 import { sendRoshalNewOrderEmail } from "@/lib/store-email";
 import { safeJsonParse } from "@/lib/store-format";
+import { normalizeRoshalAssetPath } from "@/lib/store-media";
 import {
   isRoshalManualPaymentReferenceRequired,
   normalizeRoshalPaymentMethodKey,
@@ -49,6 +51,7 @@ import {
   normalizeRoshalProductPurchaseOptions,
   serializeRoshalProductPurchaseOptions,
 } from "@/lib/store-product-options";
+import { ensureRoshalProductReviewSchema } from "@/lib/store-product-review-schema";
 import { ensureRoshalProductSchema } from "@/lib/store-product-schema";
 import {
   isRoshalReservedPageSlug,
@@ -81,6 +84,54 @@ function normalizeRole(role: string | null | undefined): RoshalRole {
 
 function nextId(prefix: string) {
   return `${prefix}-${crypto.randomUUID()}`;
+}
+
+function deletedRoshalProductSlug(id: string) {
+  return `deleted-${id}`;
+}
+
+function deletedRoshalProductSku(id: string) {
+  return `DELETED-${id.toUpperCase()}`;
+}
+
+function normalizeRoshalProductHeroImage(value: string) {
+  return normalizeRoshalAssetPath(value, "/logo.png");
+}
+
+async function releaseDeletedRoshalProductKeys({
+  currentId,
+  sku,
+  slug,
+  timestamp,
+}: {
+  currentId: string;
+  sku: string;
+  slug: string;
+  timestamp: Date;
+}) {
+  const deletedProducts = await db
+    .select({
+      id: roshalProducts.id,
+    })
+    .from(roshalProducts)
+    .where(
+      and(
+        ne(roshalProducts.id, currentId),
+        sql`${roshalProducts.deletedAt} IS NOT NULL`,
+        sql`(${roshalProducts.slug} = ${slug} OR ${roshalProducts.sku} = ${sku})`,
+      ),
+    );
+
+  for (const product of deletedProducts) {
+    await db
+      .update(roshalProducts)
+      .set({
+        slug: deletedRoshalProductSlug(product.id),
+        sku: deletedRoshalProductSku(product.id),
+        updatedAt: timestamp,
+      })
+      .where(eq(roshalProducts.id, product.id));
+  }
 }
 
 function isForeignKeyConstraintError(error: unknown) {
@@ -1181,6 +1232,67 @@ export async function upsertRoshalPage(input: UpsertRoshalPageInput) {
   return id;
 }
 
+export async function deleteRoshalPage(id: string) {
+  await ensureRoshalCmsSchema();
+  const timestamp = new Date();
+  const defaultPage = defaultRoshalPages.find((page) => page.id === id);
+  const [existingPage] = await db
+    .select({
+      id: roshalPages.id,
+      slug: roshalPages.slug,
+    })
+    .from(roshalPages)
+    .where(eq(roshalPages.id, id))
+    .limit(1);
+  const page = existingPage || defaultPage;
+
+  if (!page) {
+    return null;
+  }
+
+  const isDefaultPage = defaultRoshalPages.some(
+    (item) => item.id === page.id || item.slug === page.slug,
+  );
+
+  await db.transaction(async (tx) => {
+    await tx.delete(roshalSections).where(eq(roshalSections.pageId, page.id));
+
+    if (isDefaultPage) {
+      await tx
+        .insert(roshalPages)
+        .values({
+          id: page.id,
+          slug: page.slug,
+          navigationLabelBn:
+            defaultPage?.navigationLabel.bn || page.slug || "Deleted",
+          navigationLabelEn:
+            defaultPage?.navigationLabel.en || page.slug || "Deleted",
+          titleBn: defaultPage?.title.bn || page.slug || "Deleted",
+          titleEn: defaultPage?.title.en || page.slug || "Deleted",
+          descriptionBn: defaultPage?.description.bn || null,
+          descriptionEn: defaultPage?.description.en || null,
+          heroImage: defaultPage?.heroImage || null,
+          status: "deleted",
+          showInNavigation: false,
+          createdAt: timestamp,
+          updatedAt: timestamp,
+        })
+        .onConflictDoUpdate({
+          target: roshalPages.id,
+          set: {
+            status: "deleted",
+            showInNavigation: false,
+            updatedAt: timestamp,
+          },
+        });
+    } else {
+      await tx.delete(roshalPages).where(eq(roshalPages.id, page.id));
+    }
+  });
+
+  return { id: page.id, slug: page.slug };
+}
+
 export interface UpsertRoshalSectionInput {
   id?: string;
   pageId: string;
@@ -1326,6 +1438,7 @@ export async function upsertRoshalProduct(input: UpsertRoshalProductInput) {
   const timestamp = new Date();
   const slug = normalizeRoshalRouteSlug(input.slug);
   const sku = input.sku.trim().toUpperCase();
+  const heroImage = normalizeRoshalProductHeroImage(input.heroImage);
 
   if (!slug || !isValidRoshalRouteSlug(slug)) {
     throw new RoshalProductError(
@@ -1355,12 +1468,25 @@ export async function upsertRoshalProduct(input: UpsertRoshalProductInput) {
     );
   }
 
+  await releaseDeletedRoshalProductKeys({
+    currentId: id,
+    sku,
+    slug,
+    timestamp,
+  });
+
   const [existingSlug] = await db
     .select({
       id: roshalProducts.id,
     })
     .from(roshalProducts)
-    .where(and(eq(roshalProducts.slug, slug), ne(roshalProducts.id, id)))
+    .where(
+      and(
+        eq(roshalProducts.slug, slug),
+        ne(roshalProducts.id, id),
+        sql`${roshalProducts.deletedAt} IS NULL`,
+      ),
+    )
     .limit(1);
 
   if (existingSlug) {
@@ -1375,7 +1501,13 @@ export async function upsertRoshalProduct(input: UpsertRoshalProductInput) {
       id: roshalProducts.id,
     })
     .from(roshalProducts)
-    .where(and(eq(roshalProducts.sku, sku), ne(roshalProducts.id, id)))
+    .where(
+      and(
+        eq(roshalProducts.sku, sku),
+        ne(roshalProducts.id, id),
+        sql`${roshalProducts.deletedAt} IS NULL`,
+      ),
+    )
     .limit(1);
 
   if (existingSku) {
@@ -1404,7 +1536,7 @@ export async function upsertRoshalProduct(input: UpsertRoshalProductInput) {
       compareAtPrice: input.compareAtPrice ?? null,
       inventory: input.inventory,
       badge: toOptionalText(input.badge),
-      heroImage: input.heroImage,
+      heroImage,
       galleryJson: toOptionalText(input.galleryJson),
       featuresBnJson: toOptionalText(input.featuresBnJson),
       featuresEnJson: toOptionalText(input.featuresEnJson),
@@ -1412,6 +1544,7 @@ export async function upsertRoshalProduct(input: UpsertRoshalProductInput) {
       isFeatured: input.isFeatured,
       isPublished: input.isPublished,
       sortOrder: input.sortOrder,
+      deletedAt: null,
       createdAt: timestamp,
       updatedAt: timestamp,
     })
@@ -1433,7 +1566,7 @@ export async function upsertRoshalProduct(input: UpsertRoshalProductInput) {
         compareAtPrice: input.compareAtPrice ?? null,
         inventory: input.inventory,
         badge: toOptionalText(input.badge),
-        heroImage: input.heroImage,
+        heroImage,
         galleryJson: toOptionalText(input.galleryJson),
         featuresBnJson: toOptionalText(input.featuresBnJson),
         featuresEnJson: toOptionalText(input.featuresEnJson),
@@ -1441,11 +1574,107 @@ export async function upsertRoshalProduct(input: UpsertRoshalProductInput) {
         isFeatured: input.isFeatured,
         isPublished: input.isPublished,
         sortOrder: input.sortOrder,
+        deletedAt: null,
         updatedAt: timestamp,
       },
     });
 
   return id;
+}
+
+export async function deleteRoshalProduct(id: string) {
+  await Promise.all([
+    ensureRoshalProductSchema(),
+    ensureRoshalProductReviewSchema(),
+  ]);
+  const [existingProduct] = await db
+    .select()
+    .from(roshalProducts)
+    .where(eq(roshalProducts.id, id))
+    .limit(1);
+  const defaultProduct = defaultRoshalProducts.find(
+    (product) =>
+      product.id === id ||
+      product.id === existingProduct?.id ||
+      product.slug === existingProduct?.slug,
+  );
+
+  if (!existingProduct && !defaultProduct) {
+    return null;
+  }
+
+  const deletedProduct = {
+    id: existingProduct?.id || defaultProduct?.id || id,
+    slug: existingProduct?.slug || defaultProduct?.slug || id,
+  };
+  const timestamp = new Date();
+
+  await db.transaction(async (tx) => {
+    await tx
+      .delete(roshalProductReviews)
+      .where(eq(roshalProductReviews.productId, deletedProduct.id));
+
+    if (defaultProduct) {
+      const tombstoneSlug = deletedRoshalProductSlug(defaultProduct.id);
+      const tombstoneSku = deletedRoshalProductSku(defaultProduct.id);
+
+      if (existingProduct) {
+        await tx
+          .update(roshalProducts)
+          .set({
+            slug: tombstoneSlug,
+            sku: tombstoneSku,
+            isFeatured: false,
+            isPublished: false,
+            deletedAt: timestamp,
+            updatedAt: timestamp,
+          })
+          .where(eq(roshalProducts.id, existingProduct.id));
+      } else {
+        await tx.insert(roshalProducts).values({
+          id: defaultProduct.id,
+          slug: tombstoneSlug,
+          sku: tombstoneSku,
+          nameBn: defaultProduct.name.bn,
+          nameEn: defaultProduct.name.en,
+          summaryBn: defaultProduct.summary.bn,
+          summaryEn: defaultProduct.summary.en,
+          descriptionBn: defaultProduct.description.bn,
+          descriptionEn: defaultProduct.description.en,
+          categoryKey: defaultProduct.categoryKey,
+          categoryLabelBn: defaultProduct.categoryLabel.bn,
+          categoryLabelEn: defaultProduct.categoryLabel.en,
+          price: defaultProduct.price,
+          compareAtPrice: defaultProduct.compareAtPrice,
+          inventory: defaultProduct.inventory,
+          badge: defaultProduct.badge,
+          heroImage: defaultProduct.heroImage,
+          galleryJson: JSON.stringify(defaultProduct.gallery),
+          featuresBnJson: JSON.stringify(
+            defaultProduct.features.map((feature) => feature.bn),
+          ),
+          featuresEnJson: JSON.stringify(
+            defaultProduct.features.map((feature) => feature.en),
+          ),
+          purchaseOptionsJson: serializeRoshalProductPurchaseOptions(
+            defaultProduct.purchaseOptions || [],
+          ),
+          isFeatured: false,
+          isPublished: false,
+          sortOrder: defaultProduct.sortOrder,
+          deletedAt: timestamp,
+          createdAt: timestamp,
+          updatedAt: timestamp,
+        });
+      }
+
+      return;
+    }
+
+    await tx.delete(roshalProducts).where(eq(roshalProducts.id, id));
+  });
+
+  return deletedProduct;
 }
 
 export async function updateRoshalOrderStatus(input: {

@@ -8,6 +8,8 @@ import { safeJsonParse } from "@/lib/store-format";
 import {
   createValidatedRoshalOrder,
   deleteRoshalCategory,
+  deleteRoshalPage,
+  deleteRoshalProduct,
   deleteRoshalSubcategory,
   deleteRoshalUser,
   RoshalOrderStatusError,
@@ -488,6 +490,31 @@ export async function saveRoshalPage(formData: FormData) {
   );
 }
 
+export async function removeRoshalPage(formData: FormData) {
+  await requireRoshalAdmin();
+  const deletedPage = await deleteRoshalPage(textValue(formData, "id"));
+  const deletedPath =
+    deletedPage?.slug === "home"
+      ? "/"
+      : deletedPage
+        ? `/${deletedPage.slug}`
+        : "";
+
+  for (const path of [
+    deletedPath,
+    "/",
+    "/about",
+    "/contact",
+    "/dashboard/pages",
+  ]) {
+    if (path) {
+      revalidatePath(path);
+    }
+  }
+
+  redirect(textValue(formData, "redirectTo") || "/dashboard/pages?deleted=1");
+}
+
 export async function saveRoshalSection(formData: FormData) {
   await requireRoshalAdmin();
 
@@ -634,6 +661,27 @@ export async function saveRoshalProduct(formData: FormData) {
     productId
       ? `/dashboard/products/${id}?saved=1`
       : "/dashboard/products?created=1",
+  );
+}
+
+export async function removeRoshalProduct(formData: FormData) {
+  await requireRoshalAdmin();
+  const deletedProduct = await deleteRoshalProduct(textValue(formData, "id"));
+
+  for (const path of [
+    "/",
+    "/products",
+    deletedProduct ? `/products/${deletedProduct.slug}` : "",
+    "/dashboard/products",
+    "/dashboard/reviews",
+  ]) {
+    if (path) {
+      revalidatePath(path);
+    }
+  }
+
+  redirect(
+    textValue(formData, "redirectTo") || "/dashboard/products?deleted=1",
   );
 }
 

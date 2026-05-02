@@ -182,6 +182,7 @@ export interface RoshalProduct {
   isFeatured: boolean;
   isPublished: boolean;
   sortOrder: number;
+  deletedAt?: Date | null;
   createdAt?: Date;
   updatedAt?: Date;
 }

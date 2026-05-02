@@ -236,6 +236,7 @@ export const roshalProducts = sqliteTable("roshal_products", {
     .notNull()
     .default(true),
   sortOrder: integer("sort_order").notNull().default(0),
+  deletedAt: integer("deleted_at", { mode: "timestamp" }),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
   updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
 });

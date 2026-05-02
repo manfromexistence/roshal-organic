@@ -26,12 +26,14 @@ const productStatements = [
     is_featured INTEGER NOT NULL DEFAULT 0,
     is_published INTEGER NOT NULL DEFAULT 1,
     sort_order INTEGER NOT NULL DEFAULT 0,
+    deleted_at INTEGER,
     created_at INTEGER NOT NULL,
     updated_at INTEGER NOT NULL
   )`,
   `CREATE UNIQUE INDEX IF NOT EXISTS roshal_products_slug_unique ON roshal_products (slug)`,
   `CREATE UNIQUE INDEX IF NOT EXISTS roshal_products_sku_unique ON roshal_products (sku)`,
   `ALTER TABLE roshal_products ADD COLUMN purchase_options_json TEXT`,
+  `ALTER TABLE roshal_products ADD COLUMN deleted_at INTEGER`,
 ];
 
 let ensurePromise: Promise<void> | null = null;

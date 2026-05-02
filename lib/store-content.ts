@@ -82,13 +82,20 @@ function mergeRoshalPages(pages: RoshalMarketingPage[]) {
   const seenSlugs = new Set<string>();
 
   for (const defaultPage of defaultRoshalPages) {
-    const page = pageBySlug.get(defaultPage.slug) || defaultPage;
-    mergedPages.push(page);
-    seenSlugs.add(page.slug);
+    const page = pageBySlug.get(defaultPage.slug);
+
+    if (page?.status === "deleted") {
+      seenSlugs.add(defaultPage.slug);
+      continue;
+    }
+
+    const mergedPage = page || defaultPage;
+    mergedPages.push(mergedPage);
+    seenSlugs.add(mergedPage.slug);
   }
 
   const customPages = pages
-    .filter((page) => !seenSlugs.has(page.slug))
+    .filter((page) => !seenSlugs.has(page.slug) && page.status !== "deleted")
     .sort((left, right) => left.slug.localeCompare(right.slug));
 
   return [...mergedPages, ...customPages];
@@ -204,20 +211,42 @@ function mapProduct(row: typeof roshalProducts.$inferSelect): RoshalProduct {
     isFeatured: Boolean(row.isFeatured),
     isPublished: Boolean(row.isPublished),
     sortOrder: row.sortOrder,
+    deletedAt: row.deletedAt,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
   });
 }
 
 function mergeRoshalProducts(products: RoshalProduct[]) {
+  const deletedKeys = new Set<string>();
+  const activeProducts = products.filter((product) => {
+    if (product.deletedAt) {
+      deletedKeys.add(product.id);
+      deletedKeys.add(product.slug);
+      return false;
+    }
+
+    return true;
+  });
   const productBySlug = new Map(
-    products.map((product) => [product.slug, product]),
+    activeProducts.map((product) => [product.slug, product]),
   );
-  const productById = new Map(products.map((product) => [product.id, product]));
+  const productById = new Map(
+    activeProducts.map((product) => [product.id, product]),
+  );
   const mergedProducts: RoshalProduct[] = [];
   const consumedKeys = new Set<string>();
 
   for (const defaultProduct of defaultRoshalProducts) {
+    if (
+      deletedKeys.has(defaultProduct.id) ||
+      deletedKeys.has(defaultProduct.slug)
+    ) {
+      consumedKeys.add(defaultProduct.id);
+      consumedKeys.add(defaultProduct.slug);
+      continue;
+    }
+
     const product =
       productBySlug.get(defaultProduct.slug) ??
       productById.get(defaultProduct.id) ??
@@ -231,7 +260,9 @@ function mergeRoshalProducts(products: RoshalProduct[]) {
   const customProducts = products
     .filter(
       (product) =>
-        !consumedKeys.has(product.id) && !consumedKeys.has(product.slug),
+        !product.deletedAt &&
+        !consumedKeys.has(product.id) &&
+        !consumedKeys.has(product.slug),
     )
     .sort((left, right) => {
       if (left.sortOrder !== right.sortOrder) {
@@ -662,6 +693,10 @@ export async function getRoshalProductBySlug(slug: string) {
       .limit(1);
 
     if (product) {
+      if (product.deletedAt) {
+        return null;
+      }
+
       return product.isPublished ? mapProduct(product) : null;
     }
 

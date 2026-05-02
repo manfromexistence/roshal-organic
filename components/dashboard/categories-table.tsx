@@ -308,7 +308,7 @@ export function RoshalCategoriesTable({ rows }: { rows: CategoryTableRow[] }) {
                       : row.key}
                   </p>
                 </div>
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex min-w-0 max-w-full flex-wrap gap-1.5">
                   <Badge variant="outline" className="rounded-sm capitalize">
                     {row.type}
                   </Badge>
@@ -325,7 +325,7 @@ export function RoshalCategoriesTable({ rows }: { rows: CategoryTableRow[] }) {
                     {row.subcategoryCount} subcategories
                   </Badge>
                 </div>
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex min-w-0 max-w-full flex-wrap gap-1.5">
                   <Button asChild variant="outline" size="sm" className="h-8">
                     <Link
                       href={

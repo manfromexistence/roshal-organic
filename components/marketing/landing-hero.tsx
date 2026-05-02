@@ -62,7 +62,6 @@ export function LandingHero({
                 className="rounded-sm object-cover"
                 sizes="(max-width: 1024px) 100vw, 68vw"
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-background/92 via-background/60 to-transparent" />
               <div className="relative flex min-h-[16rem] max-w-full flex-col justify-center gap-4 p-5 sm:min-h-[18rem] sm:p-6 md:max-w-xl md:min-h-[18rem] md:gap-5 md:p-8">
                 <div className="space-y-3">
                   <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:text-5xl">
@@ -98,7 +97,6 @@ export function LandingHero({
                 className="rounded-sm object-cover"
                 sizes="(max-width: 1024px) 100vw, 32vw"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/92 via-background/25 to-transparent" />
               <div className="relative flex min-h-[18rem] flex-col justify-end gap-3 p-5 md:gap-4 md:p-7">
                 <div className="space-y-2">
                   <h2 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl md:text-3xl">

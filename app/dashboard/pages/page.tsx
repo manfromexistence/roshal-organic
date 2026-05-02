@@ -19,6 +19,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { isDashboardHandoffMarketingSlug } from "@/lib/dashboard-navigation";
 import { requireRoshalAdmin } from "@/lib/store-auth";
 import { getRoshalPages } from "@/lib/store-content";
 import { getRoshalLocale } from "@/lib/store-i18n";
@@ -31,7 +32,12 @@ const pageStatusOptions = [
 export default async function DashboardPagesPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ error?: string; saved?: string; slug?: string }>;
+  searchParams?: Promise<{
+    deleted?: string;
+    error?: string;
+    saved?: string;
+    slug?: string;
+  }>;
 }) {
   const resolvedSearchParams = searchParams ? await searchParams : {};
   const [locale, pages] = await Promise.all([
@@ -44,10 +50,16 @@ export default async function DashboardPagesPage({
     resolvedSearchParams.error,
     resolvedSearchParams.slug,
   );
-  const publishedCount = pages.filter(
+  // Keep All Pages aligned with the simplified sidebar handoff pages.
+  const visibleDashboardPages = pages.filter((page) =>
+    isDashboardHandoffMarketingSlug(page.slug),
+  );
+  const publishedCount = visibleDashboardPages.filter(
     (page) => page.status === "published",
   ).length;
-  const navigationCount = pages.filter((page) => page.showInNavigation).length;
+  const navigationCount = visibleDashboardPages.filter(
+    (page) => page.showInNavigation,
+  ).length;
   return (
     <div className="min-w-0 space-y-6 px-6 pt-6 pb-4">
       <CmsSaveToast status={resolvedSearchParams.saved} />
@@ -75,21 +87,29 @@ export default async function DashboardPagesPage({
         </Alert>
       ) : null}
 
+      {resolvedSearchParams.deleted ? (
+        <Alert>
+          <AlertDescription>
+            Marketing page deleted successfully.
+          </AlertDescription>
+        </Alert>
+      ) : null}
+
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-3">
         <DashboardMetricCard
           title={locale === "bn" ? "মোট পেজ" : "Total pages"}
-          value={pages.length}
+          value={visibleDashboardPages.length}
           hint={`${publishedCount} published pages`}
         />
         <DashboardMetricCard
           title={locale === "bn" ? "প্রকাশিত" : "Published"}
           value={publishedCount}
-          hint={`${pages.length - publishedCount} draft pages`}
+          hint={`${visibleDashboardPages.length - publishedCount} draft pages`}
         />
         <DashboardMetricCard
           title={locale === "bn" ? "নেভিগেশনে" : "In navigation"}
           value={navigationCount}
-          hint={`${pages.length - navigationCount} hidden from navigation`}
+          hint={`${visibleDashboardPages.length - navigationCount} hidden from navigation`}
         />
       </div>
 
@@ -227,7 +247,7 @@ export default async function DashboardPagesPage({
         </CardContent>
       </Card>
 
-      <RoshalPagesTable pages={pages} locale={locale} />
+      <RoshalPagesTable pages={visibleDashboardPages} locale={locale} />
     </div>
   );
 }

@@ -3,17 +3,34 @@
 import { useEffect } from "react";
 import { toast } from "@/hooks/use-toast";
 
-export function ProductCreatedToast({ enabled }: { enabled: boolean }) {
+type ProductCatalogToastStatus = "created" | "deleted";
+
+const toastCopy: Record<
+  ProductCatalogToastStatus,
+  { description: string; title: string }
+> = {
+  created: {
+    title: "New product added",
+    description: "The product is now visible in the All Products list.",
+  },
+  deleted: {
+    title: "Product deleted",
+    description: "The product was removed from the storefront catalog.",
+  },
+};
+
+export function ProductCreatedToast({
+  status,
+}: {
+  status?: ProductCatalogToastStatus;
+}) {
   useEffect(() => {
-    if (!enabled) {
+    if (!status) {
       return;
     }
 
-    toast({
-      title: "New product added",
-      description: "The product is now visible in the All Products list.",
-    });
-  }, [enabled]);
+    toast(toastCopy[status]);
+  }, [status]);
 
   return null;
 }
