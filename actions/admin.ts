@@ -1286,14 +1286,19 @@ export async function saveRoshalOrderStatus(formData: FormData) {
     redirectActionError(error, formData, `/dashboard/orders/${id}`);
   }
 
-  finishAction(`/dashboard/orders/${id}`, formData, [
-    "/dashboard",
-    "/dashboard/orders",
-    "/orders",
-    `/orders/${id}`,
-    "/profile",
+  finishActionWithFeedback(
     `/dashboard/orders/${id}`,
-  ]);
+    formData,
+    [
+      "/dashboard",
+      "/dashboard/orders",
+      "/orders",
+      `/orders/${id}`,
+      "/profile",
+      `/dashboard/orders/${id}`,
+    ],
+    { saved: "order" },
+  );
 }
 
 export async function saveRoshalUserRole(formData: FormData) {

@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Fixed
+- Added a PowerShell Vercel env sync helper that snapshots remote production env names, skips placeholder local values, and can deploy after syncing.
+- Added dashboard order-update success feedback and applied the requested light green/red/orange tones to order, overview, and product metric cards.
+- Added rounded images, a mobile previous carousel arrow, and content-aware arrow positioning to the storefront Featured Categories strip.
 - Fixed dashboard Users table action placement so the edit/delete 3-dot menu stays on the far right on desktop, and made storefront category hover menus require a short intentional hover without focus-triggered reopen loops after the cursor leaves.
 - Restored storefront category hover-open behavior, removed repeated submenu category headings and browse rows, kept right-side overflow categories inside the More menu, and tightened the mobile hero banner ratio so uploaded banners stay wide instead of square-cropped.
 - Fixed signup mobile handling by matching the field styling to the other auth inputs and rejecting duplicate mobile numbers during auth user creation.

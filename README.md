@@ -2,6 +2,11 @@
 
 Roshal Organic is a bilingual Bangla/English ecommerce CMS built on Next.js 16, Bun, Drizzle, Turso, Better Auth, and shadcn/ui. The public site is storefront-first, while `/dashboard` is the admin control panel for products, orders, users, marketing pages, theme settings, and payment-guide management.
 
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\env.ps1 -DryRun
+powershell -NoProfile -ExecutionPolicy Bypass -File .\env.ps1 -Deploy
+```
+
 ## Current Surface
 
 - Storefront routes: `/`, `/about`, `/contact`, `/products`, `/products/[slug]`, `/cart`, `/checkout`, `/orders`, `/orders/[id]`, `/profile`

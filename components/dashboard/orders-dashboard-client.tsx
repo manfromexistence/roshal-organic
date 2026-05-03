@@ -165,16 +165,19 @@ export function OrdersDashboardClient({
           title="Paid amount"
           value={formatBdt(paidAmount, locale)}
           hint="Payment status is paid"
+          tone="green"
         />
         <DashboardMetricCard
           title="Unpaid amount"
           value={formatBdt(unpaidAmount, locale)}
           hint="Pending, review, or failed payments"
+          tone="red"
         />
         <DashboardMetricCard
           title="Payment review"
           value={paymentReviewCount}
           hint="Waiting for manual verification"
+          tone="orange"
         />
         <DashboardMetricCard
           title="Active fulfillment"

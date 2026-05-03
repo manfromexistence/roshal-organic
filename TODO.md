@@ -32,6 +32,9 @@
 
 ## 2026-05-03 Marketing checkout/menu polish
 
+- [x] Add `env.ps1` for syncing `.env.production` values to Vercel production after first snapshotting remote env names and skipping local placeholders.
+- [x] Round Featured Categories images and keep mobile previous/next carousel arrows close to the cards when the row is centered.
+- [x] Show `Order updated successfully.` after dashboard order status saves and color order, overview, and product metric cards with the requested light green, red, and orange tones.
 - [x] Move the dashboard Users desktop action menu to the far-right table column.
 - [x] Add intentional hover delay for storefront category menus and stop focus-triggered reopen loops after the cursor leaves.
 - [x] Restore hover-open storefront category dropdowns and keep overflow categories inside the More menu.

@@ -25,6 +25,7 @@ type StatCardProps = {
   accentClassName: string;
   emoji: string;
   href: string;
+  surfaceClassName?: string;
 };
 
 function DashboardStatCard({
@@ -36,10 +37,12 @@ function DashboardStatCard({
   accentClassName,
   emoji,
   href,
+  surfaceClassName,
 }: StatCardProps) {
   const TrendIcon = trendDirection === "up" ? ArrowUpRight : ArrowDownRight;
   const colorSurfaceClass =
-    accentClassName === "border-r-primary"
+    surfaceClassName ||
+    (accentClassName === "border-r-primary"
       ? "bg-primary/10"
       : accentClassName === "border-r-secondary"
         ? "bg-secondary/80"
@@ -47,7 +50,7 @@ function DashboardStatCard({
           ? "bg-accent/80"
           : accentClassName === "border-r-destructive"
             ? "bg-destructive/10"
-            : "bg-muted/70";
+            : "bg-muted/70");
 
   return (
     <Link
@@ -172,6 +175,14 @@ export default async function DashboardHomePage() {
     (sum, order) => sum + order.total,
     0,
   );
+  const unpaidAmount = orders
+    .filter((order) => order.paymentStatus !== "paid")
+    .reduce((sum, order) => sum + order.total, 0);
+  const paymentReviewOrders = orders.filter(
+    (order) =>
+      order.status === "payment-review" ||
+      order.paymentStatus === "under-review",
+  );
   const publishedPages = pages.filter(
     (page) => page.status === "published",
   ).length;
@@ -190,9 +201,6 @@ export default async function DashboardHomePage() {
     .filter((product) => product.isFeatured)
     .slice(0, 4);
   const recentOrders = orders.slice(0, 5);
-  const pendingReviewOrders = orders.filter((order) =>
-    ["pending", "payment-review"].includes(order.status),
-  );
   const publishedProductRatio =
     products.length > 0
       ? Math.round((publishedProducts.length / products.length) * 100)
@@ -234,8 +242,31 @@ export default async function DashboardHomePage() {
             deliveredOrders.length === 1 ? "" : "s"
           } counted`}
           trend={`${fulfillmentOrders} need fulfillment`}
-          accentClassName="border-r-primary"
+          accentClassName="border-r-emerald-500"
+          surfaceClassName="bg-emerald-50 text-emerald-950 dark:bg-emerald-950/35 dark:text-emerald-50"
           emoji={"\u{1F4B0}"}
+          href="/dashboard/orders"
+        />
+        <DashboardStatCard
+          title="Unpaid amount"
+          value={formatBdt(unpaidAmount, locale)}
+          description="Pending, review, or failed payments"
+          trend={`${fulfillmentOrders} active fulfillment orders`}
+          trendDirection={unpaidAmount > 0 ? "down" : "up"}
+          accentClassName="border-r-red-500"
+          surfaceClassName="bg-red-50 text-red-950 dark:bg-red-950/35 dark:text-red-50"
+          emoji={"\u{1F4B3}"}
+          href="/dashboard/orders"
+        />
+        <DashboardStatCard
+          title="Payment review"
+          value={paymentReviewOrders.length}
+          description="Manual payment checks waiting"
+          trend="Review proof and confirm payments"
+          trendDirection={paymentReviewOrders.length > 0 ? "down" : "up"}
+          accentClassName="border-r-orange-500"
+          surfaceClassName="bg-orange-50 text-orange-950 dark:bg-orange-950/35 dark:text-orange-50"
+          emoji={"\u2728"}
           href="/dashboard/orders"
         />
         <DashboardStatCard
@@ -252,6 +283,9 @@ export default async function DashboardHomePage() {
           emoji={"\u{1F6CD}\uFE0F"}
           href="/dashboard/products"
         />
+      </div>
+
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <DashboardStatCard
           title="Customers"
           value={customerCount}
@@ -272,19 +306,6 @@ export default async function DashboardHomePage() {
           emoji={"\u{1F4C4}"}
           href="/dashboard/pages"
         />
-      </div>
-
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <DashboardStatCard
-          title="Pending orders"
-          value={pendingReviewOrders.length}
-          description="Pending or payment-review orders"
-          trend={`${fulfillmentOrders} active fulfillment orders`}
-          trendDirection={pendingReviewOrders.length > 0 ? "down" : "up"}
-          accentClassName="border-r-destructive"
-          emoji={"\u23F1\uFE0F"}
-          href="/dashboard/orders"
-        />
         <DashboardStatCard
           title="Storefront health"
           value={storefrontHealth}
@@ -293,17 +314,9 @@ export default async function DashboardHomePage() {
           }`}
           trend="Keep catalog availability clean"
           trendDirection={outOfStockProducts.length > 0 ? "down" : "up"}
-          accentClassName="border-r-primary"
+          accentClassName="border-r-orange-500"
+          surfaceClassName="bg-orange-50 text-orange-950 dark:bg-orange-950/35 dark:text-orange-50"
           emoji={"\u26A0\uFE0F"}
-          href="/dashboard/products"
-        />
-        <DashboardStatCard
-          title="Featured products"
-          value={featuredProducts.length}
-          description="Published storefront highlights"
-          trend="Managed from product editor"
-          accentClassName="border-r-secondary"
-          emoji={"\u2B50"}
           href="/dashboard/products"
         />
         <DashboardStatCard

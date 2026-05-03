@@ -111,11 +111,13 @@ export default async function DashboardProductsPage({
           title={locale === "bn" ? "লো স্টক" : "Low stock"}
           value={lowStockCount}
           hint="Inventory is between 1 and 10"
+          tone="orange"
         />
         <DashboardMetricCard
           title={locale === "bn" ? "স্টক শেষ" : "Out of stock"}
           value={outOfStockCount}
           hint="Unavailable storefront items"
+          tone="red"
         />
       </div>
 

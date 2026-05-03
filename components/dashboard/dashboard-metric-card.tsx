@@ -9,6 +9,16 @@ const accentClasses = [
   "border-r-destructive bg-destructive/10",
 ];
 
+type DashboardMetricTone = "green" | "orange" | "red";
+
+const toneClasses: Record<DashboardMetricTone, string> = {
+  green:
+    "border-r-emerald-500 bg-emerald-50 text-emerald-950 dark:bg-emerald-950/35 dark:text-emerald-50",
+  orange:
+    "border-r-orange-500 bg-orange-50 text-orange-950 dark:bg-orange-950/35 dark:text-orange-50",
+  red: "border-r-red-500 bg-red-50 text-red-950 dark:bg-red-950/35 dark:text-red-50",
+};
+
 function getEmojiForTitle(title: string): string {
   const lowerTitle = title.toLowerCase();
 
@@ -40,7 +50,11 @@ function getEmojiForTitle(title: string): string {
   return "\u2728";
 }
 
-function getAccentClass(title: string) {
+function getAccentClass(title: string, tone?: DashboardMetricTone) {
+  if (tone) {
+    return toneClasses[tone];
+  }
+
   const index =
     Array.from(title).reduce((sum, character) => {
       return sum + character.charCodeAt(0);
@@ -53,10 +67,12 @@ export function DashboardMetricCard({
   title,
   value,
   hint,
+  tone,
 }: {
   title: string;
   value: number | string;
   hint?: string;
+  tone?: DashboardMetricTone;
 }) {
   const emoji = getEmojiForTitle(title);
   const displayValue = String(value);
@@ -66,7 +82,7 @@ export function DashboardMetricCard({
     <Card
       className={cn(
         "min-w-0 overflow-hidden border-none border-r-[5px] p-0 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md",
-        getAccentClass(title),
+        getAccentClass(title, tone),
       )}
     >
       <CardContent className="min-w-0 p-2.5 sm:p-3">

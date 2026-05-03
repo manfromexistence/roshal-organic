@@ -27,7 +27,7 @@ export default async function DashboardOrderDetailsPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; saved?: string }>;
 }) {
   const [{ id }, locale, resolvedSearchParams] = await Promise.all([
     params,
@@ -45,11 +45,16 @@ export default async function DashboardOrderDetailsPage({
     locale,
     resolvedSearchParams.error,
   );
+  const orderStatusSuccessMessage =
+    resolvedSearchParams.saved === "order"
+      ? "Order updated successfully."
+      : undefined;
 
   return (
     <div className="min-w-0 space-y-6 px-6 pt-6 pb-4">
       <DashboardFormStatusToast
         errorMessage={orderStatusErrorMessage || undefined}
+        successMessage={orderStatusSuccessMessage}
       />
       <div className="min-w-0 space-y-2">
         <p className="text-xs uppercase tracking-[0.24em] text-primary">
