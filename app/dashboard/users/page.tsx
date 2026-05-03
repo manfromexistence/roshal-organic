@@ -35,7 +35,14 @@ export default async function DashboardUsersPage({
   const activeCount = users.filter((user) => user.isActive).length;
   return (
     <div className="min-w-0 space-y-6 px-6 pt-6 pb-4">
-      <DashboardFormStatusToast errorMessage={errorMessage || undefined} />
+      <DashboardFormStatusToast
+        errorMessage={errorMessage || undefined}
+        successMessage={
+          resolvedSearchParams.deleted
+            ? "User deleted successfully."
+            : undefined
+        }
+      />
       <div className="min-w-0 space-y-2">
         <p className="text-xs uppercase tracking-[0.24em] text-primary">
           {locale === "bn" ? "ব্যবহারকারী" : "Users"}

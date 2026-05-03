@@ -2,6 +2,7 @@
 
 import type { ColumnDef, FilterFn } from "@tanstack/react-table";
 import { Eye, EyeOff, Star, Trash2 } from "lucide-react";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import {
   removeRoshalProductReview,
@@ -25,6 +26,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useDataTable } from "@/hooks/use-data-table";
+import {
+  stripDashboardActionFeedback,
+  submitDashboardDeleteAndReload,
+} from "@/lib/dashboard-action-feedback";
 import type { RoshalLocale } from "@/lib/store-types";
 
 export interface ReviewRow {
@@ -263,7 +268,12 @@ export function RoshalReviewsTable({
   rows: ReviewRow[];
   locale: RoshalLocale;
 }) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [deleteTarget, setDeleteTarget] = useState<ReviewRow | null>(null);
+  const currentListUrl = stripDashboardActionFeedback(
+    `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ""}`,
+  );
   const productOptions = useMemo(
     () =>
       Array.from(new Set(rows.map((row) => row.productName)))
@@ -381,9 +391,18 @@ export function RoshalReviewsTable({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <form action={removeRoshalProductReview}>
+            <form
+              action={removeRoshalProductReview}
+              className="w-full sm:w-auto"
+              onSubmit={submitDashboardDeleteAndReload}
+            >
               <input type="hidden" name="id" value={deleteTarget?.id || ""} />
-              <Button type="submit" variant="destructive">
+              <input type="hidden" name="redirectTo" value={currentListUrl} />
+              <Button
+                type="submit"
+                variant="destructive"
+                className="w-full sm:w-auto"
+              >
                 Delete review
               </Button>
             </form>

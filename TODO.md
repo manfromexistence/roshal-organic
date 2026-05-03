@@ -23,9 +23,17 @@
 
 - [x] Seed the default Home landing hero with real carousel slide images, copy, links, and compact sizing data.
 - [x] Repair existing Home hero CMS sections only when they do not have any image-backed carousel slides, while preserving valid admin-edited slides.
+- [x] Simplify the Home hero slide editor so admins upload images first and only enable overlay text/button with an explicit toggle.
+- [x] Hide public hero slide text/buttons by default so uploaded banner images can contain their own text without duplicate storefront copy.
+- [x] Restore the large-screen Home hero layout with a left carousel and a dashboard-controlled right banner while keeping smaller screens carousel-only.
+- [x] Add simple Home CMS controls for right-banner visibility, right-banner text/button visibility, large-screen split, hero height, and image fit.
+- [x] Match the desktop right-banner height to the carousel image card and make the right banner image fill the whole container with a dashboard scale control.
+- [x] Center the Featured Categories carousel while preserving the current approved card size.
 
 ## 2026-05-03 Dashboard delete feedback repair
 
+- [x] Reproduce delete from stale dashboard list URLs locally and force Product, Category, Subcategory, Review, and User delete forms to clear old action flags and hard-refresh the current list page after deletion.
+- [x] Filter deleted taxonomy tombstones out of dashboard/public taxonomy reads so constraint-protected category/subcategory deletes cannot remain visible.
 - [x] Make Product delete redirects use the clean All Products URL and add a fresh feedback event so stale New product added toasts cannot appear after deletion.
 - [x] Make Category and Subcategory save/delete feedback redirects include a fresh action marker so the dashboard list reloads and shows the current action status.
 - [x] Fix first-click deletion for edited default products by adding a fallback-default tombstone when the editable override row uses a different ID.
@@ -469,3 +477,20 @@
 - [x] Apply saved carousel slide size/color settings on the storefront hero renderer.
 - [x] Stop the Home hero carousel from borrowing the Page cover image for slide text; carousel slides now use explicit slide images and the Page cover stays out of the Home carousel.
 - [x] Extend friendly CMS section names and focused item labels to the sidebar-listed About, Contact, Terms & Conditions, and Privacy Policy pages.
+- [x] Simplify the Home hero admin flow so the page cover is advanced-only, the real hero section opens by default, hero slides are visible immediately, and the storefront renders those slides as one obvious top slider.
+
+## 2026-05-03 Production dashboard QA pass
+
+- [x] Check production storefront Featured Category links and identify the zero-product category reset/crash path.
+- [x] Preserve category/subcategory product filters even when the selected taxonomy bucket has zero products, showing a useful empty state instead of falling back to all products.
+- [x] Preserve direct subcategory filters from sub-header links even when the selected subcategory has no products yet.
+- [x] Locally create and delete `roshal-organic-test` Product, Category, Subcategory, and CMS Page records, then confirm the test rows are removed.
+- [x] Replace direct Category/Subcategory editor delete forms with the shared confirmation flow so list redirects and delete feedback stay correct.
+- [x] Remove the delayed client-side reload from dashboard delete submissions so server-action redirects complete cleanly.
+
+## 2026-05-03 Home marketing section delivery check
+
+- [x] Enable all default Home marketing sections for existing older CMS rows while preserving future admin disable/enable edits.
+- [x] Confirm the Home CMS API reports every Home section enabled after the repair path.
+- [x] Simplify non-hero CMS item cards so core fields stay visible and paragraph/link controls stay collapsed for non-technical admins.
+- [x] CRUD-test a temporary Special Deals item through the dashboard editor: add, save, verify count, remove, save, verify cleanup.

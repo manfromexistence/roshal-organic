@@ -9,7 +9,7 @@ export function MarketingPageOffset({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const needsHeaderOffset = pathname !== "/" && pathname !== "/products";
+  const needsHeaderOffset = pathname !== "/products";
 
   return (
     <div className={cn(needsHeaderOffset && "pt-[6.5rem] md:pt-[7.4rem]")}>

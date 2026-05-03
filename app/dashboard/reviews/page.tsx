@@ -44,7 +44,7 @@ function formatReviewDate(date: Date, locale: "bn" | "en") {
 export default async function DashboardReviewsPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ error?: string; saved?: string }>;
+  searchParams?: Promise<{ deleted?: string; error?: string; saved?: string }>;
 }) {
   const resolvedSearchParams = searchParams ? await searchParams : {};
   const [locale, products, reviews] = await Promise.all([
@@ -97,7 +97,14 @@ export default async function DashboardReviewsPage({
 
   return (
     <div className="min-w-0 space-y-6 px-6 pt-6 pb-4">
-      <DashboardFormStatusToast errorMessage={errorMessage || undefined} />
+      <DashboardFormStatusToast
+        errorMessage={errorMessage || undefined}
+        successMessage={
+          resolvedSearchParams.deleted
+            ? "Review deleted successfully."
+            : undefined
+        }
+      />
       <CmsSaveToast status={resolvedSearchParams.saved} />
 
       <div className="flex min-w-0 flex-col gap-3 md:flex-row md:items-end md:justify-between">

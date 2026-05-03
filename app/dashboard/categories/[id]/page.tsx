@@ -1,8 +1,9 @@
-import { ArrowLeft, ImageIcon, Save, Trash2, X } from "lucide-react";
+import { ArrowLeft, ImageIcon, Save, X } from "lucide-react";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { removeRoshalCategory, saveRoshalCategory } from "@/actions/admin";
 import { DashboardFormStatusToast } from "@/components/dashboard/dashboard-form-status-toast";
+import { DeleteConfirmationButton } from "@/components/dashboard/delete-confirmation-button";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
 import { DashboardSourceKeySelect } from "@/components/dashboard/source-key-select";
 import { ImageUploadField } from "@/components/shared/image-upload-field";
@@ -280,13 +281,14 @@ export default async function EditCategoryPage({
         </Card>
       </form>
 
-      <form action={removeRoshalCategory}>
-        <input type="hidden" name="id" value={category.id} />
-        <Button type="submit" variant="destructive" className="w-fit">
-          <Trash2 className="size-4" />
-          Delete category
-        </Button>
-      </form>
+      <DeleteConfirmationButton
+        action={removeRoshalCategory}
+        buttonLabel="Delete category"
+        description={`This permanently removes ${getLocalizedValue("en", category.label)} and any child subcategories that are not tied to protected product data.`}
+        id={category.id}
+        redirectTo="/dashboard/categories"
+        title="Delete category?"
+      />
     </div>
   );
 }

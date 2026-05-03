@@ -13,6 +13,7 @@ import { DeleteConfirmationButton } from "@/components/dashboard/delete-confirma
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
 import {
+  HeroSectionLayoutField,
   type MarketingSectionItemsCopy,
   MarketingSectionItemsField,
   MarketingSectionStylesField,
@@ -101,6 +102,8 @@ type SectionEditorMeta = {
   imageHelperText: string;
   imageLabel: string;
   itemsCopy: MarketingSectionItemsCopy;
+  primaryItems?: boolean;
+  primaryItemsHelperText?: string;
   title: string;
   titleBnLabel: string;
   titleEnLabel: string;
@@ -119,23 +122,26 @@ const defaultItemsCopy: MarketingSectionItemsCopy = {
 
 const sectionEditorMetaByKey: Record<string, Partial<SectionEditorMeta>> = {
   hero: {
-    title: "Hero carousel",
+    title: "Homepage hero slider",
     description:
-      "Top homepage banner area. Add one slide per banner image and keep slide text blank when the image already contains text.",
-    imageLabel: "Fallback hero image",
+      "This is the only top homepage hero. The slides below are exactly what customers see on the storefront.",
+    imageLabel: "Desktop right banner image",
     imageHelperText:
-      "Used only when no slide image is available. It does not create text by itself.",
-    titleBnLabel: "Fallback hero title (BN, optional)",
-    titleEnLabel: "Fallback hero title (EN, optional)",
-    bodyBnLabel: "Fallback hero text (BN, optional)",
-    bodyEnLabel: "Fallback hero text (EN, optional)",
+      "Shown only on large screens beside the carousel. Smaller screens show only the carousel.",
+    primaryItems: true,
+    primaryItemsHelperText:
+      "Upload the banner image first. Text and button stay hidden unless you turn on Show text/button for that slide.",
+    titleBnLabel: "Right banner title (BN, optional)",
+    titleEnLabel: "Right banner title (EN, optional)",
+    bodyBnLabel: "Right banner text (BN, optional)",
+    bodyEnLabel: "Right banner text (EN, optional)",
     itemsCopy: {
-      addButtonLabel: "Add carousel slide",
+      addButtonLabel: "Add hero slide",
       bodyBnLabel: "Slide text (BN, optional)",
       bodyEnLabel: "Slide text (EN, optional)",
-      emptyText: "No carousel slides yet.",
+      emptyText: "No hero slides yet.",
       helperText:
-        "Each row is one hero slide. Leave slide title and text blank for an image-only banner; the storefront will not borrow text from slide 0 or another slide.",
+        "Each row is one storefront hero slide. By default only the uploaded image is shown; use Show text/button only when you need overlay copy.",
       hrefLabel: "Slide button link",
       containerHeightLabel: "Slide container height",
       imageLabel: "Slide image",
@@ -146,7 +152,7 @@ const sectionEditorMetaByKey: Record<string, Partial<SectionEditorMeta>> = {
       labelEnLabel: "Slide button label (EN, optional)",
       showSlideDesignFields: true,
       textColorLabel: "Slide text color",
-      title: "Carousel slides",
+      title: "Homepage hero slides",
       titleBnLabel: "Slide title (BN, optional)",
       titleEnLabel: "Slide title (EN, optional)",
       valueLabel: "Small value/badge (optional)",
@@ -380,6 +386,8 @@ function getSectionEditorMeta(
         : {}),
       ...configured.itemsCopy,
     },
+    primaryItems: configured.primaryItems,
+    primaryItemsHelperText: configured.primaryItemsHelperText,
     title: configured.title || fallbackTitle,
     titleBnLabel: configured.titleBnLabel || "Section title (BN)",
     titleEnLabel: configured.titleEnLabel || "Section title (EN)",
@@ -390,8 +398,8 @@ function getPageCoverImageCopy(pageSlug: string) {
   if (pageSlug === "home") {
     return {
       helperText:
-        "This is for page cover/SEO only. It will not become a Home carousel slide. Add carousel images inside Hero carousel slides below.",
-      label: "Page cover image (not carousel)",
+        "Optional SEO/social preview image only. It is not the homepage hero. Add visible homepage banners inside Homepage hero slides.",
+      label: "SEO/social cover image (not homepage hero)",
     };
   }
 
@@ -402,6 +410,15 @@ function getPageCoverImageCopy(pageSlug: string) {
 }
 
 function getSectionEditorPreviewImage(section: RoshalMarketingSection) {
+  if (section.sectionKey === "hero") {
+    return (
+      section.items.find((item) => item.imageUrl)?.imageUrl ||
+      section.imageUrl ||
+      homeSectionPresetImages.hero ||
+      ""
+    );
+  }
+
   return (
     section.imageUrl ||
     section.items.find((item) => item.imageUrl)?.imageUrl ||
@@ -467,6 +484,10 @@ export default async function DashboardPageEditorRoute({
     isSectionError && draftCookieStore
       ? readDashboardFormDraft(draftCookieStore, "cms-section")
       : {};
+  const defaultOpenSectionId =
+    page.slug === "home"
+      ? sections.find((section) => section.sectionKey === "hero")?.id
+      : undefined;
   const draftSectionId = dashboardDraftValue(sectionDraftValues, "id");
   const hasSectionDraft = Object.keys(sectionDraftValues).length > 0;
   const pageCoverImageCopy = getPageCoverImageCopy(page.slug);
@@ -548,20 +569,22 @@ export default async function DashboardPageEditorRoute({
                 page.title.en,
               )}
             />
-            <div className="md:col-span-2">
-              <ImageUploadField
-                name="heroImage"
-                label={pageCoverImageCopy.label}
-                helperText={pageCoverImageCopy.helperText}
-                value={dashboardDraftValue(
-                  pageDraftValues,
-                  "heroImage",
-                  page.heroImage || "",
-                )}
-                compact
-                previewClassName="w-full max-w-72"
-              />
-            </div>
+            {page.slug === "home" ? null : (
+              <div className="md:col-span-2">
+                <ImageUploadField
+                  name="heroImage"
+                  label={pageCoverImageCopy.label}
+                  helperText={pageCoverImageCopy.helperText}
+                  value={dashboardDraftValue(
+                    pageDraftValues,
+                    "heroImage",
+                    page.heroImage || "",
+                  )}
+                  compact
+                  previewClassName="w-full max-w-72"
+                />
+              </div>
+            )}
             <Accordion type="multiple" className="space-y-3 md:col-span-2">
               <AccordionItem
                 value="page-advanced"
@@ -627,6 +650,22 @@ export default async function DashboardPageEditorRoute({
                         rows={3}
                       />
                     </div>
+                    {page.slug === "home" ? (
+                      <div className="md:col-span-2">
+                        <ImageUploadField
+                          name="heroImage"
+                          label={pageCoverImageCopy.label}
+                          helperText={pageCoverImageCopy.helperText}
+                          value={dashboardDraftValue(
+                            pageDraftValues,
+                            "heroImage",
+                            page.heroImage || "",
+                          )}
+                          compact
+                          previewClassName="w-full max-w-72"
+                        />
+                      </div>
+                    ) : null}
                     <div className="md:col-span-2">
                       <DashboardFormCheckbox
                         name="showInNavigation"
@@ -686,7 +725,14 @@ export default async function DashboardPageEditorRoute({
           Open only the section you need to edit. This keeps long marketing
           pages compact while preserving every CMS control.
         </p>
-        <Accordion type="single" collapsible className="space-y-3">
+        <Accordion
+          type="single"
+          collapsible
+          defaultValue={
+            defaultOpenSectionId ? `section-${defaultOpenSectionId}` : undefined
+          }
+          className="space-y-3"
+        >
           {sections.map((section) => {
             const sectionMeta = getSectionEditorMeta(section);
             const sectionPreviewImage = getSectionEditorPreviewImage(section);
@@ -949,15 +995,8 @@ function SectionFields({
   meta: SectionEditorMeta;
   submitLabel: string;
 }) {
-  return (
+  const backupContentFields = (
     <>
-      <div className="md:col-span-2">
-        <DashboardFormCheckbox
-          name="isEnabled"
-          defaultChecked={defaults.isEnabled}
-          label={locale === "bn" ? "সেকশন চালু" : "Section enabled"}
-        />
-      </div>
       <Field
         name="titleBn"
         label={meta.titleBnLabel}
@@ -995,7 +1034,78 @@ function SectionFields({
           previewClassName="w-full max-w-64"
         />
       </div>
+    </>
+  );
+  const sectionButtonFields = (
+    <div className="grid min-w-0 gap-5 pt-1 md:grid-cols-2">
+      <Field
+        name="ctaLabelBn"
+        label="CTA Label (BN)"
+        defaultValue={defaults.ctaLabelBn}
+      />
+      <Field
+        name="ctaLabelEn"
+        label="CTA Label (EN)"
+        defaultValue={defaults.ctaLabelEn}
+      />
+      <Field name="ctaHref" label="CTA Href" defaultValue={defaults.ctaHref} />
+    </div>
+  );
+
+  return (
+    <>
+      <div className="md:col-span-2">
+        <DashboardFormCheckbox
+          name="isEnabled"
+          defaultChecked={defaults.isEnabled}
+          label={locale === "bn" ? "সেকশন চালু" : "Section enabled"}
+        />
+      </div>
+      {meta.primaryItems ? (
+        <div className="space-y-3 rounded-lg border border-primary/20 bg-primary/5 p-3 md:col-span-2">
+          <MarketingSectionItemsField
+            name="itemsJson"
+            defaultItems={defaults.items}
+            copy={meta.itemsCopy}
+          />
+          {meta.primaryItemsHelperText ? (
+            <p className="text-xs text-muted-foreground">
+              {meta.primaryItemsHelperText}
+            </p>
+          ) : null}
+        </div>
+      ) : (
+        backupContentFields
+      )}
       <Accordion type="multiple" className="space-y-3 md:col-span-2">
+        {meta.primaryItems ? (
+          <AccordionItem
+            value="hero-desktop-side-banner"
+            className="rounded-lg border border-border/70 px-4"
+          >
+            <AccordionTrigger className="hover:no-underline">
+              <span className="min-w-0 text-left">
+                <span className="block font-semibold">
+                  Desktop right banner
+                </span>
+                <span className="block text-sm font-normal text-muted-foreground">
+                  Large screens show this beside the carousel. Mobile keeps the
+                  page simple with carousel only.
+                </span>
+              </span>
+            </AccordionTrigger>
+            <AccordionContent forceMount>
+              <HeroSectionLayoutField
+                name="stylesJson"
+                defaultStyles={defaults.styles}
+              />
+              <div className="grid min-w-0 gap-5 pt-1 md:grid-cols-2">
+                {backupContentFields}
+              </div>
+              <div className="pt-5">{sectionButtonFields}</div>
+            </AccordionContent>
+          </AccordionItem>
+        ) : null}
         <AccordionItem
           value="section-setup"
           className="rounded-lg border border-border/70 px-4"
@@ -1059,85 +1169,75 @@ function SectionFields({
             </div>
           </AccordionContent>
         </AccordionItem>
-        <AccordionItem
-          value="section-media"
-          className="rounded-lg border border-border/70 px-4"
-        >
-          <AccordionTrigger className="hover:no-underline">
-            <span className="min-w-0 text-left">
-              <span className="block font-semibold">Button link</span>
-              <span className="block text-sm font-normal text-muted-foreground">
-                Optional call-to-action labels and link.
+        {meta.primaryItems ? null : (
+          <AccordionItem
+            value="section-media"
+            className="rounded-lg border border-border/70 px-4"
+          >
+            <AccordionTrigger className="hover:no-underline">
+              <span className="min-w-0 text-left">
+                <span className="block font-semibold">Button link</span>
+                <span className="block text-sm font-normal text-muted-foreground">
+                  Optional call-to-action labels and link.
+                </span>
               </span>
-            </span>
-          </AccordionTrigger>
-          <AccordionContent forceMount>
-            <div className="grid min-w-0 gap-5 pt-1 md:grid-cols-2">
-              <Field
-                name="ctaLabelBn"
-                label="CTA Label (BN)"
-                defaultValue={defaults.ctaLabelBn}
-              />
-              <Field
-                name="ctaLabelEn"
-                label="CTA Label (EN)"
-                defaultValue={defaults.ctaLabelEn}
-              />
-              <Field
-                name="ctaHref"
-                label="CTA Href"
-                defaultValue={defaults.ctaHref}
-              />
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem
-          value="section-items"
-          className="rounded-lg border border-border/70 px-4"
-        >
-          <AccordionTrigger className="hover:no-underline">
-            <span className="min-w-0 text-left">
-              <span className="block font-semibold">
-                {meta.itemsCopy.title || "Cards and slides"}
+            </AccordionTrigger>
+            <AccordionContent forceMount>
+              {sectionButtonFields}
+            </AccordionContent>
+          </AccordionItem>
+        )}
+        {meta.primaryItems ? null : (
+          <AccordionItem
+            value="section-items"
+            className="rounded-lg border border-border/70 px-4"
+          >
+            <AccordionTrigger className="hover:no-underline">
+              <span className="min-w-0 text-left">
+                <span className="block font-semibold">
+                  {meta.itemsCopy.title || "Cards and slides"}
+                </span>
+                <span className="block text-sm font-normal text-muted-foreground">
+                  {meta.itemsCopy.helperText ||
+                    "Cards, stats, brand tiles, contact rows, and list items."}
+                </span>
               </span>
-              <span className="block text-sm font-normal text-muted-foreground">
-                {meta.itemsCopy.helperText ||
-                  "Cards, stats, brand tiles, contact rows, and list items."}
+            </AccordionTrigger>
+            <AccordionContent forceMount>
+              <div className="pt-1">
+                <MarketingSectionItemsField
+                  name="itemsJson"
+                  defaultItems={defaults.items}
+                  copy={meta.itemsCopy}
+                />
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        )}
+        {meta.primaryItems ? null : (
+          <AccordionItem
+            value="section-styles"
+            className="rounded-lg border border-border/70 px-4"
+          >
+            <AccordionTrigger className="hover:no-underline">
+              <span className="min-w-0 text-left">
+                <span className="block font-semibold">Renderer style keys</span>
+                <span className="block text-sm font-normal text-muted-foreground">
+                  Optional renderer keys such as source, limit, columns, or
+                  density.
+                </span>
               </span>
-            </span>
-          </AccordionTrigger>
-          <AccordionContent forceMount>
-            <div className="pt-1">
-              <MarketingSectionItemsField
-                name="itemsJson"
-                defaultItems={defaults.items}
-                copy={meta.itemsCopy}
-              />
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem
-          value="section-styles"
-          className="rounded-lg border border-border/70 px-4"
-        >
-          <AccordionTrigger className="hover:no-underline">
-            <span className="min-w-0 text-left">
-              <span className="block font-semibold">Renderer style keys</span>
-              <span className="block text-sm font-normal text-muted-foreground">
-                Optional renderer keys such as source, limit, columns, or
-                density.
-              </span>
-            </span>
-          </AccordionTrigger>
-          <AccordionContent forceMount>
-            <div className="pt-1">
-              <MarketingSectionStylesField
-                name="stylesJson"
-                defaultStyles={defaults.styles}
-              />
-            </div>
-          </AccordionContent>
-        </AccordionItem>
+            </AccordionTrigger>
+            <AccordionContent forceMount>
+              <div className="pt-1">
+                <MarketingSectionStylesField
+                  name="stylesJson"
+                  defaultStyles={defaults.styles}
+                />
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        )}
       </Accordion>
       <div className="md:col-span-2">
         <Button type="submit">{submitLabel}</Button>

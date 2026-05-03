@@ -17,8 +17,15 @@ export interface LandingHeroBanner {
   containerHeight?: string;
   imageFit?: string;
   imageScale?: string;
+  showText?: boolean;
   textColor?: string;
 }
+
+const desktopHeroGridClasses: Record<string, string> = {
+  balanced: "lg:grid-cols-[minmax(0,1.25fr)_minmax(18rem,0.85fr)]",
+  "banner-heavy": "lg:grid-cols-[minmax(0,1.05fr)_minmax(19rem,1fr)]",
+  "carousel-heavy": "lg:grid-cols-[minmax(0,1.65fr)_minmax(18rem,0.85fr)]",
+};
 
 function safeCssLength(value: string | undefined) {
   const next = value?.trim();
@@ -102,12 +109,92 @@ function getBannerStyles(banner: LandingHeroBanner) {
   return { containerStyle, imageStyle, textStyle };
 }
 
+function HeroBannerCard({
+  banner,
+  className = "",
+  language,
+  priority = false,
+  sizes,
+}: {
+  banner: LandingHeroBanner;
+  className?: string;
+  language: Language;
+  priority?: boolean;
+  sizes: string;
+}) {
+  const showText = Boolean(banner.showText);
+  const title = showText ? banner.title[language]?.trim() || "" : "";
+  const subtitle = showText ? banner.subtitle[language]?.trim() || "" : "";
+  const buttonLabel = showText ? banner.ctaLabel?.[language]?.trim() || "" : "";
+  const href = showText ? banner.href?.trim() || "" : "";
+  const hasText = Boolean(title || subtitle || buttonLabel);
+  const styles = getBannerStyles(banner);
+
+  return (
+    <Card
+      className={`gap-0 overflow-hidden rounded-md border-border/70 bg-card p-0 shadow-sm ${className}`}
+    >
+      <CardContent
+        className="relative min-h-[15rem] p-0 sm:min-h-[17rem] md:min-h-[20rem]"
+        style={styles.containerStyle}
+      >
+        <Image
+          key={banner.image}
+          src={banner.image}
+          alt={title || "Roshal Organic banner"}
+          fill
+          priority={priority}
+          loading={priority ? "eager" : "lazy"}
+          className="rounded-sm object-cover"
+          sizes={sizes}
+          style={styles.imageStyle}
+        />
+        <div
+          className="relative flex min-h-[15rem] max-w-full flex-col justify-center gap-4 p-5 text-foreground sm:min-h-[17rem] sm:p-6 md:max-w-2xl md:min-h-[20rem] md:gap-5 md:p-8"
+          style={{
+            ...styles.containerStyle,
+            ...styles.textStyle,
+          }}
+        >
+          {hasText ? (
+            <div className="space-y-3">
+              {title ? (
+                <h1 className="text-2xl font-bold tracking-tight text-current sm:text-3xl md:text-5xl">
+                  {title}
+                </h1>
+              ) : null}
+              {subtitle ? (
+                <p className="max-w-full text-sm leading-6 text-current opacity-80 sm:leading-7 md:text-lg">
+                  {subtitle}
+                </p>
+              ) : null}
+              {buttonLabel && href ? (
+                <Button
+                  asChild
+                  size="lg"
+                  className="w-fit max-w-full rounded-md px-6"
+                >
+                  <Link href={href}>{buttonLabel}</Link>
+                </Button>
+              ) : null}
+            </div>
+          ) : null}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 export function LandingHero({
   banners,
+  desktopSplit = "carousel-heavy",
   language,
+  sideBanner,
 }: {
   banners: LandingHeroBanner[];
+  desktopSplit?: string;
   language: Language;
+  sideBanner?: LandingHeroBanner | null;
 }) {
   const [activeBanner, setActiveBanner] = useState(0);
 
@@ -126,163 +213,71 @@ export function LandingHero({
   }, [banners.length]);
 
   const currentBanner = banners[activeBanner] || banners[0];
-  const secondaryBanner = banners[1] || null;
-  const hasSecondaryBanner = Boolean(secondaryBanner);
-  const currentTitle = currentBanner?.title[language]?.trim() || "";
-  const currentSubtitle = currentBanner?.subtitle[language]?.trim() || "";
-  const currentHasText = Boolean(currentTitle || currentSubtitle);
-  const secondaryTitle = secondaryBanner?.title[language]?.trim() || "";
-  const secondarySubtitle = secondaryBanner?.subtitle[language]?.trim() || "";
-  const secondaryButtonLabel =
-    secondaryBanner?.ctaLabel?.[language]?.trim() || "";
-  const secondaryHref = secondaryBanner?.href?.trim() || "";
-  const secondaryHasText = Boolean(
-    secondaryTitle || secondarySubtitle || secondaryButtonLabel,
-  );
-  const currentStyles = getBannerStyles(currentBanner);
-  const secondaryStyles = secondaryBanner
-    ? getBannerStyles(secondaryBanner)
+  const syncedSideBanner = sideBanner
+    ? {
+        ...sideBanner,
+        containerHeight:
+          currentBanner?.containerHeight || sideBanner.containerHeight,
+        imageFit: sideBanner.imageFit || "cover",
+      }
     : null;
+  const gridClass =
+    desktopHeroGridClasses[desktopSplit] ||
+    desktopHeroGridClasses["carousel-heavy"];
 
   if (!currentBanner) {
     return null;
   }
 
   return (
-    <section className="w-full overflow-x-clip bg-background pb-2 pt-32">
-      <div className="container mx-auto space-y-5 px-4 sm:px-6 md:px-8">
+    <section className="w-full overflow-x-clip bg-background pt-6 pb-3 md:pt-8 md:pb-4">
+      <div className="container mx-auto space-y-4 px-4 sm:px-6 md:px-8">
         <div
-          className={`grid grid-cols-1 gap-5 ${
-            hasSecondaryBanner ? "md:grid-cols-[1.45fr_0.85fr]" : ""
-          }`}
+          className={`grid grid-cols-1 items-start gap-4 ${syncedSideBanner ? gridClass : ""}`}
         >
-          <Card className="gap-0 overflow-hidden rounded-md border-border/70 bg-card p-0 shadow-sm">
-            <CardContent
-              className="relative min-h-[16rem] p-0 sm:min-h-[18rem] md:min-h-[18rem]"
-              style={currentStyles.containerStyle}
-            >
-              <Image
-                key={currentBanner.image}
-                src={currentBanner.image}
-                alt={currentTitle || "Roshal Organic banner"}
-                fill
-                priority
-                loading="eager"
-                className="rounded-sm object-cover"
-                sizes="(max-width: 1024px) 100vw, 68vw"
-                style={currentStyles.imageStyle}
-              />
-              <div
-                className="relative flex min-h-[16rem] max-w-full flex-col justify-center gap-4 p-5 text-foreground sm:min-h-[18rem] sm:p-6 md:max-w-xl md:min-h-[18rem] md:gap-5 md:p-8"
-                style={{
-                  ...currentStyles.containerStyle,
-                  ...currentStyles.textStyle,
-                }}
-              >
-                {currentHasText ? (
-                  <div className="space-y-3">
-                    {currentTitle ? (
-                      <h1 className="text-2xl font-bold tracking-tight text-current sm:text-3xl md:text-5xl">
-                        {currentTitle}
-                      </h1>
-                    ) : null}
-                    {currentSubtitle ? (
-                      <p className="max-w-full text-sm leading-6 text-current opacity-80 sm:leading-7 md:text-lg">
-                        {currentSubtitle}
-                      </p>
-                    ) : null}
-                  </div>
-                ) : null}
-                {/* <Button
-                  asChild
-                  size="lg"
-                  className="w-fit max-w-full rounded-md px-6"
-                >
-                  <Link href={currentBanner.href || "/products"}>
-                    {currentBanner.ctaLabel
-                      ? currentBanner.ctaLabel[language]
-                      : language === "bn"
-                        ? "এখনই কিনুন"
-                        : "Shop now"}
-                  </Link>
-                </Button> */}
-              </div>
-            </CardContent>
-          </Card>
+          <div className="space-y-4">
+            <HeroBannerCard
+              banner={currentBanner}
+              language={language}
+              priority
+              sizes={
+                syncedSideBanner
+                  ? "(max-width: 1024px) 100vw, 68vw"
+                  : "(max-width: 1024px) 100vw, 92vw"
+              }
+            />
 
-          {secondaryBanner ? (
-            <Card className="hidden gap-0 overflow-hidden rounded-md border-border/70 bg-card p-0 shadow-sm md:block">
-              <CardContent
-                className="relative min-h-[18rem] p-0"
-                style={secondaryStyles?.containerStyle}
-              >
-                <Image
-                  src={secondaryBanner.image}
-                  alt={secondaryTitle || "Roshal Organic banner"}
-                  fill
-                  className="rounded-sm object-cover"
-                  sizes="(max-width: 1024px) 100vw, 32vw"
-                  style={secondaryStyles?.imageStyle}
-                />
-                <div
-                  className="relative flex min-h-[18rem] flex-col justify-end gap-3 p-5 text-foreground md:gap-4 md:p-7"
-                  style={{
-                    ...secondaryStyles?.containerStyle,
-                    ...secondaryStyles?.textStyle,
-                  }}
-                >
-                  {secondaryHasText ? (
-                    <>
-                      <div className="space-y-2">
-                        {secondaryTitle ? (
-                          <h2 className="text-xl font-semibold tracking-tight text-current sm:text-2xl md:text-3xl">
-                            {secondaryTitle}
-                          </h2>
-                        ) : null}
-                        {secondarySubtitle ? (
-                          <p className="max-w-full text-sm leading-6 text-current opacity-80 sm:leading-7">
-                            {secondarySubtitle}
-                          </p>
-                        ) : null}
-                      </div>
-                      {secondaryButtonLabel && secondaryHref ? (
-                        <Button
-                          asChild
-                          variant="secondary"
-                          className="w-fit rounded-md px-6"
-                        >
-                          <Link href={secondaryHref}>
-                            {secondaryButtonLabel}
-                          </Link>
-                        </Button>
-                      ) : null}
-                    </>
-                  ) : null}
-                </div>
-              </CardContent>
-            </Card>
+            {banners.length > 1 ? (
+              <div className="flex items-center justify-center gap-2">
+                {banners.map((banner, index) => (
+                  <Button
+                    key={`${banner.image}-${index}`}
+                    type="button"
+                    aria-label={`Go to banner ${index + 1}`}
+                    onClick={() => setActiveBanner(index)}
+                    variant="ghost"
+                    size="icon"
+                    className={`h-2.5 min-h-0 rounded-full p-0 transition-all ${
+                      index === activeBanner
+                        ? "w-10 bg-primary"
+                        : "w-2.5 bg-primary/30 hover:bg-primary/50"
+                    }`}
+                  />
+                ))}
+              </div>
+            ) : null}
+          </div>
+
+          {syncedSideBanner ? (
+            <div className="hidden min-w-0 lg:block">
+              <HeroBannerCard
+                banner={syncedSideBanner}
+                language={language}
+                sizes="28vw"
+              />
+            </div>
           ) : null}
         </div>
-
-        {banners.length > 1 ? (
-          <div className="flex items-center justify-center gap-2">
-            {banners.map((banner, index) => (
-              <Button
-                key={`${banner.image}-${index}`}
-                type="button"
-                aria-label={`Go to banner ${index + 1}`}
-                onClick={() => setActiveBanner(index)}
-                variant="ghost"
-                size="icon"
-                className={`h-2.5 min-h-0 rounded-full p-0 transition-all ${
-                  index === activeBanner
-                    ? "w-10 bg-primary"
-                    : "w-2.5 bg-primary/30 hover:bg-primary/50"
-                }`}
-              />
-            ))}
-          </div>
-        ) : null}
       </div>
     </section>
   );

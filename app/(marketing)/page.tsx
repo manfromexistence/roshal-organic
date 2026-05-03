@@ -237,6 +237,7 @@ function buildHeroBanners(
     image: fallbackHeroImage,
     imageFit: sectionSlideStyles.imageFit,
     imageScale: sectionSlideStyles.imageScale,
+    showText: sectionSlideStyles.showText === "true",
     textColor: sectionSlideStyles.textColor,
     title: heroSection ? heroSection.title : firstLocalizedText([page?.title]),
     subtitle: heroSection
@@ -259,6 +260,7 @@ function buildHeroBanners(
         image: item.imageUrl || "",
         imageFit: item.styles?.imageFit,
         imageScale: item.styles?.imageScale,
+        showText: item.styles?.showText === "true",
         textColor: item.styles?.textColor,
         title: item.title || localizedValue("", ""),
         subtitle: item.body || localizedValue("", ""),
@@ -268,8 +270,9 @@ function buildHeroBanners(
       .filter(
         (banner) =>
           banner.image ||
-          hasLocalizedText(banner.title) ||
-          hasLocalizedText(banner.subtitle),
+          (banner.showText &&
+            (hasLocalizedText(banner.title) ||
+              hasLocalizedText(banner.subtitle))),
       )
       .map((banner) => ({ ...banner, image: banner.image || "/logo.png" }));
 
@@ -277,6 +280,48 @@ function buildHeroBanners(
   }
 
   return [primaryBanner];
+}
+
+function buildHeroSideBanner(
+  page: RoshalMarketingPage | null,
+  heroSection: RoshalMarketingSection | undefined,
+  siteCtaHref: string,
+  siteCtaLabel: LocalizedValue,
+) {
+  const styles = heroSection?.styles || {};
+
+  if (styles.showSideBanner === "false") {
+    return null;
+  }
+
+  const image =
+    heroSection?.imageUrl?.trim() ||
+    page?.heroImage?.trim() ||
+    fallbackBanners[1]?.image ||
+    "";
+
+  if (!image) {
+    return null;
+  }
+
+  const hasSectionCta =
+    Boolean(heroSection?.ctaLabel.bn?.trim()) ||
+    Boolean(heroSection?.ctaLabel.en?.trim());
+
+  return {
+    containerHeight: styles.containerHeight,
+    image,
+    imageFit: "cover",
+    imageScale: styles.sideImageScale || "200",
+    showText: styles.sideShowText === "true",
+    textColor: styles.sideTextColor || styles.textColor,
+    title: heroSection ? heroSection.title : firstLocalizedText([page?.title]),
+    subtitle: heroSection
+      ? heroSection.body
+      : firstLocalizedText([page?.description]),
+    href: heroSection?.ctaHref || siteCtaHref,
+    ctaLabel: hasSectionCta ? heroSection?.ctaLabel : siteCtaLabel,
+  } satisfies LandingHeroBanner;
 }
 
 function buildCategories(
@@ -607,6 +652,12 @@ export default async function LandingPage() {
     siteSettings.primaryCtaHref,
     siteSettings.primaryCtaLabel,
   );
+  const heroSideBanner = buildHeroSideBanner(
+    page,
+    heroSection,
+    siteSettings.primaryCtaHref,
+    siteSettings.primaryCtaLabel,
+  );
   const categories = buildCategories(categoriesSection, taxonomy);
   const topSellerCards = selectProducts(products, topSellersSection, {
     source: "featured",
@@ -671,7 +722,12 @@ export default async function LandingPage() {
   return (
     <div className="flex w-full min-w-0 flex-col overflow-hidden">
       {heroEnabled ? (
-        <LandingHero banners={heroBanners} language={language} />
+        <LandingHero
+          banners={heroBanners}
+          desktopSplit={heroSection?.styles.desktopSplit}
+          language={language}
+          sideBanner={heroSideBanner}
+        />
       ) : null}
 
       {categoriesEnabled && categories.length > 0 ? (

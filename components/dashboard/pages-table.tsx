@@ -3,6 +3,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { ExternalLink, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { removeRoshalPage } from "@/actions/admin";
 import { DashboardTableShell } from "@/components/dashboard/dashboard-table-shell";
@@ -29,6 +30,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useDataTable } from "@/hooks/use-data-table";
+import {
+  stripDashboardActionFeedback,
+  submitDashboardDeleteAndReload,
+} from "@/lib/dashboard-action-feedback";
 import { getLocalizedValue } from "@/lib/store-locale";
 import type { RoshalLocale, RoshalMarketingPage } from "@/lib/store-types";
 
@@ -172,8 +177,13 @@ export function RoshalPagesTable({
   pages: RoshalMarketingPage[];
   locale: RoshalLocale;
 }) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [deleteTarget, setDeleteTarget] = useState<PageDeleteTarget | null>(
     null,
+  );
+  const currentListUrl = stripDashboardActionFeedback(
+    `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ""}`,
   );
   const sortedPages = [...pages].sort((left, right) => {
     const latestDelta =
@@ -318,14 +328,18 @@ export function RoshalPagesTable({
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             {deleteTarget ? (
-              <form action={removeRoshalPage}>
+              <form
+                action={removeRoshalPage}
+                className="w-full sm:w-auto"
+                onSubmit={submitDashboardDeleteAndReload}
+              >
                 <input type="hidden" name="id" value={deleteTarget.id} />
-                <input
-                  type="hidden"
-                  name="redirectTo"
-                  value="/dashboard/pages?deleted=1"
-                />
-                <Button type="submit" variant="destructive">
+                <input type="hidden" name="redirectTo" value={currentListUrl} />
+                <Button
+                  type="submit"
+                  variant="destructive"
+                  className="w-full sm:w-auto"
+                >
                   Delete
                 </Button>
               </form>

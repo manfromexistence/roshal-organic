@@ -27,15 +27,19 @@ export function HomeCategoryStrip({
   categories: HomeCategory[];
   language: Language;
 }) {
+  const shouldCenterCards = categories.length <= 8;
+
   return (
     <Carousel
       opts={{
-        align: "start",
+        align: "center",
         dragFree: true,
       }}
       className="max-w-full overflow-x-clip px-2 sm:px-5 md:px-8"
     >
-      <CarouselContent className="-ml-2 md:-ml-3">
+      <CarouselContent
+        className={`-ml-2 md:-ml-3 ${shouldCenterCards ? "justify-center" : ""}`}
+      >
         {categories.map((category) => (
           <CarouselItem
             key={category.key}

@@ -3,6 +3,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal, Pencil, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { removeRoshalCategory, removeRoshalSubcategory } from "@/actions/admin";
 import { DashboardTableShell } from "@/components/dashboard/dashboard-table-shell";
@@ -29,6 +30,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useDataTable } from "@/hooks/use-data-table";
+import {
+  stripDashboardActionFeedback,
+  submitDashboardDeleteAndReload,
+} from "@/lib/dashboard-action-feedback";
 
 export interface CategoryTableRow {
   id: string;
@@ -244,8 +249,13 @@ function getColumns({
 }
 
 export function RoshalCategoriesTable({ rows }: { rows: CategoryTableRow[] }) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [deleteTarget, setDeleteTarget] = useState<CategoryTableRow | null>(
     null,
+  );
+  const currentListUrl = stripDashboardActionFeedback(
+    `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ""}`,
   );
   const sortedRows = [...rows].sort((left, right) => {
     const latestDelta = right.latestAt - left.latestAt;
@@ -397,9 +407,16 @@ export function RoshalCategoriesTable({ rows }: { rows: CategoryTableRow[] }) {
                     ? removeRoshalCategory
                     : removeRoshalSubcategory
                 }
+                className="w-full sm:w-auto"
+                onSubmit={submitDashboardDeleteAndReload}
               >
                 <input type="hidden" name="id" value={deleteTarget.id} />
-                <Button type="submit" variant="destructive">
+                <input type="hidden" name="redirectTo" value={currentListUrl} />
+                <Button
+                  type="submit"
+                  variant="destructive"
+                  className="w-full sm:w-auto"
+                >
                   Delete
                 </Button>
               </form>

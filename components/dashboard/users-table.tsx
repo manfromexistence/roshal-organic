@@ -11,6 +11,7 @@ import {
   UserRound,
 } from "lucide-react";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { removeRoshalUser } from "@/actions/admin";
 import { DashboardTableShell } from "@/components/dashboard/dashboard-table-shell";
@@ -39,6 +40,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useDataTable } from "@/hooks/use-data-table";
 import { bangladeshDistrictOptions } from "@/lib/bangladesh-locations";
+import {
+  stripDashboardActionFeedback,
+  submitDashboardDeleteAndReload,
+} from "@/lib/dashboard-action-feedback";
 import { exportToExcel, exportToPDF } from "@/lib/export-utils";
 import type { RoshalLocale } from "@/lib/store-types";
 
@@ -354,8 +359,13 @@ export function RoshalUsersTable({
   users: DashboardUser[];
   locale: RoshalLocale;
 }) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [isMounted, setIsMounted] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<UserRow | null>(null);
+  const currentListUrl = stripDashboardActionFeedback(
+    `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ""}`,
+  );
   const sortedUsers = useMemo(
     () =>
       [...users].sort(
@@ -606,9 +616,18 @@ export function RoshalUsersTable({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <form action={removeRoshalUser}>
+            <form
+              action={removeRoshalUser}
+              className="w-full sm:w-auto"
+              onSubmit={submitDashboardDeleteAndReload}
+            >
               <input type="hidden" name="id" value={deleteTarget?.id || ""} />
-              <Button type="submit" variant="destructive">
+              <input type="hidden" name="redirectTo" value={currentListUrl} />
+              <Button
+                type="submit"
+                variant="destructive"
+                className="w-full sm:w-auto"
+              >
                 Delete user
               </Button>
             </form>

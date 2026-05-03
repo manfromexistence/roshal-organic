@@ -26,6 +26,13 @@ function normalizeSourceKeys(keys: string[], fallbackKey: string) {
   return normalized.length > 0 ? normalized : [fallbackKey];
 }
 
+function isDeletedTaxonomyKey(key: string) {
+  return (
+    key.startsWith("deleted-category-") ||
+    key.startsWith("deleted-subcategory-")
+  );
+}
+
 function mapCategory(
   row: typeof roshalCategories.$inferSelect,
 ): RoshalStoreCategory {
@@ -230,7 +237,10 @@ export async function getRoshalTaxonomy(): Promise<RoshalTaxonomyBundle> {
       .select()
       .from(roshalCategories)
       .orderBy(asc(roshalCategories.sortOrder), asc(roshalCategories.labelEn));
-    const categories = categoryRows.map(mapCategory);
+    const categories = categoryRows
+      .filter((row) => !isDeletedTaxonomyKey(row.key))
+      .map(mapCategory);
+    const categoryIds = new Set(categories.map((category) => category.id));
 
     const subcategoryRows = await db
       .select()
@@ -240,7 +250,12 @@ export async function getRoshalTaxonomy(): Promise<RoshalTaxonomyBundle> {
         asc(roshalSubcategories.labelEn),
       );
     const subcategories = resolveSubcategories(
-      subcategoryRows.map((row) => mapSubcategory(row, categories)),
+      subcategoryRows
+        .filter(
+          (row) =>
+            !isDeletedTaxonomyKey(row.key) && categoryIds.has(row.categoryId),
+        )
+        .map((row) => mapSubcategory(row, categories)),
       categories,
     );
 

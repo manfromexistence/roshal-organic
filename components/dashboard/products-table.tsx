@@ -4,6 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { ExternalLink, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { removeRoshalProduct } from "@/actions/admin";
 import { DashboardTableShell } from "@/components/dashboard/dashboard-table-shell";
@@ -30,6 +31,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useDataTable } from "@/hooks/use-data-table";
+import {
+  stripDashboardActionFeedback,
+  submitDashboardDeleteAndReload,
+} from "@/lib/dashboard-action-feedback";
 import { formatBdt } from "@/lib/store-format";
 import { getLocalizedValue } from "@/lib/store-locale";
 import type { RoshalLocale, RoshalProduct } from "@/lib/store-types";
@@ -225,8 +230,13 @@ export function RoshalProductsTable({
   products: RoshalProduct[];
   locale: RoshalLocale;
 }) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [deleteTarget, setDeleteTarget] = useState<ProductDeleteTarget | null>(
     null,
+  );
+  const currentListUrl = stripDashboardActionFeedback(
+    `${pathname}${searchParams.toString() ? `?${searchParams.toString()}` : ""}`,
   );
   const sortedProducts = [...products].sort((left, right) => {
     const latestDelta = latestProductTime(right) - latestProductTime(left);
@@ -404,14 +414,18 @@ export function RoshalProductsTable({
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             {deleteTarget ? (
-              <form action={removeRoshalProduct}>
+              <form
+                action={removeRoshalProduct}
+                className="w-full sm:w-auto"
+                onSubmit={submitDashboardDeleteAndReload}
+              >
                 <input type="hidden" name="id" value={deleteTarget.id} />
-                <input
-                  type="hidden"
-                  name="redirectTo"
-                  value="/dashboard/products"
-                />
-                <Button type="submit" variant="destructive">
+                <input type="hidden" name="redirectTo" value={currentListUrl} />
+                <Button
+                  type="submit"
+                  variant="destructive"
+                  className="w-full sm:w-auto"
+                >
                   Delete
                 </Button>
               </form>

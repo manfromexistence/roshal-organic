@@ -12,6 +12,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { submitDashboardDeleteAndReload } from "@/lib/dashboard-action-feedback";
 import { cn } from "@/lib/utils";
 
 export function DeleteConfirmationButton({
@@ -50,10 +51,18 @@ export function DeleteConfirmationButton({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <form action={action}>
+          <form
+            action={action}
+            className="w-full sm:w-auto"
+            onSubmit={submitDashboardDeleteAndReload}
+          >
             <input type="hidden" name="id" value={id} />
             <input type="hidden" name="redirectTo" value={redirectTo} />
-            <Button type="submit" variant="destructive">
+            <Button
+              type="submit"
+              variant="destructive"
+              className="w-full sm:w-auto"
+            >
               Delete
             </Button>
           </form>

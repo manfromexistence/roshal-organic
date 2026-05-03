@@ -1,11 +1,25 @@
 "use client";
 
-import { ArrowDown, ArrowUp, Plus, Trash2 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { ArrowDown, ArrowUp, Eye, EyeOff, Plus, Trash2 } from "lucide-react";
+import { useId, useMemo, useState } from "react";
 import { ImageUploadField } from "@/components/shared/image-upload-field";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import type { RoshalMarketingSectionItem } from "@/lib/store-types";
 
@@ -19,6 +33,7 @@ type EditableSectionItem = {
   imageUrl: string;
   labelBn: string;
   labelEn: string;
+  showText: string;
   sortOrder: string;
   textColor: string;
   titleBn: string;
@@ -30,6 +45,18 @@ type StylePair = {
   key: string;
   value: string;
 };
+
+const desktopSplitOptions = [
+  { value: "carousel-heavy", label: "Large carousel, small right banner" },
+  { value: "balanced", label: "Balanced carousel and banner" },
+  { value: "banner-heavy", label: "Large right banner" },
+];
+
+const imageFitOptions = [
+  { value: "cover", label: "Cover container" },
+  { value: "contain", label: "Contain full image" },
+  { value: "fill", label: "Fill container" },
+];
 
 export type MarketingSectionItemsCopy = {
   addButtonLabel?: string;
@@ -120,6 +147,7 @@ function toEditableItem(
     imageUrl: item.imageUrl || "",
     labelBn: localizedPart(item.label, "bn"),
     labelEn: localizedPart(item.label, "en"),
+    showText: stylePart(item, "showText") === "true" ? "true" : "false",
     sortOrder: Number.isFinite(Number(item.sortOrder))
       ? String(Number(item.sortOrder))
       : String(index),
@@ -141,6 +169,7 @@ function createEmptyItem(sortOrder: number): EditableSectionItem {
     imageUrl: "",
     labelBn: "",
     labelEn: "",
+    showText: "false",
     sortOrder: String(sortOrder),
     textColor: "",
     titleBn: "",
@@ -164,12 +193,21 @@ function localizedValue(bn: string, en: string) {
   return next.bn || next.en ? next : undefined;
 }
 
-function serializeItem(item: EditableSectionItem): RoshalMarketingSectionItem {
+function serializeItem(
+  item: EditableSectionItem,
+  includeTextFields = true,
+): RoshalMarketingSectionItem {
   const next: RoshalMarketingSectionItem = {};
   const styles: Record<string, string> = {};
-  const title = localizedValue(item.titleBn, item.titleEn);
-  const body = localizedValue(item.bodyBn, item.bodyEn);
-  const label = localizedValue(item.labelBn, item.labelEn);
+  const title = includeTextFields
+    ? localizedValue(item.titleBn, item.titleEn)
+    : undefined;
+  const body = includeTextFields
+    ? localizedValue(item.bodyBn, item.bodyEn)
+    : undefined;
+  const label = includeTextFields
+    ? localizedValue(item.labelBn, item.labelEn)
+    : undefined;
   const sortOrder = itemSortValue(item.sortOrder, Number.NaN);
 
   if (title) {
@@ -184,7 +222,7 @@ function serializeItem(item: EditableSectionItem): RoshalMarketingSectionItem {
     next.label = label;
   }
 
-  if (item.href.trim()) {
+  if (includeTextFields && item.href.trim()) {
     next.href = item.href.trim();
   }
 
@@ -192,7 +230,7 @@ function serializeItem(item: EditableSectionItem): RoshalMarketingSectionItem {
     next.imageUrl = item.imageUrl.trim();
   }
 
-  if (item.value.trim()) {
+  if (includeTextFields && item.value.trim()) {
     next.value = item.value.trim();
   }
 
@@ -216,6 +254,10 @@ function serializeItem(item: EditableSectionItem): RoshalMarketingSectionItem {
     styles.textColor = item.textColor.trim();
   }
 
+  if (includeTextFields && item.showText === "true") {
+    styles.showText = "true";
+  }
+
   if (Object.keys(styles).length) {
     next.styles = styles;
   }
@@ -234,11 +276,41 @@ function hasItemData(item: RoshalMarketingSectionItem) {
   );
 }
 
-function serializeItems(items: EditableSectionItem[]) {
+function prepareItemForCopy(
+  item: RoshalMarketingSectionItem,
+  index: number,
+  copy: Required<MarketingSectionItemsCopy>,
+) {
+  const editable = toEditableItem(item, index);
+
+  if (!copy.showSlideDesignFields || editable.showText === "true") {
+    return editable;
+  }
+
+  return {
+    ...editable,
+    bodyBn: "",
+    bodyEn: "",
+    href: "",
+    labelBn: "",
+    labelEn: "",
+    titleBn: "",
+    titleEn: "",
+    value: "",
+  };
+}
+
+function serializeItems(
+  items: EditableSectionItem[],
+  copy: Required<MarketingSectionItemsCopy>,
+) {
   return items
     .map((item, index) => ({
       index,
-      item: serializeItem(item),
+      item: serializeItem(
+        item,
+        !copy.showSlideDesignFields || item.showText === "true",
+      ),
       sortOrder: itemSortValue(item.sortOrder, index),
     }))
     .filter(({ item }) => hasItemData(item))
@@ -294,11 +366,13 @@ export function MarketingSectionItemsField({
 }) {
   const copy = resolveItemsCopy(copyOverrides);
   const [items, setItems] = useState<EditableSectionItem[]>(() =>
-    defaultItems.length ? defaultItems.map(toEditableItem) : [],
+    defaultItems.length
+      ? defaultItems.map((item, index) => prepareItemForCopy(item, index, copy))
+      : [],
   );
   const serializedValue = useMemo(
-    () => JSON.stringify(serializeItems(items), null, 2),
-    [items],
+    () => JSON.stringify(serializeItems(items, copy), null, 2),
+    [items, copy],
   );
 
   const updateItem = (
@@ -338,158 +412,327 @@ export function MarketingSectionItemsField({
 
       {items.length ? (
         <div className="space-y-3">
-          {items.map((item, index) => (
-            <div
-              key={`marketing-section-item-${index}`}
-              className="space-y-4 rounded-lg border border-border/70 bg-muted/10 p-3"
-            >
-              <div className="flex items-center justify-between gap-3">
-                <p className="text-sm font-medium">
-                  {copy.itemLabel} {index + 1}
-                </p>
-                <div className="flex shrink-0 items-center gap-1">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="size-8 text-muted-foreground"
-                    disabled={index === 0}
-                    onClick={() => moveItem(index, -1)}
-                  >
-                    <ArrowUp className="size-4" />
-                    <span className="sr-only">
-                      Move {copy.itemLabel.toLowerCase()} up
-                    </span>
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="size-8 text-muted-foreground"
-                    disabled={index === items.length - 1}
-                    onClick={() => moveItem(index, 1)}
-                  >
-                    <ArrowDown className="size-4" />
-                    <span className="sr-only">
-                      Move {copy.itemLabel.toLowerCase()} down
-                    </span>
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="h-8 px-2 text-muted-foreground hover:text-destructive"
-                    onClick={() =>
-                      setItems((current) =>
-                        resequenceItems(
-                          current.filter((_, itemIndex) => itemIndex !== index),
-                        ),
-                      )
-                    }
-                  >
-                    <Trash2 className="size-4" />
-                    Remove
-                  </Button>
-                </div>
-              </div>
+          {items.map((item, index) => {
+            const showSlideText =
+              !copy.showSlideDesignFields || item.showText === "true";
 
-              <div className="grid min-w-0 gap-3 md:grid-cols-2">
-                <ExactInput
-                  label={copy.sortLabel}
-                  value={item.sortOrder}
-                  onChange={(value) => updateItem(index, "sortOrder", value)}
-                />
-                <ExactInput
-                  label={copy.titleBnLabel}
-                  value={item.titleBn}
-                  onChange={(value) => updateItem(index, "titleBn", value)}
-                />
-                <ExactInput
-                  label={copy.titleEnLabel}
-                  value={item.titleEn}
-                  onChange={(value) => updateItem(index, "titleEn", value)}
-                />
-                <ExactInput
-                  label={copy.labelBnLabel}
-                  value={item.labelBn}
-                  onChange={(value) => updateItem(index, "labelBn", value)}
-                />
-                <ExactInput
-                  label={copy.labelEnLabel}
-                  value={item.labelEn}
-                  onChange={(value) => updateItem(index, "labelEn", value)}
-                />
-                <ExactInput
-                  label={copy.valueLabel}
-                  value={item.value}
-                  onChange={(value) => updateItem(index, "value", value)}
-                />
-                <ExactInput
-                  label={copy.hrefLabel}
-                  value={item.href}
-                  onChange={(value) => updateItem(index, "href", value)}
-                />
-                <div className="md:col-span-2">
-                  <ExactTextarea
-                    label={copy.bodyBnLabel}
-                    value={item.bodyBn}
-                    onChange={(value) => updateItem(index, "bodyBn", value)}
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <ExactTextarea
-                    label={copy.bodyEnLabel}
-                    value={item.bodyEn}
-                    onChange={(value) => updateItem(index, "bodyEn", value)}
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <ImageUploadField
-                    name={undefined}
-                    label={copy.imageLabel}
-                    value={item.imageUrl}
-                    onChange={(value) => updateItem(index, "imageUrl", value)}
-                    compact
-                    previewClassName="w-full max-w-48"
-                  />
-                </div>
-                {copy.showSlideDesignFields ? (
-                  <div className="grid min-w-0 gap-3 rounded-md border border-border/60 bg-background/70 p-3 md:col-span-2 md:grid-cols-2">
-                    <ExactInput
-                      label={copy.containerHeightLabel}
-                      value={item.containerHeight}
-                      onChange={(value) =>
-                        updateItem(index, "containerHeight", value)
+            return (
+              <div
+                key={`marketing-section-item-${index}`}
+                className="space-y-4 rounded-lg border border-border/70 bg-muted/10 p-3"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm font-medium">
+                    {copy.itemLabel} {index + 1}
+                  </p>
+                  <div className="flex shrink-0 items-center gap-1">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="size-8 text-muted-foreground"
+                      disabled={index === 0}
+                      onClick={() => moveItem(index, -1)}
+                    >
+                      <ArrowUp className="size-4" />
+                      <span className="sr-only">
+                        Move {copy.itemLabel.toLowerCase()} up
+                      </span>
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="size-8 text-muted-foreground"
+                      disabled={index === items.length - 1}
+                      onClick={() => moveItem(index, 1)}
+                    >
+                      <ArrowDown className="size-4" />
+                      <span className="sr-only">
+                        Move {copy.itemLabel.toLowerCase()} down
+                      </span>
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 px-2 text-muted-foreground hover:text-destructive"
+                      onClick={() =>
+                        setItems((current) =>
+                          resequenceItems(
+                            current.filter(
+                              (_, itemIndex) => itemIndex !== index,
+                            ),
+                          ),
+                        )
                       }
-                      placeholder="18rem, 320px, 45vh"
-                    />
-                    <ExactInput
-                      label={copy.imageFitLabel}
-                      value={item.imageFit}
-                      onChange={(value) => updateItem(index, "imageFit", value)}
-                      placeholder="cover or contain"
-                    />
-                    <ExactInput
-                      label={copy.imageScaleLabel}
-                      value={item.imageScale}
-                      onChange={(value) =>
-                        updateItem(index, "imageScale", value)
+                    >
+                      <Trash2 className="size-4" />
+                      Remove
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="grid min-w-0 gap-3 md:grid-cols-2">
+                  <ExactInput
+                    label={copy.sortLabel}
+                    value={item.sortOrder}
+                    onChange={(value) => updateItem(index, "sortOrder", value)}
+                  />
+                  {copy.showSlideDesignFields ? (
+                    <Button
+                      type="button"
+                      variant={showSlideText ? "default" : "outline"}
+                      size="sm"
+                      className="h-10 justify-start gap-2 self-end"
+                      onClick={() =>
+                        updateItem(
+                          index,
+                          "showText",
+                          showSlideText ? "false" : "true",
+                        )
                       }
-                      placeholder="100"
-                    />
-                    <ExactInput
-                      label={copy.textColorLabel}
-                      value={item.textColor}
-                      onChange={(value) =>
-                        updateItem(index, "textColor", value)
-                      }
-                      placeholder="#0f3d24, white, var(--foreground)"
+                    >
+                      {showSlideText ? (
+                        <EyeOff className="size-4" />
+                      ) : (
+                        <Eye className="size-4" />
+                      )}
+                      {showSlideText ? "Hide text/button" : "Show text/button"}
+                    </Button>
+                  ) : null}
+                  {copy.showSlideDesignFields ? null : (
+                    <>
+                      <ExactInput
+                        label={copy.titleBnLabel}
+                        value={item.titleBn}
+                        onChange={(value) =>
+                          updateItem(index, "titleBn", value)
+                        }
+                      />
+                      <ExactInput
+                        label={copy.titleEnLabel}
+                        value={item.titleEn}
+                        onChange={(value) =>
+                          updateItem(index, "titleEn", value)
+                        }
+                      />
+                      <ExactInput
+                        label={copy.labelBnLabel}
+                        value={item.labelBn}
+                        onChange={(value) =>
+                          updateItem(index, "labelBn", value)
+                        }
+                      />
+                      <ExactInput
+                        label={copy.labelEnLabel}
+                        value={item.labelEn}
+                        onChange={(value) =>
+                          updateItem(index, "labelEn", value)
+                        }
+                      />
+                      <ExactInput
+                        label={copy.valueLabel}
+                        value={item.value}
+                        onChange={(value) => updateItem(index, "value", value)}
+                      />
+                    </>
+                  )}
+                  <div className="md:col-span-2">
+                    <ImageUploadField
+                      name={undefined}
+                      label={copy.imageLabel}
+                      value={item.imageUrl}
+                      onChange={(value) => updateItem(index, "imageUrl", value)}
+                      compact
+                      previewClassName="w-full max-w-48"
                     />
                   </div>
-                ) : null}
+                  {copy.showSlideDesignFields && showSlideText ? (
+                    <>
+                      <ExactInput
+                        label={copy.titleBnLabel}
+                        value={item.titleBn}
+                        onChange={(value) =>
+                          updateItem(index, "titleBn", value)
+                        }
+                      />
+                      <ExactInput
+                        label={copy.titleEnLabel}
+                        value={item.titleEn}
+                        onChange={(value) =>
+                          updateItem(index, "titleEn", value)
+                        }
+                      />
+                      <div className="md:col-span-2">
+                        <ExactTextarea
+                          label={copy.bodyBnLabel}
+                          value={item.bodyBn}
+                          onChange={(value) =>
+                            updateItem(index, "bodyBn", value)
+                          }
+                        />
+                      </div>
+                      <div className="md:col-span-2">
+                        <ExactTextarea
+                          label={copy.bodyEnLabel}
+                          value={item.bodyEn}
+                          onChange={(value) =>
+                            updateItem(index, "bodyEn", value)
+                          }
+                        />
+                      </div>
+                    </>
+                  ) : null}
+                  {!copy.showSlideDesignFields ? (
+                    <Accordion
+                      type="single"
+                      collapsible
+                      className="md:col-span-2"
+                    >
+                      <AccordionItem
+                        value={`item-details-${index}`}
+                        className="rounded-md border border-border/60 px-3"
+                      >
+                        <AccordionTrigger className="py-3 text-left hover:no-underline">
+                          <span className="min-w-0">
+                            <span className="block text-sm font-semibold">
+                              More item details
+                            </span>
+                            <span className="block text-xs font-normal text-muted-foreground">
+                              Open only when this item needs paragraph text or a
+                              custom link.
+                            </span>
+                          </span>
+                        </AccordionTrigger>
+                        <AccordionContent forceMount>
+                          <div className="grid min-w-0 gap-3 pb-3 md:grid-cols-2">
+                            <ExactInput
+                              label={copy.hrefLabel}
+                              value={item.href}
+                              onChange={(value) =>
+                                updateItem(index, "href", value)
+                              }
+                            />
+                            <div className="md:col-span-2">
+                              <ExactTextarea
+                                label={copy.bodyBnLabel}
+                                value={item.bodyBn}
+                                onChange={(value) =>
+                                  updateItem(index, "bodyBn", value)
+                                }
+                              />
+                            </div>
+                            <div className="md:col-span-2">
+                              <ExactTextarea
+                                label={copy.bodyEnLabel}
+                                value={item.bodyEn}
+                                onChange={(value) =>
+                                  updateItem(index, "bodyEn", value)
+                                }
+                              />
+                            </div>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  ) : null}
+                  {copy.showSlideDesignFields ? (
+                    <Accordion
+                      type="single"
+                      collapsible
+                      className="md:col-span-2"
+                    >
+                      <AccordionItem
+                        value={`slide-options-${index}`}
+                        className="rounded-md border border-border/60 px-3"
+                      >
+                        <AccordionTrigger className="py-3 text-left hover:no-underline">
+                          <span className="min-w-0">
+                            <span className="block text-sm font-semibold">
+                              Optional button and image settings
+                            </span>
+                            <span className="block text-xs font-normal text-muted-foreground">
+                              Open only when this slide needs a button, custom
+                              height, image fit, scale, or text color.
+                            </span>
+                          </span>
+                        </AccordionTrigger>
+                        <AccordionContent forceMount>
+                          <div className="grid min-w-0 gap-3 pb-3 md:grid-cols-2">
+                            {showSlideText ? (
+                              <>
+                                <ExactInput
+                                  label={copy.labelBnLabel}
+                                  value={item.labelBn}
+                                  onChange={(value) =>
+                                    updateItem(index, "labelBn", value)
+                                  }
+                                />
+                                <ExactInput
+                                  label={copy.labelEnLabel}
+                                  value={item.labelEn}
+                                  onChange={(value) =>
+                                    updateItem(index, "labelEn", value)
+                                  }
+                                />
+                                <ExactInput
+                                  label={copy.valueLabel}
+                                  value={item.value}
+                                  onChange={(value) =>
+                                    updateItem(index, "value", value)
+                                  }
+                                />
+                                <ExactInput
+                                  label={copy.hrefLabel}
+                                  value={item.href}
+                                  onChange={(value) =>
+                                    updateItem(index, "href", value)
+                                  }
+                                />
+                              </>
+                            ) : null}
+                            <ExactInput
+                              label={copy.containerHeightLabel}
+                              value={item.containerHeight}
+                              onChange={(value) =>
+                                updateItem(index, "containerHeight", value)
+                              }
+                              placeholder="18rem, 320px, 45vh"
+                            />
+                            <ExactInput
+                              label={copy.imageFitLabel}
+                              value={item.imageFit}
+                              onChange={(value) =>
+                                updateItem(index, "imageFit", value)
+                              }
+                              placeholder="cover or contain"
+                            />
+                            <ExactInput
+                              label={copy.imageScaleLabel}
+                              value={item.imageScale}
+                              onChange={(value) =>
+                                updateItem(index, "imageScale", value)
+                              }
+                              placeholder="100"
+                            />
+                            <ExactInput
+                              label={copy.textColorLabel}
+                              value={item.textColor}
+                              onChange={(value) =>
+                                updateItem(index, "textColor", value)
+                              }
+                              placeholder="#0f3d24, white, var(--foreground)"
+                            />
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  ) : null}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       ) : (
         <div className="rounded-lg border border-border/70 bg-muted/10 p-3 text-sm text-muted-foreground">
@@ -518,6 +761,113 @@ export function MarketingSectionItemsField({
         <Plus className="size-4" />
         {copy.addButtonLabel}
       </Button>
+    </div>
+  );
+}
+
+export function HeroSectionLayoutField({
+  defaultStyles,
+  name,
+}: {
+  defaultStyles: Record<string, string>;
+  name: string;
+}) {
+  const [showSideBanner, setShowSideBanner] = useState(
+    defaultStyles.showSideBanner !== "false",
+  );
+  const [sideShowText, setSideShowText] = useState(
+    defaultStyles.sideShowText === "true",
+  );
+  const [desktopSplit, setDesktopSplit] = useState(
+    defaultStyles.desktopSplit || "carousel-heavy",
+  );
+  const [containerHeight, setContainerHeight] = useState(
+    defaultStyles.containerHeight || "",
+  );
+  const [imageFit, setImageFit] = useState(defaultStyles.imageFit || "cover");
+  const [sideImageFit, setSideImageFit] = useState(
+    defaultStyles.sideImageFit || defaultStyles.imageFit || "cover",
+  );
+  const [sideImageScale, setSideImageScale] = useState(
+    defaultStyles.sideImageScale || "200",
+  );
+  const serializedValue = useMemo(() => {
+    const next = { ...defaultStyles };
+
+    next.showSideBanner = showSideBanner ? "true" : "false";
+    next.sideShowText = sideShowText ? "true" : "false";
+    next.desktopSplit = desktopSplit;
+    next.imageFit = imageFit;
+    next.sideImageFit = sideImageFit;
+    next.sideImageScale = sideImageScale.trim() || "200";
+
+    if (containerHeight.trim()) {
+      next.containerHeight = containerHeight.trim();
+    } else {
+      delete next.containerHeight;
+    }
+
+    return JSON.stringify(next, null, 2);
+  }, [
+    containerHeight,
+    defaultStyles,
+    desktopSplit,
+    imageFit,
+    showSideBanner,
+    sideImageFit,
+    sideImageScale,
+    sideShowText,
+  ]);
+
+  return (
+    <div className="min-w-0 space-y-4">
+      <input type="hidden" name={name} value={serializedValue} />
+      <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 text-sm text-muted-foreground">
+        Large screens show the carousel on the left and this desktop banner on
+        the right. Smaller screens show only the carousel.
+      </div>
+      <div className="grid min-w-0 gap-4 md:grid-cols-2">
+        <DashboardToggle
+          checked={showSideBanner}
+          label="Show right banner on desktop"
+          onCheckedChange={setShowSideBanner}
+        />
+        <DashboardToggle
+          checked={sideShowText}
+          label="Show text/button on right banner"
+          onCheckedChange={setSideShowText}
+        />
+        <ExactSelect
+          label="Large-screen layout"
+          options={desktopSplitOptions}
+          value={desktopSplit}
+          onChange={setDesktopSplit}
+        />
+        <ExactInput
+          label="Hero height"
+          value={containerHeight}
+          onChange={setContainerHeight}
+          placeholder="18rem, 320px, 45vh"
+        />
+        <ExactSelect
+          label="Carousel image fit"
+          options={imageFitOptions}
+          value={imageFit}
+          onChange={setImageFit}
+        />
+        <ExactSelect
+          label="Right banner image fit"
+          options={imageFitOptions}
+          value={sideImageFit}
+          onChange={setSideImageFit}
+        />
+        <ExactInput
+          label="Right banner image scale %"
+          value={sideImageScale}
+          onChange={setSideImageScale}
+          placeholder="200"
+        />
+      </div>
     </div>
   );
 }
@@ -631,6 +981,61 @@ function ExactInput({
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
       />
+    </div>
+  );
+}
+
+function ExactSelect({
+  label,
+  onChange,
+  options,
+  value,
+}: {
+  label: string;
+  onChange: (value: string) => void;
+  options: Array<{ value: string; label: string }>;
+  value: string;
+}) {
+  return (
+    <div className="min-w-0 space-y-1.5">
+      <Label>{label}</Label>
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger className="w-full">
+          <SelectValue placeholder="Select option" />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
+
+function DashboardToggle({
+  checked,
+  label,
+  onCheckedChange,
+}: {
+  checked: boolean;
+  label: string;
+  onCheckedChange: (value: boolean) => void;
+}) {
+  const id = useId();
+
+  return (
+    <div className="flex min-w-0 items-center gap-3 rounded-md border border-border/70 bg-background/60 p-3 text-sm font-medium">
+      <Checkbox
+        id={id}
+        checked={checked}
+        onCheckedChange={(value) => onCheckedChange(Boolean(value))}
+      />
+      <Label htmlFor={id} className="min-w-0">
+        {label}
+      </Label>
     </div>
   );
 }

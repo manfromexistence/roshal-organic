@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Fixed
+- Enabled all default Home marketing sections for older stored CMS rows during the current delivery repair while preserving future admin toggle changes.
+- Simplified CMS item editing by keeping essential item fields visible and moving paragraph/link details into a collapsed "More item details" control.
+- Fixed production QA issues found in the dashboard/browser pass: zero-product Featured Category links now preserve their category filter and show a friendly empty product state instead of resetting or crashing.
+- Fixed direct zero-product subcategory links so sub-header submenu links can land on the intended subcategory filter with an empty state instead of clearing the filter.
+- Fixed direct Category and Subcategory editor delete actions by routing them through the shared confirmation/feedback flow so deletes redirect back to the dashboard list with the correct status.
+- Fixed dashboard delete submission cleanup so clearing stale feedback query params no longer forces a delayed browser reload that can interrupt server-action redirects.
+- Matched the desktop Home hero right-banner height to the carousel image card, forced the right banner image to cover/fill the tile by default with a simple scale control, and centered the Featured Categories carousel without changing the approved card sizing.
+- Restored the homepage hero's large-screen split layout with a left carousel and right desktop banner, kept smaller screens carousel-only, and added simple Home CMS controls for the right banner visibility, text, layout split, height, and image fit.
+- Simplified the Home CMS hero slide editor so slide images are the primary control, text/button overlays are hidden by default behind a clear Show text/button toggle, and public hero slides do not render stale saved copy unless that toggle is enabled.
+- Simplified the Home CMS hero flow by moving the confusing Home page cover image into advanced page settings, opening the real hero section by default, and making the storefront hero a single slider that directly reflects the dashboard slide rows.
+- Fixed dashboard delete flows so Product, Category, Subcategory, Review, User, and CMS Page delete forms clear stale create/save/delete query flags, preserve the current list URL, and hard-refresh the list after the server action so deleted rows disappear immediately instead of showing stale "New product added" feedback.
+- Fixed taxonomy delete visibility by filtering hidden deleted category/subcategory tombstone rows from Roshal taxonomy reads.
 - Fixed Home landing hero default repair so a default-like disabled/missing hero is re-enabled with seeded image-backed slides instead of leaving the public homepage without a hero.
 - Fixed first-click product deletion for edited default products by writing a fallback-default tombstone when an override row uses a different ID, so deleted fallback products cannot reappear until deleted a second time.
 - Changed custom product deletion to hard-delete the product row after product reviews are removed, while keeping tombstones only for built-in fallback catalog products.

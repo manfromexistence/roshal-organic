@@ -970,6 +970,7 @@ export async function removeRoshalPage(formData: FormData) {
       textValue(formData, "redirectTo") || "/dashboard/pages",
       {
         deleted: "page",
+        actionId: actionFeedbackId(),
       },
     ),
   );
@@ -1175,10 +1176,13 @@ export async function removeRoshalProduct(formData: FormData) {
   }
 
   redirect(
-    replaceActionFeedback("/dashboard/products", {
-      deleted: "1",
-      actionId: actionFeedbackId(),
-    }),
+    replaceActionFeedback(
+      textValue(formData, "redirectTo") || "/dashboard/products",
+      {
+        deleted: "1",
+        actionId: actionFeedbackId(),
+      },
+    ),
   );
 }
 
@@ -1240,7 +1244,13 @@ export async function saveRoshalProductReviewPublication(formData: FormData) {
 export async function removeRoshalProductReview(formData: FormData) {
   await requireRoshalAdmin();
 
-  let redirectTo = "/dashboard/reviews?saved=review-deleted";
+  let redirectTo = replaceActionFeedback(
+    textValue(formData, "redirectTo") || "/dashboard/reviews",
+    {
+      actionId: actionFeedbackId(),
+      deleted: "review",
+    },
+  );
 
   try {
     requireText(formData, "id", "missing-delete-id");
@@ -1323,10 +1333,14 @@ export async function removeRoshalUser(formData: FormData) {
     redirectActionError(error, formData, "/dashboard/users");
   }
 
-  finishAction("/dashboard/users?deleted=1", formData, [
-    "/dashboard",
+  finishActionWithFeedback(
     "/dashboard/users",
-  ]);
+    formData,
+    ["/dashboard", "/dashboard/users"],
+    {
+      deleted: "user",
+    },
+  );
 }
 
 export async function saveRoshalUserProfile(formData: FormData) {

@@ -392,10 +392,7 @@ export function ProductsPageClient({
   const taxonomyCategories = taxonomy.categories;
   const taxonomySubcategories = taxonomy.subcategories;
   const categoryFilterOptions = useMemo(
-    () =>
-      getTaxonomyCategoryOptions(locale, taxonomyCategories, products).filter(
-        (category) => category.count > 0,
-      ),
+    () => getTaxonomyCategoryOptions(locale, taxonomyCategories, products),
     [locale, products, taxonomyCategories],
   );
   const categoryOptions = useMemo<CategoryOption[]>(
@@ -425,7 +422,7 @@ export function ProductsPageClient({
         taxonomyCategories,
         taxonomySubcategories,
         products,
-      ).filter((subcategory) => subcategory.count > 0),
+      ),
     [
       locale,
       products,
@@ -475,7 +472,7 @@ export function ProductsPageClient({
         taxonomyCategories,
         taxonomySubcategories,
         products,
-      ).filter((subcategory) => subcategory.count > 0),
+      ),
     [
       activeCategory,
       locale,
@@ -527,7 +524,7 @@ export function ProductsPageClient({
       taxonomyCategories,
       taxonomySubcategories,
       products,
-    ).filter((subcategory) => subcategory.count > 0);
+    );
     const nextSubcategory = resolveOptionKey(
       parsedSearchParams.get("subcategory") || "all",
       new Set(nextSubcategoryOptions.map((subcategory) => subcategory.key)),
@@ -717,9 +714,7 @@ export function ProductsPageClient({
         taxonomyCategories,
         taxonomySubcategories,
         products,
-      )
-        .filter((subcategory) => subcategory.count > 0)
-        .map((subcategory) => subcategory.key),
+      ).map((subcategory) => subcategory.key),
     );
 
     setActiveSubcategory((current) =>

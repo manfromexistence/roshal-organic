@@ -1,4 +1,4 @@
-import { ArrowLeft, ImageIcon, Save, Trash2, X } from "lucide-react";
+import { ArrowLeft, ImageIcon, Save, X } from "lucide-react";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import {
@@ -6,6 +6,7 @@ import {
   saveRoshalSubcategory,
 } from "@/actions/admin";
 import { DashboardFormStatusToast } from "@/components/dashboard/dashboard-form-status-toast";
+import { DeleteConfirmationButton } from "@/components/dashboard/delete-confirmation-button";
 import { DashboardFormCheckbox } from "@/components/dashboard/form-checkbox";
 import { DashboardFormSelect } from "@/components/dashboard/form-select";
 import { DashboardSourceKeySelect } from "@/components/dashboard/source-key-select";
@@ -298,13 +299,14 @@ export default async function EditSubcategoryPage({
         </Card>
       </form>
 
-      <form action={removeRoshalSubcategory}>
-        <input type="hidden" name="id" value={subcategory.id} />
-        <Button type="submit" variant="destructive" className="w-fit">
-          <Trash2 className="size-4" />
-          Delete subcategory
-        </Button>
-      </form>
+      <DeleteConfirmationButton
+        action={removeRoshalSubcategory}
+        buttonLabel="Delete subcategory"
+        description={`This permanently removes ${getLocalizedValue("en", subcategory.label)} from the dashboard and storefront filters.`}
+        id={subcategory.id}
+        redirectTo="/dashboard/categories"
+        title="Delete subcategory?"
+      />
     </div>
   );
 }

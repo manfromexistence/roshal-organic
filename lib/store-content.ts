@@ -252,6 +252,47 @@ function mergeRoshalSections(
 
 let cmsDefaultsSeedPromise: Promise<void> | null = null;
 
+const homeSectionDefaultEnableRepairDate = new Date("2026-05-03T00:00:00.000Z");
+
+function isBeforeHomeSectionDefaultEnableRepair(date: Date | null) {
+  return !date || date.getTime() < homeSectionDefaultEnableRepairDate.getTime();
+}
+
+async function enableDefaultHomeSectionsOnce(
+  refreshedPages: (typeof roshalPages.$inferSelect)[],
+  existingSections: (typeof roshalSections.$inferSelect)[],
+  timestamp: Date,
+) {
+  const homePage = refreshedPages.find((page) => page.slug === "home");
+
+  if (!homePage) {
+    return;
+  }
+
+  const defaultHomeSectionKeys = new Set(
+    defaultRoshalSections
+      .filter((section) => section.pageId === "page-home")
+      .map((section) => section.sectionKey),
+  );
+  const disabledDefaultHomeSections = existingSections.filter(
+    (section) =>
+      section.pageId === homePage.id &&
+      defaultHomeSectionKeys.has(section.sectionKey) &&
+      !section.isEnabled &&
+      isBeforeHomeSectionDefaultEnableRepair(section.updatedAt),
+  );
+
+  for (const section of disabledDefaultHomeSections) {
+    await db
+      .update(roshalSections)
+      .set({
+        isEnabled: true,
+        updatedAt: timestamp,
+      })
+      .where(eq(roshalSections.id, section.id));
+  }
+}
+
 async function seedMissingHomeHeroSlides(
   refreshedPages: (typeof roshalPages.$inferSelect)[],
   existingSections: (typeof roshalSections.$inferSelect)[],
@@ -432,6 +473,11 @@ async function seedMissingRoshalCmsDefaults() {
   }
 
   await seedMissingHomeHeroSlides(refreshedPages, existingSections, timestamp);
+  await enableDefaultHomeSectionsOnce(
+    refreshedPages,
+    existingSections,
+    timestamp,
+  );
 }
 
 async function ensureRoshalCmsDefaultsSeeded() {
