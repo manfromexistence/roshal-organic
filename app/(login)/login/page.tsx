@@ -1,6 +1,6 @@
 "use client";
 
-import { Eye, EyeOff, Lock, Mail, MapPin, User } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, MapPin, Phone, User } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import type { FormEvent, ReactNode } from "react";
@@ -11,7 +11,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PhoneInput2 } from "@/components/ui/phone-input-2";
 import {
   Select,
   SelectContent,
@@ -244,6 +243,10 @@ export default function LoginPage() {
           ? "User already exist. Use another Mobile/Email."
           : rawErrorMessage;
 
+      if (!isSignIn && /already|exist|email|duplicate/i.test(rawErrorMessage)) {
+        setMobileError("User already exist. Use another Mobile/Email.");
+      }
+
       setErrorMessage(nextErrorMessage);
       toast({
         title: isSignIn ? "Sign in failed" : "Account creation failed",
@@ -405,22 +408,26 @@ export default function LoginPage() {
                         </FieldShell>
 
                         <div className="space-y-2">
-                          <Label className="px-1 text-sm text-muted-foreground">
-                            Mobile number
-                          </Label>
-                          <PhoneInput2
-                            id="signup-mobile"
-                            value={mobile}
-                            autoComplete="tel"
-                            onChange={(value) => {
-                              setErrorMessage(null);
-                              setMobileError(null);
-                              setMobile(value);
-                            }}
-                            placeholder="017XXXXXXXX"
-                            className="h-12 rounded-lg border-border/70 bg-background text-base"
-                            required
-                          />
+                          <FieldShell icon={<Phone className="size-4" />}>
+                            <Input
+                              id="signup-mobile"
+                              value={mobile}
+                              autoComplete="tel"
+                              inputMode="tel"
+                              onChange={(event) => {
+                                setErrorMessage(null);
+                                setMobileError(null);
+                                setMobile(event.target.value);
+                              }}
+                              placeholder="Mobile (017xxxxxxxx)"
+                              className={cn(
+                                "h-12 rounded-lg border-border/70 bg-background pl-12 text-base",
+                                mobileError &&
+                                  "border-destructive focus-visible:ring-destructive/30",
+                              )}
+                              required
+                            />
+                          </FieldShell>
                           {mobileError ? (
                             <p className="px-1 text-xs font-medium text-destructive">
                               {mobileError}

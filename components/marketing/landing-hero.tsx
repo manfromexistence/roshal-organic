@@ -96,7 +96,7 @@ function getBannerStyles(banner: LandingHeroBanner) {
   const textColor = safeCssColor(banner.textColor);
   const imageTransform = safeImageScale(banner.imageScale);
   const containerStyle: CSSProperties | undefined = minHeight
-    ? { minHeight }
+    ? ({ "--hero-container-height": minHeight } as CSSProperties)
     : undefined;
   const textStyle: CSSProperties | undefined = textColor
     ? { color: textColor }
@@ -135,7 +135,7 @@ function HeroBannerCard({
       className={`gap-0 overflow-hidden rounded-md border-border/70 bg-card p-0 shadow-sm ${className}`}
     >
       <CardContent
-        className="relative min-h-[15rem] p-0 sm:min-h-[17rem] md:min-h-[20rem]"
+        className="relative h-[38vw] min-h-[8rem] max-h-[13rem] p-0 sm:h-auto sm:max-h-none sm:min-h-[var(--hero-container-height,17rem)] md:min-h-[var(--hero-container-height,20rem)]"
         style={styles.containerStyle}
       >
         <Image
@@ -150,7 +150,7 @@ function HeroBannerCard({
           style={styles.imageStyle}
         />
         <div
-          className="relative flex min-h-[15rem] max-w-full flex-col justify-center gap-4 p-5 text-foreground sm:min-h-[17rem] sm:p-6 md:max-w-2xl md:min-h-[20rem] md:gap-5 md:p-8"
+          className="relative flex h-full min-h-0 max-w-full flex-col justify-center gap-4 p-4 text-foreground sm:min-h-[var(--hero-container-height,17rem)] sm:p-6 md:max-w-2xl md:min-h-[var(--hero-container-height,20rem)] md:gap-5 md:p-8"
           style={{
             ...styles.containerStyle,
             ...styles.textStyle,

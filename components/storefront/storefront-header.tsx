@@ -14,7 +14,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { LocaleSwitcher } from "@/components/storefront/locale-switcher";
 import { StorefrontThemeToggle } from "@/components/storefront/theme-toggle";
 import {
@@ -77,7 +77,14 @@ export function StorefrontHeader({
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
   const [hideTopBar, setHideTopBar] = useState(false);
+  const [openTaxonomyMenu, setOpenTaxonomyMenu] = useState<string | null>(null);
   const [visibleTaxonomyCount, setVisibleTaxonomyCount] = useState(7);
+  const taxonomyOpenTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
+  const taxonomyCloseTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -120,10 +127,64 @@ export function StorefrontHeader({
   const overflowCategoryKeys = new Set(
     overflowDesktopTaxonomy.map((group) => group.key),
   );
+  const moreTaxonomyKey = "__more-taxonomy";
+
+  const clearTaxonomyOpenTimer = () => {
+    if (taxonomyOpenTimerRef.current) {
+      clearTimeout(taxonomyOpenTimerRef.current);
+      taxonomyOpenTimerRef.current = null;
+    }
+  };
+
+  const openTaxonomyDropdown = (
+    key: string,
+    options?: { intentionalHover?: boolean },
+  ) => {
+    if (taxonomyCloseTimerRef.current) {
+      clearTimeout(taxonomyCloseTimerRef.current);
+      taxonomyCloseTimerRef.current = null;
+    }
+    clearTaxonomyOpenTimer();
+
+    if (options?.intentionalHover) {
+      taxonomyOpenTimerRef.current = setTimeout(() => {
+        setOpenTaxonomyMenu(key);
+        taxonomyOpenTimerRef.current = null;
+      }, 180);
+      return;
+    }
+
+    setOpenTaxonomyMenu(key);
+  };
+
+  const closeTaxonomyDropdown = (key: string) => {
+    clearTaxonomyOpenTimer();
+
+    if (taxonomyCloseTimerRef.current) {
+      clearTimeout(taxonomyCloseTimerRef.current);
+    }
+
+    taxonomyCloseTimerRef.current = setTimeout(() => {
+      setOpenTaxonomyMenu((current) => (current === key ? null : current));
+      taxonomyCloseTimerRef.current = null;
+    }, 120);
+  };
 
   useEffect(() => {
     setIsHydrated(true);
   }, []);
+
+  useEffect(
+    () => () => {
+      if (taxonomyOpenTimerRef.current) {
+        clearTimeout(taxonomyOpenTimerRef.current);
+      }
+      if (taxonomyCloseTimerRef.current) {
+        clearTimeout(taxonomyCloseTimerRef.current);
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
     setSearchQuery(searchParams.get("q") || "");
@@ -132,43 +193,18 @@ export function StorefrontHeader({
   useEffect(() => {
     const updateVisibleTaxonomyCount = () => {
       const screenWidth = window.innerWidth;
+      const averageItemWidth =
+        screenWidth < 640 ? 148 : screenWidth < 1024 ? 164 : 178;
+      const reservedWidth = taxonomy.length > 3 ? 126 : 32;
+      const countByWidth = Math.floor(
+        Math.max(220, screenWidth - reservedWidth) / averageItemWidth,
+      );
+      const nextCount = Math.max(
+        2,
+        Math.min(taxonomy.length || 2, countByWidth),
+      );
 
-      if (screenWidth < 360) {
-        setVisibleTaxonomyCount(2);
-        return;
-      }
-
-      if (screenWidth < 480) {
-        setVisibleTaxonomyCount(3);
-        return;
-      }
-
-      if (screenWidth < 640) {
-        setVisibleTaxonomyCount(4);
-        return;
-      }
-
-      if (screenWidth < 768) {
-        setVisibleTaxonomyCount(5);
-        return;
-      }
-
-      if (screenWidth < 1024) {
-        setVisibleTaxonomyCount(6);
-        return;
-      }
-
-      if (screenWidth < 1280) {
-        setVisibleTaxonomyCount(7);
-        return;
-      }
-
-      if (screenWidth < 1440) {
-        setVisibleTaxonomyCount(8);
-        return;
-      }
-
-      setVisibleTaxonomyCount(9);
+      setVisibleTaxonomyCount(nextCount);
     };
 
     updateVisibleTaxonomyCount();
@@ -177,7 +213,7 @@ export function StorefrontHeader({
     return () => {
       window.removeEventListener("resize", updateVisibleTaxonomyCount);
     };
-  }, []);
+  }, [taxonomy.length]);
 
   useEffect(() => {
     const getScrollY = () =>
@@ -492,142 +528,181 @@ export function StorefrontHeader({
           hideTopBar ? "top-0" : "top-14 lg:top-[4.1rem]",
         )}
       >
-        <div className="container mx-auto min-w-0 overflow-x-auto px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <div className="flex w-max min-w-full flex-nowrap items-center justify-start gap-1 py-1.5">
+        <div className="container mx-auto min-w-0 overflow-x-hidden px-4">
+          <div className="flex w-full min-w-0 flex-nowrap items-center justify-start gap-1 py-1.5">
             {visibleDesktopTaxonomy.map((group) => {
               const groupLabel = getLocalizedValue(locale, group.label);
               const triggerActive =
                 pathname === "/products" && activeCategory === group.key;
 
               return (
-                <DropdownMenu key={group.key}>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      className={cn(
-                        "group h-10 shrink-0 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-primary-foreground/90 opacity-100 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground focus:bg-primary-foreground/10 focus:text-primary-foreground data-[state=open]:bg-background data-[state=open]:text-primary data-[state=open]:shadow-sm data-[state=open]:opacity-100",
-                        triggerActive &&
-                          "bg-primary-foreground/10 text-primary-foreground",
-                      )}
-                    >
-                      <span>{groupLabel}</span>
-                      <ChevronDown className="size-3 transition-transform duration-200 group-data-[state=open]:rotate-180" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    align="start"
-                    sideOffset={8}
-                    className="z-[90] w-[min(20rem,calc(100vw-2rem))] rounded-sm border-border/70 p-2 shadow-xl"
+                // biome-ignore lint/a11y/noStaticElementInteractions: Keeps the portaled submenu open while the pointer moves from trigger to menu content.
+                <div
+                  key={group.key}
+                  onMouseEnter={() =>
+                    openTaxonomyDropdown(group.key, {
+                      intentionalHover: true,
+                    })
+                  }
+                  onMouseLeave={() => closeTaxonomyDropdown(group.key)}
+                >
+                  <DropdownMenu
+                    modal={false}
+                    open={openTaxonomyMenu === group.key}
+                    onOpenChange={(open) =>
+                      setOpenTaxonomyMenu((current) =>
+                        open
+                          ? group.key
+                          : current === group.key
+                            ? null
+                            : current,
+                      )
+                    }
                   >
-                    <DropdownMenuLabel className="break-words px-2 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground [overflow-wrap:anywhere]">
-                      {groupLabel}
-                    </DropdownMenuLabel>
-                    <DropdownMenuItem
-                      asChild
-                      className="h-auto cursor-pointer whitespace-normal break-words px-2.5 py-2 text-sm font-medium text-primary [overflow-wrap:anywhere]"
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onMouseEnter={() =>
+                          openTaxonomyDropdown(group.key, {
+                            intentionalHover: true,
+                          })
+                        }
+                        onMouseLeave={() => closeTaxonomyDropdown(group.key)}
+                        className={cn(
+                          "group h-10 shrink-0 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-primary-foreground/90 opacity-100 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground focus:bg-primary-foreground/10 focus:text-primary-foreground data-[state=open]:bg-background data-[state=open]:text-primary data-[state=open]:shadow-sm data-[state=open]:opacity-100",
+                          triggerActive &&
+                            "bg-primary-foreground/10 text-primary-foreground",
+                        )}
+                      >
+                        <span>{groupLabel}</span>
+                        <ChevronDown className="size-3 transition-transform duration-200 group-data-[state=open]:rotate-180" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      align="start"
+                      sideOffset={8}
+                      onMouseEnter={() => openTaxonomyDropdown(group.key)}
+                      onMouseLeave={() => closeTaxonomyDropdown(group.key)}
+                      className="z-[90] w-[min(20rem,calc(100vw-2rem))] rounded-sm border-border/70 p-2 shadow-xl"
                     >
-                      <Link href={group.href}>
-                        {locale === "bn"
-                          ? `${groupLabel} দেখুন`
-                          : `Browse ${groupLabel}`}
-                      </Link>
-                    </DropdownMenuItem>
-                    {group.children.length > 0 ? (
-                      <DropdownMenuSeparator />
-                    ) : null}
-                    {group.children.map((child) => {
-                      const childActive =
-                        pathname === "/products" &&
-                        activeCategory === group.key &&
-                        activeSubcategory === child.key;
+                      {group.children.map((child) => {
+                        const childActive =
+                          pathname === "/products" &&
+                          activeCategory === group.key &&
+                          activeSubcategory === child.key;
 
-                      return (
-                        <DropdownMenuItem
-                          key={child.key}
-                          asChild
-                          className={cn(
-                            "h-auto cursor-pointer whitespace-normal break-words px-2.5 py-2 text-sm font-medium [overflow-wrap:anywhere]",
-                            childActive &&
-                              "bg-primary/10 text-primary focus:bg-primary/10 focus:text-primary",
-                          )}
-                        >
-                          <Link href={child.href}>
-                            {getLocalizedValue(locale, child.label)}
-                          </Link>
-                        </DropdownMenuItem>
-                      );
-                    })}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                        return (
+                          <DropdownMenuItem
+                            key={child.key}
+                            asChild
+                            className={cn(
+                              "h-auto cursor-pointer whitespace-normal break-words px-2.5 py-2 text-sm font-medium [overflow-wrap:anywhere]",
+                              childActive &&
+                                "bg-primary/10 text-primary focus:bg-primary/10 focus:text-primary",
+                            )}
+                          >
+                            <Link href={child.href}>
+                              {getLocalizedValue(locale, child.label)}
+                            </Link>
+                          </DropdownMenuItem>
+                        );
+                      })}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               );
             })}
 
             {overflowDesktopTaxonomy.length > 0 ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    className={cn(
-                      "group h-10 shrink-0 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-primary-foreground/90 opacity-100 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground focus:bg-primary-foreground/10 focus:text-primary-foreground data-[state=open]:bg-background data-[state=open]:text-primary data-[state=open]:shadow-sm",
-                      pathname === "/products" &&
-                        overflowCategoryKeys.has(activeCategory) &&
-                        "bg-primary-foreground/10 text-primary-foreground",
-                    )}
-                  >
-                    {locale === "bn" ? "আরও" : "More"}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  align="end"
-                  sideOffset={8}
-                  className="z-[90] max-h-[min(70vh,34rem)] w-[min(24rem,calc(100vw-2rem))] rounded-sm border-border/70 p-2 shadow-xl"
+              // biome-ignore lint/a11y/noStaticElementInteractions: Keeps the portaled overflow submenu open while hovering the trigger and menu content.
+              <div
+                onMouseEnter={() =>
+                  openTaxonomyDropdown(moreTaxonomyKey, {
+                    intentionalHover: true,
+                  })
+                }
+                onMouseLeave={() => closeTaxonomyDropdown(moreTaxonomyKey)}
+              >
+                <DropdownMenu
+                  modal={false}
+                  open={openTaxonomyMenu === moreTaxonomyKey}
+                  onOpenChange={(open) =>
+                    setOpenTaxonomyMenu((current) =>
+                      open
+                        ? moreTaxonomyKey
+                        : current === moreTaxonomyKey
+                          ? null
+                          : current,
+                    )
+                  }
                 >
-                  <Accordion type="multiple" className="w-full space-y-2">
-                    {overflowDesktopTaxonomy.map((group) => (
-                      <AccordionItem
-                        key={group.key}
-                        value={group.key}
-                        className="rounded-sm border border-border/60 px-3"
-                      >
-                        <AccordionTrigger className="py-3 text-left text-sm font-semibold whitespace-normal break-words text-foreground hover:no-underline [overflow-wrap:anywhere]">
-                          {getLocalizedValue(locale, group.label)}
-                        </AccordionTrigger>
-                        <AccordionContent className="space-y-1 pb-3">
-                          <Link
-                            href={group.href}
-                            className="block rounded-sm px-3 py-2 text-sm font-medium break-words text-primary transition-colors hover:bg-primary/10 [overflow-wrap:anywhere]"
-                          >
-                            {locale === "bn"
-                              ? `${getLocalizedValue(locale, group.label)} দেখুন`
-                              : `Browse ${getLocalizedValue(locale, group.label)}`}
-                          </Link>
-                          <div className="grid gap-1">
-                            {group.children.map((child) => (
-                              <DropdownMenuItem
-                                key={child.key}
-                                asChild
-                                className={cn(
-                                  "h-auto cursor-pointer whitespace-normal break-words px-2.5 py-2 text-sm font-medium [overflow-wrap:anywhere]",
-                                  pathname === "/products" &&
-                                    activeCategory === group.key &&
-                                    activeSubcategory === child.key &&
-                                    "bg-primary/10 text-primary focus:bg-primary/10 focus:text-primary",
-                                )}
-                              >
-                                <Link href={child.href}>
-                                  {getLocalizedValue(locale, child.label)}
-                                </Link>
-                              </DropdownMenuItem>
-                            ))}
-                          </div>
-                        </AccordionContent>
-                      </AccordionItem>
-                    ))}
-                  </Accordion>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onMouseEnter={() =>
+                        openTaxonomyDropdown(moreTaxonomyKey, {
+                          intentionalHover: true,
+                        })
+                      }
+                      onMouseLeave={() =>
+                        closeTaxonomyDropdown(moreTaxonomyKey)
+                      }
+                      className={cn(
+                        "group h-10 shrink-0 rounded-sm bg-transparent px-3 text-sm font-medium whitespace-nowrap text-primary-foreground/90 opacity-100 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground focus:bg-primary-foreground/10 focus:text-primary-foreground data-[state=open]:bg-background data-[state=open]:text-primary data-[state=open]:shadow-sm",
+                        pathname === "/products" &&
+                          overflowCategoryKeys.has(activeCategory) &&
+                          "bg-primary-foreground/10 text-primary-foreground",
+                      )}
+                    >
+                      {locale === "bn" ? "আরও" : "More"}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="end"
+                    sideOffset={8}
+                    onMouseEnter={() => openTaxonomyDropdown(moreTaxonomyKey)}
+                    onMouseLeave={() => closeTaxonomyDropdown(moreTaxonomyKey)}
+                    className="z-[90] max-h-[min(70vh,34rem)] w-[min(24rem,calc(100vw-2rem))] rounded-sm border-border/70 p-2 shadow-xl"
+                  >
+                    <Accordion type="multiple" className="w-full space-y-2">
+                      {overflowDesktopTaxonomy.map((group) => (
+                        <AccordionItem
+                          key={group.key}
+                          value={group.key}
+                          className="rounded-sm border border-border/60 px-3"
+                        >
+                          <AccordionTrigger className="py-3 text-left text-sm font-semibold whitespace-normal break-words text-foreground hover:no-underline [overflow-wrap:anywhere]">
+                            {getLocalizedValue(locale, group.label)}
+                          </AccordionTrigger>
+                          <AccordionContent className="space-y-1 pb-3">
+                            <div className="grid gap-1">
+                              {group.children.map((child) => (
+                                <DropdownMenuItem
+                                  key={child.key}
+                                  asChild
+                                  className={cn(
+                                    "h-auto cursor-pointer whitespace-normal break-words px-2.5 py-2 text-sm font-medium [overflow-wrap:anywhere]",
+                                    pathname === "/products" &&
+                                      activeCategory === group.key &&
+                                      activeSubcategory === child.key &&
+                                      "bg-primary/10 text-primary focus:bg-primary/10 focus:text-primary",
+                                  )}
+                                >
+                                  <Link href={child.href}>
+                                    {getLocalizedValue(locale, child.label)}
+                                  </Link>
+                                </DropdownMenuItem>
+                              ))}
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      ))}
+                    </Accordion>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             ) : null}
           </div>
         </div>

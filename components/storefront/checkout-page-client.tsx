@@ -37,7 +37,10 @@ import {
 import { formatBdt } from "@/lib/store-format";
 import { getLocalizedValue } from "@/lib/store-locale";
 import { isRoshalManualPaymentReferenceRequired } from "@/lib/store-payment-methods";
-import { isBangladeshPhoneComplete } from "@/lib/store-phone";
+import {
+  isBangladeshPhoneComplete,
+  normalizeBangladeshPhoneInput,
+} from "@/lib/store-phone";
 import type {
   RoshalDeliverySettings,
   RoshalDeliveryZone,
@@ -90,6 +93,27 @@ function sortCheckoutPaymentOptions(options: RoshalPaymentSettings["options"]) {
 
       return left.key.localeCompare(right.key);
     });
+}
+
+function getCheckoutLocalizedValue(
+  locale: RoshalLocale,
+  value: { bn: string; en: string },
+) {
+  const primaryValue = getLocalizedValue(locale, value).trim();
+
+  if (primaryValue) {
+    return primaryValue;
+  }
+
+  return getLocalizedValue(locale === "bn" ? "en" : "bn", value).trim();
+}
+
+function isSyntheticCustomerEmail(value: string) {
+  return /^customer\+\d+@roshalorganic\.app$/i.test(value.trim());
+}
+
+function isLikelyEmail(value: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 }
 
 export function CheckoutPageClient({
@@ -309,10 +333,18 @@ export function CheckoutPageClient({
 
     setSubmitError(null);
 
+    const normalizedPhone = normalizeBangladeshPhoneInput(formState.phone);
+    const trimmedEmail = formState.email.trim();
+    const orderEmail =
+      trimmedEmail && !isSyntheticCustomerEmail(trimmedEmail)
+        ? trimmedEmail
+        : "";
+
     if (
-      !formState.customerName ||
-      !formState.phone ||
-      !formState.addressLine1 ||
+      formState.customerName.trim().length < 2 ||
+      !normalizedPhone ||
+      formState.addressLine1.trim().length < 3 ||
+      !selectedDistrict ||
       !formState.city ||
       !formState.addressLine2
     ) {
@@ -324,11 +356,20 @@ export function CheckoutPageClient({
       return;
     }
 
-    if (!isBangladeshPhoneComplete(formState.phone)) {
+    if (!isBangladeshPhoneComplete(normalizedPhone)) {
       showCheckoutError(
         locale === "bn"
           ? "সঠিক ১১ সংখ্যার মোবাইল নম্বর দিন।"
           : "Please enter a valid 11 digit mobile number.",
+      );
+      return;
+    }
+
+    if (orderEmail && !isLikelyEmail(orderEmail)) {
+      showCheckoutError(
+        locale === "bn"
+          ? "সঠিক ইমেইল দিন অথবা ইমেইল ঘর খালি রাখুন।"
+          : "Please enter a valid email address or leave the email field empty.",
       );
       return;
     }
@@ -364,6 +405,12 @@ export function CheckoutPageClient({
         },
         body: JSON.stringify({
           ...formState,
+          customerName: formState.customerName.trim(),
+          phone: normalizedPhone,
+          email: orderEmail,
+          addressLine1: formState.addressLine1.trim(),
+          addressLine2: formState.addressLine2.trim(),
+          city: formState.city.trim(),
           notes: [formState.notes.trim(), `Delivery type: ${deliveryType}`]
             .filter(Boolean)
             .join(" | "),
@@ -446,7 +493,7 @@ export function CheckoutPageClient({
       ) : null}
 
       <div className="grid gap-8 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_24rem] xl:grid-cols-[minmax(0,1fr)_26rem]">
-        <div className="min-w-0 space-y-6 order-2 lg:order-2 lg:sticky lg:top-28">
+        <div className="order-last min-w-0 space-y-6 lg:order-2 lg:sticky lg:top-28">
           <Card className="h-fit rounded-md border-border/70 shadow-sm">
             <CardHeader className="space-y-2">
               <CardTitle className="text-2xl">
@@ -590,7 +637,7 @@ export function CheckoutPageClient({
           </Card>
         </div>
 
-        <div className="min-w-0 space-y-6 order-1 lg:order-1">
+        <div className="order-first min-w-0 space-y-6 lg:order-1">
           <Card className="rounded-md border-border/70 shadow-sm">
             <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0 space-y-1.5">
@@ -819,7 +866,7 @@ export function CheckoutPageClient({
                   selectedOption.key !== "cash_on_delivery" ? (
                     <div className="rounded-sm border border-border/60 bg-background px-3 py-2">
                       <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                        {getLocalizedValue(
+                        {getCheckoutLocalizedValue(
                           locale,
                           selectedOption.merchantLabel,
                         ) ||

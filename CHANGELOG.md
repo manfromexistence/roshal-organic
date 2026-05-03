@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Fixed
+- Fixed dashboard Users table action placement so the edit/delete 3-dot menu stays on the far right on desktop, and made storefront category hover menus require a short intentional hover without focus-triggered reopen loops after the cursor leaves.
+- Restored storefront category hover-open behavior, removed repeated submenu category headings and browse rows, kept right-side overflow categories inside the More menu, and tightened the mobile hero banner ratio so uploaded banners stay wide instead of square-cropped.
+- Fixed signup mobile handling by matching the field styling to the other auth inputs and rejecting duplicate mobile numbers during auth user creation.
+- Fixed checkout polish by keeping Order Summary after delivery/payment on mobile, normalizing checkout phone/email payloads before submit, and showing dashboard merchant labels even when only one locale is filled.
+- Fixed mobile Featured Categories alignment so the strip starts cleanly from the left and keeps a visible right arrow cue.
 - Enabled all default Home marketing sections for older stored CMS rows during the current delivery repair while preserving future admin toggle changes.
 - Simplified CMS item editing by keeping essential item fields visible and moving paragraph/link details into a collapsed "More item details" control.
 - Fixed production QA issues found in the dashboard/browser pass: zero-product Featured Category links now preserve their category filter and show a friendly empty product state instead of resetting or crashing.

@@ -30,6 +30,18 @@
 - [x] Match the desktop right-banner height to the carousel image card and make the right banner image fill the whole container with a dashboard scale control.
 - [x] Center the Featured Categories carousel while preserving the current approved card size.
 
+## 2026-05-03 Marketing checkout/menu polish
+
+- [x] Move the dashboard Users desktop action menu to the far-right table column.
+- [x] Add intentional hover delay for storefront category menus and stop focus-triggered reopen loops after the cursor leaves.
+- [x] Restore hover-open storefront category dropdowns and keep overflow categories inside the More menu.
+- [x] Remove repeated category title/browse rows from submenu panels so hover menus show only real subcategories.
+- [x] Keep the mobile hero banner wide instead of square-cropped while preserving the desktop split banner layout.
+- [x] Block duplicate signup mobile numbers at auth user creation and show the duplicate Mobile/Email message near the mobile field.
+- [x] Match the signup mobile input style to the other icon inputs with the Mobile (017xxxxxxxx) placeholder.
+- [x] Keep checkout Order Summary last on mobile, normalize checkout phone/email payloads, and make merchant labels fall back across languages.
+- [x] Left-align mobile Featured Categories while keeping the right-side carousel arrow visible.
+
 ## 2026-05-03 Dashboard delete feedback repair
 
 - [x] Reproduce delete from stale dashboard list URLs locally and force Product, Category, Subcategory, Review, and User delete forms to clear old action flags and hard-refresh the current list page after deletion.

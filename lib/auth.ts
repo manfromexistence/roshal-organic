@@ -1,8 +1,14 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { APIError } from "better-auth/api";
+import { inArray } from "drizzle-orm";
 import { db } from "./db";
 import { accounts, sessions, users, verification } from "./schema";
 import { sendRoshalPasswordResetEmail } from "./store-email";
+import {
+  isBangladeshPhoneComplete,
+  normalizeBangladeshPhoneInput,
+} from "./store-phone";
 
 const defaultTrustedOrigins = [
   "http://localhost:3000",
@@ -36,6 +42,44 @@ function getTrustedOrigins() {
   return Array.from(origins);
 }
 
+function getBangladeshPhoneCandidates(value: unknown) {
+  const normalized = normalizeBangladeshPhoneInput(String(value || ""));
+
+  if (!isBangladeshPhoneComplete(normalized)) {
+    return [];
+  }
+
+  return Array.from(
+    new Set([
+      normalized,
+      `880${normalized.slice(1)}`,
+      `+880${normalized.slice(1)}`,
+    ]),
+  );
+}
+
+async function assertUniqueSignupPhone(phone: unknown) {
+  const candidates = getBangladeshPhoneCandidates(phone);
+
+  if (candidates.length === 0) {
+    return "";
+  }
+
+  const [existingUser] = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(inArray(users.phone, candidates))
+    .limit(1);
+
+  if (existingUser) {
+    throw new APIError("BAD_REQUEST", {
+      message: "User already exist. Use another Mobile/Email.",
+    });
+  }
+
+  return candidates[0];
+}
+
 export const permissions = {
   user: ["read:storefront", "manage:profile", "create:orders"],
   admin: [
@@ -62,6 +106,26 @@ export const auth = betterAuth({
       verification,
     },
   }),
+  databaseHooks: {
+    user: {
+      create: {
+        before: async (user) => {
+          if (!("phone" in user)) {
+            return { data: user };
+          }
+
+          const normalizedPhone = await assertUniqueSignupPhone(user.phone);
+
+          return {
+            data: {
+              ...user,
+              ...(normalizedPhone ? { phone: normalizedPhone } : {}),
+            },
+          };
+        },
+      },
+    },
+  },
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 6,

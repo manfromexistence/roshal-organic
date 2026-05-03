@@ -259,40 +259,6 @@ function getColumns({
       ),
     },
     {
-      id: "actions",
-      cell: ({ row }) => (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="size-8">
-              <MoreHorizontal className="size-4" />
-              <span className="sr-only">User actions</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem asChild>
-              <Link href={`/dashboard/users/${row.original.id}`}>
-                <Pencil className="size-4" />
-                Edit user
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              variant="destructive"
-              disabled={row.original.id === currentUserId}
-              onSelect={(event) => {
-                event.preventDefault();
-                onDeleteRequest(row.original);
-              }}
-            >
-              <Trash2 className="size-4" />
-              Delete user
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ),
-      size: 80,
-    },
-    {
       id: "preferredLanguage",
       accessorKey: "preferredLanguage",
       header: ({ column }) => (
@@ -346,6 +312,44 @@ function getColumns({
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Joined" label="Joined" />
       ),
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => (
+        <div className="flex justify-end">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="size-8">
+                <MoreHorizontal className="size-4" />
+                <span className="sr-only">User actions</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem asChild>
+                <Link href={`/dashboard/users/${row.original.id}`}>
+                  <Pencil className="size-4" />
+                  Edit user
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                variant="destructive"
+                disabled={row.original.id === currentUserId}
+                onSelect={(event) => {
+                  event.preventDefault();
+                  onDeleteRequest(row.original);
+                }}
+              >
+                <Trash2 className="size-4" />
+                Delete user
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      ),
+      enableHiding: false,
+      enableSorting: false,
+      size: 64,
     },
   ];
 }

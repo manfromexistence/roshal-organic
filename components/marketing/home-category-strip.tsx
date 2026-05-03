@@ -32,13 +32,13 @@ export function HomeCategoryStrip({
   return (
     <Carousel
       opts={{
-        align: "center",
+        align: "start",
         dragFree: true,
       }}
-      className="max-w-full overflow-x-clip px-2 sm:px-5 md:px-8"
+      className="max-w-full overflow-visible px-4 sm:px-5 md:px-8"
     >
       <CarouselContent
-        className={`-ml-2 md:-ml-3 ${shouldCenterCards ? "justify-center" : ""}`}
+        className={`-ml-2 md:-ml-3 ${shouldCenterCards ? "sm:justify-center" : ""}`}
       >
         {categories.map((category) => (
           <CarouselItem
@@ -67,7 +67,7 @@ export function HomeCategoryStrip({
         ))}
       </CarouselContent>
       <CarouselPrevious className="left-0 hidden border-border/70 bg-background shadow-sm sm:inline-flex sm:left-4 md:left-6" />
-      <CarouselNext className="right-0 hidden border-border/70 bg-background shadow-sm sm:inline-flex sm:right-4 md:right-6" />
+      <CarouselNext className="right-1 inline-flex border-border/70 bg-background shadow-sm sm:right-4 md:right-6" />
     </Carousel>
   );
 }

@@ -95,6 +95,10 @@ function buildCategoryFallbackChildren(
   category: RoshalStoreCategory,
   children: StorefrontTaxonomyChild[],
 ): StorefrontTaxonomyChild[] {
+  if (category.key) {
+    return children;
+  }
+
   const categoryHref = `/products?category=${category.key}`;
 
   if (children.length === 0) {
