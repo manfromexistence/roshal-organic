@@ -259,8 +259,8 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="bg-muted/20 px-4 pt-6 pb-4 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-xl">
+    <div className="flex min-h-full flex-1 items-center justify-center bg-muted/20 px-4 py-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-xl">
         <div className="rounded-xl border border-border/60 bg-background shadow-xl shadow-black/5 md:rounded-2xl">
           <div className="px-4 py-6 sm:px-6 md:px-8 md:py-8">
             <AuthHeader

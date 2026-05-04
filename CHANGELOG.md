@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Fixed
+- Centered storefront auth containers vertically and horizontally within the available screen area after the fixed header/sub-header offset.
+- Fixed storefront auth page layout so short login, forgot-password, and reset-password screens reserve enough vertical space for the primary footer to sit at the bottom of the viewport.
 - Added a PowerShell Vercel env sync helper that snapshots remote production env names, skips placeholder local values, and can deploy after syncing.
 - Added dashboard order-update success feedback and applied the requested light green/red/orange tones to order, overview, and product metric cards.
 - Added rounded images, a mobile previous carousel arrow, and content-aware arrow positioning to the storefront Featured Categories strip.

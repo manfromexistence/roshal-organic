@@ -17,7 +17,7 @@ export function StorefrontMainShell({
       className={cn(
         "w-full min-w-0 overflow-x-clip",
         isAuthUtilityPage
-          ? "shrink-0 grow-0 pb-0"
+          ? "flex flex-1 flex-col pb-0"
           : "min-h-[calc(100vh-18rem)] flex-1 pb-20 md:pb-0",
       )}
     >

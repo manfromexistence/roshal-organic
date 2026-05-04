@@ -32,6 +32,8 @@
 
 ## 2026-05-03 Marketing checkout/menu polish
 
+- [x] Center login, forgot-password, and reset-password auth containers horizontally and vertically after the fixed header/sub-header offset.
+- [x] Keep short storefront auth pages tall enough that the primary footer remains anchored at the bottom of the viewport.
 - [x] Add `env.ps1` for syncing `.env.production` values to Vercel production after first snapshotting remote env names and skipping local placeholders.
 - [x] Round Featured Categories images and keep mobile previous/next carousel arrows close to the cards when the row is centered.
 - [x] Show `Order updated successfully.` after dashboard order status saves and color order, overview, and product metric cards with the requested light green, red, and orange tones.
