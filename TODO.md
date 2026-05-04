@@ -32,6 +32,14 @@
 
 ## 2026-05-03 Marketing checkout/menu polish
 
+- [x] Fix Netlify storefront image rendering by disabling Next image optimization so logos, category images, product images, and database image URLs render directly without the Netlify optimizer function.
+- [x] Fix Netlify CSS/JS asset delivery by deploying generated `.netlify/static` with functions instead of uploading `.next` directly.
+- [x] Add a repeatable `deploy:netlify` script so future Netlify CLI deploys use the correct static asset folder.
+- [x] Prepare Netlify deployment by removing unused AamarPay environment keys and removing middleware bundling that Netlify cannot support.
+- [x] Remove unused AamarPay and Resend keys from active local, Vercel, Netlify, example, and gateway-helper setup while leaving Brevo as the configured email path.
+- [x] Disable Next image optimization only on Netlify to avoid runtime `.next/cache` creation inside server functions.
+- [x] Add a Netlify-only Webpack build path so the Netlify runtime can deploy the Turso-backed Next.js app.
+- [x] Switch app Turso and Drizzle connections to libSQL web entrypoints so Windows-built Netlify functions do not need Linux native database binaries.
 - [x] Center login, forgot-password, and reset-password auth containers horizontally and vertically after the fixed header/sub-header offset.
 - [x] Keep short storefront auth pages tall enough that the primary footer remains anchored at the bottom of the viewport.
 - [x] Add `env.ps1` for syncing `.env.production` values to Vercel production after first snapshotting remote env names and skipping local placeholders.

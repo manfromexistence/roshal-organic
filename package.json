@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:netlify": "next build --webpack",
+    "deploy:netlify": "netlify build --offline --context production && netlify deploy --prod --no-build --dir .netlify/static --functions .netlify/functions",
     "start": "next start",
     "lint": "biome check .",
     "format": "biome format --write ."

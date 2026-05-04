@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Fixed
+- Fixed Netlify storefront image rendering by disabling Next image optimization globally so logos, catalog images, and database image URLs render directly instead of hitting the crashing Netlify image optimizer route.
+- Fixed Netlify CSS/JS delivery by deploying the generated `.netlify/static` directory with functions instead of uploading `.next` directly, and added a repeatable Netlify deploy script.
+- Removed unused AamarPay and Resend environment keys from the active local, Vercel, Netlify, example, and gateway-helper setup; gateway checkout now stays disabled unless a provider is explicitly configured.
+- Disabled Next image optimization only on Netlify so server functions do not attempt to create a runtime `.next/cache` directory.
+- Removed the Next.js proxy middleware so Netlify does not bundle unsupported middleware artifacts; protected pages and APIs continue enforcing auth server-side.
+- Added a Netlify-specific build command that uses `next build --webpack` so Netlify's Next runtime can bundle Turso-backed server routes without Turbopack external-module failures.
+- Switched runtime Turso clients and the Drizzle adapter to libSQL web entrypoints so Netlify functions do not require platform-specific native `@libsql` binaries from a Windows-built deploy.
 - Centered storefront auth containers vertically and horizontally within the available screen area after the fixed header/sub-header offset.
 - Fixed storefront auth page layout so short login, forgot-password, and reset-password screens reserve enough vertical space for the primary footer to sit at the bottom of the viewport.
 - Added a PowerShell Vercel env sync helper that snapshots remote production env names, skips placeholder local values, and can deploy after syncing.

@@ -52,7 +52,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\env.ps1 -Deploy
 - Safe fallback merging for the built-in home/about/contact CMS pages and sections, so partial dashboard edits do not wipe out the rest of the default storefront composition
 - Storefront brand settings such as CTA labels, hero layout, card style, spacing, and contact information
 - Payment provider add/remove controls, enablement, instructions, merchant/account details, and wallet reference guidance
-- New-order email notifications to `roshalorganic@gmail.com` through Brevo, Resend, or SMTP/Nodemailer configuration
+- New-order email notifications to `roshalorganic@gmail.com` through Brevo or SMTP/Nodemailer configuration
 
 ## Environment Variables
 
@@ -64,16 +64,9 @@ DATABASE_AUTH_TOKEN=your-turso-auth-token
 BETTER_AUTH_SECRET=your-better-auth-secret
 BETTER_AUTH_URL=http://localhost:3000
 NEXT_PUBLIC_APP_URL=http://localhost:3000
-ROSHAL_PAYMENT_GATEWAY_PROVIDER=aamarpay
-ROSHAL_PAYMENT_GATEWAY_METHODS=card,bkash,nagad
-AAMARPAY_SANDBOX=true
-AAMARPAY_BASE_URL=https://sandbox.aamarpay.com
-AAMARPAY_STORE_ID=your-aamarpay-store-id
-AAMARPAY_SIGNATURE_KEY=your-aamarpay-signature-key
 IMGBB=your-imgbb-api-key
 IMGBB_API_KEY=your-imgbb-api-key
 CATBOX_USERHASH=optional-catbox-userhash
-RESEND_API_KEY=optional-resend-api-key
 BREVO_API_KEY=optional-brevo-api-key
 BREVO_EMAIL_FROM="Roshal Organic <roshalorganic@gmail.com>"
 ROSHAL_ORDER_NOTIFICATION_EMAILS=roshalorganic@gmail.com
@@ -87,9 +80,9 @@ SMTP_PASS=your-smtp-or-app-password
 SMTP_FROM="Roshal Organic <your-smtp-user@gmail.com>"
 ```
 
-`BREVO_API_KEY` is preferred when configured. Without Brevo, the app falls back
-to `RESEND_API_KEY`, then Nodemailer with `SMTP_URL`/`NODEMAILER_SMTP_URL` or
-the `SMTP_*` variables above. Email volume is limited by the chosen provider.
+`BREVO_API_KEY` is the recommended email provider. Without Brevo, the app can use
+Nodemailer with `SMTP_URL`/`NODEMAILER_SMTP_URL` or the `SMTP_*` variables above.
+Email volume is limited by the chosen provider.
 
 ## Local Setup
 
@@ -124,6 +117,7 @@ All seeded demo users use password `password`.
 ```bash
 bun run dev
 bun run build
+bun run deploy:netlify
 bun run start
 bun run format
 bun run lint
@@ -139,7 +133,6 @@ bun run scripts/seed-users.ts
 - The old root-level `marketting` source app has been removed after transplanting its landing page, header/footer shell, and mobile bottom navigation into the active storefront.
 - Manual wallet reference review is in place for configured manual payment providers and can be managed from `/dashboard/payments` and `/dashboard/orders`.
 - Inside/outside Dhaka delivery charges and the free-delivery threshold are dashboard-managed and are recomputed on the server during checkout.
-- AamarPay is the active live gateway abstraction for `card`, `bkash`, and `nagad` when its merchant credentials are configured.
 - Gateway-mode checkout currently falls back to manual admin follow-up for any payment option whose live gateway path is not configured yet.
 - The local env files now point at the real `roshal-organic` Turso database instead of the old Quadra database.
 - `.env.production` now expects your final live domain in `BETTER_AUTH_URL` and `NEXT_PUBLIC_APP_URL`; those should match the actual deployed Roshal storefront URL before go-live.
@@ -160,7 +153,7 @@ bun run scripts/seed-users.ts
 - The transplanted marketing landing shell was visually smoke-checked locally at `http://localhost:3000/` in desktop and mobile-sized viewports after the copy/removal pass.
 - The leftover static `/collections` template page has been retired from the client-facing surface and now routes customers to the real `/products` catalog instead.
 - The Roshal dashboard now blocks reserved storefront slugs (`collections`, `payment-return`, etc.), duplicate marketing-page slugs, duplicate section keys, duplicate product slugs/SKUs, and negative inventory/pricing with clear inline errors instead of raw database failures.
-- A new `.env.example` now documents the required Roshal auth, Turso, upload, and AamarPay gateway keys so the app can be configured for local or production deployment without guessing hidden env names.
+- A new `.env.example` now documents the required Roshal auth, Turso, upload, and email keys so the app can be configured for local or production deployment without guessing hidden env names.
 - The login page now frames auth as a customer ecommerce account flow, with responsive trust/checkout messaging and clearer separation between customer sign-up and admin-assigned access.
 - Admin login now uses the Better Auth client flow with a full redirect after success, so `/dashboard` and other protected admin routes see the fresh session cookie immediately after sign-in.
-- Real production gateway credentials and the final production domain still need to be provisioned per environment before go-live.
+- Final production domain and email sender settings still need to match the live environment before go-live.
